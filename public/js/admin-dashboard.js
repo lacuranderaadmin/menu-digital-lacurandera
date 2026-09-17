@@ -189,6 +189,9 @@ function setupDashboardUI(user) {
 
   // Configurador de Barra de Anuncios (Marquee Ticker)
   setupMarqueeAdmin();
+
+  // Configuración del Restaurante (Horarios, Google Maps, Contacto, Identidad)
+  setupRestaurantSettingsAdmin();
 }
 
 function switchView(viewName) {
@@ -212,6 +215,7 @@ function switchView(viewName) {
 
   if (viewName === 'branches') renderBranchesList();
   if (viewName === 'menu-editor') renderMenuEditorTable();
+  if (viewName === 'settings') loadRestaurantSettings();
 }
 
 async function loadData() {
@@ -242,6 +246,9 @@ async function loadData() {
 
   // Cargar configuración de la barra en movimiento (Marquee)
   await loadMarqueeConfig();
+
+  // Cargar configuración general del restaurante (Horarios, Reseñas, Contacto)
+  await loadRestaurantSettings();
 
   populateCategoryDropdowns();
   renderBranchesList();
@@ -1163,6 +1170,263 @@ async function saveMarqueeConfig() {
     if (saveBtn) {
       saveBtn.disabled = false;
       saveBtn.textContent = '💾 Guardar Barra';
+    }
+  }
+}
+
+// ==========================================================================
+// Configuración General del Restaurante (Horarios, Google Maps, Contacto, Identidad)
+// ==========================================================================
+let restaurantSettings = {
+  name: 'La Curandera',
+  tagline: 'MEZCAL · CORTES · SNACKS',
+  quote: '“Aquí te la vamos a curar.”',
+  whatsapp: '527141400000',
+  whatsappMessage: '¡Hola La Curandera! Me gustaría hacer una consulta sobre su menú y reservas.',
+  phone: '+52 714 140 0000',
+  address: 'Tenancingo / Metepec, Estado de México',
+  mapsUrl: 'https://maps.app.goo.gl/EKib5MFWwCC9paop9',
+  googlePlaceId: 'ChIJN1t_tDeuEmsRUsoyG83frY4',
+  instagram: 'https://instagram.com/lacurandera.mx',
+  schedule: {
+    breakfast: {
+      start: '09:00',
+      end: '13:30',
+      label: '9:00 AM - 1:30 PM'
+    },
+    lunch: {
+      start: '13:30',
+      end: '19:30',
+      label: '1:30 PM - 7:30 PM'
+    },
+    days: 'Lunes a Domingo'
+  }
+};
+
+/**
+ * Extrae inteligentemente el Google Place ID a partir de URLs comunes de Google Maps
+ */
+function extractPlaceIdFromUrl(url) {
+  if (!url || typeof url !== 'string') return null;
+  const trimmed = url.trim();
+
+  if (/^ChIJ[a-zA-Z0-9_-]{20,}$/.test(trimmed)) {
+    return trimmed;
+  }
+
+  const placeIdParam = trimmed.match(/[?&]placeid=([^&#]+)/i) || trimmed.match(/[?&]place_id=([^&#]+)/i);
+  if (placeIdParam && placeIdParam[1]) {
+    return decodeURIComponent(placeIdParam[1]);
+  }
+
+  const chijMatch = trimmed.match(/!1s(ChIJ[a-zA-Z0-9_-]+)/);
+  if (chijMatch && chijMatch[1]) {
+    return chijMatch[1];
+  }
+
+  return null;
+}
+
+/**
+ * Carga la configuración del restaurante desde Firestore o localStorage
+ */
+async function loadRestaurantSettings() {
+  try {
+    const cached = localStorage.getItem('lc_restaurant_settings');
+    if (cached) {
+      const parsed = JSON.parse(cached);
+      restaurantSettings = {
+        ...restaurantSettings,
+        ...parsed,
+        schedule: {
+          ...restaurantSettings.schedule,
+          ...(parsed.schedule || {})
+        }
+      };
+    }
+  } catch (e) {}
+
+  if (isConfigured && db) {
+    try {
+      const docRef = doc(db, `restaurants/${restaurantId}/settings/general`);
+      const snap = await getDoc(docRef);
+      if (snap.exists()) {
+        const data = snap.data();
+        restaurantSettings = {
+          ...restaurantSettings,
+          ...data,
+          schedule: {
+            ...restaurantSettings.schedule,
+            ...(data.schedule || {})
+          }
+        };
+        localStorage.setItem('lc_restaurant_settings', JSON.stringify(restaurantSettings));
+      }
+    } catch (err) {
+      console.warn("Could not load restaurant settings from Firestore:", err);
+    }
+  }
+
+  populateSettingsForm();
+}
+
+function populateSettingsForm() {
+  const setVal = (id, val) => {
+    const el = document.getElementById(id);
+    if (el && val !== undefined && val !== null) el.value = val;
+  };
+
+  setVal('setting-restaurant-name', restaurantSettings.name || 'La Curandera');
+  setVal('setting-tagline', restaurantSettings.tagline || 'MEZCAL · CORTES · SNACKS');
+  setVal('setting-quote', restaurantSettings.quote || '“Aquí te la vamos a curar.”');
+
+  const sched = restaurantSettings.schedule || {};
+  setVal('setting-breakfast-start', sched.breakfast?.start || '09:00');
+  setVal('setting-breakfast-end', sched.breakfast?.end || '13:30');
+  setVal('setting-breakfast-label', sched.breakfast?.label || '9:00 AM - 1:30 PM');
+
+  setVal('setting-lunch-start', sched.lunch?.start || '13:30');
+  setVal('setting-lunch-end', sched.lunch?.end || '19:30');
+  setVal('setting-lunch-label', sched.lunch?.label || '1:30 PM - 7:30 PM');
+
+  setVal('setting-days-label', sched.days || 'Lunes a Domingo');
+
+  setVal('setting-maps-url', restaurantSettings.mapsUrl || 'https://maps.app.goo.gl/EKib5MFWwCC9paop9');
+  setVal('setting-place-id', restaurantSettings.googlePlaceId || 'ChIJN1t_tDeuEmsRUsoyG83frY4');
+
+  setVal('setting-whatsapp', restaurantSettings.whatsapp || '527141400000');
+  setVal('setting-phone', restaurantSettings.phone || '+52 714 140 0000');
+  setVal('setting-whatsapp-msg', restaurantSettings.whatsappMessage || '¡Hola La Curandera! Me gustaría hacer una consulta sobre su menú y reservas.');
+  setVal('setting-address', restaurantSettings.address || 'Tenancingo / Metepec, Estado de México');
+  setVal('setting-instagram', restaurantSettings.instagram || 'https://instagram.com/lacurandera.mx');
+}
+
+/**
+ * Configura listeners del panel de configuración de restaurante
+ */
+function setupRestaurantSettingsAdmin() {
+  const form = document.getElementById('form-restaurant-settings');
+  const mapsInput = document.getElementById('setting-maps-url');
+  const placeIdInput = document.getElementById('setting-place-id');
+
+  if (mapsInput && placeIdInput) {
+    mapsInput.addEventListener('input', () => {
+      const extracted = extractPlaceIdFromUrl(mapsInput.value);
+      if (extracted) {
+        placeIdInput.value = extracted;
+        showToast(`📍 Place ID detectado automáticamente: ${extracted}`);
+      }
+    });
+  }
+
+  if (form) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      await saveRestaurantSettings();
+    });
+  }
+}
+
+/**
+ * Guarda la configuración en Firestore, localStorage y sincroniza en tiempo real
+ */
+async function saveRestaurantSettings() {
+  const saveBtn = document.getElementById('btn-save-settings');
+  const feedback = document.getElementById('settings-save-feedback');
+
+  const getVal = (id, fallback = '') => {
+    const el = document.getElementById(id);
+    return el ? el.value.trim() : fallback;
+  };
+
+  const mapsUrlVal = getVal('setting-maps-url', 'https://maps.app.goo.gl/EKib5MFWwCC9paop9');
+  let placeIdVal = getVal('setting-place-id');
+  if (!placeIdVal) {
+    const autoExtracted = extractPlaceIdFromUrl(mapsUrlVal);
+    if (autoExtracted) placeIdVal = autoExtracted;
+  }
+
+  const updatedSettings = {
+    name: getVal('setting-restaurant-name', 'La Curandera'),
+    tagline: getVal('setting-tagline', 'MEZCAL · CORTES · SNACKS'),
+    quote: getVal('setting-quote', '“Aquí te la vamos a curar.”'),
+    whatsapp: getVal('setting-whatsapp', '527141400000'),
+    whatsappMessage: getVal('setting-whatsapp-msg', '¡Hola La Curandera! Me gustaría hacer una consulta sobre su menú y reservas.'),
+    phone: getVal('setting-phone', '+52 714 140 0000'),
+    address: getVal('setting-address', 'Tenancingo / Metepec, Estado de México'),
+    mapsUrl: mapsUrlVal,
+    googlePlaceId: placeIdVal,
+    instagram: getVal('setting-instagram', 'https://instagram.com/lacurandera.mx'),
+    schedule: {
+      breakfast: {
+        start: getVal('setting-breakfast-start', '09:00'),
+        end: getVal('setting-breakfast-end', '13:30'),
+        label: getVal('setting-breakfast-label', '9:00 AM - 1:30 PM')
+      },
+      lunch: {
+        start: getVal('setting-lunch-start', '13:30'),
+        end: getVal('setting-lunch-end', '19:30'),
+        label: getVal('setting-lunch-label', '1:30 PM - 7:30 PM')
+      },
+      days: getVal('setting-days-label', 'Lunes a Domingo')
+    }
+  };
+
+  restaurantSettings = updatedSettings;
+
+  if (saveBtn) {
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Guardando configuración...';
+  }
+  if (feedback) {
+    feedback.style.display = 'inline-block';
+    feedback.style.color = 'var(--lc-gray-500)';
+    feedback.textContent = '⏳ Guardando en la nube...';
+  }
+
+  try {
+    localStorage.setItem('lc_restaurant_settings', JSON.stringify(updatedSettings));
+
+    if (isConfigured && db) {
+      const docRef = doc(db, `restaurants/${restaurantId}/settings/general`);
+      await setDoc(docRef, {
+        ...updatedSettings,
+        updatedAt: serverTimestamp()
+      }, { merge: true });
+    }
+
+    if (syncChannel) {
+      syncChannel.postMessage({
+        type: 'SETTINGS_SYNC',
+        settings: updatedSettings
+      });
+    }
+
+    localStorage.setItem('lc_settings_sync_event', JSON.stringify({
+      timestamp: Date.now(),
+      settings: updatedSettings
+    }));
+
+    if (feedback) {
+      feedback.style.color = '#159F9B';
+      feedback.textContent = '✅ ¡Guardado y sincronizado en tiempo real!';
+      setTimeout(() => {
+        if (feedback) feedback.style.display = 'none';
+      }, 4000);
+    }
+
+    showToast('✅ Configuración del restaurante guardada y sincronizada con el menú');
+  } catch (err) {
+    console.error("Error saving restaurant settings:", err);
+    showToast('⚠️ Guardado localmente. Error al sincronizar con Firestore.');
+    if (feedback) {
+      feedback.style.color = '#C94E8F';
+      feedback.textContent = '⚠️ Guardado solo localmente';
+    }
+  } finally {
+    if (saveBtn) {
+      saveBtn.disabled = false;
+      saveBtn.textContent = '💾 Guardar Configuración';
     }
   }
 }

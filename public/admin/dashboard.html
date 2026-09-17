@@ -232,33 +232,151 @@
           </div>
         </div>
 
-        <div style="background:var(--lc-blanco); border:3px solid var(--lc-negro); border-radius:var(--radius-lg); box-shadow:5px 5px 0px var(--lc-negro); padding:2rem; max-width:680px;">
-          <form onsubmit="event.preventDefault(); alert('Configuración guardada.');" style="display:flex; flex-direction:column; gap:1.25rem;">
-            <div class="form-group">
-              <label class="form-label">Nombre Comercial</label>
-              <input type="text" class="form-input" value="La Curandera — Mezcal · Cortes · Snacks" />
+        <form id="form-restaurant-settings" style="display:flex; flex-direction:column; gap:1.75rem; max-width:820px;">
+          <!-- Tarjeta 1: Identidad y Frases del Menú -->
+          <div style="background:var(--lc-blanco); border:3px solid var(--lc-negro); border-radius:var(--radius-lg); box-shadow:5px 5px 0px var(--lc-negro); padding:1.75rem;">
+            <h2 style="font-family:var(--font-title); font-size:1.15rem; font-weight:900; margin-bottom:1.25rem; display:flex; align-items:center; gap:0.5rem;">
+              <span>✨</span> Identidad y Textos del Menú (Hero)
+            </h2>
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:1.25rem;">
+              <div class="form-group">
+                <label class="form-label" for="setting-restaurant-name">Nombre del Restaurante</label>
+                <input type="text" id="setting-restaurant-name" class="form-input" value="La Curandera" placeholder="La Curandera" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="setting-tagline">Eslogan / Subtítulo</label>
+                <input type="text" id="setting-tagline" class="form-input" value="MEZCAL · CORTES · SNACKS" placeholder="MEZCAL · CORTES · SNACKS" />
+              </div>
+            </div>
+            <div class="form-group" style="margin-top:1.25rem;">
+              <label class="form-label" for="setting-quote">Frase de Bienvenida del Hero</label>
+              <input type="text" id="setting-quote" class="form-input" value="“Aquí te la vamos a curar.”" placeholder="“Aquí te la vamos a curar.”" />
+            </div>
+          </div>
+
+          <!-- Tarjeta 2: Horarios de Servicio y Turnos -->
+          <div style="background:var(--lc-blanco); border:3px solid var(--lc-negro); border-radius:var(--radius-lg); box-shadow:5px 5px 0px var(--lc-negro); padding:1.75rem;">
+            <h2 style="font-family:var(--font-title); font-size:1.15rem; font-weight:900; margin-bottom:1.25rem; display:flex; align-items:center; gap:0.5rem;">
+              <span>⏰</span> Horarios de Servicio y Turnos
+            </h2>
+            <p style="font-size:0.82rem; color:var(--lc-gray-500); margin-bottom:1.25rem; line-height:1.4;">
+              Estos horarios controlan el cambio automático de menú (Desayuno vs Comida) y la etiqueta informativa superior en tiempo real.
+            </p>
+
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:1.25rem; margin-bottom:1.25rem;">
+              <!-- Desayuno -->
+              <div style="background:#FFF9F2; border:2px solid var(--lc-negro); border-radius:var(--radius-md); padding:1rem;">
+                <h3 style="font-family:var(--font-title); font-size:0.95rem; font-weight:800; color:#C94E8F; margin-bottom:0.75rem;">🍳 Turno Desayuno</h3>
+                <div style="display:flex; gap:0.75rem; margin-bottom:0.75rem;">
+                  <div style="flex:1;">
+                    <label class="form-label" style="font-size:0.75rem;">Inicio</label>
+                    <input type="time" id="setting-breakfast-start" class="form-input" value="09:00" />
+                  </div>
+                  <div style="flex:1;">
+                    <label class="form-label" style="font-size:0.75rem;">Fin / Cambio</label>
+                    <input type="time" id="setting-breakfast-end" class="form-input" value="13:30" />
+                  </div>
+                </div>
+                <div>
+                  <label class="form-label" style="font-size:0.75rem;">Texto visible en el menú</label>
+                  <input type="text" id="setting-breakfast-label" class="form-input" value="9:00 AM - 1:30 PM" placeholder="9:00 AM - 1:30 PM" />
+                </div>
+              </div>
+
+              <!-- Comida -->
+              <div style="background:#F2FAFA; border:2px solid var(--lc-negro); border-radius:var(--radius-md); padding:1rem;">
+                <h3 style="font-family:var(--font-title); font-size:0.95rem; font-weight:800; color:#159F9B; margin-bottom:0.75rem;">🥩 Turno Comida y Cantina</h3>
+                <div style="display:flex; gap:0.75rem; margin-bottom:0.75rem;">
+                  <div style="flex:1;">
+                    <label class="form-label" style="font-size:0.75rem;">Inicio</label>
+                    <input type="time" id="setting-lunch-start" class="form-input" value="13:30" />
+                  </div>
+                  <div style="flex:1;">
+                    <label class="form-label" style="font-size:0.75rem;">Fin</label>
+                    <input type="time" id="setting-lunch-end" class="form-input" value="19:30" />
+                  </div>
+                </div>
+                <div>
+                  <label class="form-label" style="font-size:0.75rem;">Texto visible en el menú</label>
+                  <input type="text" id="setting-lunch-label" class="form-input" value="1:30 PM - 7:30 PM" placeholder="1:30 PM - 7:30 PM" />
+                </div>
+              </div>
             </div>
 
             <div class="form-group">
-              <label class="form-label">Número de WhatsApp (con lada)</label>
-              <input type="text" class="form-input" value="527141400000" />
+              <label class="form-label" for="setting-days-label">Días de Atención al Público</label>
+              <input type="text" id="setting-days-label" class="form-input" value="Lunes a Domingo" placeholder="Ej: Lunes a Domingo" />
+            </div>
+          </div>
+
+          <!-- Tarjeta 3: Google Maps y Botón de Reseñas ⭐ -->
+          <div style="background:var(--lc-blanco); border:3px solid var(--lc-negro); border-radius:var(--radius-lg); box-shadow:5px 5px 0px var(--lc-negro); padding:1.75rem;">
+            <h2 style="font-family:var(--font-title); font-size:1.15rem; font-weight:900; margin-bottom:0.75rem; display:flex; align-items:center; gap:0.5rem;">
+              <span>⭐</span> Google Maps y Botón de Reseñas
+            </h2>
+            <p style="font-size:0.82rem; color:var(--lc-gray-500); margin-bottom:1.25rem; line-height:1.4;">
+              Pega aquí el enlace de Google Maps de La Curandera. El botón <strong>"Déjanos tu reseña ⭐"</strong> del menú abrirá este enlace directamente.
+            </p>
+
+            <div class="form-group" style="margin-bottom:1.25rem;">
+              <label class="form-label" for="setting-maps-url">URL de Google Maps (Recomendado)</label>
+              <input type="url" id="setting-maps-url" class="form-input" value="https://maps.app.goo.gl/EKib5MFWwCC9paop9" placeholder="https://maps.app.goo.gl/..." />
+              <span style="display:block; font-size:0.75rem; color:var(--lc-gray-500); margin-top:0.35rem;">
+                Acepta cualquier enlace directo (ej: <code>https://maps.app.goo.gl/...</code> o <code>https://www.google.com/maps/place/...</code>).
+              </span>
             </div>
 
             <div class="form-group">
-              <label class="form-label">Google Place ID (para botón de reseñas ⭐)</label>
-              <input type="text" class="form-input" value="ChIJN1t_tDeuEmsRUsoyG83frY4" placeholder="Ej: ChIJ..." />
+              <label class="form-label" for="setting-place-id">Google Place ID (Opcional / Auto-rellenable)</label>
+              <input type="text" id="setting-place-id" class="form-input" value="ChIJN1t_tDeuEmsRUsoyG83frY4" placeholder="Ej: ChIJN1t_tDeuEmsRUsoyG83frY4 (opcional)" />
+              <span style="display:block; font-size:0.75rem; color:var(--lc-gray-500); margin-top:0.35rem;">
+                Si no lo conoces, no te preocupes: el botón de reseñas utilizará de forma automática tu enlace de Google Maps.
+              </span>
+            </div>
+          </div>
+
+          <!-- Tarjeta 4: Contacto, Atención y Redes Sociales -->
+          <div style="background:var(--lc-blanco); border:3px solid var(--lc-negro); border-radius:var(--radius-lg); box-shadow:5px 5px 0px var(--lc-negro); padding:1.75rem;">
+            <h2 style="font-family:var(--font-title); font-size:1.15rem; font-weight:900; margin-bottom:1.25rem; display:flex; align-items:center; gap:0.5rem;">
+              <span>💬</span> Contacto, Atención y Redes Sociales
+            </h2>
+
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:1.25rem; margin-bottom:1.25rem;">
+              <div class="form-group">
+                <label class="form-label" for="setting-whatsapp">Número de WhatsApp (con lada)</label>
+                <input type="tel" id="setting-whatsapp" class="form-input" value="527141400000" placeholder="527141400000" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="setting-phone">Teléfono para Llamadas</label>
+                <input type="tel" id="setting-phone" class="form-input" value="+52 714 140 0000" placeholder="+52 714 140 0000" />
+              </div>
             </div>
 
-            <div class="form-group">
-              <label class="form-label">URL de Google Maps</label>
-              <input type="text" class="form-input" value="https://maps.app.goo.gl/RpGz3QzEo9cP7oiT8" />
+            <div class="form-group" style="margin-bottom:1.25rem;">
+              <label class="form-label" for="setting-whatsapp-msg">Mensaje Predeterminado de WhatsApp al Abrir el Chat</label>
+              <input type="text" id="setting-whatsapp-msg" class="form-input" value="¡Hola La Curandera! Me gustaría hacer una consulta sobre su menú y reservas." placeholder="Mensaje inicial con el que el comensal te escribirá" />
             </div>
 
-            <button type="submit" class="btn-admin-primary" style="align-self:flex-start;">
-              Guardar Configuración
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:1.25rem;">
+              <div class="form-group">
+                <label class="form-label" for="setting-address">Dirección Física Visible</label>
+                <input type="text" id="setting-address" class="form-input" value="Tenancingo / Metepec, Estado de México" placeholder="Dirección del restaurante" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="setting-instagram">Instagram (Enlace o usuario)</label>
+                <input type="text" id="setting-instagram" class="form-input" value="https://instagram.com/lacurandera.mx" placeholder="https://instagram.com/lacurandera.mx" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Botón de Guardado con Estado -->
+          <div style="display:flex; align-items:center; gap:1rem; flex-wrap:wrap; margin-top:0.5rem;">
+            <button type="submit" id="btn-save-settings" class="btn-admin-primary" style="padding:0.85rem 2rem; font-size:1rem;">
+              💾 Guardar Configuración
             </button>
-          </form>
-        </div>
+            <span id="settings-save-feedback" style="font-family:var(--font-mono); font-size:0.88rem; font-weight:700; display:none;"></span>
+          </div>
+        </form>
       </section>
 
     </main>

@@ -13,7 +13,13 @@ import {
   isConfigured 
 } from './firebase-init.js';
 import { getLocalizedText, t, getLanguage } from './i18n.js';
-import { openProductModal } from './ui.js';
+import { 
+  openProductModal, 
+  setupReviewLinks, 
+  setupWhatsAppFAB, 
+  updateMealSwitchUI, 
+  getInitialMealMode 
+} from './ui.js';
 
 let restaurantId = 'la-curandera';
 let branchId = 'metepec';
@@ -117,6 +123,8 @@ export async function initMenu() {
         }
         renderCategoriesNav();
         renderMenu();
+      } else if (event.data && event.data.type === 'SETTINGS_SYNC' && event.data.settings) {
+        applyRestaurantSettings(event.data.settings);
       }
     };
   } catch (e) {}
@@ -132,11 +140,21 @@ export async function initMenu() {
         renderCategoriesNav();
         renderMenu();
       } catch (err) {}
+    } else if (e.key === 'lc_settings_sync_event' && e.newValue) {
+      try {
+        const data = JSON.parse(e.newValue);
+        if (data.settings) {
+          applyRestaurantSettings(data.settings);
+        }
+      } catch (err) {}
     }
   });
 
   // Sincronizar barra de anuncios en movimiento (Marquee Ticker)
   initMarqueeSync();
+
+  // Sincronizar configuración general del restaurante (Horarios, WhatsApp, Reseñas, Hero)
+  initRestaurantSettingsSync();
 
   // 2. Conexión a Firestore en tiempo real en segundo plano
   if (isConfigured && db) {
@@ -998,3 +1016,106 @@ function initMarqueeSync() {
   }
 }
 
+/**
+ * Inicializa la sincronización de la configuración general del restaurante en tiempo real
+ */
+export function initRestaurantSettingsSync() {
+  try {
+    const cached = localStorage.getItem('lc_restaurant_settings');
+    if (cached) {
+      applyRestaurantSettings(JSON.parse(cached));
+    }
+  } catch (e) {
+    console.warn('Error leyendo lc_restaurant_settings:', e);
+  }
+
+  if (isConfigured && db) {
+    try {
+      const settingsDocRef = doc(db, `restaurants/${restaurantId}/settings/general`);
+      onSnapshot(settingsDocRef, (snap) => {
+        if (snap.exists()) {
+          const settings = snap.data();
+          localStorage.setItem('lc_restaurant_settings', JSON.stringify(settings));
+          applyRestaurantSettings(settings);
+        }
+      }, (err) => {
+        console.warn('Error en realtime listener de restaurant settings:', err);
+      });
+    } catch (err) {
+      console.warn('Error inicializando realtime listener de settings:', err);
+    }
+  }
+}
+
+/**
+ * Aplica en el DOM del menú digital los cambios de configuración del restaurante
+ */
+export function applyRestaurantSettings(settings) {
+  if (!settings) return;
+
+  // 1. WhatsApp flotante
+  setupWhatsAppFAB(settings.whatsapp, settings.whatsappMessage);
+
+  // 2. Google Reviews y Mapas
+  setupReviewLinks(settings.googlePlaceId, settings.mapsUrl);
+
+  // 3. Horarios y Píldora de Turno
+  if (settings.schedule) {
+    updateMealSwitchUI(settings.schedule);
+    if (settings.schedule.breakfast && settings.schedule.breakfast.label) {
+      document.querySelectorAll('.footer-hours-desayuno').forEach(el => {
+        el.textContent = `Desayunos: ${settings.schedule.breakfast.label}`;
+      });
+    }
+    if (settings.schedule.lunch && settings.schedule.lunch.label) {
+      document.querySelectorAll('.footer-hours-comida').forEach(el => {
+        el.textContent = `Comida y Cantina: ${settings.schedule.lunch.label}`;
+      });
+    }
+    if (settings.schedule.days) {
+      document.querySelectorAll('.footer-hours-days').forEach(el => {
+        el.textContent = `Abierto de ${settings.schedule.days}`;
+      });
+    }
+  }
+
+  // 4. Hero Subtitle / Eslogan
+  if (settings.tagline) {
+    document.querySelectorAll('.hero-subtitle').forEach(el => {
+      el.textContent = settings.tagline;
+    });
+  }
+
+  // 5. Hero Quote / Frase mística
+  if (settings.quote) {
+    document.querySelectorAll('.hero-quote, .footer-handwritten-closing').forEach(el => {
+      el.textContent = settings.quote.startsWith('“') ? settings.quote : `“${settings.quote}”`;
+    });
+  }
+
+  // 6. Nombre del Restaurante
+  if (settings.name) {
+    document.querySelectorAll('.header-title, .hero-title').forEach(el => {
+      el.textContent = settings.name;
+    });
+  }
+
+  // 7. Dirección física y Teléfono
+  if (settings.address) {
+    document.querySelectorAll('.branch-address, .footer-address').forEach(el => {
+      el.textContent = settings.address;
+    });
+  }
+  if (settings.phone) {
+    document.querySelectorAll('.footer-phone').forEach(el => {
+      el.textContent = `Tel: ${settings.phone}`;
+    });
+  }
+
+  // 8. Instagram
+  if (settings.instagram) {
+    document.querySelectorAll('a[href*="instagram"]').forEach(a => {
+      a.href = settings.instagram;
+    });
+  }
+}

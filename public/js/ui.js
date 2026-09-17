@@ -8,19 +8,21 @@ import { firebaseConfig } from './firebase-config.js';
 let activeMealMode = 'desayunos'; // 'desayunos' | 'comida'
 let modalActive = false;
 
+let currentScheduleConfig = null;
+
 /**
  * Determina el modo de comida inicial según la hora local:
- * Antes de las 13:30 hrs -> Desayunos
- * A partir de las 13:30 hrs -> Comida y Cantina
+ * Respeta el corte configurado por el restaurante (por defecto 13:30 hrs).
  */
-export function getInitialMealMode() {
+export function getInitialMealMode(lunchStartMinutes = null) {
   const now = new Date();
   const hours = now.getHours();
   const minutes = now.getMinutes();
   const totalMinutes = hours * 60 + minutes;
 
-  // 13:30 = 13 * 60 + 30 = 810 minutos
-  return totalMinutes < 810 ? 'desayunos' : 'comida';
+  // Si se especifica corte dinámico en minutos (ej: 13:30 -> 810)
+  const cutoff = (typeof lunchStartMinutes === 'number') ? lunchStartMinutes : 810;
+  return totalMinutes < cutoff ? 'desayunos' : 'comida';
 }
 
 let onModeChangedCallback = null;
@@ -92,7 +94,11 @@ export function getActiveMealMode() {
   return activeMealMode;
 }
 
-export function updateMealSwitchUI() {
+export function updateMealSwitchUI(customSchedule = null) {
+  if (customSchedule) {
+    currentScheduleConfig = customSchedule;
+  }
+
   const options = document.querySelectorAll('.meal-option');
   options.forEach(opt => {
     const mode = opt.getAttribute('data-mode');
@@ -117,9 +123,20 @@ export function updateMealSwitchUI() {
   const indicator = document.querySelector('.meal-switch-indicator');
   if (indicator) {
     const isMorning = activeMealMode === 'desayunos' || activeMealMode === 'desayuno';
-    const notice = isMorning
-      ? t('mealSwitch.scheduleNoticeMorning', 'Servicio de Desayuno activo (9:00 AM - 1:30 PM)')
-      : t('mealSwitch.scheduleNoticeAfternoon', 'Servicio de Comida y Cantina activo (1:30 PM - 7:30 PM)');
+    let notice = '';
+    const sched = currentScheduleConfig;
+    if (sched) {
+      if (isMorning && sched.breakfast && sched.breakfast.label) {
+        notice = `Servicio de Desayuno activo (${sched.breakfast.label})`;
+      } else if (!isMorning && sched.lunch && sched.lunch.label) {
+        notice = `Servicio de Comida y Cantina activo (${sched.lunch.label})`;
+      }
+    }
+    if (!notice) {
+      notice = isMorning
+        ? t('mealSwitch.scheduleNoticeMorning', 'Servicio de Desayuno activo (9:00 AM - 1:30 PM)')
+        : t('mealSwitch.scheduleNoticeAfternoon', 'Servicio de Comida y Cantina activo (1:30 PM - 7:30 PM)');
+    }
     indicator.innerHTML = `<span class="status-pulse"></span> <span>${notice}</span>`;
   }
 }
@@ -279,13 +296,16 @@ export function showToast(message, duration = 3000) {
 }
 
 /**
- * Configurar enlaces de reseñas
+ * Configurar enlaces de reseñas y mapas con soporte de Place ID o enlace directo de Google Maps
  */
-export function setupReviewLinks(placeId = firebaseConfig.googlePlaceId) {
-  const defaultMapsUrl = 'https://maps.app.goo.gl/RpGz3QzEo9cP7oiT8';
-  const reviewUrl = placeId 
-    ? `https://search.google.com/local/writereview?placeid=${placeId}`
-    : defaultMapsUrl;
+export function setupReviewLinks(placeId = null, mapsUrl = null) {
+  const effectiveMapsUrl = mapsUrl || 'https://maps.app.goo.gl/EKib5MFWwCC9paop9';
+  const effectivePlaceId = placeId || firebaseConfig.googlePlaceId;
+
+  // Si hay Place ID válido que comience con ChIJ, usamos el link de escritura directa
+  const reviewUrl = (effectivePlaceId && effectivePlaceId.startsWith('ChIJ'))
+    ? `https://search.google.com/local/writereview?placeid=${effectivePlaceId}`
+    : effectiveMapsUrl;
 
   const reviewBtns = document.querySelectorAll('.btn-review, [data-action="review"]');
   reviewBtns.forEach(btn => {
@@ -296,21 +316,23 @@ export function setupReviewLinks(placeId = firebaseConfig.googlePlaceId) {
 
   const mapsLinks = document.querySelectorAll('[data-action="maps"]');
   mapsLinks.forEach(link => {
-    link.href = defaultMapsUrl;
+    link.href = effectiveMapsUrl;
     link.target = '_blank';
     link.rel = 'noopener noreferrer';
   });
 }
 
 /**
- * Configurar botón flotante de WhatsApp
+ * Configurar botón flotante de WhatsApp con número y mensaje dinámico
  */
-export function setupWhatsAppFAB(phone = firebaseConfig.whatsappNumber) {
+export function setupWhatsAppFAB(phone = null, customMessage = null) {
   const fab = document.querySelector('.fab-whatsapp');
   if (!fab) return;
 
-  const message = encodeURIComponent('¡Hola La Curandera! Me gustaría hacer una consulta sobre su menú y reservas.');
-  fab.href = `https://wa.me/${phone}?text=${message}`;
+  const effectivePhone = phone || firebaseConfig.whatsappNumber || '527141400000';
+  const defaultText = '¡Hola La Curandera! Me gustaría hacer una consulta sobre su menú y reservas.';
+  const effectiveMessage = encodeURIComponent(customMessage || defaultText);
+  fab.href = `https://wa.me/${effectivePhone}?text=${effectiveMessage}`;
   fab.target = '_blank';
   fab.rel = 'noopener noreferrer';
 }
