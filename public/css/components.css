@@ -663,6 +663,31 @@ body[data-meal-mode="comida"] .categories-scroll-hint:hover {
   box-shadow: 2px 2px 0px #1C1714;
 }
 
+/* Estado Agotado por hoy */
+.product-card.is-sold-out {
+  opacity: 0.72;
+  filter: grayscale(0.2);
+  background-color: #F9F8F6;
+  border-color: #7A726D;
+  box-shadow: 2.5px 2.5px 0px #7A726D;
+}
+
+.product-card.is-sold-out:hover {
+  transform: none;
+  box-shadow: 2.5px 2.5px 0px #7A726D;
+  border-color: #7A726D;
+}
+
+.product-card.is-sold-out .product-name {
+  color: #5C5248;
+}
+
+.product-card.is-sold-out .product-price-pill {
+  background: #9A928D;
+  border-color: #635C57;
+  box-shadow: 1px 1px 0px #635C57;
+}
+
 .product-card-body {
   padding: 0.8rem 1rem;
   display: flex;
@@ -704,6 +729,23 @@ body[data-meal-mode="comida"] .categories-scroll-hint:hover {
   }
 }
 
+.product-price-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-shrink: 0;
+}
+
+.price-original-struck {
+  font-family: var(--font-title);
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: #8E8580;
+  text-decoration: line-through;
+  text-decoration-thickness: 2px;
+  text-decoration-color: #C94E8F;
+}
+
 .product-price-pill {
   flex-shrink: 0;
   background: linear-gradient(135deg, #C94E8F, #B03477);
@@ -717,6 +759,12 @@ body[data-meal-mode="comida"] .categories-scroll-hint:hover {
   border: 1.5px solid #1C1714;
   box-shadow: 1.5px 1.5px 0px #1C1714;
   white-space: nowrap;
+}
+
+.product-price-pill.is-promo {
+  background: linear-gradient(135deg, #FF6B35, #E85D04);
+  border-color: #1C1714;
+  box-shadow: 2px 2px 0px #1C1714;
 }
 
 .product-desc {
@@ -772,8 +820,12 @@ body[data-meal-mode="comida"] .categories-scroll-hint:hover {
 
 .product-badge.badge-picante { background: #FFE6E6; color: #B30000; border-color: #B30000; }
 .product-badge.badge-vegetariano { background: #E8F8F0; color: #167941; border-color: #167941; }
+.product-badge.badge-vegano { background: #EAFBF0; color: #0E7B3B; border-color: #0E7B3B; }
 .product-badge.badge-recomendado { background: #FFF9E6; color: #9E7404; border-color: #9E7404; }
 .product-badge.badge-especialidad { background: #FCE8F3; color: #C94E8F; border-color: #C94E8F; }
+.product-badge.badge-agotado { background: #2B2320; color: #FFF275; border-color: #1C1714; font-weight: 900; }
+.product-badge.badge-promo { background: linear-gradient(135deg, #FFF3EB, #FFE6D5); color: #C84600; border-color: #E85D04; font-weight: 900; }
+.product-badge.badge-allergen { background: #F4F1EA; color: #5C5248; border-color: #BBB0A4; font-size: 0.62rem; }
 
 .view-details-prompt {
   font-family: var(--font-script);
@@ -942,6 +994,48 @@ body[data-meal-mode="desayuno"] .product-card:hover .view-details-prompt {
   font-weight: 900;
   color: var(--lc-rosa);
   margin-bottom: 1rem;
+}
+
+.modal-struck-price {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #8E8580;
+  text-decoration: line-through;
+  text-decoration-thickness: 2px;
+  text-decoration-color: #C94E8F;
+  margin-right: 0.4rem;
+}
+
+.modal-promo-price {
+  color: #E85D04;
+  font-weight: 900;
+  font-size: 1.45rem;
+}
+
+.modal-promo-tag {
+  display: inline-block;
+  margin-left: 0.5rem;
+  font-size: 0.75rem;
+  padding: 0.2rem 0.6rem;
+  background: #FFE6D5;
+  color: #C84600;
+  border: 1.5px solid #E85D04;
+  border-radius: var(--radius-pill);
+  font-weight: 900;
+  vertical-align: middle;
+}
+
+.modal-sold-out-alert {
+  background: #FFF3CD;
+  color: #856404;
+  border: 2px solid #FFEEBA;
+  border-left: 5px solid #E0A800;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  margin-bottom: 1rem;
+  line-height: 1.4;
 }
 
 .modal-desc {

@@ -598,5 +598,170 @@
 .select-inline-category {
   cursor: pointer;
   font-weight: 600;
-  max-width: 180px;
+  max-width: 170px;
+}
+
+/* --------------------------------------------------------------------------
+   Nuevos Controles: Stock, Promociones, Precios y Alérgenos
+   -------------------------------------------------------------------------- */
+.btn-stock-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  padding: 0.28rem 0.65rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.72rem;
+  font-weight: 800;
+  font-family: var(--font-title);
+  cursor: pointer;
+  border: 1.5px solid var(--lc-negro);
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.btn-stock-toggle.in-stock {
+  background: #D5F5E3;
+  color: #1E8449;
+  border-color: #1E8449;
+}
+
+.btn-stock-toggle.in-stock:hover {
+  background: #C3EFD4;
+}
+
+.btn-stock-toggle.out-of-stock {
+  background: #FADBD8;
+  color: #922B21;
+  border-color: #922B21;
+}
+
+.btn-stock-toggle.out-of-stock:hover {
+  background: #F7CAC6;
+}
+
+.btn-promo-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.55rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.72rem;
+  font-weight: 800;
+  font-family: var(--font-title);
+  cursor: pointer;
+  border: 1.5px solid var(--lc-gray-300);
+  background: var(--lc-gray-100);
+  color: var(--lc-gray-600);
+  transition: all var(--transition-fast);
+}
+
+.btn-promo-toggle:hover {
+  border-color: var(--lc-negro);
+}
+
+.btn-promo-toggle.active {
+  background: #FDEDEC;
+  color: #C0392B;
+  border-color: #C0392B;
+  box-shadow: 2px 2px 0px #E74C3C;
+}
+
+.table-price-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.price-row-input {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.74rem;
+  font-family: var(--font-mono);
+}
+
+.price-row-input .price-label {
+  color: var(--lc-gray-600);
+  width: 44px;
+  font-weight: 700;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+}
+
+.input-inline-promo-price {
+  max-width: 85px;
+  font-family: var(--font-mono);
+  font-weight: 800;
+  text-align: right;
+  color: #C0392B;
+  background: #FFF0F0;
+  border-color: #E6B0AA;
+}
+
+.table-allergens-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  max-width: 220px;
+}
+
+.table-tag-pill {
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 0.15rem 0.45rem;
+  border-radius: var(--radius-sm);
+  background: var(--lc-crema);
+  border: 1px solid var(--lc-negro);
+  white-space: nowrap;
+}
+
+.table-tag-pill.tag-promo {
+  background: #FDEDEC;
+  color: #C0392B;
+  border-color: #C0392B;
+  font-weight: 800;
+}
+
+/* Selector Interactivo de Chips de Alérgenos (Modal) */
+.allergen-chips-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.35rem;
+}
+
+.allergen-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.38rem 0.8rem;
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--lc-negro);
+  background: var(--lc-blanco);
+  color: var(--lc-negro);
+  font-size: 0.8rem;
+  font-weight: 800;
+  cursor: pointer;
+  user-select: none;
+  transition: all var(--transition-fast);
+  box-shadow: 2px 2px 0px var(--lc-negro);
+}
+
+.allergen-chip:hover {
+  transform: translateY(-2px);
+  box-shadow: 3px 3px 0px var(--lc-negro);
+}
+
+.allergen-chip.selected {
+  background: var(--lc-turquesa);
+  color: var(--lc-blanco);
+  border-color: var(--lc-negro);
+  box-shadow: 3px 3px 0px var(--lc-negro);
+}
+
+.allergen-chip.selected.is-diet {
+  background: var(--lc-rosa);
+  color: var(--lc-blanco);
 }

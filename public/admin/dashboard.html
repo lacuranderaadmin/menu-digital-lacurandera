@@ -114,16 +114,27 @@
 
         <!-- Controles y Filtros -->
         <div class="editor-controls">
-          <input type="text" id="admin-search-input" class="form-input" style="max-width:220px;" placeholder="Buscar platillo..." />
+          <input type="text" id="admin-search-input" class="form-input" style="max-width:200px;" placeholder="Buscar platillo..." />
 
-          <select id="admin-cat-filter" class="form-input" style="max-width:200px;">
+          <select id="admin-cat-filter" class="form-input" style="max-width:180px;">
             <option value="all">Todas las Categorías</option>
           </select>
 
-          <select id="admin-vis-filter" class="form-input" style="max-width:180px;">
-            <option value="all">Todos los Estados</option>
-            <option value="visible">Solo Visibles (Palomeados)</option>
+          <select id="admin-vis-filter" class="form-input" style="max-width:160px;">
+            <option value="all">Visibilidad: Todas</option>
+            <option value="visible">Solo Visibles</option>
             <option value="hidden">Solo Ocultos</option>
+          </select>
+
+          <select id="admin-stock-filter" class="form-input" style="max-width:170px;">
+            <option value="all">Stock: Todos</option>
+            <option value="in_stock">Solo En Existencia</option>
+            <option value="out_of_stock">Solo Agotados</option>
+          </select>
+
+          <select id="admin-promo-filter" class="form-input" style="max-width:170px;">
+            <option value="all">Promos: Todas</option>
+            <option value="promo_only">Solo en Promoción 🔥</option>
           </select>
 
           <button id="btn-open-add-modal" class="btn-admin-primary" style="margin-left:auto; background:var(--lc-turquesa); border-color:var(--lc-negro); color:var(--lc-blanco); font-size:0.85rem; padding:0.65rem 1.25rem;">
@@ -136,12 +147,14 @@
           <table class="admin-table">
             <thead>
               <tr>
-                <th style="width: 75px; text-align:center;">Visible</th>
-                <th style="min-width: 200px;">Nombre del Platillo</th>
-                <th style="width: 190px;">Categoría</th>
-                <th style="width: 110px;">Precio Base</th>
-                <th style="min-width: 240px;">Descripción</th>
-                <th style="width: 130px; text-align:center;">Acciones</th>
+                <th style="width: 65px; text-align:center;">Visible</th>
+                <th style="width: 120px; text-align:center;">Disponibilidad</th>
+                <th style="min-width: 190px;">Nombre del Platillo</th>
+                <th style="width: 170px;">Categoría</th>
+                <th style="width: 160px;">Precios ($ Base / Promo)</th>
+                <th style="width: 110px; text-align:center;">Promoción</th>
+                <th style="min-width: 160px;">Alérgenos &amp; Tags</th>
+                <th style="width: 95px; text-align:center;">Acciones</th>
               </tr>
             </thead>
             <tbody id="admin-products-table-body">
@@ -207,15 +220,15 @@
     </div>
   </aside>
 
-  <!-- Modal para Agregar / Editar Platillo (Sin imágenes ni videos) -->
+  <!-- Modal para Agregar / Editar Platillo -->
   <div id="modal-edit-product" class="modal-backdrop" role="dialog" aria-modal="true">
-    <div class="modal-card" style="max-width:540px;">
+    <div class="modal-card" style="max-width:620px;">
       <button id="btn-close-prod-modal" class="modal-close-btn">&times;</button>
       
       <div class="modal-body" style="padding:2rem;">
         <h3 id="modal-product-title" style="font-size:1.4rem; margin-bottom:1.5rem;">Detalles del Platillo</h3>
 
-        <form id="form-edit-product" style="display:flex; flex-direction:column; gap:1.2rem;">
+        <form id="form-edit-product" style="display:flex; flex-direction:column; gap:1.1rem;">
           <input type="hidden" id="prod-modal-id" />
 
           <div class="form-group">
@@ -230,24 +243,71 @@
             </div>
 
             <div class="form-group">
-              <label class="form-label">Precio ($ MXN)</label>
+              <label class="form-label">Precio Base ($ MXN)</label>
               <input type="number" id="prod-base-price" class="form-input" placeholder="Ej: 165" min="0" step="any" required />
+            </div>
+          </div>
+
+          <!-- Módulo de Promociones -->
+          <div style="background:var(--lc-gray-100); border:2px solid var(--lc-negro); border-radius:var(--radius-md); padding:1rem;">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:0.75rem;">
+              <label style="display:flex; align-items:center; gap:0.6rem; cursor:pointer; font-weight:800; font-size:0.9rem; margin:0;">
+                <input type="checkbox" id="prod-modal-promo" style="width:18px; height:18px; accent-color:var(--lc-rosa);" />
+                <span>🔥 Activar en Promoción</span>
+              </label>
+              <span style="font-size:0.75rem; color:var(--lc-gray-600); font-family:var(--font-mono);">Muestra precio de oferta</span>
+            </div>
+
+            <div id="prod-promo-fields" style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem; opacity:0.5; pointer-events:none; transition:opacity 0.2s ease;">
+              <div class="form-group">
+                <label class="form-label" style="font-size:0.75rem;">Precio Promo ($ MXN)</label>
+                <input type="number" id="prod-promo-price" class="form-input" placeholder="Ej: 135" min="0" step="any" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" style="font-size:0.75rem;">Etiqueta Promo</label>
+                <select id="prod-promo-tag" class="form-input">
+                  <option value="PROMO">🏷️ PROMO</option>
+                  <option value="2x1">🔥 2x1</option>
+                  <option value="HAPPY HOUR">🍻 HAPPY HOUR</option>
+                  <option value="ESPECIAL">✨ ESPECIAL</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Control de Disponibilidad y Visibilidad -->
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem;">
+            <div class="form-group">
+              <label class="form-label">Visibilidad en Carta</label>
+              <label style="display:flex; align-items:center; gap:0.6rem; cursor:pointer; font-weight:700; font-size:0.85rem; padding:0.5rem; background:var(--lc-blanco); border:2px solid var(--lc-negro); border-radius:var(--radius-md);">
+                <input type="checkbox" id="prod-modal-visible" style="width:18px; height:18px; accent-color:var(--lc-turquesa);" checked />
+                <span>Palomeado (Visible)</span>
+              </label>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Control de Stock</label>
+              <label style="display:flex; align-items:center; gap:0.6rem; cursor:pointer; font-weight:700; font-size:0.85rem; padding:0.5rem; background:var(--lc-blanco); border:2px solid var(--lc-negro); border-radius:var(--radius-md);">
+                <input type="checkbox" id="prod-modal-available" style="width:18px; height:18px; accent-color:var(--lc-azul);" checked />
+                <span id="prod-available-label">En Existencia ✅</span>
+              </label>
             </div>
           </div>
 
           <div class="form-group">
             <label class="form-label">Descripción del Platillo</label>
-            <textarea id="prod-desc-es" class="form-input" rows="3" placeholder="Ingredientes, preparación y detalles para el comensal..." required></textarea>
+            <textarea id="prod-desc-es" class="form-input" rows="2" placeholder="Ingredientes, preparación y detalles para el comensal..." required></textarea>
           </div>
 
+          <!-- Alérgenos y Preferencias Dietéticas (Chips Interactivas) -->
           <div class="form-group">
-            <label style="display:flex; align-items:center; gap:0.6rem; cursor:pointer; font-weight:700; font-size:0.9rem;">
-              <input type="checkbox" id="prod-modal-visible" style="width:20px; height:20px; accent-color:var(--lc-turquesa);" checked />
-              <span>Visible en la carta del comensal</span>
-            </label>
+            <label class="form-label">Alérgenos &amp; Sellos Dietéticos (Toca para activar/desactivar)</label>
+            <div id="allergen-chips-container" class="allergen-chips-grid">
+              <!-- Renderizado dinámicamente con chips interactivas -->
+            </div>
           </div>
 
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-top:1rem; gap:1rem;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-top:0.75rem; gap:1rem;">
             <button type="submit" id="btn-submit-product" class="btn-admin-primary" style="flex-grow:1;">
               Guardar Platillo
             </button>

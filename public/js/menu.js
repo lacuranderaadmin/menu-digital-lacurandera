@@ -490,22 +490,78 @@ export function renderMenu() {
 
       const productName = getLocalizedText(product.name);
 
+      // Control de disponibilidad (stock)
+      const isAvailable = (override && override.isAvailable !== undefined)
+        ? override.isAvailable
+        : (product.isAvailable !== false);
+
+      // Control de promociones
+      const isPromo = (override && override.isPromo !== undefined)
+        ? override.isPromo
+        : (product.isPromo === true);
+
+      const rawPromoPrice = (override && override.promoPrice !== undefined && override.promoPrice !== null && override.promoPrice !== '')
+        ? override.promoPrice
+        : product.promoPrice;
+      const promoPrice = (rawPromoPrice !== undefined && rawPromoPrice !== null && rawPromoPrice !== '')
+        ? Number(rawPromoPrice)
+        : null;
+
+      const promoTag = (override && override.promoTag) || product.promoTag || 'PROMO';
+
+      // Alérgenos y etiquetas
+      const productAllergens = (override && override.allergens) ? override.allergens : (product.allergens || []);
+      const productTags = (override && override.tags) ? override.tags : (product.tags || []);
+
       const card = document.createElement('article');
-      card.className = 'product-card';
+      card.className = `product-card ${!isAvailable ? 'is-sold-out' : ''}`;
+
+      // Precio con soporte de promoción
+      let priceHtml = '';
+      if (isPromo && promoPrice !== null && !isNaN(promoPrice) && promoPrice < effectivePrice) {
+        priceHtml = `
+          <div class="product-price-wrap promo-active">
+            <span class="price-original-struck">$${effectivePrice}</span>
+            <span class="product-price-pill is-promo">$${promoPrice}</span>
+          </div>
+        `;
+      } else {
+        priceHtml = `<span class="product-price-pill">$${effectivePrice}</span>`;
+      }
 
       // Badges
       let badgesHtml = '';
-      const tags = product.tags || [];
-      if (tags.includes('picante')) badgesHtml += '<span class="product-badge badge-picante">🌶️ Picante</span>';
-      if (tags.includes('vegetariano')) badgesHtml += '<span class="product-badge badge-vegetariano">🌱 Veg</span>';
-      if (tags.includes('recomendado')) badgesHtml += '<span class="product-badge badge-recomendado">⭐ Chef</span>';
-      if (tags.includes('hero')) badgesHtml += '<span class="product-badge badge-especialidad">👑 Especialidad</span>';
+      if (!isAvailable) {
+        badgesHtml += '<span class="product-badge badge-agotado">⚠️ Agotado</span>';
+      }
+      if (isPromo) {
+        badgesHtml += `<span class="product-badge badge-promo">🔥 ${promoTag}</span>`;
+      }
+      if (productTags.includes('picante')) badgesHtml += '<span class="product-badge badge-picante">🌶️ Picante</span>';
+      if (productTags.includes('vegetariano')) badgesHtml += '<span class="product-badge badge-vegetariano">🌱 Veg</span>';
+      if (productTags.includes('vegano')) badgesHtml += '<span class="product-badge badge-vegano">🌿 Vegano</span>';
+      if (productTags.includes('recomendado')) badgesHtml += '<span class="product-badge badge-recomendado">⭐ Chef</span>';
+      if (productTags.includes('hero')) badgesHtml += '<span class="product-badge badge-especialidad">👑 Especialidad</span>';
+
+      // Alérgenos compactos
+      const ALLERGEN_LABELS = {
+        gluten: '🌾 Gluten',
+        lacteos: '🥛 Lácteos',
+        frutos_secos: '🥜 Frutos S.',
+        mariscos: '🦐 Mariscos',
+        huevo: '🥚 Huevo'
+      };
+      productAllergens.forEach(allId => {
+        if (ALLERGEN_LABELS[allId]) {
+          badgesHtml += `<span class="product-badge badge-allergen">${ALLERGEN_LABELS[allId]}</span>`;
+        }
+      });
 
       card.innerHTML = `
         <div class="product-card-body">
           <div class="product-header-line">
             <h3 class="product-name">${productName}</h3>
-            <span class="product-price-pill">$${effectivePrice}</span>
+            ${priceHtml}
           </div>
           <p class="product-desc">${effectiveDesc || ''}</p>
           <div class="product-card-footer">
@@ -519,7 +575,13 @@ export function renderMenu() {
         openProductModal({
           ...product,
           effectivePrice,
-          effectiveDesc
+          effectiveDesc,
+          isAvailable,
+          isPromo,
+          promoPrice,
+          promoTag,
+          allergens: productAllergens,
+          tags: productTags
         });
       });
 

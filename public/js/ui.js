@@ -134,12 +134,44 @@ export function openProductModal(product) {
   const allergensContainer = modalBackdrop.querySelector('.modal-allergens-list');
 
   const title = getLocalizedText(product.name);
-  const desc = getLocalizedText(product.description);
+  const desc = product.effectiveDesc !== undefined ? product.effectiveDesc : getLocalizedText(product.description);
   const price = product.effectivePrice !== undefined ? product.effectivePrice : product.price;
+  const isAvailable = product.isAvailable !== false;
+  const isPromo = product.isPromo === true;
+  const promoPrice = (product.promoPrice !== undefined && product.promoPrice !== null && product.promoPrice !== '') ? Number(product.promoPrice) : null;
+  const promoTag = product.promoTag || 'PROMO';
 
   if (titleEl) titleEl.textContent = title;
-  if (priceEl) priceEl.textContent = `$${price} MXN`;
+
+  // Actualizar precio con soporte de promoción
+  if (priceEl) {
+    if (isPromo && promoPrice !== null && !isNaN(promoPrice) && promoPrice < price) {
+      priceEl.innerHTML = `
+        <span class="modal-struck-price">$${price}</span>
+        <span class="modal-promo-price">$${promoPrice} MXN</span>
+        <span class="modal-promo-tag">🔥 ${promoTag}</span>
+      `;
+    } else {
+      priceEl.textContent = `$${price} MXN`;
+    }
+  }
+
   if (descEl) descEl.textContent = desc || '';
+
+  // Banner de producto agotado por hoy
+  let soldOutAlert = modalBackdrop.querySelector('.modal-sold-out-alert');
+  if (!isAvailable) {
+    if (!soldOutAlert) {
+      soldOutAlert = document.createElement('div');
+      soldOutAlert.className = 'modal-sold-out-alert';
+      const body = modalBackdrop.querySelector('.modal-body');
+      if (body) body.insertBefore(soldOutAlert, body.firstChild);
+    }
+    soldOutAlert.innerHTML = '⚠️ <strong>Agotado por hoy</strong> — Este platillo no se encuentra disponible temporalmente en esta sucursal.';
+    soldOutAlert.style.display = 'block';
+  } else if (soldOutAlert) {
+    soldOutAlert.style.display = 'none';
+  }
 
   if (imgEl) {
     imgEl.src = product.imageUrl || 'assets/logo/logo.png';
@@ -198,7 +230,10 @@ function formatBadgeName(badge) {
     lacteos: '🥛 Contiene Lácteos',
     picante: '🌶️ Nivel Picante',
     frutos_secos: '🥜 Frutos Secos',
-    vegetariano: '🌱 Vegetariano',
+    mariscos: '🦐 Mariscos / Crustáceos',
+    huevo: '🥚 Contiene Huevo',
+    vegetariano: '🌱 Apto para Vegetarianos',
+    vegano: '🌿 Vegano (100% Vegetal)',
     hero: '👑 Especialidad de la Casa',
     recomendado: '⭐ Recomendación del Chef',
     chef: '👨‍🍳 Selección de Autor'
