@@ -1,0 +1,710 @@
+/* ==========================================================================
+   LA CURANDERA — Menu Público CSS
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Hero Section
+   -------------------------------------------------------------------------- */
+.hero-section {
+  position: relative;
+  background-color: var(--lc-crema);
+  background-image: url('../assets/patterns/maguey-pattern.svg');
+  background-repeat: repeat;
+  background-size: 140px;
+  padding: 3.5rem 0 2.5rem;
+  border-bottom: 3px solid var(--lc-negro);
+  overflow: hidden;
+}
+
+.hero-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+}
+
+@media (min-width: 900px) {
+  .hero-container {
+    flex-direction: row-reverse;
+    justify-content: space-between;
+    text-align: left;
+    gap: 3rem;
+  }
+}
+
+.hero-avatar-wrapper {
+  position: relative;
+  flex-shrink: 0;
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (min-width: 900px) {
+  .hero-avatar-wrapper {
+    margin-bottom: 0;
+  }
+}
+
+.hero-aura-canvas {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.hero-avatar-circle {
+  width: 240px;
+  height: 240px;
+  border-radius: var(--radius-circle);
+  border: 4px solid var(--lc-negro);
+  box-shadow: 8px 8px 0px var(--lc-negro);
+  overflow: hidden;
+  background: var(--lc-blanco);
+  position: relative;
+  z-index: 2;
+  animation: floatGentle 6s ease-in-out infinite;
+}
+
+@media (min-width: 768px) {
+  .hero-avatar-circle {
+    width: 290px;
+    height: 290px;
+  }
+}
+
+.hero-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.hero-badge-smoke {
+  position: absolute;
+  bottom: 8px;
+  right: -18px;
+  background: var(--lc-turquesa);
+  color: var(--lc-blanco);
+  border: 2.5px solid var(--lc-negro);
+  box-shadow: 4px 4px 0px var(--lc-negro);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-title);
+  font-weight: 900;
+  font-size: 0.82rem;
+  letter-spacing: 0.05em;
+  padding: 0.45rem 1.15rem;
+  text-transform: uppercase;
+  z-index: 10;
+  white-space: nowrap;
+  pointer-events: none;
+  animation: floatBadge 4s ease-in-out infinite alternate;
+}
+
+@keyframes floatBadge {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-4px); }
+}
+
+@media (min-width: 768px) {
+  .hero-badge-smoke {
+    bottom: 16px;
+    right: -24px;
+    font-size: 0.88rem;
+    padding: 0.5rem 1.25rem;
+  }
+}
+
+.hero-content {
+  max-width: 640px;
+}
+
+.hero-badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: var(--lc-rosa-subtle);
+  border: 2px solid var(--lc-rosa);
+  color: var(--lc-rosa);
+  font-family: var(--font-title);
+  font-weight: 800;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.35rem 0.9rem;
+  border-radius: var(--radius-pill);
+  margin-bottom: 1rem;
+}
+
+.hero-title {
+  font-size: 2.75rem;
+  line-height: 1;
+  letter-spacing: 0.03em;
+  color: var(--lc-negro);
+  margin-bottom: 0.5rem;
+  text-shadow: 2px 2px 0px rgba(201, 78, 143, 0.25);
+}
+
+@media (min-width: 768px) {
+  .hero-title {
+    font-size: 4rem;
+  }
+}
+
+.hero-subtitle {
+  font-family: var(--font-mono);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--lc-terracota);
+  letter-spacing: 0.08em;
+  margin-bottom: 1rem;
+}
+
+.hero-quote {
+  font-family: var(--font-script);
+  font-size: 1.85rem;
+  color: var(--lc-rosa);
+  margin-bottom: 1.5rem;
+  display: inline-block;
+  transform: rotate(-2.5deg);
+  line-height: 1.2;
+}
+
+@media (min-width: 768px) {
+  .hero-quote {
+    font-size: 2.2rem;
+  }
+}
+
+.hero-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: var(--lc-negro);
+  color: var(--lc-blanco);
+  font-family: var(--font-title);
+  font-weight: 900;
+  font-size: 0.95rem;
+  padding: 0.85rem 1.75rem;
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--lc-negro);
+  box-shadow: 4px 4px 0px var(--lc-rosa);
+  transition: all var(--transition-bounce);
+  text-transform: uppercase;
+}
+
+.hero-cta:hover {
+  transform: translateY(-3px);
+  box-shadow: 6px 6px 0px var(--lc-rosa);
+  background: var(--lc-rosa);
+}
+
+.hero-cta svg {
+  width: 18px;
+  height: 18px;
+  animation: floatGentle 2s ease-in-out infinite;
+}
+
+/* --------------------------------------------------------------------------
+   MotionSites Style: Infinite Marquee Ticker (Frases de Marca)
+   -------------------------------------------------------------------------- */
+.marquee-ticker-section {
+  position: relative;
+  overflow: hidden;
+  background: var(--lc-negro);
+  color: var(--lc-crema);
+  border-top: 3px solid var(--lc-rosa);
+  border-bottom: 3px solid var(--lc-turquesa);
+  padding: 0.75rem 0;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.18);
+  transform: rotate(-0.8deg) scaleX(1.02);
+  margin: 1.5rem 0 2rem;
+  z-index: 10;
+}
+
+.marquee-ticker-container {
+  display: flex;
+  overflow: hidden;
+  user-select: none;
+  width: 100%;
+}
+
+.marquee-track {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  gap: 2.5rem;
+  animation: marqueeLoop 30s linear infinite;
+  flex-shrink: 0;
+  will-change: transform;
+}
+
+.marquee-ticker-container.paused .marquee-track {
+  animation-play-state: paused;
+}
+
+@keyframes marqueeLoop {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.marquee-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: var(--font-title);
+  font-size: 0.9rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--lc-crema);
+}
+
+.marquee-item span.highlight {
+  color: var(--lc-rosa);
+  font-family: var(--font-script);
+  font-size: 1.35rem;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.marquee-item .marquee-sep {
+  width: 20px;
+  height: 20px;
+  color: var(--lc-turquesa);
+  flex-shrink: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Search & Quick Filter Bar (Diseño Gastronómico de Vanguardia)
+   -------------------------------------------------------------------------- */
+.search-filter-section {
+  margin: 1.5rem 0 0.85rem;
+}
+
+.search-input-wrapper {
+  position: relative;
+  max-width: 520px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.85rem 3rem 0.85rem 3.2rem;
+  border: 2.5px solid var(--lc-negro);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-title);
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--lc-negro);
+  background: #FFFFFF;
+  box-shadow: 4px 4px 0px var(--lc-negro);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.search-input::placeholder {
+  color: #8C7E74;
+  font-weight: 500;
+  font-size: 0.88rem;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--lc-rosa);
+  box-shadow: 5px 5px 0px var(--lc-negro), 0 0 0 3px rgba(201, 78, 143, 0.25);
+  transform: translateY(-2px);
+}
+
+.search-icon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  color: var(--lc-rosa);
+  pointer-events: none;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.search-input:focus ~ .search-icon {
+  color: var(--lc-rosa);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.search-clear-btn {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 1.5px solid var(--lc-negro);
+  background: var(--lc-gray-100);
+  color: var(--lc-negro);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.15s ease;
+}
+
+.search-clear-btn:hover {
+  background: var(--lc-rosa);
+  color: #FFFFFF;
+  transform: translateY(-50%) scale(1.1);
+}
+
+/* --------------------------------------------------------------------------
+   "Nuestra Esencia" Section
+   -------------------------------------------------------------------------- */
+.essence-section {
+  background-color: var(--lc-crema-card);
+  background-image: url('../assets/patterns/rombos-pattern.svg');
+  background-size: 48px;
+  border-top: 3px solid var(--lc-negro);
+  border-bottom: 3px solid var(--lc-negro);
+  padding: 4rem 0;
+  margin-top: 5rem;
+  position: relative;
+}
+
+.essence-card {
+  background: var(--lc-crema);
+  border: 4px solid var(--lc-negro);
+  border-radius: var(--radius-lg);
+  box-shadow: 8px 8px 0px var(--lc-negro);
+  padding: 2.5rem 1.5rem;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+  .essence-card {
+    padding: 3.5rem 3rem;
+  }
+}
+
+.essence-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.essence-tag {
+  font-family: var(--font-script);
+  font-size: 1.5rem;
+  color: var(--lc-rosa);
+  display: inline-block;
+  transform: rotate(-2deg);
+}
+
+.essence-title {
+  font-size: 2.2rem;
+  margin-top: 0.25rem;
+}
+
+.essence-story {
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: var(--lc-gray-800);
+  margin-bottom: 2.5rem;
+}
+
+.manifesto-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+  margin-bottom: 2.5rem;
+}
+
+@media (min-width: 640px) {
+  .manifesto-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.manifesto-item {
+  background: var(--lc-blanco);
+  border: 2px solid var(--lc-negro);
+  border-radius: var(--radius-md);
+  box-shadow: 3px 3px 0px var(--lc-negro);
+  padding: 1.25rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+}
+
+.manifesto-icon {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  color: var(--lc-terracota);
+}
+
+.manifesto-text {
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  line-height: 1.45;
+  color: var(--lc-negro);
+  font-weight: 500;
+}
+
+.essence-footer-quote {
+  text-align: center;
+  font-family: var(--font-script);
+  font-size: 1.75rem;
+  color: var(--lc-azul);
+  padding-top: 1rem;
+  border-top: 2px dashed rgba(232, 120, 80, 0.3);
+}
+
+/* --------------------------------------------------------------------------
+   Footer & Map
+   -------------------------------------------------------------------------- */
+.site-footer {
+  background: var(--lc-negro);
+  color: var(--lc-crema);
+  padding: 3.5rem 0 1.5rem;
+  position: relative;
+}
+
+.footer-map-wrapper {
+  margin-bottom: 2.5rem;
+  border: 3px solid var(--lc-crema);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: 6px 6px 0px var(--lc-rosa);
+}
+
+.footer-map-iframe {
+  width: 100%;
+  height: 340px;
+  border: 0;
+  display: block;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  margin-bottom: 2.5rem;
+}
+
+@media (min-width: 768px) {
+  .footer-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.footer-col h4 {
+  font-family: var(--font-title);
+  font-size: 1.1rem;
+  color: var(--lc-rosa);
+  margin-bottom: 1rem;
+}
+
+.footer-col p, .footer-col li {
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  line-height: 1.7;
+  color: var(--lc-gray-200);
+}
+
+.footer-col ul {
+  list-style: none;
+}
+
+.footer-col a:hover {
+  color: var(--lc-turquesa);
+  text-decoration: underline;
+}
+
+.footer-closing {
+  text-align: center;
+  padding: 2rem 0 1rem;
+  border-top: 1px solid rgba(255,255,255,0.15);
+}
+
+.footer-handwritten-closing {
+  font-family: var(--font-script);
+  font-size: 2.2rem;
+  color: var(--lc-rosa);
+  display: inline-block;
+  transform: rotate(-1deg);
+  margin-bottom: 0.5rem;
+}
+
+.footer-credits {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--lc-arena);
+}
+
+.footer-credits a {
+  color: var(--lc-turquesa);
+  font-weight: 700;
+}
+
+/* --------------------------------------------------------------------------
+   Offline and Status Banners
+   -------------------------------------------------------------------------- */
+.offline-banner {
+  display: none;
+  background: var(--lc-terracota);
+  color: var(--lc-blanco);
+  text-align: center;
+  font-family: var(--font-title);
+  font-size: 0.8rem;
+  font-weight: 800;
+  padding: 0.4rem 1rem;
+}
+
+.offline-banner.active {
+  display: block;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 3.5rem 1.5rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: 2px dashed rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-lg);
+  margin: 2rem 0;
+  color: var(--lc-negro);
+}
+
+.empty-state-icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 1rem;
+  color: var(--lc-rosa);
+}
+
+.empty-state-title {
+  font-size: 1.35rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+  color: var(--lc-negro);
+}
+
+.empty-state-desc {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--lc-gray-500);
+}
+
+/* --------------------------------------------------------------------------
+   MotionSites AI Inspired: Ambient Artisanal Background Stage (Light Warm Craft)
+   -------------------------------------------------------------------------- */
+.menu-stage-wrapper {
+  position: relative;
+  width: 100%;
+  padding: 2.2rem 0 5rem;
+  background-color: #F8F1E7;
+}
+
+.menu-ambient-canvas-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.menu-ambient-canvas-wrapper.is-active {
+  opacity: 1;
+}
+
+.menu-ambient-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.menu-ambient-vignette-top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 90px;
+  background: linear-gradient(to bottom, #F8F1E7 30%, transparent 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.menu-ambient-vignette-bottom {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 130px;
+  background: linear-gradient(to top, #F8F1E7 25%, transparent 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.menu-interactive-container {
+  position: relative;
+  z-index: 2;
+}
+
+/* Floating Back To Top Button */
+.back-to-top-btn {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  border: 2.5px solid var(--lc-negro);
+  color: var(--lc-negro);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 4px 4px 0px var(--lc-negro), 0 8px 20px rgba(44, 38, 33, 0.15);
+  z-index: 99;
+  opacity: 0;
+  transform: translateY(20px);
+  pointer-events: none;
+  transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.back-to-top-btn.visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.back-to-top-btn:hover {
+  background: var(--lc-rosa);
+  color: #FFFFFF;
+  border-color: var(--lc-negro);
+  transform: translateY(-3px);
+  box-shadow: 6px 6px 0px var(--lc-negro);
+}
+
+.back-to-top-btn svg {
+  width: 22px;
+  height: 22px;
+}
+
+

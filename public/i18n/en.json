@@ -1,0 +1,77 @@
+{
+  "brand": {
+    "name": "La Curandera",
+    "tagline": "Mezcal · Steaks · Snacks",
+    "quoteHero": "Here we shall cure your soul.",
+    "quoteFooter": "You are always welcome in our home."
+  },
+  "nav": {
+    "reviewBtn": "Leave a review ⭐",
+    "searchPlaceholder": "Search dish, mezcal, steak..."
+  },
+  "mealSwitch": {
+    "desayunos": "BREAKFAST",
+    "comida": "LUNCH & DINNER",
+    "scheduleNoticeMorning": "Breakfast Service active (9:00 AM - 1:30 PM)",
+    "scheduleNoticeAfternoon": "Lunch & Cantina Service active (1:30 PM - 7:30 PM)"
+  },
+  "sections": {
+    "paCurarElAlma": "Pa' Curar el Alma (Breakfast)",
+    "loEnchiloso": "Lo Enchi-loso (Spicy Delights)",
+    "tacosDorados": "Tacos Dorados (Crispy Tacos)",
+    "paCaldear": "Pa' Caldear (Hearty Broths)",
+    "sandwichYMas": "Sandwiches & More",
+    "paLosPeques": "Pa' los Más Peques (Kids)",
+    "dulceRemedio": "Dulce Remedio (Desserts)",
+    "paCalentarElEspiritu": "Pa' Calentar el Espíritu (Hot Drinks)",
+    "jugueria": "Fresh Juices & Smoothies",
+    "bebidasSinAlcohol": "Non-Alcoholic Beverages",
+    "mockteleria": "Mocktelería (Craft Mocktails)",
+    "saboresDeCuaresma": "Seafood Specialties",
+    "paEmpezar": "Pa' Empezar (Starters)",
+    "paCuidarte": "Pa' Cuidarte (Fresh Salads)",
+    "sopasYPastas": "Soups & Pastas",
+    "snacks": "Snacks & Munchies",
+    "platosFuertes": "Main Courses",
+    "taqueria": "Taquería La Curandera",
+    "cortes": "Prime Steaks",
+    "burritos": "Burritos",
+    "burguersYJocho": "Burgers & Mexican Hot Dogs (Jocho)",
+    "paLosMorrillos": "Kids Menu",
+    "cantina": "Cantina La Curandera (Bar)"
+  },
+  "product": {
+    "viewDetails": "View details",
+    "allergens": "Allergens & Info",
+    "prepVideo": "Watch preparation",
+    "close": "Close",
+    "includedBreakfast": "All breakfasts include: Mexican pot coffee / American coffee / tea + fresh seasonal fruit + fresh juice + toasted bolillo bread with house jam & artisanal cream.",
+    "includedSteaks": "300-350g raw weight. Includes 3 sides of your choice."
+  },
+  "essence": {
+    "badge": "Our Essence",
+    "title": "Traditional cuisine with the authentic flavor of our roots",
+    "story": "La Curandera was born from a shared dream between my wife and I: creating a haven that brought together everything inspiring in our life journey. While searching for a name, we uncovered a treasured coincidence: in my family, my great-grandmother was the village healer (curandera), one of those revered women who, with herbs, ancestral potions, and homemade remedies, healed body and soul. We took this name in tribute to these mystical women and the ancient traditions alive in our Mexico.",
+    "founder": "Arch. Arturo Garduño & Family",
+    "clembuterol": "100% clenbuterol-free certified meat.",
+    "masaMadre": "Artisanal sourdough bread on most specialties.",
+    "frescos": "100% regional and seasonal fresh fruits & vegetables.",
+    "alMomento": "Everything freshly prepared to order with care.",
+    "quote": "Cuisine that heals. Drinks that connect."
+  },
+  "footer": {
+    "hoursTitle": "Service Hours",
+    "hoursDesayuno": "Breakfast: 9:00 AM - 1:30 PM",
+    "hoursComida": "Lunch & Cantina: 1:30 PM - 7:30 PM",
+    "contactTitle": "Contact & Location",
+    "reviewsTitle": "Reviews",
+    "viewReviews": "View reviews on Google Maps",
+    "directions": "Get Directions",
+    "credits": "Digital menu proudly crafted by CreAi Studios"
+  },
+  "status": {
+    "offline": "No internet connection. Displaying the latest saved menu.",
+    "empty": "Oops, we are updating our menu. Please check back shortly.",
+    "itemsCount": "items available"
+  }
+}

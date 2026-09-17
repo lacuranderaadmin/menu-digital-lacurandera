@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>La Curandera — Menú Digital | Mezcal · Cortes · Snacks</title>
+  <meta name="description" content="Cocina tradicional mexicana con el auténtico sabor de nuestras raíces. Homenaje a las curanderas del pueblo, carnes selectas, pan de masa madre y mezcal de autor.">
+  <meta name="theme-color" content="#C94E8F">
+  
+  <!-- Open Graph / SEO -->
+  <meta property="og:type" content="restaurant.menu">
+  <meta property="og:title" content="La Curandera — Mezcal · Cortes · Snacks">
+  <meta property="og:description" content="Cocina que cura. Tragos que conectan. Explora nuestra carta digital en tiempo real.">
+  <meta property="og:image" content="assets/logo/logo.png">
+
+  <!-- Schema.org Restaurant -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Restaurant",
+    "name": "La Curandera",
+    "image": "assets/logo/logo.png",
+    "servesCuisine": "Mexicana Tradicional",
+    "priceRange": "$$",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Metepec / Tenancingo",
+      "addressRegion": "Estado de México",
+      "addressCountry": "MX"
+    },
+    "openingHours": [
+      "Mo-Su 09:00-13:30",
+      "Mo-Su 13:30-19:30"
+    ]
+  }
+  </script>
+
+  <!-- CSS Design System -->
+  <link rel="stylesheet" href="css/tokens.css?v=7.9">
+  <link rel="stylesheet" href="css/base.css?v=7.9">
+  <link rel="stylesheet" href="css/components.css?v=7.9">
+  <link rel="stylesheet" href="css/menu.css?v=7.9">
+
+  <link rel="icon" type="image/png" href="assets/logo/logo.png">
+</head>
+<body data-meal-mode="comida">
+
+  <!-- Banner Fuera de Línea -->
+  <div id="offline-banner" class="offline-banner" data-i18n="status.offline">
+    Sin conexión a internet. Mostrando la última carta guardada.
+  </div>
+
+  <!-- Header Fijo con Blur -->
+  <header class="site-header">
+    <div class="container header-container">
+      <a href="#" class="header-brand">
+        <img src="assets/logo/logo.png" alt="La Curandera Logo" class="header-logo">
+        <div class="header-title-group">
+          <span class="header-title" data-i18n="brand.name">LA CURANDERA</span>
+          <span class="header-subtitle" data-i18n="brand.tagline">MEZCAL · CORTES · SNACKS</span>
+        </div>
+      </a>
+
+      <div class="header-actions">
+        <!-- Selector de Idioma -->
+        <div class="lang-selector" role="group" aria-label="Selector de idioma">
+          <button class="lang-btn active" data-lang="es">🇲🇽 ES</button>
+          <button class="lang-btn" data-lang="en">🇺🇸 EN</button>
+          <button class="lang-btn" data-lang="fr">🇫🇷 FR</button>
+        </div>
+
+        <!-- Botón Reseña Google -->
+        <a href="#" class="btn-review" data-action="review">
+          <span class="btn-text-full" data-i18n="nav.reviewBtn">Déjanos tu reseña ⭐</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Cintas de Colores Colgando (Swaying Streamers) -->
+    <div class="streamer-ribbons" aria-hidden="true">
+      <div class="ribbon c-rosa"></div>
+      <div class="ribbon c-turquesa"></div>
+      <div class="ribbon c-terracota"></div>
+      <div class="ribbon c-durazno"></div>
+      <div class="ribbon c-azul"></div>
+      <div class="ribbon c-verde"></div>
+      <div class="ribbon c-rosa"></div>
+      <div class="ribbon c-turquesa"></div>
+      <div class="ribbon c-terracota"></div>
+      <div class="ribbon c-durazno"></div>
+      <div class="ribbon c-azul"></div>
+      <div class="ribbon c-verde"></div>
+      <div class="ribbon c-rosa"></div>
+      <div class="ribbon c-turquesa"></div>
+    </div>
+  </header>
+
+  <!-- Hero de Bienvenida -->
+  <section class="hero-section">
+    <div class="container hero-container">
+      <div class="hero-avatar-wrapper">
+        <canvas id="curandera-aura-canvas" class="hero-aura-canvas"></canvas>
+        <div class="hero-avatar-circle">
+          <img src="assets/logo/logo.png" alt="La Curandera" class="hero-avatar-img">
+        </div>
+        <span class="hero-badge-smoke">Cura el Alma</span>
+      </div>
+
+      <div class="hero-content">
+        <h1 class="hero-title">LA CURANDERA</h1>
+        <p class="hero-subtitle" data-i18n="brand.tagline">MEZCAL · CORTES · SNACKS</p>
+        <p class="hero-quote" data-i18n="brand.quoteHero">“Aquí te la vamos a curar.”</p>
+        <div>
+          <a href="#menu-interactive" class="hero-cta">
+            <span>Explora la Carta</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <polyline points="19 12 12 19 5 12"></polyline>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Franja Dinámica de Frases de Marca (Infinite Marquee Ticker) -->
+  <div class="marquee-ticker-section" aria-label="Frases de La Curandera">
+    <div class="marquee-ticker-container">
+      <div class="marquee-track">
+        <div class="marquee-item">
+          <span>PÁ TODO MAL, MEZCAL; Y PÁ TODO BIEN, TAMBIÉN</span>
+          <img src="assets/icons/maguey.svg" class="marquee-sep" alt="" />
+        </div>
+        <div class="marquee-item">
+          <span class="highlight">Cocina que cura · Tragos que conectan</span>
+          <img src="assets/icons/hierbas.svg" class="marquee-sep" alt="" />
+        </div>
+        <div class="marquee-item">
+          <span>AQUÍ TE LA VAMOS A CURAR</span>
+          <img src="assets/icons/corazon.svg" class="marquee-sep" alt="" />
+        </div>
+        <div class="marquee-item">
+          <span class="highlight">México siempre cura</span>
+          <img src="assets/icons/sol.svg" class="marquee-sep" alt="" />
+        </div>
+        <div class="marquee-item">
+          <span>UN TRAGO AL DÍA ES LA CLAVE DE LA ALEGRÍA</span>
+          <img src="assets/icons/limon.svg" class="marquee-sep" alt="" />
+        </div>
+        <div class="marquee-item">
+          <span class="highlight">Más que un restaurante, una experiencia que cura el alma</span>
+          <img src="assets/icons/pocima.svg" class="marquee-sep" alt="" />
+        </div>
+        <!-- Duplicado idéntico para loop infinito continuo sin saltos -->
+        <div class="marquee-item">
+          <span>PÁ TODO MAL, MEZCAL; Y PÁ TODO BIEN, TAMBIÉN</span>
+          <img src="assets/icons/maguey.svg" class="marquee-sep" alt="" />
+        </div>
+        <div class="marquee-item">
+          <span class="highlight">Cocina que cura · Tragos que conectan</span>
+          <img src="assets/icons/hierbas.svg" class="marquee-sep" alt="" />
+        </div>
+        <div class="marquee-item">
+          <span>AQUÍ TE LA VAMOS A CURAR</span>
+          <img src="assets/icons/corazon.svg" class="marquee-sep" alt="" />
+        </div>
+        <div class="marquee-item">
+          <span class="highlight">México siempre cura</span>
+          <img src="assets/icons/sol.svg" class="marquee-sep" alt="" />
+        </div>
+        <div class="marquee-item">
+          <span>UN TRAGO AL DÍA ES LA CLAVE DE LA ALEGRÍA</span>
+          <img src="assets/icons/limon.svg" class="marquee-sep" alt="" />
+        </div>
+        <div class="marquee-item">
+          <span class="highlight">Más que un restaurante, una experiencia que cura el alma</span>
+          <img src="assets/icons/pocima.svg" class="marquee-sep" alt="" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contenedor Principal del Menú con Fondo Animado Estilo MotionSites AI -->
+  <section class="menu-stage-wrapper" id="menu-stage-wrapper">
+    <!-- Fondo Animado Canvas Místico debajo del Hero -->
+    <div class="menu-ambient-canvas-wrapper" aria-hidden="true">
+      <canvas id="menu-ambient-canvas" class="menu-ambient-canvas"></canvas>
+      <div class="menu-ambient-vignette-top"></div>
+      <div class="menu-ambient-vignette-bottom"></div>
+    </div>
+
+    <!-- Contenedor Principal del Menú -->
+    <main class="container menu-interactive-container" id="menu-interactive">
+
+      <!-- Toggle Inteligente por Horario -->
+      <div class="meal-switch-wrapper">
+        <div class="meal-switch-indicator">
+          <!-- Rellenado dinámicamente con JS según la hora -->
+        </div>
+        <div class="meal-switch" role="tablist" aria-label="Servicio del menú">
+          <button class="meal-option active" data-mode="desayunos" role="tab" id="tab-desayuno" aria-selected="true">
+            <span class="meal-option-text" data-i18n="mealSwitch.desayunos">DESAYUNO</span>
+          </button>
+          <button class="meal-option" data-mode="comida" role="tab" id="tab-comida" aria-selected="false">
+            <span class="meal-option-text" data-i18n="mealSwitch.comida">COMIDA</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Buscador Rápido con Cuadro de Texto de Diseño Gastronómico -->
+      <div class="search-filter-section">
+        <div class="search-input-wrapper">
+          <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input type="text" id="menu-search-input" class="search-input" placeholder="Buscar platillo, mezcal, corte..." data-i18n="nav.searchPlaceholder" autocomplete="off" spellcheck="false" />
+          <button type="button" id="search-clear-btn" class="search-clear-btn" aria-label="Limpiar búsqueda" style="display: none;">
+            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.5" fill="none">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Pestañas Horizontales de Categorías -->
+      <div class="categories-nav-wrapper">
+        <nav class="categories-bar" id="categories-bar" aria-label="Categorías del Menú">
+          <!-- Renderizado dinámicamente -->
+        </nav>
+        <div class="categories-fade-edge" id="categories-fade-edge" aria-hidden="true"></div>
+        <button class="categories-scroll-hint" id="categories-scroll-hint" aria-label="Deslizar categorías a la derecha" title="Desliza para ver más categorías">
+          <span class="hint-label">Desliza</span>
+          <svg class="hint-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Secciones y Cards de Productos -->
+      <div id="menu-sections-container">
+        <!-- Renderizado en tiempo real por menu.js -->
+      </div>
+
+    </main>
+  </section>
+
+  <!-- Sección Nuestra Esencia -->
+  <section class="essence-section">
+    <div class="container">
+      <article class="essence-card">
+        <div class="essence-header">
+          <span class="essence-tag" data-i18n="essence.badge">Nuestra Esencia</span>
+          <h2 class="essence-title" data-i18n="essence.title">Cocina tradicional con el auténtico sabor de nuestras raíces</h2>
+        </div>
+
+        <p class="essence-story" data-i18n="essence.story">
+          La Curandera nace de un sueño entre mi esposa y yo: crear un lugar donde pudiéramos reunir todo lo que nos inspiraba en ese momento de la vida. Durante la búsqueda del nombre encontramos una coincidencia muy especial: en mi familia, mi bisabuela era la curandera del pueblo, de esas mujeres que con hierbas, pócimas y remedios caseros lograban hacerte sentir mejor. Así adoptamos este nombre, como un homenaje a esos personajes místicos y a las tradiciones ancestrales que viven en nuestro México.
+        </p>
+
+        <!-- Manifiesto de Calidad -->
+        <div class="manifesto-grid">
+          <div class="manifesto-item">
+            <svg class="manifesto-icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3">
+              <circle cx="32" cy="32" r="28"/>
+              <polyline points="20 32 28 40 44 24"/>
+            </svg>
+            <span class="manifesto-text" data-i18n="essence.clembuterol">Carne 100% libre de clembuterol.</span>
+          </div>
+          <div class="manifesto-item">
+            <svg class="manifesto-icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3">
+              <ellipse cx="32" cy="32" rx="26" ry="18"/>
+            </svg>
+            <span class="manifesto-text" data-i18n="essence.masaMadre">Pan de masa madre en la mayoría de nuestros platillos.</span>
+          </div>
+          <div class="manifesto-item">
+            <svg class="manifesto-icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3">
+              <path d="M16 50C28 44 38 30 46 14"/>
+              <path d="M46 14C38 18 34 26 38 32"/>
+            </svg>
+            <span class="manifesto-text" data-i18n="essence.frescos">Frutas y vegetales 100% frescos y de la región.</span>
+          </div>
+          <div class="manifesto-item">
+            <svg class="manifesto-icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3">
+              <circle cx="32" cy="32" r="26"/>
+              <polyline points="32 16 32 32 42 38"/>
+            </svg>
+            <span class="manifesto-text" data-i18n="essence.alMomento">Todo se prepara al momento — te pedimos paciencia con amor.</span>
+          </div>
+        </div>
+
+        <div class="essence-footer-quote" data-i18n="essence.quote">
+          “Cocina que cura. Tragos que conectan.”
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- Footer con Mapa de Google y Contacto -->
+  <footer class="site-footer">
+    <div class="container">
+      <!-- Mapa Embebido de Google Maps -->
+      <div class="footer-map-wrapper">
+        <iframe 
+          class="footer-map-iframe"
+          title="Ubicación de La Curandera"
+          loading="lazy"
+          allowfullscreen
+          referrerpolicy="no-referrer-when-downgrade"
+          src="https://maps.google.com/maps?q=La%20Curandera%20Metepec%20Tenancingo&t=&z=15&ie=UTF8&iwloc=&output=embed">
+        </iframe>
+      </div>
+
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h4 data-i18n="footer.hoursTitle">Horarios de Servicio</h4>
+          <p data-i18n="footer.hoursDesayuno">Desayunos: 9:00 AM - 1:30 PM</p>
+          <p data-i18n="footer.hoursComida">Comida y Cantina: 1:30 PM - 7:30 PM</p>
+          <p style="margin-top: 0.5rem; color: var(--lc-durazno);">Abierto de Lunes a Domingo</p>
+        </div>
+
+        <div class="footer-col">
+          <h4 data-i18n="footer.contactTitle">Contacto & Ubicación</h4>
+          <p>Tenancingo / Metepec, Estado de México</p>
+          <p>Tel: +52 (714) 140 0000</p>
+          <p style="margin-top: 0.5rem;">
+            <a href="https://maps.app.goo.gl/RpGz3QzEo9cP7oiT8" target="_blank" rel="noopener" data-i18n="footer.directions">
+              📍 Cómo llegar (Abrir en Google Maps)
+            </a>
+          </p>
+        </div>
+
+        <div class="footer-col">
+          <h4 data-i18n="footer.reviewsTitle">Tu Opinión nos Importa</h4>
+          <p style="margin-bottom: 0.8rem;">¿Disfrutaste tu experiencia curandera? Comparte tus palabras con nosotros.</p>
+          <a href="#" class="btn-review" data-action="review" style="display:inline-flex;">
+            <span data-i18n="footer.viewReviews">⭐ Escribir Reseña en Google</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="footer-closing">
+        <div class="footer-handwritten-closing" data-i18n="brand.quoteFooter">
+          “Bienvenido siempre a tu casa.”
+        </div>
+        <p class="footer-credits">
+          Menú digital artesanal por <a href="https://creaistudios.com" target="_blank" rel="noopener">CreAi Studios</a> · La Curandera © 2026
+        </p>
+      </div>
+    </div>
+
+    <!-- Cintas de Colores Inferiores -->
+    <div class="streamer-ribbons" aria-hidden="true" style="margin-top: 1.5rem;">
+      <div class="ribbon c-turquesa"></div>
+      <div class="ribbon c-rosa"></div>
+      <div class="ribbon c-terracota"></div>
+      <div class="ribbon c-azul"></div>
+      <div class="ribbon c-durazno"></div>
+      <div class="ribbon c-verde"></div>
+      <div class="ribbon c-rosa"></div>
+      <div class="ribbon c-turquesa"></div>
+    </div>
+  </footer>
+
+  <!-- Modal Informativo de Producto -->
+  <div id="product-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal-card">
+      <button class="modal-close-btn" aria-label="Cerrar modal" onclick="window.closeProductModal()">&times;</button>
+      
+      <div class="modal-media-wrapper">
+        <img src="assets/logo/logo.png" alt="" class="modal-img" />
+      </div>
+
+      <div class="modal-body">
+        <h3 class="modal-title">Nombre del Platillo</h3>
+        <span class="modal-price">$0 MXN</span>
+        <p class="modal-desc">Descripción completa...</p>
+
+        <button class="btn-video-prep" style="display:none;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+          </svg>
+          <span data-i18n="product.prepVideo">Ver preparación</span>
+        </button>
+
+        <div class="modal-allergens-group">
+          <h4 class="modal-allergens-title" data-i18n="product.allergens">Alérgenos e Información</h4>
+          <div class="modal-allergens-list"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Botón Volver Arriba -->
+  <button id="back-to-top-btn" class="back-to-top-btn" aria-label="Volver arriba en el menú" title="Volver arriba">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="18 15 12 9 6 15"></polyline>
+    </svg>
+  </button>
+
+  <!-- Botón Flotante WhatsApp (FAB) -->
+  <a href="#" class="fab-whatsapp" aria-label="Contactar por WhatsApp">
+    <svg viewBox="0 0 24 24">
+      <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.664-.699c.971.53 1.769.814 2.796.814 3.182 0 5.769-2.587 5.769-5.766 0-3.18-2.587-5.766-5.769-5.766zm9.969 5.766c0 5.514-4.486 10-10 10-1.802 0-3.488-.484-4.945-1.328l-5.055 1.39 1.41-4.939c-.939-1.512-1.41-3.238-1.41-5.123 0-5.514 4.486-10 10-10s10 4.486 10 10z"/>
+    </svg>
+    <span class="fab-tooltip">¿Reservas? Escríbenos</span>
+  </a>
+
+  <!-- Dock Lateral Flotante de Categorías con Emojis -->
+  <aside id="vertical-categories-dock" class="vertical-categories-dock" aria-label="Navegación lateral de categorías">
+    <button id="dock-toggle-btn" class="dock-toggle-btn" aria-label="Ocultar o mostrar barra lateral de categorías" title="Ocultar/Mostrar">
+      <span class="dock-toggle-icon">‹</span>
+    </button>
+    <div id="dock-emojis-container" class="dock-emojis-container">
+      <!-- Inyectado dinámicamente según Desayuno o Comida -->
+    </div>
+    <div id="dock-tooltip" class="dock-tooltip" role="tooltip" aria-hidden="true"></div>
+  </aside>
+
+  <!-- Scripts ES6 Modules -->
+  <script type="module">
+    import { initI18n, setLanguage } from './js/i18n.js?v=7.9';
+    import { initUI, closeProductModal } from './js/ui.js?v=7.9';
+    import { initMenu, renderCategoriesNav, renderMenu, setMealMode } from './js/menu.js?v=7.9';
+    import { initAnimations } from './js/animations.js?v=7.9';
+
+    // Exponer función de cierre modal
+    window.closeProductModal = closeProductModal;
+
+    // Inicialización al cargar DOM
+    document.addEventListener('DOMContentLoaded', async () => {
+      await initI18n();
+
+      // Configurar botones de cambio de idioma
+      document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const lang = btn.getAttribute('data-lang');
+          setLanguage(lang);
+        });
+      });
+
+      // Inicializar UI y sincronizar modo de servicio con menu.js
+      const initialMode = initUI((newMode) => {
+        setMealMode(newMode);
+      });
+      setMealMode(initialMode);
+
+      // Inicializar Menú con listeners de Firestore
+      await initMenu();
+
+      // Inicializar suite de animaciones de vanguardia
+      initAnimations();
+
+      // Monitor de conexión offline/online
+      window.addEventListener('offline', () => {
+        const b = document.getElementById('offline-banner');
+        if (b) b.classList.add('active');
+      });
+      window.addEventListener('online', () => {
+        const b = document.getElementById('offline-banner');
+        if (b) b.classList.remove('active');
+      });
+    });
+  </script>
+</body>
+</html>

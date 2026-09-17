@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Acceso Administrador — La Curandera</title>
+  <meta name="theme-color" content="#C94E8F">
+
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/admin.css">
+
+  <link rel="icon" type="image/png" href="../assets/logo/logo.png">
+</head>
+<body class="admin-login-body">
+
+  <div class="login-card">
+    <img src="../assets/logo/logo.png" alt="La Curandera" class="login-logo" />
+    <h1 class="login-title">Panel Administrador</h1>
+    <p class="login-subtitle">La Curandera — Gestión de Menú</p>
+
+    <!-- Alerta de Error -->
+    <div id="auth-error-alert" class="auth-error-alert" role="alert"></div>
+
+    <form id="admin-login-form" class="login-form">
+      <div class="form-group">
+        <label for="admin-email" class="form-label">Correo Electrónico</label>
+        <input 
+          type="email" 
+          id="admin-email" 
+          class="form-input" 
+          placeholder="admin@lacurandera.com" 
+          value="lacurandera.admin@gmail.com"
+          required 
+          autocomplete="username"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="admin-password" class="form-label">Contraseña</label>
+        <input 
+          type="password" 
+          id="admin-password" 
+          class="form-input" 
+          placeholder="••••••••" 
+          value="L4Cur4nd3r4.admin"
+          required 
+          autocomplete="current-password"
+        />
+      </div>
+
+      <button type="submit" id="btn-login-submit" class="btn-admin-primary">
+        Entrar al Panel &rarr;
+      </button>
+
+      <div style="margin-top: 1.5rem; text-align: center;">
+        <a href="../index.html" style="font-family:var(--font-mono); font-size:0.8rem; color:var(--lc-gray-500); text-decoration:underline;">
+          &larr; Volver al Menú de Comensales
+        </a>
+      </div>
+    </form>
+  </div>
+
+  <script type="module">
+    import { initLoginForm } from '../js/admin-auth.js';
+    document.addEventListener('DOMContentLoaded', () => {
+      initLoginForm();
+    });
+  </script>
+</body>
+</html>

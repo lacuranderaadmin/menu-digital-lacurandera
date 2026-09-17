@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Administrador — La Curandera</title>
+  <meta name="theme-color" content="#C94E8F">
+
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/admin.css">
+
+  <link rel="icon" type="image/png" href="../assets/logo/logo.png">
+</head>
+<body>
+
+  <div class="admin-layout">
+    
+    <!-- Sidebar Izquierdo -->
+    <aside class="admin-sidebar">
+      <div class="sidebar-brand">
+        <img src="../assets/logo/logo.png" alt="La Curandera" class="sidebar-logo" />
+        <div>
+          <h2 class="sidebar-brand-name">La Curandera</h2>
+          <span id="user-greeting" class="sidebar-user-greeting">Hola, Administrador</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <button class="sidebar-nav-btn active" data-view="branches">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+          </svg>
+          <span>Sucursales</span>
+        </button>
+
+        <button class="sidebar-nav-btn" data-view="menu-editor">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+          </svg>
+          <span>Editor de Carta</span>
+        </button>
+
+        <button class="sidebar-nav-btn" data-view="settings">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          </svg>
+          <span>Configuración</span>
+        </button>
+
+        <a href="../index.html" target="_blank" class="sidebar-nav-btn" style="margin-top:auto;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+            <polyline points="15 3 21 3 21 9"></polyline>
+            <line x1="10" y1="14" x2="21" y2="3"></line>
+          </svg>
+          <span>Ver Menú en Vivo</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button id="btn-logout" class="btn-logout">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+            <polyline points="16 17 21 12 16 7"></polyline>
+            <line x1="21" y1="12" x2="9" y2="12"></line>
+          </svg>
+          <span>Cerrar Sesión</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Área de Contenido Principal -->
+    <main class="admin-main">
+
+      <!-- VISTA 1: Sucursales -->
+      <section id="view-branches">
+        <div class="admin-header">
+          <div>
+            <h1 class="admin-header-title">Sucursales</h1>
+            <p style="font-family:var(--font-mono); font-size:0.85rem; color:var(--lc-gray-500);">
+              Selecciona una sucursal para activar/ocultar platillos o modificar precios locales.
+            </p>
+          </div>
+          <div class="admin-header-actions">
+            <button class="btn-admin-primary" onclick="alert('Función multi-sucursal lista. Para agregar una sucursal adicional, contáctanos o amplía el modelo de datos.')">
+              + Agregar Sucursal
+            </button>
+          </div>
+        </div>
+
+        <div id="branches-grid" class="branches-grid">
+          <!-- Renderizado dinámico -->
+        </div>
+      </section>
+
+      <!-- VISTA 2: Editor de Menú de Sucursal -->
+      <section id="view-menu-editor" style="display:none;">
+        <div class="admin-header">
+          <div>
+            <button id="btn-back-to-branches" class="btn-admin-secondary" style="margin-bottom:0.5rem; font-size:0.8rem; padding:0.3rem 0.75rem;">
+              &larr; Volver a Sucursales
+            </button>
+            <h1 id="current-branch-title" class="admin-header-title">Menú de La Curandera</h1>
+            <p style="font-family:var(--font-mono); font-size:0.85rem; color:var(--lc-gray-500);">
+              Usa la casilla <strong>Visible</strong> para palomear qué platillos se muestran en la mesa del comensal.
+            </p>
+          </div>
+        </div>
+
+        <!-- Controles y Filtros -->
+        <div class="editor-controls">
+          <input type="text" id="admin-search-input" class="form-input" style="max-width:220px;" placeholder="Buscar platillo..." />
+
+          <select id="admin-cat-filter" class="form-input" style="max-width:200px;">
+            <option value="all">Todas las Categorías</option>
+          </select>
+
+          <select id="admin-vis-filter" class="form-input" style="max-width:180px;">
+            <option value="all">Todos los Estados</option>
+            <option value="visible">Solo Visibles (Palomeados)</option>
+            <option value="hidden">Solo Ocultos</option>
+          </select>
+
+          <button id="btn-open-add-modal" class="btn-admin-primary" style="margin-left:auto; background:var(--lc-turquesa); border-color:var(--lc-negro); color:var(--lc-blanco); font-size:0.85rem; padding:0.65rem 1.25rem;">
+            + Agregar Platillo
+          </button>
+        </div>
+
+        <!-- Tabla de Productos -->
+        <div class="editor-table-wrapper">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th style="width: 75px; text-align:center;">Visible</th>
+                <th style="min-width: 200px;">Nombre del Platillo</th>
+                <th style="width: 190px;">Categoría</th>
+                <th style="width: 110px;">Precio Base</th>
+                <th style="min-width: 240px;">Descripción</th>
+                <th style="width: 130px; text-align:center;">Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="admin-products-table-body">
+              <!-- Renderizado dinámicamente con campos de edición directa -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- VISTA 3: Configuración -->
+      <section id="view-settings" style="display:none;">
+        <div class="admin-header">
+          <div>
+            <h1 class="admin-header-title">Configuración del Restaurante</h1>
+            <p style="font-family:var(--font-mono); font-size:0.85rem; color:var(--lc-gray-500);">
+              Información general de La Curandera, enlaces de Google Reviews y contacto.
+            </p>
+          </div>
+        </div>
+
+        <div style="background:var(--lc-blanco); border:3px solid var(--lc-negro); border-radius:var(--radius-lg); box-shadow:5px 5px 0px var(--lc-negro); padding:2rem; max-width:680px;">
+          <form onsubmit="event.preventDefault(); alert('Configuración guardada.');" style="display:flex; flex-direction:column; gap:1.25rem;">
+            <div class="form-group">
+              <label class="form-label">Nombre Comercial</label>
+              <input type="text" class="form-input" value="La Curandera — Mezcal · Cortes · Snacks" />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Número de WhatsApp (con lada)</label>
+              <input type="text" class="form-input" value="527141400000" />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Google Place ID (para botón de reseñas ⭐)</label>
+              <input type="text" class="form-input" value="ChIJN1t_tDeuEmsRUsoyG83frY4" placeholder="Ej: ChIJ..." />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">URL de Google Maps</label>
+              <input type="text" class="form-input" value="https://maps.app.goo.gl/RpGz3QzEo9cP7oiT8" />
+            </div>
+
+            <button type="submit" class="btn-admin-primary" style="align-self:flex-start;">
+              Guardar Configuración
+            </button>
+          </form>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Barra Flotante de Cambios Pendientes (Batch Save) -->
+  <aside id="pending-changes-bar" class="pending-changes-bar">
+    <div class="pending-info">
+      <span id="pending-count-badge" class="pending-count-badge">0 cambios pendientes</span>
+      <span class="pending-text">Los cambios aún no se han aplicado al menú de los comensales.</span>
+    </div>
+    <div>
+      <button id="btn-save-batch" class="btn-save-batch">
+        <span>💾 Guardar cambios</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Modal para Agregar / Editar Platillo (Sin imágenes ni videos) -->
+  <div id="modal-edit-product" class="modal-backdrop" role="dialog" aria-modal="true">
+    <div class="modal-card" style="max-width:540px;">
+      <button id="btn-close-prod-modal" class="modal-close-btn">&times;</button>
+      
+      <div class="modal-body" style="padding:2rem;">
+        <h3 id="modal-product-title" style="font-size:1.4rem; margin-bottom:1.5rem;">Detalles del Platillo</h3>
+
+        <form id="form-edit-product" style="display:flex; flex-direction:column; gap:1.2rem;">
+          <input type="hidden" id="prod-modal-id" />
+
+          <div class="form-group">
+            <label class="form-label">Nombre del Platillo</label>
+            <input type="text" id="prod-name-es" class="form-input" placeholder="Ej: Tacos de Arrachera" required />
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem;">
+            <div class="form-group">
+              <label class="form-label">Categoría</label>
+              <select id="prod-category-select" class="form-input" required></select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Precio ($ MXN)</label>
+              <input type="number" id="prod-base-price" class="form-input" placeholder="Ej: 165" min="0" step="any" required />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Descripción del Platillo</label>
+            <textarea id="prod-desc-es" class="form-input" rows="3" placeholder="Ingredientes, preparación y detalles para el comensal..." required></textarea>
+          </div>
+
+          <div class="form-group">
+            <label style="display:flex; align-items:center; gap:0.6rem; cursor:pointer; font-weight:700; font-size:0.9rem;">
+              <input type="checkbox" id="prod-modal-visible" style="width:20px; height:20px; accent-color:var(--lc-turquesa);" checked />
+              <span>Visible en la carta del comensal</span>
+            </label>
+          </div>
+
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-top:1rem; gap:1rem;">
+            <button type="submit" id="btn-submit-product" class="btn-admin-primary" style="flex-grow:1;">
+              Guardar Platillo
+            </button>
+            <button type="button" id="btn-delete-from-modal" class="btn-admin-danger" style="display:none;">
+              🗑️ Eliminar
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initAdminDashboard } from '../js/admin-dashboard.js?v=2.2';
+    document.addEventListener('DOMContentLoaded', () => {
+      initAdminDashboard();
+    });
+  </script>
+</body>
+</html>

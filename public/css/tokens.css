@@ -1,0 +1,81 @@
+/* ==========================================================================
+   LA CURANDERA — Design Tokens & Variables
+   Identidad visual: Arte popular mexicano contemporáneo
+   ========================================================================== */
+
+:root {
+  /* Brand Color Palette */
+  --lc-rosa: #C94E8F;
+  --lc-rosa-hover: #AF3776;
+  --lc-rosa-subtle: rgba(201, 78, 143, 0.12);
+  
+  --lc-terracota: #E87850;
+  --lc-terracota-hover: #D15E34;
+  --lc-terracota-subtle: rgba(232, 120, 80, 0.12);
+
+  --lc-coral: #E89078;
+  --lc-coral-subtle: rgba(232, 144, 120, 0.15);
+
+  --lc-arena: #C8A890;
+  --lc-arena-subtle: rgba(200, 168, 144, 0.2);
+
+  --lc-durazno: #F8D0B0;
+  --lc-durazno-subtle: rgba(248, 208, 176, 0.3);
+
+  --lc-turquesa: #159F9B;
+  --lc-turquesa-hover: #107F7C;
+  --lc-turquesa-subtle: rgba(21, 159, 155, 0.12);
+
+  --lc-azul: #176A78;
+  --lc-azul-dark: #0F4953;
+
+  --lc-negro: #000000;
+  --lc-blanco: #FFFFFF;
+  --lc-crema: #FDF6EC;
+  --lc-crema-card: #FFFDF9;
+  
+  --lc-gray-100: #F4EBE1;
+  --lc-gray-200: #E6DACD;
+  --lc-gray-500: #6D6258;
+  --lc-gray-800: #2C2621;
+
+  --lc-whatsapp: #25D366;
+  --lc-whatsapp-dark: #1EBE5D;
+
+  /* Typography */
+  --font-title: 'Montserrat', -apple-system, sans-serif;
+  --font-script: 'Caveat Brush', 'Kalam', cursive;
+  --font-mono: 'JetBrains Mono', monospace;
+  --font-body: 'Montserrat', -apple-system, sans-serif;
+
+  /* Border Radii */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-pill: 9999px;
+  --radius-circle: 50%;
+
+  /* Shadows - Warm Mexican artisanal shadows */
+  --shadow-sm: 0 2px 8px rgba(44, 38, 33, 0.06);
+  --shadow-md: 0 8px 24px rgba(44, 38, 33, 0.08);
+  --shadow-lg: 0 16px 40px rgba(44, 38, 33, 0.12);
+  --shadow-card: 0 6px 20px rgba(232, 120, 80, 0.08);
+  --shadow-rosa: 0 8px 25px rgba(201, 78, 143, 0.3);
+  --shadow-turquesa: 0 8px 25px rgba(21, 159, 155, 0.3);
+
+  /* Transitions */
+  --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-smooth: 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  --transition-bounce: 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* Z-indexes */
+  --z-ribbons: 10;
+  --z-header: 100;
+  --z-sticky-nav: 90;
+  --z-fab: 200;
+  --z-modal: 1000;
+  --z-toast: 1100;
+
+  /* Header & Navigation Offsets */
+  --site-header-height: 88px;
+}

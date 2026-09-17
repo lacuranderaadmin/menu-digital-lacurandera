@@ -1,0 +1,77 @@
+{
+  "brand": {
+    "name": "La Curandera",
+    "tagline": "Mezcal · Viandes · Snacks",
+    "quoteHero": "Ici, nous allons soigner votre âme.",
+    "quoteFooter": "Vous êtes toujours le bienvenu chez vous."
+  },
+  "nav": {
+    "reviewBtn": "Laissez votre avis ⭐",
+    "searchPlaceholder": "Rechercher un plat, mezcal..."
+  },
+  "mealSwitch": {
+    "desayunos": "PETIT-DÉJEUNER",
+    "comida": "DÉJEUNER & DÎNER",
+    "scheduleNoticeMorning": "Service Petit-déjeuner actif (9h00 - 13h30)",
+    "scheduleNoticeAfternoon": "Service Déjeuner & Cantina actif (13h30 - 19h30)"
+  },
+  "sections": {
+    "paCurarElAlma": "Pa' Curar el Alma (Petits-déjeuners)",
+    "loEnchiloso": "Lo Enchi-loso (Spécialités Épicées)",
+    "tacosDorados": "Tacos Dorados (Tacos Croustillants)",
+    "paCaldear": "Pa' Caldear (Bouillons Chauds)",
+    "sandwichYMas": "Sandwichs & Plus",
+    "paLosPeques": "Menu Enfants",
+    "dulceRemedio": "Dulce Remedio (Desserts)",
+    "paCalentarElEspiritu": "Boissons Chaudes",
+    "jugueria": "Jus Frais & Smoothies",
+    "bebidasSinAlcohol": "Boissons sans Alcool",
+    "mockteleria": "Mocktelería (Cocktails sans Alcool)",
+    "saboresDeCuaresma": "Saveurs Marines",
+    "paEmpezar": "Pa' Empezar (Entrées)",
+    "paCuidarte": "Salades Fraîches",
+    "sopasYPastas": "Soupes & Pâtes",
+    "snacks": "Snacks Mexicains",
+    "platosFuertes": "Plats Principaux",
+    "taqueria": "Taquería La Curandera",
+    "cortes": "Viandes Sélectionnées",
+    "burritos": "Burritos",
+    "burguersYJocho": "Burgers & Hot-Dogs Mexicains (Jocho)",
+    "paLosMorrillos": "Menu Petits",
+    "cantina": "Cantina La Curandera (Bar)"
+  },
+  "product": {
+    "viewDetails": "Voir détail",
+    "allergens": "Allergènes & Info",
+    "prepVideo": "Voir la préparation",
+    "close": "Fermer",
+    "includedBreakfast": "Tous les petits-déjeuners incluent: Café traditionnel en pot / américain / thé + fruits de saison + jus frais + pain bolillo grillé avec confiture maison et crème artisanale.",
+    "includedSteaks": "Pièces de 300-350g crues. Incluent 3 garnitures au choix."
+  },
+  "essence": {
+    "badge": "Notre Esprit",
+    "title": "Cuisine traditionnelle avec l'authentique saveur de nos racines",
+    "story": "La Curandera est née d'un rêve partagé entre mon épouse et moi: créer un lieu chaleureux réunissant tout ce qui nous inspirait dans la vie. En cherchant un nom, nous avons découvert une belle coïncidence: dans ma famille, mon arrière-grand-mère était la guérisseuse (curandera) du village, de ces femmes qui, avec des herbes, des potions et des remèdes faits maison, savaient apaiser le corps et l'esprit. Nous rendons hommage à ces femmes mystiques et aux traditions ancestrales vivantes du Mexique.",
+    "founder": "Arch. Arturo Garduño et Famille",
+    "clembuterol": "Viande 100% certifiée sans clenbutérol.",
+    "masaMadre": "Pain au levain naturel dans la majorité de nos plats.",
+    "frescos": "Fruits et légumes 100% frais et régionaux.",
+    "alMomento": "Tout est préparé à la minute avec amour.",
+    "quote": "Une cuisine qui guérit. Des verres qui rassemblent."
+  },
+  "footer": {
+    "hoursTitle": "Horaires de Service",
+    "hoursDesayuno": "Petits-déjeuners: 9h00 - 13h30",
+    "hoursComida": "Déjeuner & Cantina: 13h30 - 19h30",
+    "contactTitle": "Contact & Emplacement",
+    "reviewsTitle": "Avis",
+    "viewReviews": "Voir les avis sur Google Maps",
+    "directions": "Comment venir",
+    "credits": "Menu digital conçu avec soin par CreAi Studios"
+  },
+  "status": {
+    "offline": "Pas de connexion internet. Affichage du dernier menu enregistré.",
+    "empty": "Oups, nous mettons à jour la carte. Revenez dans un instant.",
+    "itemsCount": "articles disponibles"
+  }
+}

@@ -1,0 +1,126 @@
+/**
+ * LA CURANDERA — Multi-idioma (i18n)
+ * Soporte para Español (ES), Inglés (EN) y Francés (FR)
+ */
+
+let currentLang = localStorage.getItem('lc-lang') || 'es';
+const translations = {};
+const availableLangs = ['es', 'en', 'fr'];
+
+export async function initI18n() {
+  if (!availableLangs.includes(currentLang)) {
+    currentLang = 'es';
+  }
+
+  for (const lang of availableLangs) {
+    try {
+      // Usar ruta relativa para compatibilidad con subdirectorios y hosting
+      const res = await fetch(`i18n/${lang}.json`);
+      if (res.ok) {
+        translations[lang] = await res.json();
+      } else {
+        const fallbackRes = await fetch(`/i18n/${lang}.json`);
+        if (fallbackRes.ok) {
+          translations[lang] = await fallbackRes.json();
+        }
+      }
+    } catch (err) {
+      console.warn(`Could not load translations for ${lang}`, err);
+    }
+  }
+
+  applyStaticTranslations();
+  return currentLang;
+}
+
+export function getLanguage() {
+  return currentLang;
+}
+
+export async function setLanguage(lang) {
+  if (!availableLangs.includes(lang) || lang === currentLang) return;
+  currentLang = lang;
+  localStorage.setItem('lc-lang', lang);
+
+  // Animación fade
+  document.body.style.opacity = '0.85';
+  document.body.style.transition = 'opacity 0.2s ease';
+
+  setTimeout(() => {
+    applyStaticTranslations();
+    window.dispatchEvent(new CustomEvent('langChanged', { detail: { lang } }));
+    document.body.style.opacity = '1';
+  }, 180);
+}
+
+export function t(path, fallback = '') {
+  if (!translations[currentLang]) return fallback;
+  const keys = path.split('.');
+  let current = translations[currentLang];
+
+  for (const key of keys) {
+    if (current && typeof current === 'object' && key in current) {
+      current = current[key];
+    } else {
+      // Fallback a español si no existe en el idioma actual
+      if (translations['es']) {
+        let esVal = translations['es'];
+        for (const k of keys) {
+          if (esVal && typeof esVal === 'object' && k in esVal) {
+            esVal = esVal[k];
+          } else {
+            return fallback || path;
+          }
+        }
+        return esVal;
+      }
+      return fallback || path;
+    }
+  }
+  return current;
+}
+
+/**
+ * Traduce un campo políglota { es, en, fr } de Firestore
+ * Si falta en EN o FR, muestra español con un asterisco sutil (*)
+ */
+export function getLocalizedText(field, lang = currentLang) {
+  if (!field) return '';
+  if (typeof field === 'string') return field;
+
+  if (field[lang] && field[lang].trim() !== '') {
+    return field[lang];
+  }
+
+  // Fallback a español
+  if (field.es && field.es.trim() !== '') {
+    return lang === 'es' ? field.es : `${field.es} *`;
+  }
+
+  return '';
+}
+
+export function applyStaticTranslations() {
+  const elements = document.querySelectorAll('[data-i18n]');
+  elements.forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    const translation = t(key);
+    if (translation) {
+      if (el.tagName === 'INPUT' && el.getAttribute('placeholder')) {
+        el.setAttribute('placeholder', translation);
+      } else {
+        el.textContent = translation;
+      }
+    }
+  });
+
+  // Actualizar estado activo en botones de idioma
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    const btnLang = btn.getAttribute('data-lang');
+    if (btnLang === currentLang) {
+      btn.classList.add('active');
+    } else {
+      btn.classList.remove('active');
+    }
+  });
+}

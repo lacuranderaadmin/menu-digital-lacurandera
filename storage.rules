@@ -1,0 +1,27 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // Funciones auxiliares
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isImage() {
+      return request.resource.contentType.matches('image/.*');
+    }
+
+    function isReasonableSize() {
+      return request.resource.size < 10 * 1024 * 1024; // Menor a 10MB
+    }
+
+    // Imágenes de productos de La Curandera
+    match /restaurants/{restaurantId}/products/{productId}/{imageFile} {
+      // Lectura pública de imágenes de la carta
+      allow read: if true;
+      // Escritura y actualización solo para administradores autenticados
+      allow write: if isAuthenticated() && isImage() && isReasonableSize();
+      allow delete: if isAuthenticated();
+    }
+  }
+}

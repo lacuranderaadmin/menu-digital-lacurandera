@@ -1,0 +1,548 @@
+/**
+ * LA CURANDERA — Menú Digital Público (Realtime Firestore Listener)
+ */
+
+import { 
+  db, 
+  collection, 
+  onSnapshot, 
+  query, 
+  where, 
+  orderBy, 
+  isConfigured 
+} from './firebase-init.js';
+import { getLocalizedText, t, getLanguage } from './i18n.js';
+import { openProductModal } from './ui.js';
+
+let restaurantId = 'la-curandera';
+let branchId = 'metepec';
+
+let allCategories = [];
+let allProducts = [];
+let allOverrides = {};
+let searchQuery = '';
+let currentMealMode = 'desayunos'; // 'desayunos' | 'comida'
+
+export function setMealMode(mode) {
+  currentMealMode = (mode === 'desayuno' || mode === 'desayunos') ? 'desayunos' : 'comida';
+  document.body.setAttribute('data-meal-mode', currentMealMode);
+  renderCategoriesNav();
+  renderMenu();
+}
+
+export function getActiveMealMode() {
+  return currentMealMode;
+}
+
+export async function initMenu() {
+  // Extraer branchId de la URL si se especifica: /menu/:branchId o ?branch=xxx
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('branch')) {
+    branchId = urlParams.get('branch');
+  }
+
+  // Configurar input de búsqueda con micro-debounce (70ms) y botón de limpieza
+  const searchInput = document.getElementById('menu-search-input');
+  const clearBtn = document.getElementById('search-clear-btn');
+  if (searchInput) {
+    let searchDebounceTimer = null;
+    searchInput.addEventListener('input', (e) => {
+      searchQuery = e.target.value.toLowerCase().trim();
+      if (clearBtn) {
+        clearBtn.style.display = searchQuery.length > 0 ? 'flex' : 'none';
+      }
+      clearTimeout(searchDebounceTimer);
+      searchDebounceTimer = setTimeout(() => {
+        renderMenu();
+      }, 70);
+    });
+  }
+
+  if (clearBtn && searchInput) {
+    clearBtn.addEventListener('click', () => {
+      searchInput.value = '';
+      searchQuery = '';
+      clearBtn.style.display = 'none';
+      searchInput.focus();
+      renderMenu();
+    });
+  }
+
+  // Sincronizar cambios de modo de servicio (Desayuno vs Comida)
+  window.addEventListener('mealModeChanged', (e) => {
+    if (e.detail && e.detail.mode) {
+      setMealMode(e.detail.mode);
+    }
+  });
+
+  // Listener para cambios de idioma
+  window.addEventListener('langChanged', () => {
+    renderCategoriesNav();
+    renderMenu();
+  });
+
+  if (isConfigured && db) {
+    setupRealtimeListeners();
+  } else {
+    // Si Firebase aún no tiene credenciales reales o está en demo, cargamos el catálogo base
+    console.log("Cargando catálogo local integrado de La Curandera...");
+    await loadLocalFallbackData();
+  }
+}
+
+/**
+ * Escucha cambios en tiempo real desde Firestore
+ */
+function setupRealtimeListeners() {
+  try {
+    // 1. Categorías
+    const catQuery = query(
+      collection(db, `restaurants/${restaurantId}/categories`),
+      where('isActive', '==', true),
+      orderBy('order', 'asc')
+    );
+
+    onSnapshot(catQuery, (snapshot) => {
+      allCategories = [];
+      snapshot.forEach(doc => {
+        allCategories.push({ id: doc.id, ...doc.data() });
+      });
+      renderCategoriesNav();
+      renderMenu();
+    }, (err) => {
+      console.warn("Firestore categories error, using fallback:", err);
+      loadLocalFallbackData();
+    });
+
+    // 2. Productos
+    const prodQuery = query(
+      collection(db, `restaurants/${restaurantId}/products`),
+      where('isActive', '==', true),
+      orderBy('order', 'asc')
+    );
+
+    onSnapshot(prodQuery, (snapshot) => {
+      allProducts = [];
+      snapshot.forEach(doc => {
+        allProducts.push({ id: doc.id, ...doc.data() });
+      });
+      renderMenu();
+    }, (err) => {
+      console.warn("Firestore products error:", err);
+    });
+
+    // 3. Menu Overrides por sucursal ("palomear" y precios override)
+    const overrideCol = collection(db, `restaurants/${restaurantId}/branches/${branchId}/menuOverrides`);
+    onSnapshot(overrideCol, (snapshot) => {
+      allOverrides = {};
+      snapshot.forEach(doc => {
+        allOverrides[doc.id] = doc.data();
+      });
+      renderMenu();
+    }, (err) => {
+      console.warn("Firestore overrides error:", err);
+    });
+
+  } catch (error) {
+    console.error("Error setting up Firestore listeners:", error);
+    loadLocalFallbackData();
+  }
+}
+
+/**
+ * Carga de datos locales de respaldo con el catálogo completo de La Curandera
+ */
+async function loadLocalFallbackData() {
+  try {
+    const res = await fetch('data/catalog.json');
+    if (res.ok) {
+      const data = await res.json();
+      allCategories = data.categories || [];
+      allProducts = data.products || [];
+      allOverrides = {};
+      renderCategoriesNav();
+      renderMenu();
+    }
+  } catch (e) {
+    console.warn("No fallback catalog found yet", e);
+  }
+}
+
+/**
+ * Renderiza la barra de navegación horizontal por categorías
+ */
+export function renderCategoriesNav() {
+  const navContainer = document.getElementById('categories-bar');
+  if (!navContainer) return;
+
+  const isBreakfast = (currentMealMode === 'desayunos' || currentMealMode === 'desayuno');
+  
+  // Filtrar categorías según la sección activa
+  const filteredCats = allCategories.filter(cat => {
+    if (cat.section === 'ambos') return true;
+    if (isBreakfast) {
+      return cat.section === 'desayuno';
+    } else {
+      return cat.section === 'comida' || cat.section === 'cantina';
+    }
+  });
+
+  navContainer.innerHTML = '';
+
+  filteredCats.forEach((cat, index) => {
+    const btn = document.createElement('button');
+    btn.className = `category-tab ${index === 0 ? 'active' : ''}`;
+    btn.setAttribute('data-target', `cat-${cat.id || cat.slug}`);
+
+    const iconSrc = cat.iconSvg || `assets/icons/${cat.icon || 'maguey'}.svg`;
+    const catName = getLocalizedText(cat.name);
+
+    btn.innerHTML = `
+      <img src="${iconSrc}" class="cat-icon" alt="" onerror="this.src='assets/icons/maguey.svg'"/>
+      <span>${catName}</span>
+    `;
+
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      document.querySelectorAll('.category-tab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const targetEl = document.getElementById(`cat-${cat.id || cat.slug}`);
+      if (targetEl) {
+        const siteHeader = document.querySelector('.site-header');
+        const stickyNav = document.querySelector('.categories-nav-wrapper');
+        const headerH = siteHeader ? siteHeader.offsetHeight : 65;
+        const navH = stickyNav ? stickyNav.offsetHeight : 55;
+        const totalOffset = headerH + navH + 16;
+        const rect = targetEl.getBoundingClientRect();
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const targetPos = rect.top + scrollTop - totalOffset;
+        window.scrollTo({ top: Math.max(0, targetPos), behavior: 'smooth' });
+      }
+
+      // Desplazar únicamente la barra horizontal de categorías, NUNCA la ventana principal
+      const bar = document.getElementById('categories-bar');
+      if (bar) {
+        bar.scrollTo({
+          left: btn.offsetLeft - (bar.clientWidth / 2) + (btn.offsetWidth / 2),
+          behavior: 'smooth'
+        });
+      }
+    });
+
+    navContainer.appendChild(btn);
+  });
+
+  // Renderizar simultáneamente el Dock Flotante Vertical Lateral con Emojis
+  renderVerticalCategoriesDock(filteredCats);
+
+  window.dispatchEvent(new CustomEvent('categoriesRendered'));
+}
+
+/**
+ * Mapeo oficial de emojis representativos para cada categoría de La Curandera
+ */
+export const CATEGORY_EMOJIS = {
+  // Desayunos & Ambos
+  'pa-curar-el-alma': '🍳',
+  'lo-enchi-loso': '🌶️',
+  'tacos-dorados': '🌮',
+  'pa-caldear': '🥣',
+  'sandwich-y-algo-mas': '🥪',
+  'pa-los-peques': '🥞',
+  'dulce-remedio': '🍰',
+  'pa-calentar-el-espiritu': '☕',
+  'jugueria-la-curandera': '🧃',
+  'bebidas-sin-alcohol': '🥤',
+  'mockteleria': '🍹',
+
+  // Comidas & Cantina
+  'sabores-de-cuaresma': '🦐',
+  'pa-empezar': '🥑',
+  'pa-cuidarte': '🥗',
+  'sopas-y-pastas': '🍲',
+  'snacks': '🍟',
+  'platos-fuertes': '🥘',
+  'taqueria-la-curandera': '🌮',
+  'cortes': '🥩',
+  'burritos': '🌯',
+  'burguers-y-jocho': '🍔',
+  'pa-los-morrillos': '👶',
+  'cantina-la-curandera': '🥃',
+};
+
+export function getCategoryEmoji(cat) {
+  const slug = (cat.slug || cat.id || '').toLowerCase();
+  if (CATEGORY_EMOJIS[slug]) return CATEGORY_EMOJIS[slug];
+
+  const name = typeof cat.name === 'object' ? (cat.name.es || '').toLowerCase() : (cat.name || '').toLowerCase();
+  if (name.includes('huevo') || name.includes('curar')) return '🍳';
+  if (name.includes('chilaquile') || name.includes('enchi') || name.includes('picante')) return '🌶️';
+  if (name.includes('taco')) return '🌮';
+  if (name.includes('caldo') || name.includes('sopa') || name.includes('pasta')) return '🍲';
+  if (name.includes('corte') || name.includes('carne')) return '🥩';
+  if (name.includes('marisco') || name.includes('pescado') || name.includes('cuaresma') || name.includes('camar')) return '🦐';
+  if (name.includes('ensalada') || name.includes('cuidarte')) return '🥗';
+  if (name.includes('snack') || name.includes('alita') || name.includes('papa')) return '🍟';
+  if (name.includes('postre') || name.includes('dulce')) return '🍰';
+  if (name.includes('café') || name.includes('espíritu')) return '☕';
+  if (name.includes('jugo') || name.includes('juguería')) return '🧃';
+  if (name.includes('bebida') || name.includes('refresco')) return '🥤';
+  if (name.includes('coctel') || name.includes('mocktail')) return '🍹';
+  if (name.includes('mezcal') || name.includes('cantina') || name.includes('trago')) return '🥃';
+  if (name.includes('burger') || name.includes('jocho')) return '🍔';
+  if (name.includes('burrito')) return '🌯';
+  if (name.includes('infantil') || name.includes('peque') || name.includes('morrillo')) return '👶';
+  return '🍽️';
+}
+
+/**
+ * Renderiza el Dock Flotante Vertical Lateral de Categorías con Emojis
+ */
+export function renderVerticalCategoriesDock(filteredCats) {
+  const dockContainer = document.getElementById('dock-emojis-container');
+  const dock = document.getElementById('vertical-categories-dock');
+  const tooltip = document.getElementById('dock-tooltip');
+  if (!dockContainer || !dock) return;
+
+  dockContainer.innerHTML = '';
+
+  let hideTooltipTimer = null;
+  const showTooltip = (btn, text) => {
+    if (!tooltip) return;
+    clearTimeout(hideTooltipTimer);
+    tooltip.textContent = text;
+    const btnRect = btn.getBoundingClientRect();
+    const dockRect = dock.getBoundingClientRect();
+    const topOffset = (btnRect.top - dockRect.top) + (btnRect.height / 2);
+    tooltip.style.top = `${topOffset}px`;
+    tooltip.classList.add('visible');
+    tooltip.setAttribute('aria-hidden', 'false');
+
+    hideTooltipTimer = setTimeout(() => {
+      tooltip.classList.remove('visible');
+      tooltip.setAttribute('aria-hidden', 'true');
+    }, 2400);
+  };
+
+  filteredCats.forEach((cat, index) => {
+    const btn = document.createElement('button');
+    btn.className = `dock-emoji-btn ${index === 0 ? 'active' : ''}`;
+    const targetId = `cat-${cat.id || cat.slug}`;
+    btn.setAttribute('data-target', targetId);
+    const catName = getLocalizedText(cat.name);
+    const emoji = getCategoryEmoji(cat);
+    btn.setAttribute('aria-label', catName);
+    btn.setAttribute('title', catName);
+
+    btn.innerHTML = `<span class="dock-emoji">${emoji}</span>`;
+
+    // Tooltip en hover (desktop)
+    btn.addEventListener('mouseenter', () => {
+      showTooltip(btn, `${emoji} ${catName}`);
+    });
+    btn.addEventListener('mouseleave', () => {
+      if (tooltip) tooltip.classList.remove('visible');
+    });
+
+    // Clic / Tap
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      document.querySelectorAll('.dock-emoji-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      showTooltip(btn, `${emoji} ${catName}`);
+
+      const targetEl = document.getElementById(targetId);
+      if (targetEl) {
+        const siteHeader = document.querySelector('.site-header');
+        const stickyNav = document.querySelector('.categories-nav-wrapper');
+        const headerH = siteHeader ? siteHeader.offsetHeight : 88;
+        const navH = stickyNav ? stickyNav.offsetHeight : 55;
+        const totalOffset = headerH + navH + 16;
+        const rect = targetEl.getBoundingClientRect();
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const targetPos = rect.top + scrollTop - totalOffset;
+        window.scrollTo({ top: Math.max(0, targetPos), behavior: 'smooth' });
+      }
+
+      // Sincronizar pestaña activa en la barra horizontal
+      const catTabs = document.querySelectorAll('.category-tab');
+      catTabs.forEach(tab => {
+        if (tab.getAttribute('data-target') === targetId) {
+          catTabs.forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+          const bar = document.getElementById('categories-bar');
+          if (bar) {
+            bar.scrollTo({
+              left: tab.offsetLeft - (bar.clientWidth / 2) + (tab.offsetWidth / 2),
+              behavior: 'smooth'
+            });
+          }
+        }
+      });
+    });
+
+    dockContainer.appendChild(btn);
+  });
+
+  // Configurar toggle de colapso si aún no se ha enlazado
+  const toggleBtn = document.getElementById('dock-toggle-btn');
+  if (toggleBtn && !toggleBtn.dataset.bound) {
+    toggleBtn.dataset.bound = 'true';
+    toggleBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const isCollapsed = dock.classList.toggle('collapsed');
+      const icon = toggleBtn.querySelector('.dock-toggle-icon');
+      if (icon) {
+        icon.textContent = isCollapsed ? '›' : '‹';
+      }
+      toggleBtn.setAttribute('title', isCollapsed ? 'Mostrar categorías' : 'Ocultar categorías');
+      toggleBtn.setAttribute('aria-label', isCollapsed ? 'Mostrar categorías' : 'Ocultar categorías');
+      if (isCollapsed && tooltip) {
+        tooltip.classList.remove('visible');
+      }
+    });
+  }
+}
+
+/**
+ * Renderiza el menú completo filtrado por modo y búsqueda
+ */
+export function renderMenu() {
+  const container = document.getElementById('menu-sections-container');
+  if (!container) return;
+
+  const isBreakfast = (currentMealMode === 'desayunos' || currentMealMode === 'desayuno');
+  const currentLang = getLanguage();
+
+  // Filtrar categorías para este modo
+  const activeCategories = allCategories.filter(cat => {
+    if (cat.section === 'ambos') return true;
+    if (isBreakfast) {
+      return cat.section === 'desayuno';
+    } else {
+      return cat.section === 'comida' || cat.section === 'cantina';
+    }
+  });
+
+  const fragment = document.createDocumentFragment();
+  let visibleProductCount = 0;
+
+  activeCategories.forEach(category => {
+    // Obtener productos de esta categoría
+    const categoryProducts = allProducts.filter(p => {
+      const matchCat = p.categoryId === category.id || p.categoryId === category.slug;
+      if (!matchCat) return false;
+
+      // Aplicar fórmula producto_final = product ⨯ menuOverride
+      const override = allOverrides[p.id];
+      if (override && override.isVisible === false) {
+        return false; // El admin lo despalomeó para esta sucursal
+      }
+
+      // Filtro de búsqueda
+      if (searchQuery) {
+        const name = (getLocalizedText(p.name, 'es') + ' ' + getLocalizedText(p.name, currentLang)).toLowerCase();
+        const desc = (getLocalizedText(p.description, 'es') + ' ' + getLocalizedText(p.description, currentLang)).toLowerCase();
+        return name.includes(searchQuery) || desc.includes(searchQuery);
+      }
+
+      return true;
+    });
+
+    if (categoryProducts.length === 0) return;
+
+    visibleProductCount += categoryProducts.length;
+
+    // Crear sección de categoría
+    const section = document.createElement('section');
+    section.className = 'category-section';
+    section.id = `cat-${category.id || category.slug}`;
+
+    const catName = getLocalizedText(category.name);
+    const iconSrc = category.iconSvg || `assets/icons/${category.icon || 'maguey'}.svg`;
+
+    section.innerHTML = `
+      <div class="category-header">
+        <h2 class="category-header-title">
+          <img src="${iconSrc}" class="section-brand-icon" alt="" onerror="this.src='assets/icons/maguey.svg'"/>
+          <span>${catName}</span>
+        </h2>
+        <span class="category-count">${categoryProducts.length} ${t('status.itemsCount', 'platillos')}</span>
+      </div>
+      <div class="products-grid"></div>
+    `;
+
+    const grid = section.querySelector('.products-grid');
+
+    categoryProducts.forEach(product => {
+      // Aplicar overrides de precio y descripción
+      const override = allOverrides[product.id];
+      const effectivePrice = (override && override.priceOverride !== null && override.priceOverride !== undefined) 
+        ? override.priceOverride 
+        : product.price;
+
+      const effectiveDesc = (override && override.descriptionOverride)
+        ? getLocalizedText(override.descriptionOverride)
+        : getLocalizedText(product.description);
+
+      const productName = getLocalizedText(product.name);
+
+      const card = document.createElement('article');
+      card.className = 'product-card';
+
+      // Badges
+      let badgesHtml = '';
+      const tags = product.tags || [];
+      if (tags.includes('picante')) badgesHtml += '<span class="product-badge badge-picante">🌶️ Picante</span>';
+      if (tags.includes('vegetariano')) badgesHtml += '<span class="product-badge badge-vegetariano">🌱 Veg</span>';
+      if (tags.includes('recomendado')) badgesHtml += '<span class="product-badge badge-recomendado">⭐ Chef</span>';
+      if (tags.includes('hero')) badgesHtml += '<span class="product-badge badge-especialidad">👑 Especialidad</span>';
+
+      card.innerHTML = `
+        <div class="product-card-body">
+          <div class="product-header-line">
+            <h3 class="product-name">${productName}</h3>
+            <span class="product-price-pill">$${effectivePrice}</span>
+          </div>
+          <p class="product-desc">${effectiveDesc || ''}</p>
+          <div class="product-card-footer">
+            <div class="product-tag-badges">${badgesHtml}</div>
+            <span class="view-details-prompt">${t('product.viewDetails', 'Detalles')} &rarr;</span>
+          </div>
+        </div>
+      `;
+
+      card.addEventListener('click', () => {
+        openProductModal({
+          ...product,
+          effectivePrice,
+          effectiveDesc
+        });
+      });
+
+      grid.appendChild(card);
+    });
+
+    fragment.appendChild(section);
+  });
+
+  container.innerHTML = '';
+  container.appendChild(fragment);
+
+  // Si no hay productos visibles
+  if (visibleProductCount === 0) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <svg class="empty-state-icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3">
+          <circle cx="32" cy="32" r="28"/>
+          <path d="M22 38C26 34 38 34 42 38M24 26H24.02M40 26H40.02"/>
+        </svg>
+        <h3 class="empty-state-title">${t('status.empty', 'Estamos actualizando la carta')}</h3>
+        <p class="empty-state-desc">${searchQuery ? 'No encontramos platillos con esa búsqueda.' : 'Regresa en un momento.'}</p>
+      </div>
+    `;
+  }
+}

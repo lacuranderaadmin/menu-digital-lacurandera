@@ -1,0 +1,77 @@
+{
+  "brand": {
+    "name": "La Curandera",
+    "tagline": "Mezcal · Cortes · Snacks",
+    "quoteHero": "Aquí te la vamos a curar.",
+    "quoteFooter": "Bienvenido siempre a tu casa."
+  },
+  "nav": {
+    "reviewBtn": "Déjanos tu reseña ⭐",
+    "searchPlaceholder": "Buscar platillo, mezcal, corte..."
+  },
+  "mealSwitch": {
+    "desayunos": "DESAYUNO",
+    "comida": "COMIDA",
+    "scheduleNoticeMorning": "Servicio de Desayuno activo (9:00 AM - 1:30 PM)",
+    "scheduleNoticeAfternoon": "Servicio de Comida y Cantina activo (1:30 PM - 7:30 PM)"
+  },
+  "sections": {
+    "paCurarElAlma": "Pa' Curar el Alma",
+    "loEnchiloso": "Lo Enchi-loso",
+    "tacosDorados": "Tacos Dorados",
+    "paCaldear": "Pa' Caldear",
+    "sandwichYMas": "Sándwich y Algo Más",
+    "paLosPeques": "Pa' los Más Peques",
+    "dulceRemedio": "Dulce Remedio",
+    "paCalentarElEspiritu": "Pa' Calentar el Espíritu",
+    "jugueria": "Juguería La Curandera",
+    "bebidasSinAlcohol": "Bebidas sin Alcohol",
+    "mockteleria": "Mocktelería",
+    "saboresDeCuaresma": "Sabores de Cuaresma",
+    "paEmpezar": "Pa' Empezar",
+    "paCuidarte": "Pa' Cuidarte",
+    "sopasYPastas": "Sopas y Pastas",
+    "snacks": "Snacks",
+    "platosFuertes": "Platos Fuertes",
+    "taqueria": "Taquería La Curandera",
+    "cortes": "Cortes",
+    "burritos": "Burritos",
+    "burguersYJocho": "Burguers y Jocho",
+    "paLosMorrillos": "Pa' los Morrillos",
+    "cantina": "Cantina La Curandera"
+  },
+  "product": {
+    "viewDetails": "Ver detalle",
+    "allergens": "Alérgenos e Información",
+    "prepVideo": "Ver preparación",
+    "close": "Cerrar",
+    "includedBreakfast": "Todos los desayunos incluyen: Café de olla / americano / té + fruta de temporada + jugo de temporada + bolillo tostado con mermelada de la casa y nata.",
+    "includedSteaks": "Cortes 300-350g en crudo. Incluyen 3 guarniciones a elegir."
+  },
+  "essence": {
+    "badge": "Nuestra Esencia",
+    "title": "Cocina tradicional con el auténtico sabor de nuestras raíces",
+    "story": "La Curandera nace de un sueño entre mi esposa y yo: crear un lugar donde pudiéramos reunir todo lo que nos inspiraba en ese momento de la vida. Durante la búsqueda del nombre encontramos una coincidencia muy especial: en mi familia, mi bisabuela era la curandera del pueblo, de esas mujeres que con hierbas, pócimas y remedios caseros lograban hacerte sentir mejor. Así adoptamos este nombre, como un homenaje a esos personajes místicos y a las tradiciones ancestrales que viven en nuestro México.",
+    "founder": "Arq. Arturo Garduño y Familia",
+    "clembuterol": "Carne 100% libre de clembuterol.",
+    "masaMadre": "Pan de masa madre en la mayoría de nuestros platillos.",
+    "frescos": "Frutas y vegetales 100% frescos y de la región.",
+    "alMomento": "Todo se prepara al momento con amor y paciencia.",
+    "quote": "Cocina que cura. Tragos que conectan."
+  },
+  "footer": {
+    "hoursTitle": "Horarios de Servicio",
+    "hoursDesayuno": "Desayunos: 9:00 AM - 1:30 PM",
+    "hoursComida": "Comida y Cantina: 1:30 PM - 7:30 PM",
+    "contactTitle": "Contacto y Ubicación",
+    "reviewsTitle": "Opiniones",
+    "viewReviews": "Ver reseñas en Google Maps",
+    "directions": "Cómo llegar",
+    "credits": "Menú digital desarrollado con amor por CreAi Studios"
+  },
+  "status": {
+    "offline": "Sin conexión a internet. Mostrando la última carta guardada.",
+    "empty": "Ups, estamos actualizando la carta. Regresa en un ratito.",
+    "itemsCount": "platillos disponibles"
+  }
+}

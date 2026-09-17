@@ -1,0 +1,602 @@
+/* ==========================================================================
+   LA CURANDERA — Panel de Administración CSS
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Admin Auth / Login Page
+   -------------------------------------------------------------------------- */
+.admin-login-body {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--lc-crema);
+  background-image: url('../assets/patterns/maguey-pattern.svg');
+  background-size: 130px;
+  padding: 1.5rem;
+}
+
+.login-card {
+  background: var(--lc-blanco);
+  border: 4px solid var(--lc-negro);
+  border-radius: var(--radius-lg);
+  box-shadow: 10px 10px 0px var(--lc-negro);
+  max-width: 440px;
+  width: 100%;
+  padding: 2.5rem 2rem;
+  text-align: center;
+  position: relative;
+}
+
+.login-logo {
+  width: 90px;
+  height: 90px;
+  border-radius: var(--radius-circle);
+  margin: 0 auto 1.25rem;
+  border: 3px solid var(--lc-negro);
+  box-shadow: 3px 3px 0px var(--lc-negro);
+  object-fit: contain;
+}
+
+.login-title {
+  font-size: 1.6rem;
+  margin-bottom: 0.25rem;
+}
+
+.login-subtitle {
+  font-family: var(--font-script);
+  font-size: 1.35rem;
+  color: var(--lc-rosa);
+  margin-bottom: 2rem;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  text-align: left;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.form-label {
+  font-family: var(--font-title);
+  font-size: 0.8rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--lc-negro);
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 2.5px solid var(--lc-negro);
+  border-radius: var(--radius-md);
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  background: var(--lc-crema);
+  transition: all var(--transition-fast);
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--lc-rosa);
+  background: var(--lc-blanco);
+  box-shadow: 3px 3px 0px var(--lc-rosa);
+}
+
+.btn-admin-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: var(--lc-rosa);
+  color: var(--lc-blanco);
+  font-family: var(--font-title);
+  font-size: 0.95rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 0.85rem 1.5rem;
+  border-radius: var(--radius-pill);
+  border: 2.5px solid var(--lc-negro);
+  box-shadow: 4px 4px 0px var(--lc-negro);
+  transition: all var(--transition-fast);
+  margin-top: 0.5rem;
+}
+
+.btn-admin-primary:hover:not(:disabled) {
+  background: var(--lc-rosa-hover);
+  transform: translateY(-2px);
+  box-shadow: 6px 6px 0px var(--lc-negro);
+}
+
+.btn-admin-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.auth-error-alert {
+  display: none;
+  background: #FFD2D2;
+  border: 2px solid #B30000;
+  color: #B30000;
+  padding: 0.65rem 1rem;
+  border-radius: var(--radius-md);
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  text-align: left;
+}
+
+.auth-error-alert.active {
+  display: block;
+}
+
+/* --------------------------------------------------------------------------
+   Admin Dashboard Layout
+   -------------------------------------------------------------------------- */
+.admin-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.admin-sidebar {
+  width: 260px;
+  background: var(--lc-negro);
+  color: var(--lc-crema);
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem 1rem;
+  flex-shrink: 0;
+  border-right: 3px solid var(--lc-rosa);
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}
+
+@media (max-width: 900px) {
+  .admin-layout {
+    flex-direction: column;
+  }
+  .admin-sidebar {
+    width: 100%;
+    height: auto;
+    position: relative;
+  }
+}
+
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px dashed rgba(255,255,255,0.2);
+  margin-bottom: 1.5rem;
+}
+
+.sidebar-logo {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-circle);
+}
+
+.sidebar-brand-name {
+  font-size: 1.1rem;
+  color: var(--lc-blanco);
+}
+
+.sidebar-user-greeting {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--lc-turquesa);
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex-grow: 1;
+}
+
+.sidebar-nav-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
+  font-family: var(--font-title);
+  font-size: 0.85rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--lc-crema);
+  transition: all var(--transition-fast);
+  text-align: left;
+}
+
+.sidebar-nav-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+.sidebar-nav-btn:hover {
+  background: rgba(255,255,255,0.1);
+  color: var(--lc-rosa);
+}
+
+.sidebar-nav-btn.active {
+  background: var(--lc-rosa);
+  color: var(--lc-blanco);
+  box-shadow: 2px 2px 0px var(--lc-blanco);
+}
+
+.sidebar-footer {
+  padding-top: 1rem;
+  border-top: 2px dashed rgba(255,255,255,0.2);
+}
+
+.btn-logout {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.65rem 1rem;
+  border-radius: var(--radius-md);
+  font-family: var(--font-title);
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #FF8A8A;
+}
+
+.btn-logout:hover {
+  background: rgba(255, 138, 138, 0.15);
+}
+
+/* --------------------------------------------------------------------------
+   Admin Main Content Area
+   -------------------------------------------------------------------------- */
+.admin-main {
+  flex-grow: 1;
+  background: var(--lc-crema);
+  padding: 2rem 1.5rem 5rem;
+  overflow-y: auto;
+}
+
+@media (min-width: 768px) {
+  .admin-main {
+    padding: 2.5rem 3rem 6rem;
+  }
+}
+
+.admin-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 3px solid var(--lc-negro);
+}
+
+.admin-header-title {
+  font-size: 1.8rem;
+}
+
+.admin-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* --------------------------------------------------------------------------
+   Pending Changes Sticky Action Bar
+   -------------------------------------------------------------------------- */
+.pending-changes-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--lc-negro);
+  color: var(--lc-blanco);
+  border-top: 3px solid var(--lc-rosa);
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 500;
+  transform: translateY(100%);
+  transition: transform var(--transition-bounce);
+  box-shadow: 0 -6px 20px rgba(0,0,0,0.3);
+}
+
+.pending-changes-bar.visible {
+  transform: translateY(0);
+}
+
+.pending-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.pending-count-badge {
+  background: var(--lc-rosa);
+  color: var(--lc-blanco);
+  font-family: var(--font-title);
+  font-weight: 900;
+  font-size: 0.85rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: var(--radius-pill);
+}
+
+.pending-text {
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+}
+
+.btn-save-batch {
+  background: var(--lc-rosa);
+  color: var(--lc-blanco);
+  font-family: var(--font-title);
+  font-weight: 900;
+  font-size: 0.95rem;
+  padding: 0.75rem 1.8rem;
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--lc-blanco);
+  box-shadow: 3px 3px 0px var(--lc-blanco);
+  transition: all var(--transition-fast);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-save-batch:hover {
+  background: var(--lc-rosa-hover);
+  transform: translateY(-2px);
+}
+
+/* --------------------------------------------------------------------------
+   Branch Menu Editor Table / Grid
+   -------------------------------------------------------------------------- */
+.editor-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  background: var(--lc-blanco);
+  padding: 1rem 1.25rem;
+  border: 2.5px solid var(--lc-negro);
+  border-radius: var(--radius-md);
+  box-shadow: 4px 4px 0px var(--lc-negro);
+  margin-bottom: 1.5rem;
+}
+
+.editor-table-wrapper {
+  background: var(--lc-blanco);
+  border: 3px solid var(--lc-negro);
+  border-radius: var(--radius-lg);
+  box-shadow: 6px 6px 0px var(--lc-negro);
+  overflow-x: auto;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.admin-table th {
+  background: var(--lc-gray-100);
+  font-family: var(--font-title);
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.9rem 1rem;
+  border-bottom: 2px solid var(--lc-negro);
+}
+
+.admin-table td {
+  padding: 0.9rem 1rem;
+  border-bottom: 1px solid var(--lc-gray-200);
+  vertical-align: middle;
+}
+
+.admin-table tr:hover td {
+  background: rgba(248, 208, 176, 0.15);
+}
+
+/* The Palomear Checkbox */
+.checkbox-toggle-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.checkbox-toggle {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 24px;
+  height: 24px;
+  border: 2.5px solid var(--lc-negro);
+  border-radius: 6px;
+  background: var(--lc-blanco);
+  cursor: pointer;
+  display: grid;
+  place-content: center;
+  transition: all var(--transition-fast);
+}
+
+.checkbox-toggle::before {
+  content: "";
+  width: 12px;
+  height: 12px;
+  transform: scale(0);
+  transition: 120ms transform ease-in-out;
+  box-shadow: inset 1em 1em var(--lc-blanco);
+  clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+}
+
+.checkbox-toggle:checked {
+  background: var(--lc-turquesa);
+  border-color: var(--lc-negro);
+}
+
+.checkbox-toggle:checked::before {
+  transform: scale(1);
+}
+
+.table-thumb {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-sm);
+  object-fit: cover;
+  border: 1.5px solid var(--lc-negro);
+}
+
+.input-inline {
+  padding: 0.4rem 0.6rem;
+  border: 1.5px solid var(--lc-gray-200);
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+  font-size: 0.85rem;
+  background: var(--lc-crema);
+  width: 100%;
+}
+
+.input-inline:focus {
+  outline: none;
+  border-color: var(--lc-rosa);
+  background: var(--lc-blanco);
+}
+
+.input-inline-price {
+  max-width: 90px;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  text-align: right;
+}
+
+/* Branch Cards */
+.branches-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.branch-card {
+  background: var(--lc-blanco);
+  border: 3px solid var(--lc-negro);
+  border-radius: var(--radius-lg);
+  box-shadow: 5px 5px 0px var(--lc-negro);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.branch-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.75rem;
+}
+
+.branch-name {
+  font-size: 1.25rem;
+  font-weight: 900;
+}
+
+.branch-status-badge {
+  font-family: var(--font-title);
+  font-size: 0.7rem;
+  font-weight: 900;
+  padding: 0.25rem 0.6rem;
+  border-radius: var(--radius-pill);
+  border: 1.5px solid var(--lc-negro);
+}
+
+.branch-status-active {
+  background: #D5F5E3;
+  color: #1E8449;
+}
+
+.branch-card-body {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--lc-gray-500);
+  margin-bottom: 1.5rem;
+  flex-grow: 1;
+}
+
+.branch-card-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-admin-danger {
+  background: #E74C3C;
+  color: var(--lc-blanco);
+  font-family: var(--font-title);
+  font-size: 0.85rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 0.75rem 1.25rem;
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--lc-negro);
+  box-shadow: 3px 3px 0px var(--lc-negro);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.btn-admin-danger:hover {
+  background: #C0392B;
+  transform: translateY(-2px);
+  box-shadow: 5px 5px 0px var(--lc-negro);
+}
+
+.btn-delete-inline {
+  background: #FFF0F0;
+  color: #C0392B;
+  border: 1.5px solid #C0392B;
+  border-radius: var(--radius-sm);
+  padding: 0.35rem 0.55rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.btn-delete-inline:hover {
+  background: #C0392B;
+  color: var(--lc-blanco);
+}
+
+.btn-edit-inline {
+  background: var(--lc-blanco);
+  color: var(--lc-negro);
+  border: 1.5px solid var(--lc-negro);
+  border-radius: var(--radius-sm);
+  padding: 0.35rem 0.65rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.btn-edit-inline:hover {
+  background: var(--lc-rosa);
+  color: var(--lc-blanco);
+}
+
+.select-inline-category {
+  cursor: pointer;
+  font-weight: 600;
+  max-width: 180px;
+}

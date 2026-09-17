@@ -1,0 +1,18 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Administradores
+    match /admins/{uid} {
+      allow read, write: if true;
+    }
+
+    // Restaurante, categorías, productos, sucursales y overrides
+    match /restaurants/{restaurantId} {
+      allow read, write: if true;
+
+      match /{allSubcollections=**} {
+        allow read, write: if true;
+      }
+    }
+  }
+}

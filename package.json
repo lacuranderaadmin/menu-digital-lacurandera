@@ -1,0 +1,22 @@
+{
+  "name": "la-curandera-menu-digital",
+  "version": "1.0.0",
+  "description": "Plataforma Menú Digital + Panel Administrador para La Curandera — Mezcal · Cortes · Snacks",
+  "type": "module",
+  "main": "public/index.html",
+  "scripts": {
+    "dev": "npx -y serve public -l 3000",
+    "seed": "node scripts/seed.js",
+    "create-admin": "node scripts/create-admin.js",
+    "build:catalog": "node scripts/build-catalog.js",
+    "deploy": "npx -y firebase-tools deploy",
+    "deploy:hosting": "npx -y firebase-tools deploy --only hosting",
+    "deploy:rules": "npx -y firebase-tools deploy --only firestore:rules,storage"
+  },
+  "dependencies": {
+    "firebase": "^10.14.1"
+  },
+  "devDependencies": {
+    "serve": "^14.2.3"
+  }
+}
