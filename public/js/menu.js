@@ -94,6 +94,47 @@ export async function initMenu() {
   // 1. Carga instantánea del catálogo integrado (0ms de espera para el usuario en móvil y desktop)
   await loadLocalFallbackData();
 
+  // Cargar overrides cacheados de sincronizaciones previas (0ms)
+  try {
+    const cachedSync = localStorage.getItem('lc_menu_sync_event');
+    if (cachedSync) {
+      const data = JSON.parse(cachedSync);
+      if (data.overrides) {
+        allOverrides = { ...allOverrides, ...data.overrides };
+        renderCategoriesNav();
+        renderMenu();
+      }
+    }
+  } catch (e) {}
+
+  // Sincronización en tiempo real ultra-rápida (BroadcastChannel nativo 0ms entre pestañas)
+  try {
+    const syncChannel = new BroadcastChannel('lc_menu_sync');
+    syncChannel.onmessage = (event) => {
+      if (event.data && event.data.type === 'MENU_SYNC') {
+        if (event.data.overrides) {
+          allOverrides = { ...allOverrides, ...event.data.overrides };
+        }
+        renderCategoriesNav();
+        renderMenu();
+      }
+    };
+  } catch (e) {}
+
+  // Listener de Storage (respaldo cross-tab)
+  window.addEventListener('storage', (e) => {
+    if (e.key === 'lc_menu_sync_event' && e.newValue) {
+      try {
+        const data = JSON.parse(e.newValue);
+        if (data.overrides) {
+          allOverrides = { ...allOverrides, ...data.overrides };
+        }
+        renderCategoriesNav();
+        renderMenu();
+      } catch (err) {}
+    }
+  });
+
   // Sincronizar barra de anuncios en movimiento (Marquee Ticker)
   initMarqueeSync();
 
@@ -108,52 +149,51 @@ export async function initMenu() {
  */
 function setupRealtimeListeners() {
   try {
-    // 1. Categorías
-    const catQuery = query(
-      collection(db, `restaurants/${restaurantId}/categories`),
-      where('isActive', '==', true),
-      orderBy('order', 'asc')
-    );
-
-    onSnapshot(catQuery, (snapshot) => {
-      allCategories = [];
-      snapshot.forEach(doc => {
-        allCategories.push({ id: doc.id, ...doc.data() });
-      });
-      renderCategoriesNav();
-      renderMenu();
+    // 1. Categorías en tiempo real
+    const catCol = collection(db, `restaurants/${restaurantId}/categories`);
+    onSnapshot(catCol, (snapshot) => {
+      if (!snapshot.empty) {
+        const loadedCats = [];
+        snapshot.forEach(doc => {
+          loadedCats.push({ id: doc.id, ...doc.data() });
+        });
+        loadedCats.sort((a, b) => (a.order !== undefined ? a.order : 999) - (b.order !== undefined ? b.order : 999));
+        allCategories = loadedCats;
+        renderCategoriesNav();
+        renderMenu();
+      }
     }, (err) => {
-      console.warn("Firestore categories error, using fallback:", err);
-      loadLocalFallbackData();
+      console.warn("Firestore categories realtime error:", err);
     });
 
-    // 2. Productos
-    const prodQuery = query(
-      collection(db, `restaurants/${restaurantId}/products`),
-      where('isActive', '==', true),
-      orderBy('order', 'asc')
-    );
-
-    onSnapshot(prodQuery, (snapshot) => {
-      allProducts = [];
-      snapshot.forEach(doc => {
-        allProducts.push({ id: doc.id, ...doc.data() });
-      });
-      renderMenu();
+    // 2. Productos en tiempo real (todos los productos sin exclusión por índice)
+    const prodCol = collection(db, `restaurants/${restaurantId}/products`);
+    onSnapshot(prodCol, (snapshot) => {
+      if (!snapshot.empty) {
+        const loadedProds = [];
+        snapshot.forEach(doc => {
+          loadedProds.push({ id: doc.id, ...doc.data() });
+        });
+        loadedProds.sort((a, b) => (a.order !== undefined ? a.order : 999) - (b.order !== undefined ? b.order : 999));
+        allProducts = loadedProds;
+        renderCategoriesNav();
+        renderMenu();
+      }
     }, (err) => {
-      console.warn("Firestore products error:", err);
+      console.warn("Firestore products realtime error:", err);
     });
 
-    // 3. Menu Overrides por sucursal ("palomear" y precios override)
+    // 3. Menu Overrides por sucursal en tiempo real ("palomear", precios, stock, promos)
     const overrideCol = collection(db, `restaurants/${restaurantId}/branches/${branchId}/menuOverrides`);
     onSnapshot(overrideCol, (snapshot) => {
       allOverrides = {};
       snapshot.forEach(doc => {
         allOverrides[doc.id] = doc.data();
       });
+      renderCategoriesNav();
       renderMenu();
     }, (err) => {
-      console.warn("Firestore overrides error:", err);
+      console.warn("Firestore overrides realtime error:", err);
     });
 
   } catch (error) {
@@ -593,8 +633,12 @@ export function renderMenu() {
 
       // Aplicar fórmula producto_final = product ⨯ menuOverride
       const override = allOverrides[p.id];
-      if (override && override.isVisible === false) {
-        return false; // El admin lo despalomeó para esta sucursal
+      const isVisible = (override && override.isVisible !== undefined)
+        ? override.isVisible
+        : (p.isActive !== false);
+
+      if (!isVisible) {
+        return false; // El admin lo despalomeó u ocultó
       }
 
       // Filtro de búsqueda inteligente
@@ -647,7 +691,10 @@ export function renderMenu() {
         ? getLocalizedText(override.descriptionOverride)
         : getLocalizedText(product.description);
 
-      const rawProductName = getLocalizedText(product.name);
+      // Nombre efectivo (permite override del admin o nombre maestro)
+      const rawProductName = (override && override.nameOverride)
+        ? getLocalizedText(override.nameOverride)
+        : getLocalizedText(product.name);
 
       // Subrayado y resaltado inteligente de coincidencias de búsqueda
       const productNameHtml = searchQuery 

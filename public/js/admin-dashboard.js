@@ -53,6 +53,38 @@ const MARQUEE_COLORS = {
   blanco: '#FFFFFF'
 };
 
+// Canal de Sincronización en Tiempo Real (BroadcastChannel nativo + LocalStorage event)
+let syncChannel = null;
+try {
+  syncChannel = new BroadcastChannel('lc_menu_sync');
+} catch (e) {}
+
+function broadcastMenuSync(extraData = {}) {
+  try {
+    const payload = {
+      type: 'MENU_SYNC',
+      timestamp: Date.now(),
+      restaurantId: restaurantId,
+      branchId: activeBranchId,
+      overrides: menuOverrides,
+      productsCount: products.length,
+      ...extraData
+    };
+
+    // 1. Canal BroadcastChannel nativo (0ms entre pestañas)
+    if (syncChannel) {
+      try {
+        syncChannel.postMessage(payload);
+      } catch (err) {}
+    }
+
+    // 2. LocalStorage Event (respaldo 0ms cross-tab y recarga rápida)
+    localStorage.setItem('lc_menu_sync_event', JSON.stringify(payload));
+  } catch (err) {
+    console.warn("Error en broadcastMenuSync:", err);
+  }
+}
+
 const ALLERGEN_OPTIONS = [
   { id: 'gluten', label: 'Gluten', icon: '🌾', isDiet: false },
   { id: 'lacteos', label: 'Lácteos', icon: '🥛', isDiet: false },
@@ -630,6 +662,9 @@ async function savePendingChanges() {
     updatePendingBarUI();
     renderMenuEditorTable();
 
+    // Notificar sincronización en tiempo real inmediata (0ms)
+    broadcastMenuSync();
+
     showToast("💾 ¡Cambios guardados! El menú se actualizó en las mesas.");
   } catch (error) {
     console.error("Error saving pending changes:", error);
@@ -661,6 +696,9 @@ async function deleteProduct(productId, productName) {
     delete pendingChanges[productId];
     updatePendingBarUI();
     renderMenuEditorTable();
+
+    // Notificar sincronización en tiempo real inmediata
+    broadcastMenuSync();
 
     // Cerrar modal si estaba abierto con este producto
     const modal = document.getElementById('modal-edit-product');
@@ -952,11 +990,26 @@ async function handleProductSave(form) {
       showToast(`✅ "${nameEs}" fue actualizado.`);
     }
 
+    menuOverrides[productId] = {
+      isVisible: isVisible,
+      isAvailable: isAvailable,
+      isPromo: isPromo,
+      promoPrice: promoPrice,
+      promoTag: promoTag,
+      allergens: allergens,
+      tags: tags,
+      priceOverride: price,
+      descriptionOverride: { es: descEs, en: descEs, fr: '' }
+    };
+
     delete pendingChanges[productId];
     updatePendingBarUI();
 
     modal.classList.remove('open');
     renderMenuEditorTable();
+
+    // Notificar sincronización en tiempo real inmediata
+    broadcastMenuSync();
   } catch (error) {
     console.error("Error saving product:", error);
     showToast("⚠️ Ocurrió un error al guardar el platillo.");
