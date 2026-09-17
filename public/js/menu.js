@@ -81,12 +81,12 @@ export async function initMenu() {
     renderMenu();
   });
 
+  // 1. Carga instantánea del catálogo integrado (0ms de espera para el usuario en móvil y desktop)
+  await loadLocalFallbackData();
+
+  // 2. Conexión a Firestore en tiempo real en segundo plano
   if (isConfigured && db) {
     setupRealtimeListeners();
-  } else {
-    // Si Firebase aún no tiene credenciales reales o está en demo, cargamos el catálogo base
-    console.log("Cargando catálogo local integrado de La Curandera...");
-    await loadLocalFallbackData();
   }
 }
 
