@@ -442,11 +442,23 @@ export function renderMenu() {
         return false; // El admin lo despalomeó para esta sucursal
       }
 
-      // Filtro de búsqueda
+      // Filtro de búsqueda multilingüe con normalización de diacríticos para turistas
       if (searchQuery) {
-        const name = (getLocalizedText(p.name, 'es') + ' ' + getLocalizedText(p.name, currentLang)).toLowerCase();
-        const desc = (getLocalizedText(p.description, 'es') + ' ' + getLocalizedText(p.description, currentLang)).toLowerCase();
-        return name.includes(searchQuery) || desc.includes(searchQuery);
+        const normalizeStr = (s) => (s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+        const q = normalizeStr(searchQuery);
+
+        const searchPool = [
+          getLocalizedText(p.name, 'es'),
+          getLocalizedText(p.name, 'en'),
+          getLocalizedText(p.name, 'fr'),
+          getLocalizedText(p.description, 'es'),
+          getLocalizedText(p.description, 'en'),
+          getLocalizedText(p.description, 'fr'),
+          ...(p.tags || []),
+          ...(p.allergens || [])
+        ].map(normalizeStr).join(' ');
+
+        if (!searchPool.includes(q)) return false;
       }
 
       return true;
@@ -529,31 +541,42 @@ export function renderMenu() {
         priceHtml = `<span class="product-price-pill">$${effectivePrice}</span>`;
       }
 
-      // Badges
+      // Badges dinámicos según el idioma activo
       let badgesHtml = '';
       if (!isAvailable) {
-        badgesHtml += '<span class="product-badge badge-agotado">⚠️ Agotado</span>';
+        badgesHtml += `<span class="product-badge badge-agotado">⚠️ ${t('badges.soldOut', 'Agotado')}</span>`;
       }
       if (isPromo) {
         badgesHtml += `<span class="product-badge badge-promo">🔥 ${promoTag}</span>`;
       }
-      if (productTags.includes('picante')) badgesHtml += '<span class="product-badge badge-picante">🌶️ Picante</span>';
-      if (productTags.includes('vegetariano')) badgesHtml += '<span class="product-badge badge-vegetariano">🌱 Veg</span>';
-      if (productTags.includes('vegano')) badgesHtml += '<span class="product-badge badge-vegano">🌿 Vegano</span>';
-      if (productTags.includes('recomendado')) badgesHtml += '<span class="product-badge badge-recomendado">⭐ Chef</span>';
-      if (productTags.includes('hero')) badgesHtml += '<span class="product-badge badge-especialidad">👑 Especialidad</span>';
+      if (productTags.includes('picante')) {
+        badgesHtml += `<span class="product-badge badge-picante">🌶️ ${t('badges.spicy', 'Picante')}</span>`;
+      }
+      if (productTags.includes('vegetariano')) {
+        badgesHtml += `<span class="product-badge badge-vegetariano">🌱 ${t('badges.vegetarian', 'Veg')}</span>`;
+      }
+      if (productTags.includes('vegano')) {
+        badgesHtml += `<span class="product-badge badge-vegano">🌿 ${t('badges.vegan', 'Vegano')}</span>`;
+      }
+      if (productTags.includes('recomendado')) {
+        badgesHtml += `<span class="product-badge badge-recomendado">⭐ ${t('badges.chef', 'Chef')}</span>`;
+      }
+      if (productTags.includes('hero')) {
+        badgesHtml += `<span class="product-badge badge-especialidad">👑 ${t('badges.specialty', 'Especialidad')}</span>`;
+      }
 
-      // Alérgenos compactos
-      const ALLERGEN_LABELS = {
-        gluten: '🌾 Gluten',
-        lacteos: '🥛 Lácteos',
-        frutos_secos: '🥜 Frutos S.',
-        mariscos: '🦐 Mariscos',
-        huevo: '🥚 Huevo'
+      // Alérgenos compactos traducidos
+      const ALLERGEN_SHORT_ICONS = {
+        gluten: '🌾',
+        lacteos: '🥛',
+        frutos_secos: '🥜',
+        mariscos: '🦐',
+        huevo: '🥚'
       };
       productAllergens.forEach(allId => {
-        if (ALLERGEN_LABELS[allId]) {
-          badgesHtml += `<span class="product-badge badge-allergen">${ALLERGEN_LABELS[allId]}</span>`;
+        if (ALLERGEN_SHORT_ICONS[allId]) {
+          const label = t(`allergensShort.${allId}`, allId);
+          badgesHtml += `<span class="product-badge badge-allergen">${ALLERGEN_SHORT_ICONS[allId]} ${label}</span>`;
         }
       });
 

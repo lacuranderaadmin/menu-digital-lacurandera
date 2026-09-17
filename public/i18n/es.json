@@ -3,11 +3,17 @@
     "name": "La Curandera",
     "tagline": "Mezcal · Cortes · Snacks",
     "quoteHero": "Aquí te la vamos a curar.",
-    "quoteFooter": "Bienvenido siempre a tu casa."
+    "quoteFooter": "Bienvenido siempre a tu casa.",
+    "badgeSmoke": "Cura el Alma",
+    "whatsappTooltip": "¿Reservas? Escríbenos"
+  },
+  "hero": {
+    "exploreCta": "Explora la Carta"
   },
   "nav": {
     "reviewBtn": "Déjanos tu reseña ⭐",
-    "searchPlaceholder": "Buscar platillo, mezcal, corte..."
+    "searchPlaceholder": "Buscar platillo, mezcal, corte...",
+    "scrollHint": "Desliza"
   },
   "mealSwitch": {
     "desayunos": "DESAYUNO",
@@ -45,8 +51,40 @@
     "allergens": "Alérgenos e Información",
     "prepVideo": "Ver preparación",
     "close": "Cerrar",
+    "soldOut": "Agotado",
+    "soldOutNoticeTitle": "Agotado por hoy",
+    "soldOutNoticeDesc": "Este platillo no se encuentra disponible temporalmente en esta sucursal.",
     "includedBreakfast": "Todos los desayunos incluyen: Café de olla / americano / té + fruta de temporada + jugo de temporada + bolillo tostado con mermelada de la casa y nata.",
     "includedSteaks": "Cortes 300-350g en crudo. Incluyen 3 guarniciones a elegir."
+  },
+  "badges": {
+    "soldOut": "Agotado",
+    "promo": "PROMO",
+    "spicy": "Picante",
+    "vegetarian": "Veg",
+    "vegan": "Vegano",
+    "chef": "Chef",
+    "specialty": "Especialidad"
+  },
+  "allergensShort": {
+    "gluten": "Gluten",
+    "lacteos": "Lácteos",
+    "frutos_secos": "Frutos S.",
+    "mariscos": "Mariscos",
+    "huevo": "Huevo"
+  },
+  "allergensFull": {
+    "gluten": "🌾 Contiene Gluten",
+    "lacteos": "🥛 Contiene Lácteos",
+    "picante": "🌶️ Nivel Picante",
+    "frutos_secos": "🥜 Frutos Secos",
+    "mariscos": "🦐 Mariscos / Crustáceos",
+    "huevo": "🥚 Contiene Huevo",
+    "vegetariano": "🌱 Apto para Vegetarianos",
+    "vegano": "🌿 Vegano (100% Vegetal)",
+    "hero": "👑 Especialidad de la Casa",
+    "recomendado": "⭐ Recomendación del Chef",
+    "chef": "👨‍🍳 Selección de Autor"
   },
   "essence": {
     "badge": "Nuestra Esencia",
@@ -63,11 +101,14 @@
     "hoursTitle": "Horarios de Servicio",
     "hoursDesayuno": "Desayunos: 9:00 AM - 1:30 PM",
     "hoursComida": "Comida y Cantina: 1:30 PM - 7:30 PM",
+    "openDaily": "Abierto de Lunes a Domingo",
     "contactTitle": "Contacto y Ubicación",
-    "reviewsTitle": "Opiniones",
-    "viewReviews": "Ver reseñas en Google Maps",
-    "directions": "Cómo llegar",
-    "credits": "Menú digital desarrollado con amor por CreAi Studios"
+    "reviewsTitle": "Tu Opinión nos Importa",
+    "reviewsSubtitle": "¿Disfrutaste tu experiencia curandera? Comparte tus palabras con nosotros.",
+    "viewReviews": "⭐ Escribir Reseña en Google",
+    "directions": "📍 Cómo llegar (Abrir en Google Maps)",
+    "currencyNotice": "Precios expresados en Pesos Mexicanos (MXN). Impuestos incluidos.",
+    "credits": "Menú digital artesanal por CreAi Studios · La Curandera © 2026"
   },
   "status": {
     "offline": "Sin conexión a internet. Mostrando la última carta guardada.",

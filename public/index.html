@@ -106,7 +106,7 @@
             <img src="assets/logo/logo-animado-poster.jpg" alt="La Curandera" class="hero-avatar-img">
           </video>
         </div>
-        <span class="hero-badge-smoke">Cura el Alma</span>
+        <span class="hero-badge-smoke" data-i18n="brand.badgeSmoke">Cura el Alma</span>
       </div>
 
       <div class="hero-content">
@@ -115,7 +115,7 @@
         <p class="hero-quote" data-i18n="brand.quoteHero">“Aquí te la vamos a curar.”</p>
         <div>
           <a href="#menu-interactive" class="hero-cta">
-            <span>Explora la Carta</span>
+            <span data-i18n="hero.exploreCta">Explora la Carta</span>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
               <line x1="12" y1="5" x2="12" y2="19"></line>
               <polyline points="19 12 12 19 5 12"></polyline>
@@ -234,7 +234,7 @@
         </nav>
         <div class="categories-fade-edge" id="categories-fade-edge" aria-hidden="true"></div>
         <button class="categories-scroll-hint" id="categories-scroll-hint" aria-label="Deslizar categorías a la derecha" title="Desliza para ver más categorías">
-          <span class="hint-label">Desliza</span>
+          <span class="hint-label" data-i18n="nav.scrollHint">Desliza</span>
           <svg class="hint-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="9 18 15 12 9 6"></polyline>
           </svg>
@@ -320,7 +320,7 @@
           <h4 data-i18n="footer.hoursTitle">Horarios de Servicio</h4>
           <p data-i18n="footer.hoursDesayuno">Desayunos: 9:00 AM - 1:30 PM</p>
           <p data-i18n="footer.hoursComida">Comida y Cantina: 1:30 PM - 7:30 PM</p>
-          <p style="margin-top: 0.5rem; color: var(--lc-durazno);">Abierto de Lunes a Domingo</p>
+          <p style="margin-top: 0.5rem; color: var(--lc-durazno);" data-i18n="footer.openDaily">Abierto de Lunes a Domingo</p>
         </div>
 
         <div class="footer-col">
@@ -336,19 +336,21 @@
 
         <div class="footer-col">
           <h4 data-i18n="footer.reviewsTitle">Tu Opinión nos Importa</h4>
-          <p style="margin-bottom: 0.8rem;">¿Disfrutaste tu experiencia curandera? Comparte tus palabras con nosotros.</p>
+          <p style="margin-bottom: 0.8rem;" data-i18n="footer.reviewsSubtitle">¿Disfrutaste tu experiencia curandera? Comparte tus palabras con nosotros.</p>
           <a href="#" class="btn-review" data-action="review" style="display:inline-flex;">
             <span data-i18n="footer.viewReviews">⭐ Escribir Reseña en Google</span>
           </a>
         </div>
       </div>
 
+      <p class="footer-currency-notice" data-i18n="footer.currencyNotice">Precios expresados en Pesos Mexicanos (MXN). Impuestos incluidos.</p>
+
       <div class="footer-closing">
         <div class="footer-handwritten-closing" data-i18n="brand.quoteFooter">
           “Bienvenido siempre a tu casa.”
         </div>
-        <p class="footer-credits">
-          Menú digital artesanal por <a href="https://creaistudios.com" target="_blank" rel="noopener">CreAi Studios</a> · La Curandera © 2026
+        <p class="footer-credits" data-i18n="footer.credits">
+          Menú digital artesanal por CreAi Studios · La Curandera © 2026
         </p>
       </div>
     </div>
@@ -407,7 +409,7 @@
     <svg viewBox="0 0 24 24">
       <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.664-.699c.971.53 1.769.814 2.796.814 3.182 0 5.769-2.587 5.769-5.766 0-3.18-2.587-5.766-5.769-5.766zm9.969 5.766c0 5.514-4.486 10-10 10-1.802 0-3.488-.484-4.945-1.328l-5.055 1.39 1.41-4.939c-.939-1.512-1.41-3.238-1.41-5.123 0-5.514 4.486-10 10-10s10 4.486 10 10z"/>
     </svg>
-    <span class="fab-tooltip">¿Reservas? Escríbenos</span>
+    <span class="fab-tooltip" data-i18n="brand.whatsappTooltip">¿Reservas? Escríbenos</span>
   </a>
 
   <!-- Dock Lateral Flotante de Categorías con Emojis -->
@@ -423,10 +425,10 @@
 
   <!-- Scripts ES6 Modules -->
   <script type="module">
-    import { initI18n, setLanguage } from './js/i18n.js?v=8.1';
-    import { initUI, closeProductModal } from './js/ui.js?v=8.1';
-    import { initMenu, renderCategoriesNav, renderMenu, setMealMode } from './js/menu.js?v=8.1';
-    import { initAnimations } from './js/animations.js?v=8.1';
+    import { initI18n, setLanguage } from './js/i18n.js';
+    import { initUI, closeProductModal } from './js/ui.js';
+    import { initMenu, renderCategoriesNav, renderMenu, setMealMode } from './js/menu.js';
+    import { initAnimations } from './js/animations.js';
 
     // Exponer función de cierre modal
     window.closeProductModal = closeProductModal;

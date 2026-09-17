@@ -3,11 +3,17 @@
     "name": "La Curandera",
     "tagline": "Mezcal · Steaks · Snacks",
     "quoteHero": "Here we shall cure your soul.",
-    "quoteFooter": "You are always welcome in our home."
+    "quoteFooter": "You are always welcome in our home.",
+    "badgeSmoke": "Heals the Soul",
+    "whatsappTooltip": "Reservations? Text us"
+  },
+  "hero": {
+    "exploreCta": "Explore the Menu"
   },
   "nav": {
     "reviewBtn": "Leave a review ⭐",
-    "searchPlaceholder": "Search dish, mezcal, steak..."
+    "searchPlaceholder": "Search dish, mezcal, steak...",
+    "scrollHint": "Swipe"
   },
   "mealSwitch": {
     "desayunos": "BREAKFAST",
@@ -16,62 +22,97 @@
     "scheduleNoticeAfternoon": "Lunch & Cantina Service active (1:30 PM - 7:30 PM)"
   },
   "sections": {
-    "paCurarElAlma": "Pa' Curar el Alma (Breakfast)",
+    "paCurarElAlma": "Soul Healers (Breakfast)",
     "loEnchiloso": "Lo Enchi-loso (Spicy Delights)",
-    "tacosDorados": "Tacos Dorados (Crispy Tacos)",
-    "paCaldear": "Pa' Caldear (Hearty Broths)",
-    "sandwichYMas": "Sandwiches & More",
-    "paLosPeques": "Pa' los Más Peques (Kids)",
-    "dulceRemedio": "Dulce Remedio (Desserts)",
-    "paCalentarElEspiritu": "Pa' Calentar el Espíritu (Hot Drinks)",
-    "jugueria": "Fresh Juices & Smoothies",
-    "bebidasSinAlcohol": "Non-Alcoholic Beverages",
-    "mockteleria": "Mocktelería (Craft Mocktails)",
-    "saboresDeCuaresma": "Seafood Specialties",
-    "paEmpezar": "Pa' Empezar (Starters)",
-    "paCuidarte": "Pa' Cuidarte (Fresh Salads)",
-    "sopasYPastas": "Soups & Pastas",
-    "snacks": "Snacks & Munchies",
-    "platosFuertes": "Main Courses",
-    "taqueria": "Taquería La Curandera",
-    "cortes": "Prime Steaks",
-    "burritos": "Burritos",
-    "burguersYJocho": "Burgers & Mexican Hot Dogs (Jocho)",
-    "paLosMorrillos": "Kids Menu",
-    "cantina": "Cantina La Curandera (Bar)"
+    "tacosDorados": "Crispy Tacos (Tacos Dorados)",
+    "paCaldear": "Hearty Warm Broths (Pa' Caldear)",
+    "sandwichYMas": "Artisan Sandwiches & More",
+    "paLosPeques": "Little Healers Menu (Kids)",
+    "dulceRemedio": "Sweet Remedy (Desserts)",
+    "paCalentarElEspiritu": "Coffee, Tea & Warm Spirits",
+    "jugueria": "Fresh Cold-Pressed Juices & Smoothies",
+    "bebidasSinAlcohol": "Non-Alcoholic Beverages & Sodas",
+    "mockteleria": "Handcrafted Mocktails (Zero Proof)",
+    "saboresDeCuaresma": "Fresh Coastal Seafood & Aguachiles",
+    "paEmpezar": "Starters & Appetizers to Share",
+    "paCuidarte": "Farm-Fresh Salads & Light Bites",
+    "sopasYPastas": "House Soups & Artisan Pastas",
+    "snacks": "Mexican Street Snacks & Bites",
+    "platosFuertes": "Signature Main Courses",
+    "taqueria": "Artisanal Taquería (3 Tacos)",
+    "cortes": "Prime Fire-Grilled Steaks",
+    "burritos": "Generous Northern Mexican Burritos",
+    "burguersYJocho": "Gourmet Burgers & Mexican Hot Dogs",
+    "paLosMorrillos": "Kids Lunch Favorites",
+    "cantina": "Ancestral Mezcal, Cocktails & Spirits"
   },
   "product": {
     "viewDetails": "View details",
-    "allergens": "Allergens & Info",
+    "allergens": "Allergens & Dietary Information",
     "prepVideo": "Watch preparation",
     "close": "Close",
-    "includedBreakfast": "All breakfasts include: Mexican pot coffee / American coffee / tea + fresh seasonal fruit + fresh juice + toasted bolillo bread with house jam & artisanal cream.",
-    "includedSteaks": "300-350g raw weight. Includes 3 sides of your choice."
+    "soldOut": "Sold Out",
+    "soldOutNoticeTitle": "Sold out for today",
+    "soldOutNoticeDesc": "This dish is temporarily unavailable at this branch today.",
+    "includedBreakfast": "All breakfasts include: Traditional clay-pot coffee (café de olla) / American coffee / tea + fresh seasonal fruit + fresh fruit juice + warm toasted artisan roll (bolillo) with house marmalade and clotted cream (nata).",
+    "includedSteaks": "Prime cuts 300-350g raw weight. Includes your choice of 3 sides (guacamole, grilled nopales, street corn, charro beans, or sweet grilled onions)."
+  },
+  "badges": {
+    "soldOut": "Sold Out",
+    "promo": "PROMO",
+    "spicy": "Spicy",
+    "vegetarian": "Veg",
+    "vegan": "Vegan",
+    "chef": "Chef's Pick",
+    "specialty": "House Special"
+  },
+  "allergensShort": {
+    "gluten": "Gluten",
+    "lacteos": "Dairy",
+    "frutos_secos": "Nuts",
+    "mariscos": "Seafood",
+    "huevo": "Egg"
+  },
+  "allergensFull": {
+    "gluten": "🌾 Contains Gluten",
+    "lacteos": "🥛 Contains Dairy / Lactose",
+    "picante": "🌶️ Spicy Level",
+    "frutos_secos": "🥜 Contains Tree Nuts / Peanuts",
+    "mariscos": "🦐 Fresh Shellfish & Seafood",
+    "huevo": "🥚 Contains Eggs",
+    "vegetariano": "🌱 Vegetarian Friendly",
+    "vegano": "🌿 100% Plant-Based (Vegan)",
+    "hero": "👑 House Signature Dish",
+    "recomendado": "⭐ Chef's Recommendation",
+    "chef": "👨‍🍳 Chef's Selection"
   },
   "essence": {
     "badge": "Our Essence",
-    "title": "Traditional cuisine with the authentic flavor of our roots",
-    "story": "La Curandera was born from a shared dream between my wife and I: creating a haven that brought together everything inspiring in our life journey. While searching for a name, we uncovered a treasured coincidence: in my family, my great-grandmother was the village healer (curandera), one of those revered women who, with herbs, ancestral potions, and homemade remedies, healed body and soul. We took this name in tribute to these mystical women and the ancient traditions alive in our Mexico.",
+    "title": "Traditional Mexican cuisine with the authentic soul of our roots",
+    "story": "La Curandera was born from a shared dream between my wife and I: creating a haven that brings together everything inspiring in our life journey. While searching for a name, we uncovered a treasured coincidence: in my family, my great-grandmother was the village healer (curandera)—one of those revered women who, with sacred herbs, artisanal remedies, and time-honored recipes, healed both body and spirit. We took this name in tribute to these mystical women and the ancestral Mexican culinary traditions that live on in our kitchen.",
     "founder": "Arch. Arturo Garduño & Family",
-    "clembuterol": "100% clenbuterol-free certified meat.",
-    "masaMadre": "Artisanal sourdough bread on most specialties.",
-    "frescos": "100% regional and seasonal fresh fruits & vegetables.",
-    "alMomento": "Everything freshly prepared to order with care.",
+    "clembuterol": "100% certified clenbuterol-free prime meats.",
+    "masaMadre": "Natural sourdough bread baked fresh for our specialties.",
+    "frescos": "100% local, farm-fresh regional vegetables & fruits.",
+    "alMomento": "Every single order is cooked fresh from scratch with love.",
     "quote": "Cuisine that heals. Drinks that connect."
   },
   "footer": {
     "hoursTitle": "Service Hours",
     "hoursDesayuno": "Breakfast: 9:00 AM - 1:30 PM",
-    "hoursComida": "Lunch & Cantina: 1:30 PM - 7:30 PM",
+    "hoursComida": "Lunch, Dinner & Cantina: 1:30 PM - 7:30 PM",
+    "openDaily": "Open Monday through Sunday (7 Days a Week)",
     "contactTitle": "Contact & Location",
-    "reviewsTitle": "Reviews",
-    "viewReviews": "View reviews on Google Maps",
-    "directions": "Get Directions",
-    "credits": "Digital menu proudly crafted by CreAi Studios"
+    "reviewsTitle": "Your Experience Matters",
+    "reviewsSubtitle": "Did you enjoy your Curandera culinary healing? Share your review with fellow travelers.",
+    "viewReviews": "⭐ Write a Review on Google Maps",
+    "directions": "📍 Get Directions (Open in Google Maps)",
+    "currencyNotice": "All prices are in Mexican Pesos (MXN). Taxes included.",
+    "credits": "Artisanal digital menu proudly crafted by CreAi Studios · La Curandera © 2026"
   },
   "status": {
     "offline": "No internet connection. Displaying the latest saved menu.",
-    "empty": "Oops, we are updating our menu. Please check back shortly.",
-    "itemsCount": "items available"
+    "empty": "We are currently updating our menu. Please check back shortly.",
+    "itemsCount": "dishes available"
   }
 }

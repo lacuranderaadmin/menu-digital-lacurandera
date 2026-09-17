@@ -34,13 +34,14 @@ export async function initI18n() {
 }
 
 export function getLanguage() {
-  return currentLang;
+  return currentLang || localStorage.getItem('lc-lang') || 'es';
 }
 
 export async function setLanguage(lang) {
-  if (!availableLangs.includes(lang) || lang === currentLang) return;
+  if (!availableLangs.includes(lang)) return;
   currentLang = lang;
   localStorage.setItem('lc-lang', lang);
+  window.__LC_CURRENT_LANG__ = lang;
 
   // Animación fade
   document.body.style.opacity = '0.85';
@@ -54,9 +55,10 @@ export async function setLanguage(lang) {
 }
 
 export function t(path, fallback = '') {
-  if (!translations[currentLang]) return fallback;
+  const lang = getLanguage();
+  if (!translations[lang]) return fallback || path;
   const keys = path.split('.');
-  let current = translations[currentLang];
+  let current = translations[lang];
 
   for (const key of keys) {
     if (current && typeof current === 'object' && key in current) {
@@ -82,19 +84,24 @@ export function t(path, fallback = '') {
 
 /**
  * Traduce un campo políglota { es, en, fr } de Firestore
- * Si falta en EN o FR, muestra español con un asterisco sutil (*)
  */
-export function getLocalizedText(field, lang = currentLang) {
+export function getLocalizedText(field, lang = getLanguage()) {
   if (!field) return '';
   if (typeof field === 'string') return field;
 
-  if (field[lang] && field[lang].trim() !== '') {
-    return field[lang];
+  const targetLang = lang || getLanguage() || 'es';
+  if (field[targetLang] && field[targetLang].trim() !== '') {
+    return field[targetLang];
   }
 
-  // Fallback a español
+  // Fallback a inglés si estamos en francés y falta traducción
+  if (targetLang === 'fr' && field.en && field.en.trim() !== '') {
+    return field.en;
+  }
+
+  // Fallback limpio a español si no existe en el idioma solicitado
   if (field.es && field.es.trim() !== '') {
-    return lang === 'es' ? field.es : `${field.es} *`;
+    return field.es;
   }
 
   return '';

@@ -1455,3 +1455,16 @@ body[data-meal-mode="comida"] .dock-emoji-btn.active {
     padding: 0.35rem 0.7rem;
   }
 }
+
+/* Nota de divisa y moneda para turistas */
+.footer-currency-notice {
+  font-family: var(--font-title);
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--lc-durazno);
+  opacity: 0.95;
+  margin: 1.5rem auto 0.5rem;
+  text-align: center;
+  letter-spacing: 0.03em;
+}
+
