@@ -280,6 +280,22 @@
   letter-spacing: normal;
 }
 
+/* Variantes de Color del Marquee seleccionables desde el Admin */
+.marquee-track.color-rosa .marquee-item,
+.marquee-track.color-rosa .marquee-item span {
+  color: var(--lc-rosa) !important;
+}
+
+.marquee-track.color-verde .marquee-item,
+.marquee-track.color-verde .marquee-item span {
+  color: #159F9B !important;
+}
+
+.marquee-track.color-blanco .marquee-item,
+.marquee-track.color-blanco .marquee-item span {
+  color: #FFFFFF !important;
+}
+
 .marquee-item .marquee-sep {
   width: 20px;
   height: 20px;

@@ -765,3 +765,173 @@
   background: var(--lc-rosa);
   color: var(--lc-blanco);
 }
+
+/* --------------------------------------------------------------------------
+   Configurador de la Barra de Anuncios / Marquee Ticker
+   -------------------------------------------------------------------------- */
+.marquee-admin-card {
+  background: var(--lc-crema-card);
+  border: 3px solid var(--lc-negro);
+  border-radius: var(--radius-lg);
+  box-shadow: 4px 4px 0px var(--lc-negro);
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.marquee-admin-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  border-bottom: 2px dashed rgba(28, 23, 20, 0.15);
+  padding-bottom: 0.75rem;
+}
+
+.marquee-admin-title-group {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.marquee-admin-badge {
+  background: #E85D04;
+  color: #FFFFFF;
+  font-family: var(--font-title);
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--radius-pill);
+  border: 1.5px solid var(--lc-negro);
+  box-shadow: 1px 1px 0px var(--lc-negro);
+  animation: pulsePromo 2.5s infinite ease-in-out;
+}
+
+.marquee-admin-title {
+  font-family: var(--font-title);
+  font-size: 1.05rem;
+  font-weight: 900;
+  margin: 0;
+  color: var(--lc-negro);
+}
+
+.marquee-admin-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.marquee-input-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.marquee-color-picker-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.marquee-color-swatches {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.color-swatch-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.4rem 0.75rem;
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--lc-negro);
+  background: var(--lc-blanco);
+  cursor: pointer;
+  font-family: var(--font-title);
+  font-size: 0.78rem;
+  font-weight: 800;
+  box-shadow: 2px 2px 0px var(--lc-negro);
+  transition: all var(--transition-fast);
+}
+
+.color-swatch-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 3px 3px 0px var(--lc-negro);
+}
+
+.color-swatch-btn.active {
+  background: #1C1714;
+  color: #FFFFFF;
+  border-color: #1C1714;
+}
+
+.swatch-circle {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1.5px solid #1C1714;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.marquee-live-preview-box {
+  background: #140F0D;
+  border: 2px solid var(--lc-negro);
+  border-radius: var(--radius-md);
+  box-shadow: 3px 3px 0px var(--lc-negro);
+  padding: 0.65rem 1rem;
+  overflow: hidden;
+  position: relative;
+}
+
+.preview-label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #A09890;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.35rem;
+}
+
+.marquee-mini-ticker-container {
+  overflow: hidden;
+  white-space: nowrap;
+  user-select: none;
+  width: 100%;
+}
+
+.marquee-mini-track {
+  display: inline-flex;
+  align-items: center;
+  gap: 2rem;
+  white-space: nowrap;
+  animation: marqueeMiniLoop 20s linear infinite;
+  will-change: transform;
+}
+
+@keyframes marqueeMiniLoop {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.marquee-mini-track span {
+  font-family: var(--font-title);
+  font-size: 0.85rem;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.marquee-mini-track .marquee-sep {
+  width: 16px;
+  height: 16px;
+  filter: brightness(0) invert(1);
+}

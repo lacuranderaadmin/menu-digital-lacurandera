@@ -8,6 +8,7 @@ import {
   db, 
   collection, 
   doc, 
+  getDoc,
   getDocs, 
   setDoc, 
   updateDoc, 
@@ -37,6 +38,20 @@ let visibilityFilter = 'all'; // 'all' | 'visible' | 'hidden'
 let stockFilter = 'all'; // 'all' | 'in_stock' | 'out_of_stock'
 let promoFilter = 'all'; // 'all' | 'promo_only'
 let selectedModalAllergens = new Set();
+
+// Configuración de la Barra de Anuncios en Movimiento (Marquee Ticker)
+let marqueeConfig = {
+  enabled: true,
+  mode: 'custom', // 'custom' | 'default'
+  text: 'PÁ TODO MAL, MEZCAL; Y PÁ TODO BIEN, TAMBIÉN',
+  color: 'rosa' // 'rosa' | 'verde' | 'blanco'
+};
+
+const MARQUEE_COLORS = {
+  rosa: '#C94E8F',
+  verde: '#159F9B',
+  blanco: '#FFFFFF'
+};
 
 const ALLERGEN_OPTIONS = [
   { id: 'gluten', label: 'Gluten', icon: '🌾', isDiet: false },
@@ -139,6 +154,9 @@ function setupDashboardUI(user) {
 
   // Modal para agregar/editar producto
   setupProductModal();
+
+  // Configurador de Barra de Anuncios (Marquee Ticker)
+  setupMarqueeAdmin();
 }
 
 function switchView(viewName) {
@@ -189,6 +207,9 @@ async function loadData() {
   } else {
     await loadLocalFallback();
   }
+
+  // Cargar configuración de la barra en movimiento (Marquee)
+  await loadMarqueeConfig();
 
   populateCategoryDropdowns();
   renderBranchesList();
@@ -948,4 +969,147 @@ async function handleProductSave(form) {
 function escapeHtml(str) {
   if (!str) return '';
   return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
+/* --------------------------------------------------------------------------
+   Gestión de la Barra de Anuncios y Promociones en Movimiento (Marquee Ticker)
+   -------------------------------------------------------------------------- */
+function setupMarqueeAdmin() {
+  const textInput = document.getElementById('marquee-text-input');
+  const customToggle = document.getElementById('marquee-custom-toggle');
+  const saveBtn = document.getElementById('btn-save-marquee');
+  const swatchBtns = document.querySelectorAll('.color-swatch-btn');
+
+  // Cargar estado inicial desde localStorage
+  const cached = localStorage.getItem('lc_marquee_config');
+  if (cached) {
+    try {
+      marqueeConfig = { ...marqueeConfig, ...JSON.parse(cached) };
+    } catch (e) {}
+  }
+
+  // Sincronizar UI
+  if (textInput) textInput.value = marqueeConfig.text || '';
+  if (customToggle) customToggle.checked = (marqueeConfig.mode !== 'default');
+
+  swatchBtns.forEach(btn => {
+    const col = btn.getAttribute('data-color');
+    if (col === marqueeConfig.color) {
+      btn.classList.add('active');
+    } else {
+      btn.classList.remove('active');
+    }
+
+    btn.addEventListener('click', () => {
+      swatchBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      marqueeConfig.color = col;
+      renderAdminMarqueePreview();
+    });
+  });
+
+  if (textInput) {
+    textInput.addEventListener('input', (e) => {
+      marqueeConfig.text = e.target.value.trim();
+      renderAdminMarqueePreview();
+    });
+  }
+
+  if (customToggle) {
+    customToggle.addEventListener('change', (e) => {
+      marqueeConfig.mode = e.target.checked ? 'custom' : 'default';
+      renderAdminMarqueePreview();
+    });
+  }
+
+  if (saveBtn) {
+    saveBtn.addEventListener('click', async () => {
+      await saveMarqueeConfig();
+    });
+  }
+
+  renderAdminMarqueePreview();
+}
+
+function renderAdminMarqueePreview() {
+  const track = document.getElementById('marquee-admin-preview-track');
+  if (!track) return;
+
+  const hexColor = MARQUEE_COLORS[marqueeConfig.color] || '#C94E8F';
+  const displayText = (marqueeConfig.mode === 'default' || !marqueeConfig.text.trim())
+    ? 'PÁ TODO MAL, MEZCAL; Y PÁ TODO BIEN, TAMBIÉN · COCINA QUE CURA · TRAGOS QUE CONECTAN'
+    : marqueeConfig.text.toUpperCase();
+
+  // Crear loop continuo simétrico para el mini track
+  let html = '';
+  for (let i = 0; i < 4; i++) {
+    html += `
+      <span style="color:${hexColor};">${escapeHtml(displayText)}</span>
+      <img src="assets/icons/maguey.svg" class="marquee-sep" alt="" onerror="this.src='../assets/icons/maguey.svg'" />
+      <span style="color:${hexColor}; font-weight:800;">LA CURANDERA</span>
+      <img src="assets/icons/pocima.svg" class="marquee-sep" alt="" onerror="this.src='../assets/icons/pocima.svg'" />
+    `;
+  }
+  track.innerHTML = html;
+}
+
+async function loadMarqueeConfig() {
+  if (isConfigured && db) {
+    try {
+      const docRef = doc(db, `restaurants/${restaurantId}/settings/marquee`);
+      const snap = await getDoc(docRef);
+      if (snap.exists()) {
+        marqueeConfig = { ...marqueeConfig, ...snap.data() };
+        localStorage.setItem('lc_marquee_config', JSON.stringify(marqueeConfig));
+      }
+    } catch (e) {
+      console.warn("Could not load marquee config from Firestore:", e);
+    }
+  }
+
+  // Actualizar UI del panel
+  const textInput = document.getElementById('marquee-text-input');
+  const customToggle = document.getElementById('marquee-custom-toggle');
+  if (textInput) textInput.value = marqueeConfig.text || '';
+  if (customToggle) customToggle.checked = (marqueeConfig.mode !== 'default');
+
+  document.querySelectorAll('.color-swatch-btn').forEach(btn => {
+    if (btn.getAttribute('data-color') === marqueeConfig.color) {
+      btn.classList.add('active');
+    } else {
+      btn.classList.remove('active');
+    }
+  });
+
+  renderAdminMarqueePreview();
+}
+
+async function saveMarqueeConfig() {
+  const saveBtn = document.getElementById('btn-save-marquee');
+  if (saveBtn) {
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Guardando...';
+  }
+
+  try {
+    localStorage.setItem('lc_marquee_config', JSON.stringify(marqueeConfig));
+
+    if (isConfigured && db) {
+      const docRef = doc(db, `restaurants/${restaurantId}/settings/marquee`);
+      await setDoc(docRef, {
+        ...marqueeConfig,
+        updatedAt: serverTimestamp()
+      }, { merge: true });
+    }
+
+    showToast(`✅ Barra de anuncios actualizada (${marqueeConfig.color.toUpperCase()})`);
+  } catch (err) {
+    console.error("Error saving marquee config:", err);
+    showToast(`✅ Barra de anuncios guardada localmente`);
+  } finally {
+    if (saveBtn) {
+      saveBtn.disabled = false;
+      saveBtn.textContent = '💾 Guardar Barra';
+    }
+  }
 }

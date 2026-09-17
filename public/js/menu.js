@@ -5,6 +5,7 @@
 import { 
   db, 
   collection, 
+  doc,
   onSnapshot, 
   query, 
   where, 
@@ -83,6 +84,9 @@ export async function initMenu() {
 
   // 1. Carga instantánea del catálogo integrado (0ms de espera para el usuario en móvil y desktop)
   await loadLocalFallbackData();
+
+  // Sincronizar barra de anuncios en movimiento (Marquee Ticker)
+  initMarqueeSync();
 
   // 2. Conexión a Firestore en tiempo real en segundo plano
   if (isConfigured && db) {
@@ -631,3 +635,97 @@ export function renderMenu() {
     `;
   }
 }
+
+/* --------------------------------------------------------------------------
+   Sincronización en Tiempo Real de la Barra de Anuncios (Marquee Ticker)
+   -------------------------------------------------------------------------- */
+let defaultMarqueeTrackHtml = null;
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function applyMarqueeConfig(config) {
+  const marqueeTrack = document.getElementById('marquee-track');
+  if (!marqueeTrack) return;
+
+  // Guardar HTML inicial por defecto de index.html
+  if (defaultMarqueeTrackHtml === null) {
+    defaultMarqueeTrackHtml = marqueeTrack.innerHTML;
+  }
+
+  // 1. Aplicar clase de color (rosa | verde | blanco)
+  marqueeTrack.classList.remove('color-rosa', 'color-verde', 'color-blanco');
+  const validColors = ['rosa', 'verde', 'blanco'];
+  const color = (config && validColors.includes(config.color)) ? config.color : 'rosa';
+  marqueeTrack.classList.add(`color-${color}`);
+
+  // 2. Contenido personalizado vs frases de marca
+  const isCustom = config && config.mode !== 'default' && config.text && config.text.trim().length > 0;
+
+  if (isCustom) {
+    const textUpper = config.text.trim().toUpperCase();
+    const icons = ['maguey.svg', 'pocima.svg', 'corazon.svg', 'sol.svg', 'hierbas.svg', 'limon.svg'];
+    let halfHtml = '';
+    const repeats = 6;
+    for (let i = 0; i < repeats; i++) {
+      const icon = icons[i % icons.length];
+      halfHtml += `
+        <div class="marquee-item">
+          <span>${escapeHtml(textUpper)}</span>
+          <img src="assets/icons/${icon}" class="marquee-sep" alt="" />
+        </div>
+      `;
+    }
+    // Duplicamos exactamente la mitad para mantener el desplazamiento continuo al -50%
+    marqueeTrack.innerHTML = halfHtml + halfHtml;
+  } else {
+    // Restaurar frases default conservando la animación
+    marqueeTrack.innerHTML = defaultMarqueeTrackHtml;
+  }
+}
+
+function initMarqueeSync() {
+  // 1. Carga instantánea desde localStorage
+  try {
+    const cached = localStorage.getItem('lc_marquee_config');
+    if (cached) {
+      applyMarqueeConfig(JSON.parse(cached));
+    }
+  } catch (e) {
+    console.warn('Error leyendo lc_marquee_config:', e);
+  }
+
+  // Escuchar eventos de storage (cambios en otras pestañas en la misma sesión)
+  window.addEventListener('storage', (e) => {
+    if (e.key === 'lc_marquee_config' && e.newValue) {
+      try {
+        applyMarqueeConfig(JSON.parse(e.newValue));
+      } catch (err) {}
+    }
+  });
+
+  // 2. Listener en tiempo real desde Firestore
+  if (isConfigured && db) {
+    try {
+      const marqueeDocRef = doc(db, `restaurants/${restaurantId}/settings/marquee`);
+      onSnapshot(marqueeDocRef, (snap) => {
+        if (snap.exists()) {
+          const config = snap.data();
+          localStorage.setItem('lc_marquee_config', JSON.stringify(config));
+          applyMarqueeConfig(config);
+        }
+      }, (err) => {
+        console.warn('Error en realtime listener de marquee:', err);
+      });
+    } catch (err) {
+      console.warn('Error inicializando realtime listener de marquee:', err);
+    }
+  }
+}
+
