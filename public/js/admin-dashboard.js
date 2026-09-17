@@ -25,7 +25,7 @@ let activeBranchId = 'metepec';
 let activeView = 'branches'; // 'branches' | 'menu-editor' | 'settings'
 
 let branches = [
-  { id: 'metepec', name: 'La Curandera Metepec', address: 'Tenancingo / Metepec, Edo. Méx.', phone: '+52 714 140 0000', isActive: true }
+  { id: 'metepec', name: 'La Curandera', address: 'Tenancingo / Metepec, Edo. Méx.', phone: '+52 714 140 0000', isActive: true }
 ];
 let categories = [];
 let products = [];

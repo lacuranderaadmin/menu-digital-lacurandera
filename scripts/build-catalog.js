@@ -1117,7 +1117,7 @@ async function runSeed() {
   // 2. Sucursal Inicial
   console.log("Configurando sucursal Metepec...");
   await setDoc(doc(db, \`restaurants/\${restaurantId}/branches\`, "metepec"), {
-    name: "La Curandera Metepec",
+    name: "La Curandera",
     address: "Tenancingo / Metepec, Edo. Méx.",
     phone: "+52 714 140 0000",
     whatsapp: "527141400000",
