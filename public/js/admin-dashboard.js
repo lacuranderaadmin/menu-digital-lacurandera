@@ -1045,9 +1045,9 @@ function renderAdminMarqueePreview() {
   for (let i = 0; i < 4; i++) {
     html += `
       <span style="color:${hexColor};">${escapeHtml(displayText)}</span>
-      <img src="assets/icons/maguey.svg" class="marquee-sep" alt="" onerror="this.src='../assets/icons/maguey.svg'" />
+      <img src="../assets/icons/maguey.svg" class="marquee-sep" alt="" />
       <span style="color:${hexColor}; font-weight:800;">LA CURANDERA</span>
-      <img src="assets/icons/pocima.svg" class="marquee-sep" alt="" onerror="this.src='../assets/icons/pocima.svg'" />
+      <img src="../assets/icons/pocima.svg" class="marquee-sep" alt="" />
     `;
   }
   track.innerHTML = html;
