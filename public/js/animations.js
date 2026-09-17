@@ -5,10 +5,33 @@
 
 export function initAnimations() {
   initHeroAura();
+  initHeroVideoAutoplay();
   initMarqueeInteraction();
   initScrollSpy();
   initMenuBackgroundAura();
   initBackToTopButton();
+}
+
+/**
+ * Asegura la reproducción continua del logo animado en móviles y escritorio
+ */
+function initHeroVideoAutoplay() {
+  const video = document.querySelector('.hero-avatar-video');
+  if (!video) return;
+
+  const playVideo = () => {
+    if (video.paused) {
+      const playPromise = video.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {});
+      }
+    }
+  };
+
+  playVideo();
+  ['touchstart', 'click', 'scroll', 'visibilitychange'].forEach(evt => {
+    window.addEventListener(evt, playVideo, { passive: true });
+  });
 }
 
 /**

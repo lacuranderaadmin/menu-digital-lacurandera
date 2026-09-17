@@ -69,6 +69,9 @@
   position: relative;
   z-index: 2;
   animation: floatGentle 6s ease-in-out infinite;
+  transform: translateZ(0);
+  -webkit-mask-image: -webkit-radial-gradient(white, black);
+  isolation: isolate;
 }
 
 @media (min-width: 768px) {
@@ -78,10 +81,15 @@
   }
 }
 
-.hero-avatar-img {
+.hero-avatar-img,
+.hero-avatar-video {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
+  display: block;
+  pointer-events: none;
+  border-radius: var(--radius-circle);
+  background: var(--lc-blanco);
 }
 
 .hero-badge-smoke {
