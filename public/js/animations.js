@@ -332,6 +332,11 @@ function initScrollSpy() {
     };
     syncHeader();
     window.addEventListener('resize', syncHeader, { passive: true });
+    window.addEventListener('load', syncHeader, { passive: true });
+    const siteHeaderEl = document.querySelector('.site-header');
+    if (siteHeaderEl && window.ResizeObserver) {
+      new ResizeObserver(syncHeader).observe(siteHeaderEl);
+    }
 
     const updateStickyState = () => {
       const siteHeader = document.querySelector('.site-header');

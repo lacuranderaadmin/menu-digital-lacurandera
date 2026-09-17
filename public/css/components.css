@@ -27,29 +27,33 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-top: 0.6rem;
-  padding-bottom: 0.6rem;
+  padding-top: 0.45rem;
+  padding-bottom: 0.45rem;
+  gap: 0.75rem;
 }
 
 .header-brand {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.65rem;
+  min-width: 0;
+  flex: 1;
 }
 
 .header-logo {
-  width: 48px;
-  height: 48px;
+  width: 44px;
+  height: 44px;
   border-radius: var(--radius-circle);
   object-fit: contain;
   transition: transform var(--transition-bounce);
   filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+  flex-shrink: 0;
 }
 
 @media (min-width: 768px) {
   .header-logo {
-    width: 62px;
-    height: 62px;
+    width: 52px;
+    height: 52px;
   }
 }
 
@@ -60,58 +64,127 @@
 .header-title-group {
   display: flex;
   flex-direction: column;
+  min-width: 0;
+  justify-content: center;
 }
 
 .header-title {
-  font-size: 1.1rem;
+  font-family: var(--font-title);
+  font-size: 1.05rem;
   font-weight: 900;
   letter-spacing: 0.04em;
   color: var(--lc-negro);
+  line-height: 1.15;
+  white-space: nowrap;
 }
 
 .header-subtitle {
   font-family: var(--font-mono);
-  font-size: 0.68rem;
+  font-size: 0.62rem;
   color: var(--lc-terracota);
-  letter-spacing: 0.05em;
+  letter-spacing: 0.04em;
   font-weight: 700;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+@media (min-width: 768px) {
+  .header-container {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+  .header-title {
+    font-size: 1.22rem;
+  }
+  .header-subtitle {
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+  }
 }
 
 .header-actions {
   display: flex;
-  align-items: center;
-  gap: 0.6rem;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 0.28rem;
+  flex-shrink: 0;
 }
 
 @media (min-width: 768px) {
   .header-actions {
-    gap: 1rem;
+    gap: 0.35rem;
   }
 }
 
-/* Review Button (Google Reviews) */
+/* Selector de Idioma (Fila Superior) */
+.lang-selector {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(232, 120, 80, 0.1);
+  border: 1.5px solid rgba(232, 120, 80, 0.28);
+  border-radius: var(--radius-pill);
+  padding: 2px;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.lang-btn {
+  font-family: var(--font-title);
+  font-size: 0.64rem;
+  font-weight: 800;
+  padding: 0.18rem 0.46rem;
+  border-radius: var(--radius-pill);
+  color: var(--lc-gray-800);
+  transition: all var(--transition-fast);
+  line-height: 1.15;
+  cursor: pointer;
+}
+
+.lang-btn.active {
+  background-color: var(--lc-azul);
+  color: var(--lc-blanco);
+  box-shadow: 0 2px 5px rgba(21, 159, 155, 0.35);
+}
+
+@media (min-width: 768px) {
+  .lang-btn {
+    font-size: 0.68rem;
+    padding: 0.22rem 0.55rem;
+  }
+}
+
+/* Botón Reseña Google (Fila Inferior) */
 .btn-review {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
+  justify-content: center;
+  gap: 0.35rem;
   background-color: var(--lc-rosa);
   color: var(--lc-blanco);
   font-family: var(--font-title);
-  font-size: 0.75rem;
+  font-size: 0.68rem;
   font-weight: 800;
-  padding: 0.55rem 0.9rem;
+  padding: 0.25rem 0.72rem;
   border-radius: var(--radius-pill);
   letter-spacing: 0.02em;
   transition: all var(--transition-smooth);
-  box-shadow: 0 4px 14px rgba(201, 78, 143, 0.35);
+  box-shadow: 0 3px 10px rgba(201, 78, 143, 0.3);
   animation: pulseSlight 6s infinite ease-in-out;
   white-space: nowrap;
+  line-height: 1.2;
 }
 
 .btn-review:hover {
   background-color: var(--lc-rosa-hover);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(201, 78, 143, 0.45);
+  transform: translateY(-1px);
+  box-shadow: 0 5px 14px rgba(201, 78, 143, 0.45);
+}
+
+@media (min-width: 768px) {
+  .btn-review {
+    font-size: 0.74rem;
+    padding: 0.3rem 0.88rem;
+  }
 }
 
 @media (max-width: 480px) {
@@ -121,31 +194,6 @@
   .btn-review::after {
     content: 'Reseña ⭐';
   }
-}
-
-/* Language Selector */
-.lang-selector {
-  display: inline-flex;
-  align-items: center;
-  background: rgba(232, 120, 80, 0.12);
-  border: 1.5px solid rgba(232, 120, 80, 0.3);
-  border-radius: var(--radius-pill);
-  padding: 2px;
-}
-
-.lang-btn {
-  font-family: var(--font-title);
-  font-size: 0.7rem;
-  font-weight: 800;
-  padding: 0.35rem 0.6rem;
-  border-radius: var(--radius-pill);
-  color: var(--lc-gray-800);
-  transition: all var(--transition-fast);
-}
-
-.lang-btn.active {
-  background-color: var(--lc-azul);
-  color: var(--lc-blanco);
 }
 
 /* --------------------------------------------------------------------------
