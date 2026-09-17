@@ -36,10 +36,10 @@
   </script>
 
   <!-- CSS Design System -->
-  <link rel="stylesheet" href="css/tokens.css?v=8.1">
-  <link rel="stylesheet" href="css/base.css?v=8.1">
-  <link rel="stylesheet" href="css/components.css?v=8.1">
-  <link rel="stylesheet" href="css/menu.css?v=8.1">
+  <link rel="stylesheet" href="css/tokens.css?v=9.2">
+  <link rel="stylesheet" href="css/base.css?v=9.2">
+  <link rel="stylesheet" href="css/components.css?v=9.2">
+  <link rel="stylesheet" href="css/menu.css?v=9.2">
 
   <link rel="icon" type="image/png" href="assets/logo/logo.png">
 </head>
@@ -210,7 +210,7 @@
         </div>
       </div>
 
-      <!-- Buscador Rápido con Cuadro de Texto de Diseño Gastronómico -->
+      <!-- Buscador Inteligente en Tiempo Real -->
       <div class="search-filter-section">
         <div class="search-input-wrapper">
           <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -225,6 +225,7 @@
             </svg>
           </button>
         </div>
+        <div id="search-live-status" class="search-live-status" style="display: none;"></div>
       </div>
 
       <!-- Pestañas Horizontales de Categorías -->
@@ -427,7 +428,7 @@
   <script type="module">
     import { initI18n, setLanguage } from './js/i18n.js';
     import { initUI, closeProductModal } from './js/ui.js';
-    import { initMenu, renderCategoriesNav, renderMenu, setMealMode } from './js/menu.js';
+    import { initMenu, renderCategoriesNav, renderMenu, setMealMode } from './js/menu.js?v=9.2';
     import { initAnimations } from './js/animations.js';
 
     // Exponer función de cierre modal

@@ -42,20 +42,29 @@ export async function initMenu() {
     branchId = urlParams.get('branch');
   }
 
-  // Configurar input de búsqueda con micro-debounce (70ms) y botón de limpieza
+  // Configurar buscador inteligente en tiempo real con micro-latencia (15ms), tecla ESC y botón de limpieza
   const searchInput = document.getElementById('menu-search-input');
   const clearBtn = document.getElementById('search-clear-btn');
   if (searchInput) {
     let searchDebounceTimer = null;
     searchInput.addEventListener('input', (e) => {
-      searchQuery = e.target.value.toLowerCase().trim();
+      searchQuery = e.target.value.trim();
       if (clearBtn) {
         clearBtn.style.display = searchQuery.length > 0 ? 'flex' : 'none';
       }
       clearTimeout(searchDebounceTimer);
       searchDebounceTimer = setTimeout(() => {
         renderMenu();
-      }, 70);
+      }, 15);
+    });
+
+    searchInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        searchInput.value = '';
+        searchQuery = '';
+        if (clearBtn) clearBtn.style.display = 'none';
+        renderMenu();
+      }
     });
   }
 
@@ -412,6 +421,146 @@ export function renderVerticalCategoriesDock(filteredCats) {
 }
 
 /**
+ * Escapa caracteres especiales de HTML para prevenir inyecciones XSS
+ */
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+/**
+ * Normaliza una cadena eliminando diacríticos/acentos y convirtiéndola a minúsculas
+ */
+function removeAccents(str) {
+  return (str || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+}
+
+/**
+ * Resalta y subraya visualmente las coincidencias de búsqueda en un texto original,
+ * preservando acentos y mayúsculas/minúsculas originales con protección contra inyecciones HTML.
+ */
+function highlightMatches(text, query) {
+  if (!text) return '';
+  if (!query || !query.trim()) return escapeHtml(text);
+
+  const normText = removeAccents(text);
+  const tokens = query.trim().split(/\s+/).map(removeAccents).filter(t => t.length > 0);
+  if (tokens.length === 0) return escapeHtml(text);
+
+  const intervals = [];
+  tokens.forEach(tok => {
+    let startIdx = 0;
+    while ((startIdx = normText.indexOf(tok, startIdx)) !== -1) {
+      intervals.push([startIdx, startIdx + tok.length]);
+      startIdx += tok.length;
+    }
+  });
+
+  if (intervals.length === 0) return escapeHtml(text);
+
+  // Fusionar intervalos solapados
+  intervals.sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+  const merged = [intervals[0]];
+  for (let i = 1; i < intervals.length; i++) {
+    const curr = intervals[i];
+    const prev = merged[merged.length - 1];
+    if (curr[0] <= prev[1]) {
+      prev[1] = Math.max(prev[1], curr[1]);
+    } else {
+      merged.push(curr);
+    }
+  }
+
+  // Generar HTML seguro con <mark class="search-highlight">
+  let result = '';
+  let lastIdx = 0;
+  for (const [start, end] of merged) {
+    result += escapeHtml(text.slice(lastIdx, start));
+    result += `<mark class="search-highlight">${escapeHtml(text.slice(start, end))}</mark>`;
+    lastIdx = end;
+  }
+  result += escapeHtml(text.slice(lastIdx));
+  return result;
+}
+
+/**
+ * Evalúa si un platillo coincide con los términos del buscador inteligente
+ * y calcula su puntaje de relevancia (score) para ordenamiento prioritario.
+ */
+function evaluateProductMatch(product, categoryName, query) {
+  if (!query || !query.trim()) return { matches: true, score: 0 };
+
+  const tokens = query.trim().split(/\s+/).map(removeAccents).filter(t => t.length > 0);
+  if (tokens.length === 0) return { matches: true, score: 0 };
+
+  const currentName = removeAccents(getLocalizedText(product.name));
+  const nameEs = removeAccents(getLocalizedText(product.name, 'es'));
+  const nameEn = removeAccents(getLocalizedText(product.name, 'en'));
+  const nameFr = removeAccents(getLocalizedText(product.name, 'fr'));
+
+  const currentDesc = removeAccents(getLocalizedText(product.description));
+  const descEs = removeAccents(getLocalizedText(product.description, 'es'));
+  const descEn = removeAccents(getLocalizedText(product.description, 'en'));
+  const descFr = removeAccents(getLocalizedText(product.description, 'fr'));
+
+  const catStr = removeAccents(categoryName || '');
+  const tagsStr = (product.tags || []).map(removeAccents).join(' ');
+  const allergensStr = (product.allergens || []).map(removeAccents).join(' ');
+
+  let totalScore = 0;
+
+  for (const token of tokens) {
+    let tokenScore = 0;
+
+    // 1. Coincidencia en Nombre del platillo (máxima prioridad)
+    if (currentName.includes(token)) {
+      tokenScore += 100;
+      if (currentName.startsWith(token) || currentName.split(/\s+/).some(w => w.startsWith(token))) {
+        tokenScore += 50; // Prefijo de palabra
+      }
+      if (currentName === token) {
+        tokenScore += 100; // Coincidencia exacta
+      }
+    } else if (nameEs.includes(token) || nameEn.includes(token) || nameFr.includes(token)) {
+      tokenScore += 80;
+    }
+
+    // 2. Coincidencia en Descripción del platillo
+    if (currentDesc.includes(token)) {
+      tokenScore += 35;
+    } else if (descEs.includes(token) || descEn.includes(token) || descFr.includes(token)) {
+      tokenScore += 25;
+    }
+
+    // 3. Coincidencia en Categoría
+    if (catStr.includes(token)) {
+      tokenScore += 30;
+    }
+
+    // 4. Coincidencia en Etiquetas o Alérgenos
+    if (tagsStr.includes(token)) {
+      tokenScore += 20;
+    }
+    if (allergensStr.includes(token)) {
+      tokenScore += 15;
+    }
+
+    // Si algún token no se encuentra en ningún campo, el platillo no coincide
+    if (tokenScore === 0) {
+      return { matches: false, score: 0 };
+    }
+
+    totalScore += tokenScore;
+  }
+
+  return { matches: true, score: totalScore };
+}
+
+/**
  * Renderiza el menú completo filtrado por modo y búsqueda
  */
 export function renderMenu() {
@@ -435,7 +584,9 @@ export function renderMenu() {
   let visibleProductCount = 0;
 
   activeCategories.forEach(category => {
-    // Obtener productos de esta categoría
+    const catName = getLocalizedText(category.name);
+
+    // Obtener y filtrar productos de esta categoría con el buscador inteligente
     const categoryProducts = allProducts.filter(p => {
       const matchCat = p.categoryId === category.id || p.categoryId === category.slug;
       if (!matchCat) return false;
@@ -446,29 +597,22 @@ export function renderMenu() {
         return false; // El admin lo despalomeó para esta sucursal
       }
 
-      // Filtro de búsqueda multilingüe con normalización de diacríticos para turistas
+      // Filtro de búsqueda inteligente
       if (searchQuery) {
-        const normalizeStr = (s) => (s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
-        const q = normalizeStr(searchQuery);
-
-        const searchPool = [
-          getLocalizedText(p.name, 'es'),
-          getLocalizedText(p.name, 'en'),
-          getLocalizedText(p.name, 'fr'),
-          getLocalizedText(p.description, 'es'),
-          getLocalizedText(p.description, 'en'),
-          getLocalizedText(p.description, 'fr'),
-          ...(p.tags || []),
-          ...(p.allergens || [])
-        ].map(normalizeStr).join(' ');
-
-        if (!searchPool.includes(q)) return false;
+        const evalResult = evaluateProductMatch(p, catName, searchQuery);
+        if (!evalResult.matches) return false;
+        p._searchScore = evalResult.score;
       }
 
       return true;
     });
 
     if (categoryProducts.length === 0) return;
+
+    // Si hay búsqueda activa, ordenar los platillos por puntaje de relevancia
+    if (searchQuery) {
+      categoryProducts.sort((a, b) => (b._searchScore || 0) - (a._searchScore || 0));
+    }
 
     visibleProductCount += categoryProducts.length;
 
@@ -477,14 +621,13 @@ export function renderMenu() {
     section.className = 'category-section';
     section.id = `cat-${category.id || category.slug}`;
 
-    const catName = getLocalizedText(category.name);
     const iconSrc = category.iconSvg || `assets/icons/${category.icon || 'maguey'}.svg`;
 
     section.innerHTML = `
       <div class="category-header">
         <h2 class="category-header-title">
           <img src="${iconSrc}" class="section-brand-icon" alt="" onerror="this.src='assets/icons/maguey.svg'"/>
-          <span>${catName}</span>
+          <span>${escapeHtml(catName)}</span>
         </h2>
         <span class="category-count">${categoryProducts.length} ${t('status.itemsCount', 'platillos')}</span>
       </div>
@@ -500,11 +643,20 @@ export function renderMenu() {
         ? override.priceOverride 
         : product.price;
 
-      const effectiveDesc = (override && override.descriptionOverride)
+      const rawProductDesc = (override && override.descriptionOverride)
         ? getLocalizedText(override.descriptionOverride)
         : getLocalizedText(product.description);
 
-      const productName = getLocalizedText(product.name);
+      const rawProductName = getLocalizedText(product.name);
+
+      // Subrayado y resaltado inteligente de coincidencias de búsqueda
+      const productNameHtml = searchQuery 
+        ? highlightMatches(rawProductName, searchQuery) 
+        : escapeHtml(rawProductName);
+
+      const productDescHtml = searchQuery 
+        ? highlightMatches(rawProductDesc || '', searchQuery) 
+        : escapeHtml(rawProductDesc || '');
 
       // Control de disponibilidad (stock)
       const isAvailable = (override && override.isAvailable !== undefined)
@@ -551,7 +703,7 @@ export function renderMenu() {
         badgesHtml += `<span class="product-badge badge-agotado">⚠️ ${t('badges.soldOut', 'Agotado')}</span>`;
       }
       if (isPromo) {
-        badgesHtml += `<span class="product-badge badge-promo">🔥 ${promoTag}</span>`;
+        badgesHtml += `<span class="product-badge badge-promo">🔥 ${escapeHtml(promoTag)}</span>`;
       }
       if (productTags.includes('picante')) {
         badgesHtml += `<span class="product-badge badge-picante">🌶️ ${t('badges.spicy', 'Picante')}</span>`;
@@ -580,17 +732,17 @@ export function renderMenu() {
       productAllergens.forEach(allId => {
         if (ALLERGEN_SHORT_ICONS[allId]) {
           const label = t(`allergensShort.${allId}`, allId);
-          badgesHtml += `<span class="product-badge badge-allergen">${ALLERGEN_SHORT_ICONS[allId]} ${label}</span>`;
+          badgesHtml += `<span class="product-badge badge-allergen">${ALLERGEN_SHORT_ICONS[allId]} ${escapeHtml(label)}</span>`;
         }
       });
 
       card.innerHTML = `
         <div class="product-card-body">
           <div class="product-header-line">
-            <h3 class="product-name">${productName}</h3>
+            <h3 class="product-name">${productNameHtml}</h3>
             ${priceHtml}
           </div>
-          <p class="product-desc">${effectiveDesc || ''}</p>
+          <p class="product-desc">${productDescHtml}</p>
           <div class="product-card-footer">
             <div class="product-tag-badges">${badgesHtml}</div>
             <span class="view-details-prompt">${t('product.viewDetails', 'Detalles')} &rarr;</span>
@@ -601,8 +753,9 @@ export function renderMenu() {
       card.addEventListener('click', () => {
         openProductModal({
           ...product,
+          name: rawProductName,
           effectivePrice,
-          effectiveDesc,
+          effectiveDesc: rawProductDesc,
           isAvailable,
           isPromo,
           promoPrice,
@@ -621,6 +774,38 @@ export function renderMenu() {
   container.innerHTML = '';
   container.appendChild(fragment);
 
+  // Actualizar píldora de estado de búsqueda en tiempo real
+  const statusEl = document.getElementById('search-live-status');
+  if (statusEl) {
+    if (searchQuery && searchQuery.length > 0) {
+      statusEl.style.display = 'flex';
+      const countText = visibleProductCount === 1 ? '1 platillo' : `${visibleProductCount} platillos`;
+      statusEl.innerHTML = `
+        <div class="search-live-status-text">
+          <span>🔎</span>
+          <span>Resultados para <span class="search-status-query">"${escapeHtml(searchQuery)}"</span></span>
+          <span class="search-status-count">${countText}</span>
+        </div>
+        <button type="button" class="search-status-reset-btn" id="search-status-reset-btn" title="Limpiar búsqueda">✕ Limpiar</button>
+      `;
+      const resetBtn = document.getElementById('search-status-reset-btn');
+      if (resetBtn) {
+        resetBtn.addEventListener('click', () => {
+          const searchInput = document.getElementById('menu-search-input');
+          const clearBtn = document.getElementById('search-clear-btn');
+          if (searchInput) searchInput.value = '';
+          searchQuery = '';
+          if (clearBtn) clearBtn.style.display = 'none';
+          statusEl.style.display = 'none';
+          renderMenu();
+        });
+      }
+    } else {
+      statusEl.style.display = 'none';
+      statusEl.innerHTML = '';
+    }
+  }
+
   // Si no hay productos visibles
   if (visibleProductCount === 0) {
     container.innerHTML = `
@@ -629,10 +814,23 @@ export function renderMenu() {
           <circle cx="32" cy="32" r="28"/>
           <path d="M22 38C26 34 38 34 42 38M24 26H24.02M40 26H40.02"/>
         </svg>
-        <h3 class="empty-state-title">${t('status.empty', 'Estamos actualizando la carta')}</h3>
-        <p class="empty-state-desc">${searchQuery ? 'No encontramos platillos con esa búsqueda.' : 'Regresa en un momento.'}</p>
+        <h3 class="empty-state-title">${searchQuery ? 'No encontramos coincidencias' : t('status.empty', 'Estamos actualizando la carta')}</h3>
+        <p class="empty-state-desc">${searchQuery ? `No hay platillos que coincidan con "${escapeHtml(searchQuery)}". Intenta buscar por ingrediente, corte, mezcal o categoría.` : 'Regresa en un momento.'}</p>
+        ${searchQuery ? `<button type="button" class="btn-admin-primary" id="empty-clear-search-btn" style="margin-top: 1.25rem; font-size: 0.88rem; padding: 0.6rem 1.4rem; cursor: pointer;">Ver toda la carta</button>` : ''}
       </div>
     `;
+
+    const emptyClear = document.getElementById('empty-clear-search-btn');
+    if (emptyClear) {
+      emptyClear.addEventListener('click', () => {
+        const searchInput = document.getElementById('menu-search-input');
+        const clearBtn = document.getElementById('search-clear-btn');
+        if (searchInput) searchInput.value = '';
+        searchQuery = '';
+        if (clearBtn) clearBtn.style.display = 'none';
+        renderMenu();
+      });
+    }
   }
 }
 
@@ -640,15 +838,6 @@ export function renderMenu() {
    Sincronización en Tiempo Real de la Barra de Anuncios (Marquee Ticker)
    -------------------------------------------------------------------------- */
 let defaultMarqueeTrackHtml = null;
-
-function escapeHtml(str) {
-  if (!str) return '';
-  return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
-}
 
 function applyMarqueeConfig(config) {
   const marqueeTrack = document.getElementById('marquee-track');
