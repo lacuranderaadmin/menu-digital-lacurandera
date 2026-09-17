@@ -1216,7 +1216,7 @@ body[data-meal-mode="desayuno"] .product-card:hover .view-details-prompt {
   position: fixed;
   right: 8px;
   left: auto;
-  top: 45%;
+  top: 50%;
   transform: translateY(-50%);
   z-index: 95;
   display: flex;
@@ -1228,9 +1228,9 @@ body[data-meal-mode="desayuno"] .product-card:hover .view-details-prompt {
   border: 2px solid var(--lc-negro);
   border-radius: 22px;
   box-shadow: -3px 3px 0px var(--lc-negro), 0 10px 28px rgba(0, 0, 0, 0.12);
-  padding: 6px 3px 6px;
+  padding: 6px 3px;
   width: 40px;
-  max-height: 60vh;
+  max-height: min(88vh, 88dvh);
   box-sizing: border-box;
   opacity: 0;
   pointer-events: none;
@@ -1301,7 +1301,7 @@ body[data-meal-mode="desayuno"] .product-card:hover .view-details-prompt {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 5px;
+  gap: 3px;
   overflow-y: auto;
   overflow-x: hidden;
   scrollbar-width: none;
@@ -1316,9 +1316,9 @@ body[data-meal-mode="desayuno"] .product-card:hover .view-details-prompt {
 
 /* Botón individual de Emoji */
 .dock-emoji-btn {
-  width: 32px;
-  height: 32px;
-  min-height: 32px;
+  width: 30px;
+  height: 30px;
+  min-height: 28px;
   border-radius: 50%;
   background: transparent;
   border: 1.5px solid transparent;
@@ -1331,10 +1331,11 @@ body[data-meal-mode="desayuno"] .product-card:hover .view-details-prompt {
   position: relative;
   transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
   -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
 .dock-emoji {
-  font-size: 1.12rem;
+  font-size: 1.05rem;
   line-height: 1;
   display: flex;
   align-items: center;
@@ -1425,9 +1426,10 @@ body[data-meal-mode="comida"] .dock-emoji-btn.active {
     right: 4px;
     left: auto;
     width: 36px;
-    padding: 4px 2px 4px;
-    max-height: 56vh;
-    border-radius: 18px;
+    padding: 5px 2px;
+    max-height: calc(100dvh - 120px);
+    max-height: min(86vh, 86dvh);
+    border-radius: 20px;
     box-shadow: -2px 2px 0px var(--lc-negro), 0 6px 20px rgba(0, 0, 0, 0.1);
   }
 
@@ -1438,14 +1440,19 @@ body[data-meal-mode="comida"] .dock-emoji-btn.active {
     height: 36px;
   }
 
+  .dock-emojis-container {
+    gap: 2.5px;
+  }
+
   .dock-emoji-btn {
-    width: 28px;
-    height: 28px;
-    min-height: 28px;
+    width: 27px;
+    height: 27px;
+    min-height: 25px;
+    touch-action: manipulation;
   }
 
   .dock-emoji {
-    font-size: 0.98rem;
+    font-size: 0.94rem;
   }
 
   .dock-tooltip {

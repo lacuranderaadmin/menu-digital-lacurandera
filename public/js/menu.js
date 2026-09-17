@@ -260,20 +260,41 @@ export function renderCategoriesNav() {
       document.querySelectorAll('.category-tab').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
 
-      const targetEl = document.getElementById(`cat-${cat.id || cat.slug}`);
+      const targetId = `cat-${cat.id || cat.slug}`;
+      let targetEl = document.getElementById(targetId);
+
+      if (!targetEl && searchQuery) {
+        const searchInput = document.getElementById('menu-search-input');
+        const clearBtn = document.getElementById('search-clear-btn');
+        if (searchInput) searchInput.value = '';
+        if (clearBtn) clearBtn.style.display = 'none';
+        searchQuery = '';
+        renderMenu();
+        targetEl = document.getElementById(targetId);
+      }
+
       if (targetEl) {
         const siteHeader = document.querySelector('.site-header');
         const stickyNav = document.querySelector('.categories-nav-wrapper');
-        const headerH = siteHeader ? siteHeader.offsetHeight : 65;
-        const navH = stickyNav ? stickyNav.offsetHeight : 55;
-        const totalOffset = headerH + navH + 16;
+        const headerH = siteHeader ? siteHeader.getBoundingClientRect().height : 70;
+        const navH = stickyNav ? stickyNav.getBoundingClientRect().height : 52;
+        const totalOffset = headerH + navH + 12;
         const rect = targetEl.getBoundingClientRect();
         const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        const targetPos = rect.top + scrollTop - totalOffset;
+        const targetPos = Math.round(rect.top + scrollTop - totalOffset);
         window.scrollTo({ top: Math.max(0, targetPos), behavior: 'smooth' });
       }
 
-      // Desplazar únicamente la barra horizontal de categorías, NUNCA la ventana principal
+      // Sincronizar dock vertical
+      const dockBtns = document.querySelectorAll('.dock-emoji-btn');
+      dockBtns.forEach(b => {
+        if (b.getAttribute('data-target') === targetId) {
+          dockBtns.forEach(d => d.classList.remove('active'));
+          b.classList.add('active');
+        }
+      });
+
+      // Desplazar la barra horizontal de categorías
       const bar = document.getElementById('categories-bar');
       if (bar) {
         bar.scrollTo({
@@ -406,16 +427,28 @@ export function renderVerticalCategoriesDock(filteredCats) {
 
       showTooltip(btn, `${emoji} ${catName}`);
 
-      const targetEl = document.getElementById(targetId);
+      let targetEl = document.getElementById(targetId);
+
+      // Si la categoría no está visible por un término de búsqueda activo, limpiar el buscador
+      if (!targetEl && searchQuery) {
+        const searchInput = document.getElementById('menu-search-input');
+        const clearBtn = document.getElementById('search-clear-btn');
+        if (searchInput) searchInput.value = '';
+        if (clearBtn) clearBtn.style.display = 'none';
+        searchQuery = '';
+        renderMenu();
+        targetEl = document.getElementById(targetId);
+      }
+
       if (targetEl) {
         const siteHeader = document.querySelector('.site-header');
         const stickyNav = document.querySelector('.categories-nav-wrapper');
-        const headerH = siteHeader ? siteHeader.offsetHeight : 88;
-        const navH = stickyNav ? stickyNav.offsetHeight : 55;
-        const totalOffset = headerH + navH + 16;
+        const headerH = siteHeader ? siteHeader.getBoundingClientRect().height : 70;
+        const navH = stickyNav ? stickyNav.getBoundingClientRect().height : 52;
+        const totalOffset = headerH + navH + 12;
         const rect = targetEl.getBoundingClientRect();
         const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        const targetPos = rect.top + scrollTop - totalOffset;
+        const targetPos = Math.round(rect.top + scrollTop - totalOffset);
         window.scrollTo({ top: Math.max(0, targetPos), behavior: 'smooth' });
       }
 
