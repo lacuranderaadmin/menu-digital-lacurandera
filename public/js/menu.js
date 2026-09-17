@@ -396,7 +396,7 @@ export function renderVerticalCategoriesDock(filteredCats) {
       const isCollapsed = dock.classList.toggle('collapsed');
       const icon = toggleBtn.querySelector('.dock-toggle-icon');
       if (icon) {
-        icon.textContent = isCollapsed ? '›' : '‹';
+        icon.textContent = isCollapsed ? '‹' : '›';
       }
       toggleBtn.setAttribute('title', isCollapsed ? 'Mostrar categorías' : 'Ocultar categorías');
       toggleBtn.setAttribute('aria-label', isCollapsed ? 'Mostrar categorías' : 'Ocultar categorías');
