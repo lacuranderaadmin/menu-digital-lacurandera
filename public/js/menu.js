@@ -1118,4 +1118,27 @@ export function applyRestaurantSettings(settings) {
       a.href = settings.instagram;
     });
   }
+
+  // 9. Mapa embebido de Google Maps en el footer
+  const mapIframe = document.querySelector('.footer-map-iframe');
+  if (mapIframe) {
+    let embedSrc = '';
+    const effectivePlaceId = settings.googlePlaceId || 'ChIJu4FWH86_zYURzAbOmQ_PqTE';
+    if (effectivePlaceId && effectivePlaceId.startsWith('ChIJ')) {
+      embedSrc = `https://maps.google.com/maps?q=place_id:${encodeURIComponent(effectivePlaceId)}&output=embed`;
+    } else if (settings.mapsUrl) {
+      const coordsMatch = settings.mapsUrl.match(/!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/) ||
+                          settings.mapsUrl.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+      if (coordsMatch) {
+        embedSrc = `https://maps.google.com/maps?q=${coordsMatch[1]},${coordsMatch[2]}&t=&z=16&ie=UTF8&iwloc=&output=embed`;
+      } else if (settings.address) {
+        embedSrc = `https://maps.google.com/maps?q=${encodeURIComponent(settings.address)}&t=&z=16&ie=UTF8&iwloc=&output=embed`;
+      }
+    } else if (settings.address) {
+      embedSrc = `https://maps.google.com/maps?q=${encodeURIComponent(settings.address)}&t=&z=16&ie=UTF8&iwloc=&output=embed`;
+    }
+    if (embedSrc && mapIframe.src !== embedSrc) {
+      mapIframe.src = embedSrc;
+    }
+  }
 }

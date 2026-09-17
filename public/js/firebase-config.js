@@ -12,7 +12,7 @@ export const firebaseConfig = {
   appId: "1:551990276427:web:9ea00382aceeb44bb978ce",
   measurementId: "G-NEN7QP4K7R",
   // Si tienes el Google Place ID para reseñas:
-  googlePlaceId: "ChIJN1t_tDeuEmsRUsoyG83frY4",
+  googlePlaceId: "ChIJu4FWH86_zYURzAbOmQ_PqTE",
   // WhatsApp oficial del restaurante (formato internacional sin +)
   whatsappNumber: "527141400000"
 };

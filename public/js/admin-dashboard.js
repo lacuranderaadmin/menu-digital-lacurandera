@@ -1204,27 +1204,130 @@ let restaurantSettings = {
 };
 
 /**
+ * Convierte un par de identificadores hexadecimales de Google Maps (feature_id:cid) en su Google Place ID oficial (ChIJ...)
+ */
+function hexToPlaceId(hex1, hex2) {
+  try {
+    const cleanHex1 = hex1.replace(/^0x/i, '').padStart(16, '0');
+    const cleanHex2 = hex2.replace(/^0x/i, '').padStart(16, '0');
+
+    const bytes1 = [];
+    for (let i = 14; i >= 0; i -= 2) {
+      bytes1.push(parseInt(cleanHex1.substr(i, 2), 16));
+    }
+    const bytes2 = [];
+    for (let i = 14; i >= 0; i -= 2) {
+      bytes2.push(parseInt(cleanHex2.substr(i, 2), 16));
+    }
+
+    const fullBytes = [0x0a, 0x12, 0x09, ...bytes1, 0x11, ...bytes2];
+    let binary = '';
+    for (let i = 0; i < fullBytes.length; i++) {
+      binary += String.fromCharCode(fullBytes[i]);
+    }
+    return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  } catch (e) {
+    console.warn("Error convirtiendo hex a Place ID:", e);
+    return null;
+  }
+}
+
+/**
  * Extrae inteligentemente el Google Place ID a partir de URLs comunes de Google Maps
  */
 function extractPlaceIdFromUrl(url) {
   if (!url || typeof url !== 'string') return null;
   const trimmed = url.trim();
 
+  // 1. Si ya es un Place ID directo válido
   if (/^ChIJ[a-zA-Z0-9_-]{20,}$/.test(trimmed)) {
     return trimmed;
   }
 
+  // 2. Parámetro explícito ?placeid= o ?place_id=
   const placeIdParam = trimmed.match(/[?&]placeid=([^&#]+)/i) || trimmed.match(/[?&]place_id=([^&#]+)/i);
   if (placeIdParam && placeIdParam[1]) {
     return decodeURIComponent(placeIdParam[1]);
   }
 
+  // 3. Cadena protobuf con ChIJ directo !1s(ChIJ...)
   const chijMatch = trimmed.match(/!1s(ChIJ[a-zA-Z0-9_-]+)/);
   if (chijMatch && chijMatch[1]) {
     return chijMatch[1];
   }
 
+  // 4. Par hexadecimal estándar de Google Maps: !1s0x...:0x... o 0x...:0x...
+  const hexPairMatch = trimmed.match(/!1s(0x[0-9a-fA-F]+):(0x[0-9a-fA-F]+)/) ||
+                       trimmed.match(/(0x[0-9a-fA-F]{12,}):(0x[0-9a-fA-F]{12,})/);
+  if (hexPairMatch && hexPairMatch[1] && hexPairMatch[2]) {
+    const computedPlaceId = hexToPlaceId(hexPairMatch[1], hexPairMatch[2]);
+    if (computedPlaceId) return computedPlaceId;
+  }
+
+  // 5. Enlaces compartidos conocidos de La Curandera
+  if (trimmed.includes('EKib5MFWwCC9paop9') || trimmed.includes('CyqxTuBsF8Gb') || trimmed.toLowerCase().includes('la+curandera')) {
+    return 'ChIJu4FWH86_zYURzAbOmQ_PqTE';
+  }
+
   return null;
+}
+
+/**
+ * Actualiza la vista previa del mapa y el botón de prueba de reseñas en el panel admin
+ */
+function updateAdminMapAndReviewPreview(placeId, mapsUrl) {
+  const effectivePlaceId = placeId || 'ChIJu4FWH86_zYURzAbOmQ_PqTE';
+  const effectiveMapsUrl = mapsUrl || 'https://maps.app.goo.gl/EKib5MFWwCC9paop9';
+
+  const testBtn = document.getElementById('btn-test-review-link');
+  if (testBtn) {
+    testBtn.href = (effectivePlaceId && effectivePlaceId.startsWith('ChIJ'))
+      ? `https://search.google.com/local/writereview?placeid=${effectivePlaceId}`
+      : effectiveMapsUrl;
+  }
+
+  const mapPreview = document.getElementById('admin-map-preview');
+  if (mapPreview) {
+    let embedSrc = '';
+    if (effectivePlaceId && effectivePlaceId.startsWith('ChIJ')) {
+      embedSrc = `https://maps.google.com/maps?q=place_id:${encodeURIComponent(effectivePlaceId)}&output=embed`;
+    } else {
+      const coordsMatch = effectiveMapsUrl.match(/!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/) ||
+                          effectiveMapsUrl.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+      if (coordsMatch) {
+        embedSrc = `https://maps.google.com/maps?q=${coordsMatch[1]},${coordsMatch[2]}&t=&z=16&ie=UTF8&iwloc=&output=embed`;
+      } else {
+        embedSrc = `https://maps.google.com/maps?q=${encodeURIComponent('La Curandera Tenancingo Estado de México')}&t=&z=16&ie=UTF8&iwloc=&output=embed`;
+      }
+    }
+    if (embedSrc && mapPreview.src !== embedSrc) {
+      mapPreview.src = embedSrc;
+    }
+  }
+
+  const badge = document.getElementById('place-id-badge');
+  const statusText = document.getElementById('place-id-status-text');
+  if (effectivePlaceId && effectivePlaceId.startsWith('ChIJ')) {
+    if (badge) {
+      badge.textContent = '📍 Place ID Activo';
+      badge.style.color = '#159F9B';
+      badge.style.background = '#E6FAF8';
+    }
+    if (statusText) {
+      statusText.textContent = `✅ Place ID activo: ${effectivePlaceId}`;
+      statusText.style.color = '#159F9B';
+    }
+  } else {
+    if (badge) {
+      badge.textContent = '⚠️ Modo Enlace Directo';
+      badge.style.color = '#C94E8F';
+      badge.style.background = '#FFF0F5';
+    }
+    if (statusText) {
+      statusText.textContent = 'ℹ️ Usando enlace directo de Google Maps para reseñas';
+      statusText.style.color = 'var(--lc-gray-500)';
+    }
+  }
 }
 
 /**
@@ -1291,14 +1394,25 @@ function populateSettingsForm() {
 
   setVal('setting-days-label', sched.days || 'Lunes a Domingo');
 
-  setVal('setting-maps-url', restaurantSettings.mapsUrl || 'https://maps.app.goo.gl/EKib5MFWwCC9paop9');
-  setVal('setting-place-id', restaurantSettings.googlePlaceId || 'ChIJN1t_tDeuEmsRUsoyG83frY4');
+  const defaultMaps = 'https://www.google.com/maps/place/LA+CURANDERA/@18.9208012,-99.6204239,272m/data=!3m1!1e3!4m6!3m5!1s0x85cdbfce1f5681bb:0x31a9cf0f99ce06cc!8m2!3d18.9208394!4d-99.6204268!16s%2Fg%2F11tft6mf4c!5m1!1e3';
+  const mapsVal = restaurantSettings.mapsUrl || defaultMaps;
+  let placeIdVal = restaurantSettings.googlePlaceId || 'ChIJu4FWH86_zYURzAbOmQ_PqTE';
+
+  if (!placeIdVal || !placeIdVal.startsWith('ChIJ')) {
+    const autoExtracted = extractPlaceIdFromUrl(mapsVal);
+    if (autoExtracted) placeIdVal = autoExtracted;
+  }
+
+  setVal('setting-maps-url', mapsVal);
+  setVal('setting-place-id', placeIdVal);
 
   setVal('setting-whatsapp', restaurantSettings.whatsapp || '527141400000');
   setVal('setting-phone', restaurantSettings.phone || '+52 714 140 0000');
   setVal('setting-whatsapp-msg', restaurantSettings.whatsappMessage || '¡Hola La Curandera! Me gustaría hacer una consulta sobre su menú y reservas.');
   setVal('setting-address', restaurantSettings.address || 'Tenancingo / Metepec, Estado de México');
   setVal('setting-instagram', restaurantSettings.instagram || 'https://instagram.com/lacurandera.mx');
+
+  updateAdminMapAndReviewPreview(placeIdVal, mapsVal);
 }
 
 /**
@@ -1308,14 +1422,49 @@ function setupRestaurantSettingsAdmin() {
   const form = document.getElementById('form-restaurant-settings');
   const mapsInput = document.getElementById('setting-maps-url');
   const placeIdInput = document.getElementById('setting-place-id');
+  const addressInput = document.getElementById('setting-address');
 
-  if (mapsInput && placeIdInput) {
-    mapsInput.addEventListener('input', () => {
-      const extracted = extractPlaceIdFromUrl(mapsInput.value);
-      if (extracted) {
-        placeIdInput.value = extracted;
-        showToast(`📍 Place ID detectado automáticamente: ${extracted}`);
-      }
+  const handleMapsUrlChange = () => {
+    if (!mapsInput || !placeIdInput) return;
+    const rawVal = mapsInput.value.trim();
+
+    // Si el usuario pegó el enlace en la dirección por error
+    if (addressInput && (addressInput.value.includes('http') || addressInput.value.includes('maps.google') || addressInput.value.includes('goo.gl'))) {
+      mapsInput.value = addressInput.value.trim();
+      addressInput.value = 'Tenancingo / Metepec, Estado de México';
+    }
+
+    const extracted = extractPlaceIdFromUrl(mapsInput.value);
+    if (extracted) {
+      placeIdInput.value = extracted;
+      updateAdminMapAndReviewPreview(extracted, mapsInput.value);
+      showToast(`📍 Place ID detectado automáticamente: ${extracted}`);
+    } else {
+      updateAdminMapAndReviewPreview(placeIdInput.value, mapsInput.value);
+    }
+  };
+
+  if (mapsInput) {
+    ['input', 'change', 'paste'].forEach(evt => {
+      mapsInput.addEventListener(evt, () => setTimeout(handleMapsUrlChange, 10));
+    });
+  }
+
+  if (addressInput) {
+    ['input', 'change', 'paste'].forEach(evt => {
+      addressInput.addEventListener(evt, () => {
+        if (addressInput.value.includes('http') || addressInput.value.includes('maps.google') || addressInput.value.includes('goo.gl')) {
+          setTimeout(handleMapsUrlChange, 10);
+        }
+      });
+    });
+  }
+
+  if (placeIdInput) {
+    ['input', 'change'].forEach(evt => {
+      placeIdInput.addEventListener(evt, () => {
+        updateAdminMapAndReviewPreview(placeIdInput.value, mapsInput ? mapsInput.value : '');
+      });
     });
   }
 
@@ -1341,9 +1490,15 @@ async function saveRestaurantSettings() {
 
   const mapsUrlVal = getVal('setting-maps-url', 'https://maps.app.goo.gl/EKib5MFWwCC9paop9');
   let placeIdVal = getVal('setting-place-id');
-  if (!placeIdVal) {
+  if (!placeIdVal || !placeIdVal.startsWith('ChIJ')) {
     const autoExtracted = extractPlaceIdFromUrl(mapsUrlVal);
-    if (autoExtracted) placeIdVal = autoExtracted;
+    if (autoExtracted) {
+      placeIdVal = autoExtracted;
+    } else {
+      placeIdVal = 'ChIJu4FWH86_zYURzAbOmQ_PqTE';
+    }
+    const placeIdEl = document.getElementById('setting-place-id');
+    if (placeIdEl) placeIdEl.value = placeIdVal;
   }
 
   const updatedSettings = {

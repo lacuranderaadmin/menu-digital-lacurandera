@@ -311,27 +311,47 @@
 
           <!-- Tarjeta 3: Google Maps y Botón de Reseñas ⭐ -->
           <div style="background:var(--lc-blanco); border:3px solid var(--lc-negro); border-radius:var(--radius-lg); box-shadow:5px 5px 0px var(--lc-negro); padding:1.75rem;">
-            <h2 style="font-family:var(--font-title); font-size:1.15rem; font-weight:900; margin-bottom:0.75rem; display:flex; align-items:center; gap:0.5rem;">
-              <span>⭐</span> Google Maps y Botón de Reseñas
-            </h2>
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem; margin-bottom:0.75rem;">
+              <h2 style="font-family:var(--font-title); font-size:1.15rem; font-weight:900; display:flex; align-items:center; gap:0.5rem; margin:0;">
+                <span>⭐</span> Google Maps y Botón de Reseñas
+              </h2>
+              <span id="place-id-badge" style="font-family:var(--font-mono); font-size:0.75rem; font-weight:800; padding:0.25rem 0.65rem; border-radius:4px; border:2px solid var(--lc-negro); background:#E6FAF8; color:#159F9B;">
+                📍 Place ID Activo
+              </span>
+            </div>
             <p style="font-size:0.82rem; color:var(--lc-gray-500); margin-bottom:1.25rem; line-height:1.4;">
-              Pega aquí el enlace de Google Maps de La Curandera. El botón <strong>"Déjanos tu reseña ⭐"</strong> del menú abrirá este enlace directamente.
+              Pega aquí el enlace de Google Maps de La Curandera. El sistema detecta y genera automáticamente el <strong>Google Place ID</strong> para el botón de reseñas y actualiza el mapa interactivo del menú en tiempo real.
             </p>
 
             <div class="form-group" style="margin-bottom:1.25rem;">
               <label class="form-label" for="setting-maps-url">URL de Google Maps (Recomendado)</label>
-              <input type="url" id="setting-maps-url" class="form-input" value="https://maps.app.goo.gl/EKib5MFWwCC9paop9" placeholder="https://maps.app.goo.gl/..." />
+              <input type="url" id="setting-maps-url" class="form-input" value="https://www.google.com/maps/place/LA+CURANDERA/@18.9208012,-99.6204239,272m/data=!3m1!1e3!4m6!3m5!1s0x85cdbfce1f5681bb:0x31a9cf0f99ce06cc!8m2!3d18.9208394!4d-99.6204268!16s%2Fg%2F11tft6mf4c!5m1!1e3" placeholder="https://www.google.com/maps/place/..." />
               <span style="display:block; font-size:0.75rem; color:var(--lc-gray-500); margin-top:0.35rem;">
-                Acepta cualquier enlace directo (ej: <code>https://maps.app.goo.gl/...</code> o <code>https://www.google.com/maps/place/...</code>).
+                💡 Puedes copiar el enlace de la barra de tu navegador o desde el botón "Compartir" de Google Maps.
               </span>
             </div>
 
-            <div class="form-group">
-              <label class="form-label" for="setting-place-id">Google Place ID (Opcional / Auto-rellenable)</label>
-              <input type="text" id="setting-place-id" class="form-input" value="ChIJN1t_tDeuEmsRUsoyG83frY4" placeholder="Ej: ChIJN1t_tDeuEmsRUsoyG83frY4 (opcional)" />
-              <span style="display:block; font-size:0.75rem; color:var(--lc-gray-500); margin-top:0.35rem;">
-                Si no lo conoces, no te preocupes: el botón de reseñas utilizará de forma automática tu enlace de Google Maps.
+            <div class="form-group" style="margin-bottom:1.25rem;">
+              <label class="form-label" for="setting-place-id">Google Place ID (Autocalculado)</label>
+              <div style="display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap;">
+                <input type="text" id="setting-place-id" class="form-input" style="flex:1; min-width:240px; font-weight:700; color:#159F9B;" value="ChIJu4FWH86_zYURzAbOmQ_PqTE" placeholder="ChIJu4FWH86_zYURzAbOmQ_PqTE" />
+                <a id="btn-test-review-link" href="https://search.google.com/local/writereview?placeid=ChIJu4FWH86_zYURzAbOmQ_PqTE" target="_blank" rel="noopener" class="btn-admin-secondary" style="white-space:nowrap; padding:0.6rem 0.9rem; font-size:0.8rem; text-decoration:none;" title="Probar el botón de reseñas directo">
+                  ⭐ Probar Reseña
+                </a>
+              </div>
+              <span id="place-id-status-text" style="display:block; font-size:0.75rem; color:#159F9B; font-weight:700; margin-top:0.35rem;">
+                ✅ Place ID activo: Listo para el botón de reseñas
               </span>
+            </div>
+
+            <!-- Vista Previa en Vivo del Mapa en el Admin -->
+            <div>
+              <label class="form-label" style="font-size:0.8rem; margin-bottom:0.4rem; display:block;">
+                🗺️ Vista Previa del Mapa (Así se ve en el pie del Menú Digital):
+              </label>
+              <div style="border:2px solid var(--lc-negro); border-radius:var(--radius-md); overflow:hidden; height:200px; background:#fafafa; box-shadow:3px 3px 0px var(--lc-negro);">
+                <iframe id="admin-map-preview" title="Vista Previa de Ubicación" style="width:100%; height:100%; border:none;" src="https://maps.google.com/maps?q=place_id:ChIJu4FWH86_zYURzAbOmQ_PqTE&output=embed"></iframe>
+              </div>
             </div>
           </div>
 

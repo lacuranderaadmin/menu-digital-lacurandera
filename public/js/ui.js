@@ -300,7 +300,7 @@ export function showToast(message, duration = 3000) {
  */
 export function setupReviewLinks(placeId = null, mapsUrl = null) {
   const effectiveMapsUrl = mapsUrl || 'https://maps.app.goo.gl/EKib5MFWwCC9paop9';
-  const effectivePlaceId = placeId || firebaseConfig.googlePlaceId;
+  const effectivePlaceId = placeId || firebaseConfig.googlePlaceId || 'ChIJu4FWH86_zYURzAbOmQ_PqTE';
 
   // Si hay Place ID válido que comience con ChIJ, usamos el link de escritura directa
   const reviewUrl = (effectivePlaceId && effectivePlaceId.startsWith('ChIJ'))
