@@ -153,6 +153,8 @@
 }
 
 .hero-title {
+  font-family: var(--font-brand, 'Gotham-Bold', sans-serif);
+  font-weight: 700;
   font-size: 2.75rem;
   line-height: 1;
   letter-spacing: 0.03em;
