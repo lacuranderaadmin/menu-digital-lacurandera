@@ -1273,6 +1273,47 @@ function extractPlaceIdFromUrl(url) {
 }
 
 /**
+ * Construye la URL oficial y correcta para el iframe embebido de Google Maps
+ */
+function buildGoogleMapsEmbedUrl(settings) {
+  if (!settings) {
+    return 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1183.1355473080187!2d-99.6204268!3d18.9208394!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85cdbfce1f5681bb%3A0x31a9cf0f99ce06cc!2sLA%20CURANDERA!5e0!3m2!1ses!2smx!4v1710000000000!5m2!1ses!2smx';
+  }
+
+  const mapsUrl = settings.mapsUrl || '';
+  const hexMatch = mapsUrl.match(/!1s(0x[0-9a-fA-F]+):(0x[0-9a-fA-F]+)/) ||
+                   mapsUrl.match(/(0x[0-9a-fA-F]{12,}):(0x[0-9a-fA-F]{12,})/);
+  const coordsMatch = mapsUrl.match(/!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/) ||
+                      mapsUrl.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+
+  if (hexMatch) {
+    const hex1 = hexMatch[1];
+    const hex2 = hexMatch[2];
+    const lat = coordsMatch ? coordsMatch[1] : '18.9208394';
+    const lng = coordsMatch ? coordsMatch[2] : '-99.6204268';
+    const name = settings.name || 'LA CURANDERA';
+    return `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1183.1355473080187!2d${lng}!3d${lat}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s${encodeURIComponent(hex1 + ':' + hex2)}!2s${encodeURIComponent(name)}!5e0!3m2!1ses!2smx!4v1710000000000!5m2!1ses!2smx`;
+  }
+
+  if (mapsUrl.includes('EKib5MFWwCC9paop9') || mapsUrl.includes('CyqxTuBsF8Gb') || mapsUrl.toLowerCase().includes('la+curandera') || !mapsUrl) {
+    return 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1183.1355473080187!2d-99.6204268!3d18.9208394!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85cdbfce1f5681bb%3A0x31a9cf0f99ce06cc!2sLA%20CURANDERA!5e0!3m2!1ses!2smx!4v1710000000000!5m2!1ses!2smx';
+  }
+
+  if (coordsMatch) {
+    const lat = coordsMatch[1];
+    const lng = coordsMatch[2];
+    const name = settings.name || 'LA CURANDERA';
+    return `https://maps.google.com/maps?q=${lat},${lng}+(${encodeURIComponent(name)})&t=&z=17&ie=UTF8&iwloc=&output=embed`;
+  }
+
+  if (settings.address) {
+    return `https://maps.google.com/maps?q=${encodeURIComponent(settings.address + ' ' + (settings.name || ''))}&t=&z=17&ie=UTF8&iwloc=&output=embed`;
+  }
+
+  return 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1183.1355473080187!2d-99.6204268!3d18.9208394!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85cdbfce1f5681bb%3A0x31a9cf0f99ce06cc!2sLA%20CURANDERA!5e0!3m2!1ses!2smx!4v1710000000000!5m2!1ses!2smx';
+}
+
+/**
  * Actualiza la vista previa del mapa y el botón de prueba de reseñas en el panel admin
  */
 function updateAdminMapAndReviewPreview(placeId, mapsUrl) {
@@ -1288,18 +1329,11 @@ function updateAdminMapAndReviewPreview(placeId, mapsUrl) {
 
   const mapPreview = document.getElementById('admin-map-preview');
   if (mapPreview) {
-    let embedSrc = '';
-    if (effectivePlaceId && effectivePlaceId.startsWith('ChIJ')) {
-      embedSrc = `https://maps.google.com/maps?q=place_id:${encodeURIComponent(effectivePlaceId)}&output=embed`;
-    } else {
-      const coordsMatch = effectiveMapsUrl.match(/!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/) ||
-                          effectiveMapsUrl.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
-      if (coordsMatch) {
-        embedSrc = `https://maps.google.com/maps?q=${coordsMatch[1]},${coordsMatch[2]}&t=&z=16&ie=UTF8&iwloc=&output=embed`;
-      } else {
-        embedSrc = `https://maps.google.com/maps?q=${encodeURIComponent('La Curandera Tenancingo Estado de México')}&t=&z=16&ie=UTF8&iwloc=&output=embed`;
-      }
-    }
+    const embedSrc = buildGoogleMapsEmbedUrl({
+      mapsUrl: effectiveMapsUrl,
+      googlePlaceId: effectivePlaceId,
+      name: 'LA CURANDERA'
+    });
     if (embedSrc && mapPreview.src !== embedSrc) {
       mapPreview.src = embedSrc;
     }
