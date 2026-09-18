@@ -326,9 +326,14 @@
             <div class="form-group" style="margin-bottom:1.25rem;">
               <label class="form-label" for="setting-maps-url">URL de Google Maps (Recomendado)</label>
               <input type="url" id="setting-maps-url" class="form-input" value="https://www.google.com/maps/place/LA+CURANDERA/@18.9208012,-99.6204239,272m/data=!3m1!1e3!4m6!3m5!1s0x85cdbfce1f5681bb:0x31a9cf0f99ce06cc!8m2!3d18.9208394!4d-99.6204268!16s%2Fg%2F11tft6mf4c!5m1!1e3" placeholder="https://www.google.com/maps/place/..." />
-              <span style="display:block; font-size:0.75rem; color:var(--lc-gray-500); margin-top:0.35rem;">
-                💡 Puedes copiar el enlace de la barra de tu navegador o desde el botón "Compartir" de Google Maps.
-              </span>
+              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem; margin-top:0.35rem;">
+                <span style="font-size:0.75rem; color:var(--lc-gray-500);">
+                  💡 Admite enlaces cortos (<code>maps.app.goo.gl/...</code>) o de la barra de direcciones.
+                </span>
+                <button type="button" id="btn-reset-official-maps" class="btn-admin-secondary" style="font-size:0.72rem; padding:0.3rem 0.65rem; display:inline-flex; align-items:center; gap:0.3rem; cursor:pointer;" title="Restablecer enlace y mapa verificado de La Curandera">
+                  📍 Cargar enlace oficial verificado
+                </button>
+              </div>
             </div>
 
             <div class="form-group" style="margin-bottom:1.25rem;">
@@ -364,7 +369,15 @@
             <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:1.25rem; margin-bottom:1.25rem;">
               <div class="form-group">
                 <label class="form-label" for="setting-whatsapp">Número de WhatsApp (con lada)</label>
-                <input type="tel" id="setting-whatsapp" class="form-input" value="527141400000" placeholder="527141400000" />
+                <div style="display:flex; gap:0.5rem; align-items:center;">
+                  <input type="tel" id="setting-whatsapp" class="form-input" style="flex:1;" value="527141400000" placeholder="Ej: 527141400000 o 7141400000" />
+                  <a id="btn-test-whatsapp" href="https://wa.me/527141400000" target="_blank" rel="noopener noreferrer" class="btn-admin-secondary" style="white-space:nowrap; padding:0.6rem 0.9rem; font-size:0.8rem; text-decoration:none;" title="Probar chat de WhatsApp con el número actual">
+                    💬 Probar Chat
+                  </a>
+                </div>
+                <span id="whatsapp-preview-hint" style="display:block; font-size:0.75rem; color:var(--lc-gray-500); margin-top:0.35rem;">
+                  🔗 Enlace directo generado: <code id="whatsapp-link-preview" style="color:#159F9B; font-weight:700;">https://wa.me/527141400000</code>
+                </span>
               </div>
               <div class="form-group">
                 <label class="form-label" for="setting-phone">Teléfono para Llamadas</label>

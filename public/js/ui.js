@@ -329,10 +329,33 @@ export function setupWhatsAppFAB(phone = null, customMessage = null) {
   const fab = document.querySelector('.fab-whatsapp');
   if (!fab) return;
 
-  const effectivePhone = phone || firebaseConfig.whatsappNumber || '527141400000';
+  // Si no se pasaron parámetros explícitos, intentar leer de la configuración cacheada en localStorage
+  if (!phone || !customMessage) {
+    try {
+      const cached = localStorage.getItem('lc_restaurant_settings');
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (!phone && parsed.whatsapp) phone = parsed.whatsapp;
+        if (!customMessage && parsed.whatsappMessage) customMessage = parsed.whatsappMessage;
+      }
+    } catch (e) {}
+  }
+
+  // Sanitizar número: únicamente dígitos (WhatsApp API no acepta signos +, espacios ni guiones)
+  let cleanPhone = String(phone || firebaseConfig.whatsappNumber || '527141400000').replace(/\D/g, '');
+  // Si el usuario ingresó 10 dígitos (ej: 7141400000), anteponer el código de país de México (+52)
+  if (cleanPhone.length === 10) {
+    cleanPhone = '52' + cleanPhone;
+  }
+  if (!cleanPhone) cleanPhone = '527141400000';
+
   const defaultText = '¡Hola La Curandera! Me gustaría hacer una consulta sobre su menú y reservas.';
-  const effectiveMessage = encodeURIComponent(customMessage || defaultText);
-  fab.href = `https://wa.me/${effectivePhone}?text=${effectiveMessage}`;
+  const rawMessage = (customMessage !== undefined && customMessage !== null && String(customMessage).trim() !== '')
+    ? String(customMessage).trim()
+    : defaultText;
+  const effectiveMessage = encodeURIComponent(rawMessage);
+
+  fab.href = `https://wa.me/${cleanPhone}?text=${effectiveMessage}`;
   fab.target = '_blank';
   fab.rel = 'noopener noreferrer';
 }

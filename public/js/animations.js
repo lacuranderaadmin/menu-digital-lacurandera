@@ -352,48 +352,37 @@ function initScrollSpy() {
     updateStickyState();
   }
 
-  // Control de visibilidad del Dock Vertical de Categorías (aparece cuando el menú entra en pantalla)
+  // Control de visibilidad del Dock Vertical de Categorías (aparece cuando la barra de categorías queda fijada sticky)
   const dock = document.getElementById('vertical-categories-dock');
   if (dock) {
     const updateDockVisibility = () => {
-      const menuStage = document.getElementById('menu-stage-wrapper');
-      if (menuStage) {
-        const rect = menuStage.getBoundingClientRect();
-        // Visible cuando el usuario llega al área interactiva del menú
-        const isNearMenu = rect.top <= window.innerHeight * 0.75;
-        dock.classList.toggle('visible', isNearMenu);
+      if (navWrapper) {
+        const siteHeader = document.querySelector('.site-header');
+        const headerH = siteHeader ? siteHeader.offsetHeight : 88;
+        const rect = navWrapper.getBoundingClientRect();
+        // Visible exclusivamente cuando la barra de categorías se fija como sticky o se navega por los productos
+        const isNearProducts = rect.top <= headerH + 10;
+        dock.classList.toggle('visible', isNearProducts);
+      } else {
+        const menuStage = document.getElementById('menu-stage-wrapper');
+        if (menuStage) {
+          const rect = menuStage.getBoundingClientRect();
+          dock.classList.toggle('visible', rect.top <= 180);
+        }
       }
     };
     window.addEventListener('scroll', updateDockVisibility, { passive: true });
     updateDockVisibility();
   }
 
-  // Indicador interactivo y animado de scroll horizontal para categorías
-  const hintBtn = document.getElementById('categories-scroll-hint');
-  const fadeEdge = document.getElementById('categories-fade-edge');
-  if (hintBtn && categoriesBar) {
-    const updateHint = () => {
-      const hasOverflow = categoriesBar.scrollWidth > categoriesBar.clientWidth + 15;
-      const isScrolled = categoriesBar.scrollLeft > 25;
-      const isAtEnd = categoriesBar.scrollLeft + categoriesBar.clientWidth >= categoriesBar.scrollWidth - 15;
-      const shouldHide = !hasOverflow || isAtEnd || isScrolled;
-      hintBtn.classList.toggle('hidden', shouldHide);
-      if (fadeEdge) {
-        fadeEdge.classList.toggle('hidden', shouldHide);
+  // Desplazamiento horizontal fluido con la rueda del ratón en desktop para la barra de categorías
+  if (categoriesBar) {
+    categoriesBar.addEventListener('wheel', (e) => {
+      if (Math.abs(e.deltaY) > Math.abs(e.deltaX) && categoriesBar.scrollWidth > categoriesBar.clientWidth) {
+        e.preventDefault();
+        categoriesBar.scrollLeft += e.deltaY;
       }
-    };
-
-    categoriesBar.addEventListener('scroll', updateHint, { passive: true });
-    window.addEventListener('resize', updateHint, { passive: true });
-    window.addEventListener('categoriesRendered', () => setTimeout(updateHint, 120));
-    window.addEventListener('mealModeChanged', () => setTimeout(updateHint, 120));
-
-    hintBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      categoriesBar.scrollBy({ left: 240, behavior: 'smooth' });
-    });
-
-    setTimeout(updateHint, 150);
+    }, { passive: false });
   }
 }
 

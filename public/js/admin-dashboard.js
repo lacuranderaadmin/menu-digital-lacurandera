@@ -1185,8 +1185,8 @@ let restaurantSettings = {
   whatsappMessage: '¡Hola La Curandera! Me gustaría hacer una consulta sobre su menú y reservas.',
   phone: '+52 714 140 0000',
   address: 'Tenancingo / Metepec, Estado de México',
-  mapsUrl: 'https://maps.app.goo.gl/EKib5MFWwCC9paop9',
-  googlePlaceId: 'ChIJN1t_tDeuEmsRUsoyG83frY4',
+  mapsUrl: 'https://www.google.com/maps/place/LA+CURANDERA/@18.9208012,-99.6204239,272m/data=!3m1!1e3!4m6!3m5!1s0x85cdbfce1f5681bb:0x31a9cf0f99ce06cc!8m2!3d18.9208394!4d-99.6204268!16s%2Fg%2F11tft6mf4c!5m1!1e3',
+  googlePlaceId: 'ChIJu4FWH86_zYURzAbOmQ_PqTE',
   instagram: 'https://instagram.com/lacurandera.mx',
   schedule: {
     breakfast: {
@@ -1233,6 +1233,42 @@ function hexToPlaceId(hex1, hex2) {
 }
 
 /**
+ * Convierte un Google Place ID oficial (ChIJ...) a sus identificadores hexadecimales de Google Maps
+ */
+function placeIdToHex(placeId) {
+  try {
+    if (!placeId || typeof placeId !== 'string') return null;
+    let b64 = placeId.trim().replace(/-/g, '+').replace(/_/g, '/');
+    while (b64.length % 4) b64 += '=';
+    const binary = atob(b64);
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) {
+      bytes[i] = binary.charCodeAt(i);
+    }
+    let idx = 0;
+    while (idx < bytes.length && bytes[idx] !== 0x09) idx++;
+    if (idx + 8 >= bytes.length) return null;
+    const fIdBytes = bytes.slice(idx + 1, idx + 9);
+    idx += 9;
+    while (idx < bytes.length && bytes[idx] !== 0x11) idx++;
+    if (idx + 8 >= bytes.length) return null;
+    const cidBytes = bytes.slice(idx + 1, idx + 9);
+
+    const toHex = (arr) => {
+      let hex = '';
+      for (let i = arr.length - 1; i >= 0; i--) {
+        hex += arr[i].toString(16).padStart(2, '0');
+      }
+      return '0x' + hex;
+    };
+
+    return { hex1: toHex(fIdBytes), hex2: toHex(cidBytes) };
+  } catch (e) {
+    return null;
+  }
+}
+
+/**
  * Extrae inteligentemente el Google Place ID a partir de URLs comunes de Google Maps
  */
 function extractPlaceIdFromUrl(url) {
@@ -1264,8 +1300,16 @@ function extractPlaceIdFromUrl(url) {
     if (computedPlaceId) return computedPlaceId;
   }
 
-  // 5. Enlaces compartidos conocidos de La Curandera
-  if (trimmed.includes('EKib5MFWwCC9paop9') || trimmed.includes('CyqxTuBsF8Gb') || trimmed.toLowerCase().includes('la+curandera')) {
+  // 5. Enlaces compartidos conocidos o enlaces cortos de Google Maps
+  if (
+    trimmed.includes('maps.app.goo.gl') || 
+    trimmed.includes('goo.gl') ||
+    trimmed.includes('fdzQEZcaioUKo4kn7') ||
+    trimmed.includes('EKib5MFWwCC9paop9') || 
+    trimmed.includes('CyqxTuBsF8Gb') || 
+    trimmed.toLowerCase().includes('la+curandera') ||
+    trimmed.toLowerCase().includes('curandera')
+  ) {
     return 'ChIJu4FWH86_zYURzAbOmQ_PqTE';
   }
 
@@ -1276,11 +1320,34 @@ function extractPlaceIdFromUrl(url) {
  * Construye la URL oficial y correcta para el iframe embebido de Google Maps
  */
 function buildGoogleMapsEmbedUrl(settings) {
-  if (!settings) {
-    return 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1183.1355473080187!2d-99.6204268!3d18.9208394!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85cdbfce1f5681bb%3A0x31a9cf0f99ce06cc!2sLA%20CURANDERA!5e0!3m2!1ses!2smx!4v1710000000000!5m2!1ses!2smx';
-  }
+  const officialPB = 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1183.1355473080187!2d-99.6204268!3d18.9208394!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85cdbfce1f5681bb%3A0x31a9cf0f99ce06cc!2sLA%20CURANDERA!5e0!3m2!1ses!2smx!4v1710000000000!5m2!1ses!2smx';
+
+  if (!settings) return officialPB;
 
   const mapsUrl = settings.mapsUrl || '';
+  const placeId = settings.googlePlaceId || '';
+  const name = settings.name || 'LA CURANDERA';
+
+  // 1. Si tenemos el Place ID oficial de La Curandera o el enlace corto
+  if (placeId === 'ChIJu4FWH86_zYURzAbOmQ_PqTE' || 
+      mapsUrl.includes('fdzQEZcaioUKo4kn7') || 
+      mapsUrl.includes('EKib5MFWwCC9paop9') || 
+      mapsUrl.includes('CyqxTuBsF8Gb') || 
+      mapsUrl.includes('maps.app.goo.gl') || 
+      mapsUrl.includes('goo.gl') ||
+      mapsUrl.toLowerCase().includes('la+curandera')) {
+    return officialPB;
+  }
+
+  // 2. Si hay un Place ID válido que comience con ChIJ, convertirlo a hex para PB embed
+  if (placeId && placeId.startsWith('ChIJ')) {
+    const hex = placeIdToHex(placeId);
+    if (hex && hex.hex1 && hex.hex2) {
+      return `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1183.1355473080187!2d-99.6204268!3d18.9208394!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s${encodeURIComponent(hex.hex1 + ':' + hex.hex2)}!2s${encodeURIComponent(name)}!5e0!3m2!1ses!2smx!4v1710000000000!5m2!1ses!2smx`;
+    }
+  }
+
+  // 3. Si mapsUrl contiene hex pair (!1s0x...:0x...)
   const hexMatch = mapsUrl.match(/!1s(0x[0-9a-fA-F]+):(0x[0-9a-fA-F]+)/) ||
                    mapsUrl.match(/(0x[0-9a-fA-F]{12,}):(0x[0-9a-fA-F]{12,})/);
   const coordsMatch = mapsUrl.match(/!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/) ||
@@ -1291,26 +1358,18 @@ function buildGoogleMapsEmbedUrl(settings) {
     const hex2 = hexMatch[2];
     const lat = coordsMatch ? coordsMatch[1] : '18.9208394';
     const lng = coordsMatch ? coordsMatch[2] : '-99.6204268';
-    const name = settings.name || 'LA CURANDERA';
     return `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1183.1355473080187!2d${lng}!3d${lat}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s${encodeURIComponent(hex1 + ':' + hex2)}!2s${encodeURIComponent(name)}!5e0!3m2!1ses!2smx!4v1710000000000!5m2!1ses!2smx`;
   }
 
-  if (mapsUrl.includes('EKib5MFWwCC9paop9') || mapsUrl.includes('CyqxTuBsF8Gb') || mapsUrl.toLowerCase().includes('la+curandera') || !mapsUrl) {
-    return 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1183.1355473080187!2d-99.6204268!3d18.9208394!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85cdbfce1f5681bb%3A0x31a9cf0f99ce06cc!2sLA%20CURANDERA!5e0!3m2!1ses!2smx!4v1710000000000!5m2!1ses!2smx';
-  }
-
+  // 4. Si hay coordenadas explícitas
   if (coordsMatch) {
     const lat = coordsMatch[1];
     const lng = coordsMatch[2];
-    const name = settings.name || 'LA CURANDERA';
     return `https://maps.google.com/maps?q=${lat},${lng}+(${encodeURIComponent(name)})&t=&z=17&ie=UTF8&iwloc=&output=embed`;
   }
 
-  if (settings.address) {
-    return `https://maps.google.com/maps?q=${encodeURIComponent(settings.address + ' ' + (settings.name || ''))}&t=&z=17&ie=UTF8&iwloc=&output=embed`;
-  }
-
-  return 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1183.1355473080187!2d-99.6204268!3d18.9208394!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85cdbfce1f5681bb%3A0x31a9cf0f99ce06cc!2sLA%20CURANDERA!5e0!3m2!1ses!2smx!4v1710000000000!5m2!1ses!2smx';
+  // 5. Fallback seguro siempre al oficial PB (nunca pantalla verde vacía)
+  return officialPB;
 }
 
 /**
@@ -1447,6 +1506,34 @@ function populateSettingsForm() {
   setVal('setting-instagram', restaurantSettings.instagram || 'https://instagram.com/lacurandera.mx');
 
   updateAdminMapAndReviewPreview(placeIdVal, mapsVal);
+  updateAdminWhatsAppPreview(restaurantSettings.whatsapp, restaurantSettings.whatsappMessage);
+}
+
+/**
+ * Actualiza la vista previa del enlace y botón de prueba de WhatsApp en el panel admin
+ */
+function updateAdminWhatsAppPreview(phone, msg) {
+  const whatsappInput = document.getElementById('setting-whatsapp');
+  const msgInput = document.getElementById('setting-whatsapp-msg');
+  const rawPhone = phone !== undefined ? phone : (whatsappInput ? whatsappInput.value : '527141400000');
+  const rawMsg = msg !== undefined ? msg : (msgInput ? msgInput.value : '');
+
+  let clean = String(rawPhone || '527141400000').replace(/\D/g, '');
+  if (clean.length === 10) clean = '52' + clean;
+  if (!clean) clean = '527141400000';
+
+  const defaultMsg = '¡Hola La Curandera! Me gustaría hacer una consulta sobre su menú y reservas.';
+  const finalMsg = encodeURIComponent((rawMsg && rawMsg.trim()) ? rawMsg.trim() : defaultMsg);
+  const fullUrl = `https://wa.me/${clean}?text=${finalMsg}`;
+
+  const testBtn = document.getElementById('btn-test-whatsapp');
+  if (testBtn) testBtn.href = fullUrl;
+
+  const previewCode = document.getElementById('whatsapp-link-preview');
+  if (previewCode) {
+    const previewText = decodeURIComponent(finalMsg);
+    previewCode.textContent = `https://wa.me/${clean}?text=${previewText.length > 35 ? previewText.substring(0, 35) + '…' : previewText}`;
+  }
 }
 
 /**
@@ -1457,35 +1544,54 @@ function setupRestaurantSettingsAdmin() {
   const mapsInput = document.getElementById('setting-maps-url');
   const placeIdInput = document.getElementById('setting-place-id');
   const addressInput = document.getElementById('setting-address');
+  const resetBtn = document.getElementById('btn-reset-official-maps');
+  const whatsappInput = document.getElementById('setting-whatsapp');
+  const msgInput = document.getElementById('setting-whatsapp-msg');
 
   const handleMapsUrlChange = () => {
-    if (!mapsInput || !placeIdInput) return;
-    const rawVal = mapsInput.value.trim();
+    if (!mapsInput) return;
+    let rawVal = mapsInput.value.trim();
 
     // Si el usuario pegó el enlace en la dirección por error
     if (addressInput && (addressInput.value.includes('http') || addressInput.value.includes('maps.google') || addressInput.value.includes('goo.gl'))) {
       mapsInput.value = addressInput.value.trim();
       addressInput.value = 'Tenancingo / Metepec, Estado de México';
+      rawVal = mapsInput.value.trim();
     }
 
-    const extracted = extractPlaceIdFromUrl(mapsInput.value);
-    if (extracted) {
+    let extracted = extractPlaceIdFromUrl(rawVal);
+    if (!extracted && (rawVal.includes('maps.app.goo.gl') || rawVal.includes('goo.gl') || !placeIdInput?.value)) {
+      extracted = 'ChIJu4FWH86_zYURzAbOmQ_PqTE';
+    }
+
+    if (extracted && placeIdInput) {
       placeIdInput.value = extracted;
-      updateAdminMapAndReviewPreview(extracted, mapsInput.value);
-      showToast(`📍 Place ID detectado automáticamente: ${extracted}`);
+      updateAdminMapAndReviewPreview(extracted, rawVal);
+      showToast(`📍 Place ID listo: ${extracted}`);
     } else {
-      updateAdminMapAndReviewPreview(placeIdInput.value, mapsInput.value);
+      updateAdminMapAndReviewPreview(placeIdInput ? placeIdInput.value : '', rawVal);
     }
   };
 
+  if (resetBtn) {
+    resetBtn.addEventListener('click', () => {
+      const officialMaps = 'https://www.google.com/maps/place/LA+CURANDERA/@18.9208012,-99.6204239,272m/data=!3m1!1e3!4m6!3m5!1s0x85cdbfce1f5681bb:0x31a9cf0f99ce06cc!8m2!3d18.9208394!4d-99.6204268!16s%2Fg%2F11tft6mf4c!5m1!1e3';
+      const officialPlaceId = 'ChIJu4FWH86_zYURzAbOmQ_PqTE';
+      if (mapsInput) mapsInput.value = officialMaps;
+      if (placeIdInput) placeIdInput.value = officialPlaceId;
+      updateAdminMapAndReviewPreview(officialPlaceId, officialMaps);
+      showToast('📍 Enlace oficial y Place ID de La Curandera cargados');
+    });
+  }
+
   if (mapsInput) {
-    ['input', 'change', 'paste'].forEach(evt => {
+    ['input', 'change', 'paste', 'keyup', 'blur'].forEach(evt => {
       mapsInput.addEventListener(evt, () => setTimeout(handleMapsUrlChange, 10));
     });
   }
 
   if (addressInput) {
-    ['input', 'change', 'paste'].forEach(evt => {
+    ['input', 'change', 'paste', 'keyup', 'blur'].forEach(evt => {
       addressInput.addEventListener(evt, () => {
         if (addressInput.value.includes('http') || addressInput.value.includes('maps.google') || addressInput.value.includes('goo.gl')) {
           setTimeout(handleMapsUrlChange, 10);
@@ -1495,10 +1601,22 @@ function setupRestaurantSettingsAdmin() {
   }
 
   if (placeIdInput) {
-    ['input', 'change'].forEach(evt => {
+    ['input', 'change', 'paste', 'keyup', 'blur'].forEach(evt => {
       placeIdInput.addEventListener(evt, () => {
         updateAdminMapAndReviewPreview(placeIdInput.value, mapsInput ? mapsInput.value : '');
       });
+    });
+  }
+
+  if (whatsappInput) {
+    ['input', 'change', 'paste', 'keyup', 'blur'].forEach(evt => {
+      whatsappInput.addEventListener(evt, () => updateAdminWhatsAppPreview());
+    });
+  }
+
+  if (msgInput) {
+    ['input', 'change', 'paste', 'keyup', 'blur'].forEach(evt => {
+      msgInput.addEventListener(evt, () => updateAdminWhatsAppPreview());
     });
   }
 
@@ -1595,6 +1713,9 @@ async function saveRestaurantSettings() {
       timestamp: Date.now(),
       settings: updatedSettings
     }));
+
+    updateAdminMapAndReviewPreview(updatedSettings.googlePlaceId, updatedSettings.mapsUrl);
+    updateAdminWhatsAppPreview(updatedSettings.whatsapp, updatedSettings.whatsappMessage);
 
     if (feedback) {
       feedback.style.color = '#159F9B';

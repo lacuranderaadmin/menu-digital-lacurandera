@@ -1048,84 +1048,146 @@ export function initRestaurantSettingsSync() {
 }
 
 /**
+ * Convierte un Google Place ID oficial (ChIJ...) a sus identificadores hexadecimales de Google Maps
+ */
+function placeIdToHex(placeId) {
+  try {
+    if (!placeId || typeof placeId !== 'string') return null;
+    let b64 = placeId.trim().replace(/-/g, '+').replace(/_/g, '/');
+    while (b64.length % 4) b64 += '=';
+    const binary = atob(b64);
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) {
+      bytes[i] = binary.charCodeAt(i);
+    }
+    let idx = 0;
+    while (idx < bytes.length && bytes[idx] !== 0x09) idx++;
+    if (idx + 8 >= bytes.length) return null;
+    const fIdBytes = bytes.slice(idx + 1, idx + 9);
+    idx += 9;
+    while (idx < bytes.length && bytes[idx] !== 0x11) idx++;
+    if (idx + 8 >= bytes.length) return null;
+    const cidBytes = bytes.slice(idx + 1, idx + 9);
+
+    const toHex = (arr) => {
+      let hex = '';
+      for (let i = arr.length - 1; i >= 0; i--) {
+        hex += arr[i].toString(16).padStart(2, '0');
+      }
+      return '0x' + hex;
+    };
+
+    return { hex1: toHex(fIdBytes), hex2: toHex(cidBytes) };
+  } catch (e) {
+    return null;
+  }
+}
+
+/**
  * Aplica en el DOM del menú digital los cambios de configuración del restaurante
  */
 export function applyRestaurantSettings(settings) {
   if (!settings) return;
 
   // 1. WhatsApp flotante
-  setupWhatsAppFAB(settings.whatsapp, settings.whatsappMessage);
+  try {
+    setupWhatsAppFAB(settings.whatsapp, settings.whatsappMessage);
+  } catch (e) {
+    console.warn("Error actualizando WhatsApp FAB:", e);
+  }
 
   // 2. Google Reviews y Mapas
-  setupReviewLinks(settings.googlePlaceId, settings.mapsUrl);
+  try {
+    setupReviewLinks(settings.googlePlaceId, settings.mapsUrl);
+  } catch (e) {
+    console.warn("Error actualizando enlaces de reseñas/mapas:", e);
+  }
 
   // 3. Horarios y Píldora de Turno
-  if (settings.schedule) {
-    updateMealSwitchUI(settings.schedule);
-    if (settings.schedule.breakfast && settings.schedule.breakfast.label) {
-      document.querySelectorAll('.footer-hours-desayuno').forEach(el => {
-        el.textContent = `Desayunos: ${settings.schedule.breakfast.label}`;
-      });
+  try {
+    if (settings.schedule) {
+      updateMealSwitchUI(settings.schedule);
+      if (settings.schedule.breakfast && settings.schedule.breakfast.label) {
+        document.querySelectorAll('.footer-hours-desayuno').forEach(el => {
+          el.textContent = `Desayunos: ${settings.schedule.breakfast.label}`;
+        });
+      }
+      if (settings.schedule.lunch && settings.schedule.lunch.label) {
+        document.querySelectorAll('.footer-hours-comida').forEach(el => {
+          el.textContent = `Comida y Cantina: ${settings.schedule.lunch.label}`;
+        });
+      }
+      if (settings.schedule.days) {
+        document.querySelectorAll('.footer-hours-days').forEach(el => {
+          el.textContent = `Abierto de ${settings.schedule.days}`;
+        });
+      }
     }
-    if (settings.schedule.lunch && settings.schedule.lunch.label) {
-      document.querySelectorAll('.footer-hours-comida').forEach(el => {
-        el.textContent = `Comida y Cantina: ${settings.schedule.lunch.label}`;
-      });
-    }
-    if (settings.schedule.days) {
-      document.querySelectorAll('.footer-hours-days').forEach(el => {
-        el.textContent = `Abierto de ${settings.schedule.days}`;
-      });
-    }
+  } catch (e) {
+    console.warn("Error actualizando horarios en menú:", e);
   }
 
   // 4. Hero Subtitle / Eslogan
-  if (settings.tagline) {
-    document.querySelectorAll('.hero-subtitle').forEach(el => {
-      el.textContent = settings.tagline;
-    });
-  }
+  try {
+    if (settings.tagline) {
+      document.querySelectorAll('.hero-subtitle').forEach(el => {
+        el.textContent = settings.tagline;
+      });
+    }
+  } catch (e) {}
 
   // 5. Hero Quote / Frase mística
-  if (settings.quote) {
-    document.querySelectorAll('.hero-quote, .footer-handwritten-closing').forEach(el => {
-      el.textContent = settings.quote.startsWith('“') ? settings.quote : `“${settings.quote}”`;
-    });
-  }
+  try {
+    if (settings.quote) {
+      document.querySelectorAll('.hero-quote, .footer-handwritten-closing').forEach(el => {
+        el.textContent = settings.quote.startsWith('“') ? settings.quote : `“${settings.quote}”`;
+      });
+    }
+  } catch (e) {}
 
   // 6. Nombre del Restaurante
-  if (settings.name) {
-    document.querySelectorAll('.header-title, .hero-title').forEach(el => {
-      el.textContent = settings.name;
-    });
-  }
+  try {
+    if (settings.name) {
+      document.querySelectorAll('.header-title, .hero-title').forEach(el => {
+        el.textContent = settings.name;
+      });
+    }
+  } catch (e) {}
 
   // 7. Dirección física y Teléfono
-  if (settings.address) {
-    document.querySelectorAll('.branch-address, .footer-address').forEach(el => {
-      el.textContent = settings.address;
-    });
-  }
-  if (settings.phone) {
-    document.querySelectorAll('.footer-phone').forEach(el => {
-      el.textContent = `Tel: ${settings.phone}`;
-    });
-  }
+  try {
+    if (settings.address) {
+      document.querySelectorAll('.branch-address, .footer-address').forEach(el => {
+        el.textContent = settings.address;
+      });
+    }
+    if (settings.phone) {
+      document.querySelectorAll('.footer-phone').forEach(el => {
+        el.textContent = `Tel: ${settings.phone}`;
+      });
+    }
+  } catch (e) {}
 
   // 8. Instagram
-  if (settings.instagram) {
-    document.querySelectorAll('a[href*="instagram"]').forEach(a => {
-      a.href = settings.instagram;
-    });
-  }
+  try {
+    if (settings.instagram) {
+      document.querySelectorAll('a[href*="instagram"]').forEach(a => {
+        a.href = settings.instagram;
+      });
+    }
+  } catch (e) {}
 
   // 9. Mapa embebido de Google Maps en el footer
-  const mapIframe = document.querySelector('.footer-map-iframe');
-  if (mapIframe) {
-    const embedSrc = buildGoogleMapsEmbedUrl(settings);
-    if (embedSrc && mapIframe.src !== embedSrc) {
-      mapIframe.src = embedSrc;
+  try {
+    const mapIframe = document.querySelector('.footer-map-iframe');
+    if (mapIframe) {
+      const embedSrc = buildGoogleMapsEmbedUrl(settings);
+      if (embedSrc && mapIframe.src !== embedSrc) {
+        mapIframe.src = embedSrc;
+      }
     }
+  } catch (e) {
+    console.warn("Error actualizando iframe de Google Maps en menú:", e);
   }
 }
 
@@ -1133,11 +1195,34 @@ export function applyRestaurantSettings(settings) {
  * Construye la URL oficial y correcta para el iframe embebido de Google Maps
  */
 export function buildGoogleMapsEmbedUrl(settings) {
-  if (!settings) {
-    return 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1183.1355473080187!2d-99.6204268!3d18.9208394!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85cdbfce1f5681bb%3A0x31a9cf0f99ce06cc!2sLA%20CURANDERA!5e0!3m2!1ses!2smx!4v1710000000000!5m2!1ses!2smx';
-  }
+  const officialPB = 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1183.1355473080187!2d-99.6204268!3d18.9208394!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85cdbfce1f5681bb%3A0x31a9cf0f99ce06cc!2sLA%20CURANDERA!5e0!3m2!1ses!2smx!4v1710000000000!5m2!1ses!2smx';
+
+  if (!settings) return officialPB;
 
   const mapsUrl = settings.mapsUrl || '';
+  const placeId = settings.googlePlaceId || '';
+  const name = settings.name || 'LA CURANDERA';
+
+  // 1. Si tenemos el Place ID oficial de La Curandera o enlaces cortos/conocidos
+  if (placeId === 'ChIJu4FWH86_zYURzAbOmQ_PqTE' || 
+      mapsUrl.includes('fdzQEZcaioUKo4kn7') || 
+      mapsUrl.includes('EKib5MFWwCC9paop9') || 
+      mapsUrl.includes('CyqxTuBsF8Gb') || 
+      mapsUrl.includes('maps.app.goo.gl') || 
+      mapsUrl.includes('goo.gl') ||
+      mapsUrl.toLowerCase().includes('la+curandera')) {
+    return officialPB;
+  }
+
+  // 2. Si hay un Place ID válido que comience con ChIJ, convertirlo a hex para PB embed
+  if (placeId && placeId.startsWith('ChIJ')) {
+    const hex = placeIdToHex(placeId);
+    if (hex && hex.hex1 && hex.hex2) {
+      return `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1183.1355473080187!2d-99.6204268!3d18.9208394!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s${encodeURIComponent(hex.hex1 + ':' + hex.hex2)}!2s${encodeURIComponent(name)}!5e0!3m2!1ses!2smx!4v1710000000000!5m2!1ses!2smx`;
+    }
+  }
+
+  // 3. Si mapsUrl contiene hex pair (!1s0x...:0x...)
   const hexMatch = mapsUrl.match(/!1s(0x[0-9a-fA-F]+):(0x[0-9a-fA-F]+)/) ||
                    mapsUrl.match(/(0x[0-9a-fA-F]{12,}):(0x[0-9a-fA-F]{12,})/);
   const coordsMatch = mapsUrl.match(/!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/) ||
@@ -1148,24 +1233,16 @@ export function buildGoogleMapsEmbedUrl(settings) {
     const hex2 = hexMatch[2];
     const lat = coordsMatch ? coordsMatch[1] : '18.9208394';
     const lng = coordsMatch ? coordsMatch[2] : '-99.6204268';
-    const name = settings.name || 'LA CURANDERA';
     return `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1183.1355473080187!2d${lng}!3d${lat}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s${encodeURIComponent(hex1 + ':' + hex2)}!2s${encodeURIComponent(name)}!5e0!3m2!1ses!2smx!4v1710000000000!5m2!1ses!2smx`;
   }
 
-  if (mapsUrl.includes('EKib5MFWwCC9paop9') || mapsUrl.includes('CyqxTuBsF8Gb') || mapsUrl.toLowerCase().includes('la+curandera') || !mapsUrl) {
-    return 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1183.1355473080187!2d-99.6204268!3d18.9208394!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85cdbfce1f5681bb%3A0x31a9cf0f99ce06cc!2sLA%20CURANDERA!5e0!3m2!1ses!2smx!4v1710000000000!5m2!1ses!2smx';
-  }
-
+  // 4. Si hay coordenadas explícitas
   if (coordsMatch) {
     const lat = coordsMatch[1];
     const lng = coordsMatch[2];
-    const name = settings.name || 'LA CURANDERA';
     return `https://maps.google.com/maps?q=${lat},${lng}+(${encodeURIComponent(name)})&t=&z=17&ie=UTF8&iwloc=&output=embed`;
   }
 
-  if (settings.address) {
-    return `https://maps.google.com/maps?q=${encodeURIComponent(settings.address + ' ' + (settings.name || ''))}&t=&z=17&ie=UTF8&iwloc=&output=embed`;
-  }
-
-  return 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1183.1355473080187!2d-99.6204268!3d18.9208394!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85cdbfce1f5681bb%3A0x31a9cf0f99ce06cc!2sLA%20CURANDERA!5e0!3m2!1ses!2smx!4v1710000000000!5m2!1ses!2smx';
+  // 5. Fallback seguro siempre al oficial PB (nunca pantalla verde vacía)
+  return officialPB;
 }
