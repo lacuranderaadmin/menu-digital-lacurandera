@@ -37,7 +37,8 @@
 .hero-avatar-wrapper {
   position: relative;
   flex-shrink: 0;
-  margin-bottom: 2rem;
+  margin-top: -1.25rem;
+  margin-bottom: 2.25rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -45,6 +46,7 @@
 
 @media (min-width: 900px) {
   .hero-avatar-wrapper {
+    margin-top: -1rem;
     margin-bottom: 0;
   }
 }
@@ -96,7 +98,7 @@
 
 .hero-badge-smoke {
   position: absolute;
-  bottom: -22px;
+  bottom: -40px;
   right: -15px;
   background: var(--lc-turquesa);
   color: var(--lc-blanco);
@@ -122,7 +124,7 @@
 
 @media (min-width: 768px) {
   .hero-badge-smoke {
-    bottom: -22px;
+    bottom: -44px;
     right: -20px;
     font-size: 0.88rem;
     padding: 0.5rem 1.25rem;
