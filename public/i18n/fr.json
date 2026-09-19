@@ -12,12 +12,19 @@
   },
   "nav": {
     "reviewBtn": "Laissez votre avis ⭐",
+    "reviewBtnShort": "⭐ Avis",
     "searchPlaceholder": "Rechercher un plat, mezcal, viande...",
-    "scrollHint": "Glisser"
+    "scrollHint": "Défiler",
+    "categoriesTitle": "CATÉGORIES",
+    "swipeHint": "GLISSEZ"
   },
   "mealSwitch": {
     "desayunos": "PETIT-DÉJEUNER",
     "comida": "DÉJEUNER & DÎNER",
+    "serviceMorning": "Service Petit-Déjeuner actif",
+    "serviceMorningShort": "Petit-Déjeuner",
+    "serviceAfternoon": "Service Déjeuner & Cantine actif",
+    "serviceAfternoonShort": "Déjeuner & Cantine",
     "scheduleNoticeMorning": "Service Petit-déjeuner actif (9h00 - 13h30)",
     "scheduleNoticeAfternoon": "Service Déjeuner & Cantina actif (13h30 - 19h30)"
   },

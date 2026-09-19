@@ -35,11 +35,17 @@
   }
   </script>
 
+  <!-- Preconexión de Fuentes y Preload del Catálogo para Carga Ultra-Rápida -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat+Brush&family=JetBrains+Mono:ital,wght@0,400;0,500;0,700;1,400&family=Kalam:wght@700&family=Montserrat:wght@400;600;700;800;900&display=swap">
+  <link rel="preload" href="data/catalog.json" as="fetch" crossorigin>
+
   <!-- CSS Design System -->
-  <link rel="stylesheet" href="css/tokens.css?v=9.3">
-  <link rel="stylesheet" href="css/base.css?v=9.2">
-  <link rel="stylesheet" href="css/components.css?v=9.6">
-  <link rel="stylesheet" href="css/menu.css?v=9.6">
+  <link rel="stylesheet" href="css/tokens.css?v=12.0">
+  <link rel="stylesheet" href="css/base.css?v=12.0">
+  <link rel="stylesheet" href="css/components.css?v=12.0">
+  <link rel="stylesheet" href="css/menu.css?v=12.0">
 
   <link rel="icon" type="image/png" href="assets/logo/logo.png">
 </head>
@@ -64,14 +70,15 @@
       <div class="header-actions">
         <!-- Selector de Idioma -->
         <div class="lang-selector" role="group" aria-label="Selector de idioma">
-          <button class="lang-btn active" data-lang="es">🇲🇽 ES</button>
-          <button class="lang-btn" data-lang="en">🇺🇸 EN</button>
-          <button class="lang-btn" data-lang="fr">🇫🇷 FR</button>
+          <button class="lang-btn active" data-lang="es"><span class="lang-flag">🇲🇽</span> ES</button>
+          <button class="lang-btn" data-lang="en"><span class="lang-flag">🇺🇸</span> EN</button>
+          <button class="lang-btn" data-lang="fr"><span class="lang-flag">🇫🇷</span> FR</button>
         </div>
 
         <!-- Botón Reseña Google -->
-        <a href="#" class="btn-review" data-action="review">
-          <span class="btn-text-full" data-i18n="nav.reviewBtn">Déjanos tu reseña ⭐</span>
+        <a href="#" class="btn-review" data-action="review" title="Déjanos tu reseña en Google Maps">
+          <span class="btn-review-full" data-i18n="nav.reviewBtn">Déjanos tu reseña ⭐</span>
+          <span class="btn-review-short" data-i18n="nav.reviewBtnShort">⭐ Reseña</span>
         </a>
       </div>
     </div>
@@ -197,8 +204,11 @@
 
       <!-- Toggle Inteligente por Horario -->
       <div class="meal-switch-wrapper">
-        <div class="meal-switch-indicator">
-          <!-- Rellenado dinámicamente con JS según la hora -->
+        <div class="meal-switch-indicator" id="meal-switch-indicator" role="status" aria-live="polite">
+          <span class="status-pulse" aria-hidden="true"></span>
+          <span class="meal-switch-notice-full" data-i18n="mealSwitch.serviceMorning">Servicio de Desayuno activo</span>
+          <span class="meal-switch-notice-short" data-i18n="mealSwitch.serviceMorningShort">Desayuno activo</span>
+          <span class="meal-switch-time-badge">9:00 AM - 1:30 PM</span>
         </div>
         <div class="meal-switch" role="tablist" aria-label="Servicio del menú">
           <button class="meal-option active" data-mode="desayunos" role="tab" id="tab-desayuno" aria-selected="true">
@@ -231,9 +241,29 @@
 
     <!-- Pestañas Horizontales de Categorías a Ancho Completo (Full Width) -->
     <div class="categories-nav-wrapper">
+      <div class="categories-header">
+        <div class="categories-title-box">
+          <span class="categories-title-dot" aria-hidden="true"></span>
+          <span data-i18n="nav.categoriesTitle">CATEGORÍAS</span>
+        </div>
+        <div class="categories-swipe-hint">
+          <span data-i18n="nav.swipeHint">DESLIZA</span>
+          <svg class="swipe-hint-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </div>
+      </div>
+
       <nav class="categories-bar" id="categories-bar" aria-label="Categorías del Menú">
         <!-- Renderizado dinámicamente -->
       </nav>
+
+      <div class="categories-scroll-track-wrapper" id="categories-scroll-track-wrapper" aria-label="Barra deslizadora de categorías">
+        <div class="categories-scroll-track" id="categories-scroll-track" title="Deslizar categorías">
+          <div class="categories-scroll-thumb" id="categories-scroll-thumb" role="slider" aria-label="Desplazar categorías" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" tabindex="0"></div>
+        </div>
+      </div>
     </div>
 
     <!-- Secciones y Cards de Productos -->
@@ -374,7 +404,10 @@
 
       <div class="modal-body">
         <h3 class="modal-title">Nombre del Platillo</h3>
-        <span class="modal-price">$0 MXN</span>
+        <div class="modal-price-container">
+          <span class="modal-price">$0 MXN</span>
+          <span class="modal-portion-badge" style="display:none;"></span>
+        </div>
         <p class="modal-desc">Descripción completa...</p>
 
         <button class="btn-video-prep" style="display:none;">
@@ -420,17 +453,22 @@
 
   <!-- Scripts ES6 Modules -->
   <script type="module">
-    import { initI18n, setLanguage } from './js/i18n.js';
-    import { initUI, closeProductModal } from './js/ui.js';
-    import { initMenu, renderCategoriesNav, renderMenu, setMealMode } from './js/menu.js?v=9.4';
-    import { initAnimations } from './js/animations.js?v=9.4';
+    import { initI18n, setLanguage } from './js/i18n.js?v=12.0';
+    import { initUI, closeProductModal } from './js/ui.js?v=12.0';
+    import { initMenu, renderCategoriesNav, renderMenu, setMealMode } from './js/menu.js?v=12.0';
+    import { initAnimations } from './js/animations.js?v=12.0';
 
     // Exponer función de cierre modal
     window.closeProductModal = closeProductModal;
 
-    // Inicialización al cargar DOM
-    document.addEventListener('DOMContentLoaded', async () => {
-      await initI18n();
+    // Inicio ultra-rápido: Frame 0 para UI y animaciones, datos en paralelo de 0ms
+    async function bootApp() {
+      // 1. Inicializar UI y animaciones de inmediato en el frame 0 (sin esperar a la red)
+      const initialMode = initUI((newMode) => {
+        setMealMode(newMode);
+      });
+      setMealMode(initialMode);
+      initAnimations();
 
       // Configurar botones de cambio de idioma
       document.querySelectorAll('.lang-btn').forEach(btn => {
@@ -440,17 +478,11 @@
         });
       });
 
-      // Inicializar UI y sincronizar modo de servicio con menu.js
-      const initialMode = initUI((newMode) => {
-        setMealMode(newMode);
-      });
-      setMealMode(initialMode);
-
-      // Inicializar Menú con listeners de Firestore
-      await initMenu();
-
-      // Inicializar suite de animaciones de vanguardia
-      initAnimations();
+      // 2. Cargar traducciones y catálogo en paralelo de forma instantánea (0ms desde caché)
+      await Promise.all([
+        initI18n(),
+        initMenu()
+      ]);
 
       // Monitor de conexión offline/online
       window.addEventListener('offline', () => {
@@ -461,7 +493,13 @@
         const b = document.getElementById('offline-banner');
         if (b) b.classList.remove('active');
       });
-    });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', bootApp);
+    } else {
+      bootApp();
+    }
   </script>
 </body>
 </html>

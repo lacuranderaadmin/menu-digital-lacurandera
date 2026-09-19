@@ -12,12 +12,19 @@
   },
   "nav": {
     "reviewBtn": "Déjanos tu reseña ⭐",
+    "reviewBtnShort": "⭐ Reseña",
     "searchPlaceholder": "Buscar platillo, mezcal, corte...",
-    "scrollHint": "Desliza"
+    "scrollHint": "Desliza",
+    "categoriesTitle": "CATEGORÍAS",
+    "swipeHint": "DESLIZA"
   },
   "mealSwitch": {
     "desayunos": "DESAYUNO",
     "comida": "COMIDA",
+    "serviceMorning": "Servicio de Desayuno activo",
+    "serviceMorningShort": "Desayuno activo",
+    "serviceAfternoon": "Servicio de Comida y Cantina activo",
+    "serviceAfternoonShort": "Comida y Cantina",
     "scheduleNoticeMorning": "Servicio de Desayuno activo (9:00 AM - 1:30 PM)",
     "scheduleNoticeAfternoon": "Servicio de Comida y Cantina activo (1:30 PM - 7:30 PM)"
   },

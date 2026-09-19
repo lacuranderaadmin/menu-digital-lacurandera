@@ -8,6 +8,7 @@ export function initAnimations() {
   initHeroVideoAutoplay();
   initMarqueeInteraction();
   initScrollSpy();
+  initCategoriesSlider();
   initMenuBackgroundAura();
   initBackToTopButton();
 }
@@ -387,6 +388,105 @@ function initScrollSpy() {
 }
 
 /**
+ * Control Deslizador Interactivo y Sincronizado para Categorías (Scrollbar Slider)
+ */
+function initCategoriesSlider() {
+  const bar = document.getElementById('categories-bar');
+  const trackWrapper = document.getElementById('categories-scroll-track-wrapper');
+  const track = document.getElementById('categories-scroll-track');
+  const thumb = document.getElementById('categories-scroll-thumb');
+
+  if (!bar || !trackWrapper || !track || !thumb) return;
+
+  let isDragging = false;
+
+  const updateThumb = () => {
+    const maxScroll = bar.scrollWidth - bar.clientWidth;
+    if (maxScroll <= 2) {
+      trackWrapper.style.opacity = '0';
+      trackWrapper.style.pointerEvents = 'none';
+      return;
+    }
+    trackWrapper.style.opacity = '1';
+    trackWrapper.style.pointerEvents = 'auto';
+
+    const trackW = track.clientWidth;
+    const thumbW = Math.max(36, Math.min(trackW * 0.4, (bar.clientWidth / bar.scrollWidth) * trackW));
+    thumb.style.width = `${thumbW}px`;
+
+    const ratio = Math.max(0, Math.min(1, bar.scrollLeft / maxScroll));
+    const maxThumbLeft = trackW - thumbW;
+    const thumbLeft = ratio * maxThumbLeft;
+    thumb.style.transform = `translateX(${thumbLeft}px)`;
+    thumb.setAttribute('aria-valuenow', Math.round(ratio * 100));
+  };
+
+  // Sincronización al deslizar la barra de categorías
+  bar.addEventListener('scroll', updateThumb, { passive: true });
+  window.addEventListener('resize', updateThumb, { passive: true });
+  window.addEventListener('categoriesRendered', () => {
+    setTimeout(updateThumb, 50);
+  });
+
+  // Interacción de clic y arrastre sobre el track y el thumb
+  const handleDrag = (clientX) => {
+    const rect = track.getBoundingClientRect();
+    const trackW = rect.width;
+    const thumbW = thumb.offsetWidth;
+    const maxThumbLeft = trackW - thumbW;
+    if (maxThumbLeft <= 0) return;
+
+    let clickX = clientX - rect.left - (thumbW / 2);
+    clickX = Math.max(0, Math.min(maxThumbLeft, clickX));
+
+    const ratio = clickX / maxThumbLeft;
+    const maxScroll = bar.scrollWidth - bar.clientWidth;
+    bar.scrollLeft = ratio * maxScroll;
+  };
+
+  track.addEventListener('pointerdown', (e) => {
+    isDragging = true;
+    try {
+      track.setPointerCapture(e.pointerId);
+    } catch (_) {}
+    track.classList.add('is-dragging');
+    handleDrag(e.clientX);
+  });
+
+  track.addEventListener('pointermove', (e) => {
+    if (!isDragging) return;
+    handleDrag(e.clientX);
+  });
+
+  const stopDrag = (e) => {
+    if (isDragging) {
+      isDragging = false;
+      track.classList.remove('is-dragging');
+      try {
+        track.releasePointerCapture(e.pointerId);
+      } catch (_) {}
+    }
+  };
+
+  track.addEventListener('pointerup', stopDrag);
+  track.addEventListener('pointercancel', stopDrag);
+
+  // Navegación por teclado accesible
+  thumb.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+      e.preventDefault();
+      bar.scrollBy({ left: 80, behavior: 'smooth' });
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      bar.scrollBy({ left: -80, behavior: 'smooth' });
+    }
+  });
+
+  // Inicialización inmediata
+  setTimeout(updateThumb, 60);
+}
+
+/**
  * 5. Lienzo Místico MotionSites AI — Liquid Harmonic Plasma Mesh (Ultra-Fast 60 FPS)
  * Canvas limitado a dimensiones del viewport (100vh) con bajo uso de memoria GPU (< 2MB)
  * y pausado automático cuando no está visible.
@@ -678,7 +778,7 @@ function initBackToTopButton() {
   window.addEventListener('scroll', () => {
     if (!ticking) {
       window.requestAnimationFrame(() => {
-        if (window.scrollY > 400) {
+        if (window.scrollY > 900) {
           btn.classList.add('visible');
         } else {
           btn.classList.remove('visible');

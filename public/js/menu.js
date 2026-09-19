@@ -121,10 +121,15 @@ export async function initMenu() {
         if (event.data.overrides) {
           allOverrides = { ...allOverrides, ...event.data.overrides };
         }
+        if (event.data.products && Array.isArray(event.data.products)) {
+          allProducts = event.data.products;
+        }
         renderCategoriesNav();
         renderMenu();
       } else if (event.data && event.data.type === 'SETTINGS_SYNC' && event.data.settings) {
         applyRestaurantSettings(event.data.settings);
+      } else if (event.data && event.data.type === 'MARQUEE_SYNC' && event.data.config) {
+        applyMarqueeConfig(event.data.config);
       }
     };
   } catch (e) {}
@@ -136,6 +141,9 @@ export async function initMenu() {
         const data = JSON.parse(e.newValue);
         if (data.overrides) {
           allOverrides = { ...allOverrides, ...data.overrides };
+        }
+        if (data.products && Array.isArray(data.products)) {
+          allProducts = data.products;
         }
         renderCategoriesNav();
         renderMenu();
@@ -225,12 +233,31 @@ function setupRealtimeListeners() {
  */
 async function loadLocalFallbackData() {
   try {
+    // 1. Carga instantánea de 0ms desde localStorage si existe caché previo
+    const cachedCatalog = localStorage.getItem('lc_catalog_cache');
+    if (cachedCatalog) {
+      try {
+        const data = JSON.parse(cachedCatalog);
+        if (data.categories && data.products && allCategories.length === 0) {
+          allCategories = data.categories;
+          allProducts = data.products;
+          allOverrides = {};
+          renderCategoriesNav();
+          renderMenu();
+        }
+      } catch (e) {}
+    }
+
+    // 2. Fetch paralelo en segundo plano y actualización silenciosa (Stale-While-Revalidate)
     const res = await fetch('data/catalog.json');
     if (res.ok) {
       const data = await res.json();
       allCategories = data.categories || [];
       allProducts = data.products || [];
       allOverrides = {};
+      try {
+        localStorage.setItem('lc_catalog_cache', JSON.stringify(data));
+      } catch (e) {}
       renderCategoriesNav();
       renderMenu();
     }
@@ -834,10 +861,34 @@ export function renderMenu() {
         }
       });
 
+      // Gramaje y Mililitros
+      const effectiveWeight = (override && override.weight !== undefined)
+        ? override.weight
+        : (product.weight || '');
+      const effectiveVolume = (override && override.volume !== undefined)
+        ? override.volume
+        : (product.volume || '');
+
+      let portionBadgeHtml = '';
+      const portionParts = [];
+      if (effectiveWeight && String(effectiveWeight).trim()) {
+        let w = String(effectiveWeight).trim();
+        if (/^\d+(\.\d+)?$/.test(w)) w += 'g';
+        portionParts.push(escapeHtml(w));
+      }
+      if (effectiveVolume && String(effectiveVolume).trim()) {
+        let v = String(effectiveVolume).trim();
+        if (/^\d+(\.\d+)?$/.test(v)) v += 'ml';
+        portionParts.push(escapeHtml(v));
+      }
+      if (portionParts.length > 0) {
+        portionBadgeHtml = `<span class="product-portion-badge">${portionParts.join(' · ')}</span>`;
+      }
+
       card.innerHTML = `
         <div class="product-card-body">
           <div class="product-header-line">
-            <h3 class="product-name">${productNameHtml}</h3>
+            <h3 class="product-name">${productNameHtml} ${portionBadgeHtml}</h3>
             ${priceHtml}
           </div>
           <p class="product-desc">${productDescHtml}</p>
@@ -854,6 +905,8 @@ export function renderMenu() {
           name: rawProductName,
           effectivePrice,
           effectiveDesc: rawProductDesc,
+          weight: effectiveWeight,
+          volume: effectiveVolume,
           isAvailable,
           isPromo,
           promoPrice,
@@ -1107,21 +1160,19 @@ export function applyRestaurantSettings(settings) {
   try {
     if (settings.schedule) {
       updateMealSwitchUI(settings.schedule);
-      if (settings.schedule.breakfast && settings.schedule.breakfast.label) {
-        document.querySelectorAll('.footer-hours-desayuno').forEach(el => {
-          el.textContent = `Desayunos: ${settings.schedule.breakfast.label}`;
-        });
-      }
-      if (settings.schedule.lunch && settings.schedule.lunch.label) {
-        document.querySelectorAll('.footer-hours-comida').forEach(el => {
-          el.textContent = `Comida y Cantina: ${settings.schedule.lunch.label}`;
-        });
-      }
-      if (settings.schedule.days) {
-        document.querySelectorAll('.footer-hours-days').forEach(el => {
-          el.textContent = `Abierto de ${settings.schedule.days}`;
-        });
-      }
+      const bLabel = settings.schedule.breakfast?.label || '9:00 AM - 1:30 PM';
+      const lLabel = settings.schedule.lunch?.label || '1:30 PM - 7:30 PM';
+      const dLabel = settings.schedule.days || 'Lunes a Domingo';
+
+      document.querySelectorAll('.footer-hours-desayuno').forEach(el => {
+        el.textContent = `Desayunos: ${bLabel}`;
+      });
+      document.querySelectorAll('.footer-hours-comida').forEach(el => {
+        el.textContent = `Comida y Cantina: ${lLabel}`;
+      });
+      document.querySelectorAll('.footer-hours-days').forEach(el => {
+        el.textContent = `Abierto de ${dLabel}`;
+      });
     }
   } catch (e) {
     console.warn("Error actualizando horarios en menú:", e);

@@ -62,10 +62,12 @@
   </div>
 
   <script type="module">
-    import { initLoginForm } from '../js/admin-auth.js';
-    document.addEventListener('DOMContentLoaded', () => {
+    import { initLoginForm } from '../js/admin-auth.js?v=3.1';
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initLoginForm);
+    } else {
       initLoginForm();
-    });
+    }
   </script>
 </body>
 </html>

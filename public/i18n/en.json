@@ -12,12 +12,19 @@
   },
   "nav": {
     "reviewBtn": "Leave a review ⭐",
+    "reviewBtnShort": "⭐ Review",
     "searchPlaceholder": "Search dish, mezcal, steak...",
-    "scrollHint": "Swipe"
+    "scrollHint": "Scroll",
+    "categoriesTitle": "CATEGORIES",
+    "swipeHint": "SWIPE"
   },
   "mealSwitch": {
     "desayunos": "BREAKFAST",
     "comida": "LUNCH & DINNER",
+    "serviceMorning": "Breakfast Service active",
+    "serviceMorningShort": "Breakfast",
+    "serviceAfternoon": "Lunch & Cantina Service active",
+    "serviceAfternoonShort": "Lunch & Cantina",
     "scheduleNoticeMorning": "Breakfast Service active (9:00 AM - 1:30 PM)",
     "scheduleNoticeAfternoon": "Lunch & Cantina Service active (1:30 PM - 7:30 PM)"
   },

@@ -68,6 +68,7 @@ function broadcastMenuSync(extraData = {}) {
       branchId: activeBranchId,
       overrides: menuOverrides,
       productsCount: products.length,
+      products: products,
       ...extraData
     };
 
@@ -98,24 +99,49 @@ const ALLERGEN_OPTIONS = [
   { id: 'hero', label: 'Especialidad', icon: '👑', isDiet: true }
 ];
 
+let isDashboardUISetup = false;
+
 export function initAdminDashboard() {
+  // 1. Configuración de UI inmediata (0ms de espera)
+  setupDashboardUI();
+
+  // 2. Carga inicial instantánea desde catálogo local para que NUNCA esté en blanco
+  loadLocalFallback().then(() => {
+    populateCategoryDropdowns();
+    renderBranchesList();
+    renderMenuEditorTable();
+  });
+
+  // 3. Autenticación y carga de datos en segundo plano
   checkAdminAuth((user) => {
-    setupDashboardUI(user);
+    if (user) {
+      setupDashboardUI(user);
+    }
     loadData();
   });
 }
 
 function setupDashboardUI(user) {
-  const greetingEl = document.getElementById('user-greeting');
-  if (greetingEl) {
-    greetingEl.textContent = `Hola, ${user.email.split('@')[0]}`;
+  if (user) {
+    const greetingEl = document.getElementById('user-greeting');
+    if (greetingEl) {
+      const emailName = user.email ? user.email.split('@')[0] : (user.displayName || 'Administrador');
+      greetingEl.textContent = `Hola, ${emailName}`;
+    }
   }
+
+  // Evitar registrar listeners duplicados si se llama dos veces
+  if (isDashboardUISetup) return;
+  isDashboardUISetup = true;
 
   // Navegación Sidebar
   document.querySelectorAll('.sidebar-nav-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', (e) => {
       const view = btn.getAttribute('data-view');
-      if (view) switchView(view);
+      if (view) {
+        e.preventDefault();
+        switchView(view);
+      }
     });
   });
 
@@ -192,6 +218,9 @@ function setupDashboardUI(user) {
 
   // Configuración del Restaurante (Horarios, Google Maps, Contacto, Identidad)
   setupRestaurantSettingsAdmin();
+
+  // Renderizado inicial inmediato de sucursales
+  renderBranchesList();
 }
 
 function switchView(viewName) {
@@ -219,29 +248,51 @@ function switchView(viewName) {
 }
 
 async function loadData() {
+  // Asegurar que categories y products tengan datos base de inmediato si están vacíos
+  if (categories.length === 0 || products.length === 0) {
+    await loadLocalFallback();
+    populateCategoryDropdowns();
+    renderBranchesList();
+    renderMenuEditorTable();
+  }
+
   if (isConfigured && db) {
     try {
       // 1. Cargar Categorías
       const catSnap = await getDocs(collection(db, `restaurants/${restaurantId}/categories`));
-      categories = [];
-      catSnap.forEach(d => categories.push({ id: d.id, ...d.data() }));
+      if (!catSnap.empty) {
+        const loadedCats = [];
+        catSnap.forEach(d => loadedCats.push({ id: d.id, ...d.data() }));
+        loadedCats.sort((a, b) => (a.order !== undefined ? a.order : 999) - (b.order !== undefined ? b.order : 999));
+        categories = loadedCats;
+      }
 
       // 2. Cargar Productos
       const prodSnap = await getDocs(collection(db, `restaurants/${restaurantId}/products`));
-      products = [];
-      prodSnap.forEach(d => products.push({ id: d.id, ...d.data() }));
+      if (!prodSnap.empty) {
+        const loadedProds = [];
+        prodSnap.forEach(d => loadedProds.push({ id: d.id, ...d.data() }));
+        loadedProds.sort((a, b) => (a.order !== undefined ? a.order : 999) - (b.order !== undefined ? b.order : 999));
+        products = loadedProds;
+      }
 
       // 3. Cargar Overrides de Sucursal
       const overSnap = await getDocs(collection(db, `restaurants/${restaurantId}/branches/${activeBranchId}/menuOverrides`));
       menuOverrides = {};
       overSnap.forEach(d => menuOverrides[d.id] = d.data());
 
+      populateCategoryDropdowns();
+      renderBranchesList();
+      renderMenuEditorTable();
     } catch (e) {
-      console.warn("Error loading Firestore data, loading local fallback:", e);
-      await loadLocalFallback();
+      console.warn("Error loading Firestore data, using fallback data:", e);
+      if (categories.length === 0 || products.length === 0) {
+        await loadLocalFallback();
+        populateCategoryDropdowns();
+        renderBranchesList();
+        renderMenuEditorTable();
+      }
     }
-  } else {
-    await loadLocalFallback();
   }
 
   // Cargar configuración de la barra en movimiento (Marquee)
@@ -249,10 +300,6 @@ async function loadData() {
 
   // Cargar configuración general del restaurante (Horarios, Reseñas, Contacto)
   await loadRestaurantSettings();
-
-  populateCategoryDropdowns();
-  renderBranchesList();
-  renderMenuEditorTable();
 }
 
 async function loadLocalFallback() {
@@ -385,6 +432,8 @@ function renderMenuEditorTable() {
     const currentName = override.nameOverride || product.name?.es || '';
     const currentDesc = override.descriptionOverride?.es || product.description?.es || '';
     const currentCat = override.categoryOverride || product.categoryId || '';
+    const currentWeight = override.weight !== undefined ? override.weight : (product.weight || '');
+    const currentVolume = override.volume !== undefined ? override.volume : (product.volume || '');
 
     const allergens = override.allergens || product.allergens || [];
     const tags = override.tags || product.tags || [];
@@ -441,6 +490,18 @@ function renderMenuEditorTable() {
           <div class="price-row-input">
             <span class="price-label">Promo:</span>
             <input type="number" min="0" step="any" class="input-inline input-inline-promo-price" data-id="${product.id}" value="${promoPrice !== null && promoPrice !== undefined ? promoPrice : ''}" placeholder="Sin promo" title="Precio promocional de oferta" />
+          </div>
+        </div>
+      </td>
+      <td>
+        <div class="table-portion-group">
+          <div class="portion-row-input">
+            <span class="portion-label">g:</span>
+            <input type="text" class="input-inline input-inline-weight" data-id="${product.id}" value="${escapeHtml(currentWeight)}" placeholder="350g" title="Gramaje (ej: 350g)" />
+          </div>
+          <div class="portion-row-input">
+            <span class="portion-label">ml:</span>
+            <input type="text" class="input-inline input-inline-volume" data-id="${product.id}" value="${escapeHtml(currentVolume)}" placeholder="355ml" title="Mililitros (ej: 355ml)" />
           </div>
         </div>
       </td>
@@ -517,7 +578,23 @@ function renderMenuEditorTable() {
       renderMenuEditorTable();
     });
 
-    // 7. Toggle Promo
+    // 7. Cambiar Gramaje (g)
+    const weightInput = tr.querySelector('.input-inline-weight');
+    if (weightInput) {
+      weightInput.addEventListener('change', (e) => {
+        markPendingChange(product.id, { weight: e.target.value.trim() });
+      });
+    }
+
+    // 8. Cambiar Mililitros (ml)
+    const volumeInput = tr.querySelector('.input-inline-volume');
+    if (volumeInput) {
+      volumeInput.addEventListener('change', (e) => {
+        markPendingChange(product.id, { volume: e.target.value.trim() });
+      });
+    }
+
+    // 9. Toggle Promo
     const promoBtn = tr.querySelector('.toggle-promo');
     promoBtn.addEventListener('click', () => {
       const nextPromo = !isPromo;
@@ -530,11 +607,11 @@ function renderMenuEditorTable() {
       renderMenuEditorTable();
     });
 
-    // 8. Botón Editar en Modal
+    // 10. Botón Editar en Modal
     const editBtn = tr.querySelector('.btn-edit-details');
     editBtn.addEventListener('click', () => openEditProductModal(product));
 
-    // 9. Botón Quitar / Eliminar Platillo
+    // 11. Botón Quitar / Eliminar Platillo
     const deleteBtn = tr.querySelector('.btn-delete-product');
     deleteBtn.addEventListener('click', () => deleteProduct(product.id, currentName));
 
@@ -602,6 +679,8 @@ async function savePendingChanges() {
         if (changes.tags !== undefined) overrideData.tags = changes.tags;
         if (changes.priceOverride !== undefined) overrideData.priceOverride = changes.priceOverride;
         if (changes.descriptionOverride !== undefined) overrideData.descriptionOverride = changes.descriptionOverride;
+        if (changes.weight !== undefined) overrideData.weight = changes.weight;
+        if (changes.volume !== undefined) overrideData.volume = changes.volume;
         batch.set(overrideRef, overrideData, { merge: true });
 
         // 2. Si se cambiaron atributos maestros, actualizar el producto
@@ -640,6 +719,12 @@ async function savePendingChanges() {
         if (changes.tags !== undefined) {
           masterData.tags = changes.tags;
         }
+        if (changes.weight !== undefined) {
+          masterData.weight = changes.weight;
+        }
+        if (changes.volume !== undefined) {
+          masterData.volume = changes.volume;
+        }
         batch.set(prodRef, masterData, { merge: true });
 
         // Actualizar en el array local de productos
@@ -656,6 +741,8 @@ async function savePendingChanges() {
           if (changes.promoTag !== undefined) products[pIdx].promoTag = changes.promoTag;
           if (changes.allergens !== undefined) products[pIdx].allergens = changes.allergens;
           if (changes.tags !== undefined) products[pIdx].tags = changes.tags;
+          if (changes.weight !== undefined) products[pIdx].weight = changes.weight;
+          if (changes.volume !== undefined) products[pIdx].volume = changes.volume;
         }
       }
 
@@ -824,6 +911,11 @@ function openAddProductModal() {
   const visInput = document.getElementById('prod-modal-visible');
   if (visInput) visInput.checked = true;
 
+  const weightInput = document.getElementById('prod-modal-weight');
+  if (weightInput) weightInput.value = '';
+  const volumeInput = document.getElementById('prod-modal-volume');
+  if (volumeInput) volumeInput.value = '';
+
   const availInput = document.getElementById('prod-modal-available');
   const availLabel = document.getElementById('prod-available-label');
   if (availInput) availInput.checked = true;
@@ -868,6 +960,8 @@ function openEditProductModal(product) {
   const currentName = override.nameOverride || product.name?.es || '';
   const currentDesc = override.descriptionOverride?.es || product.description?.es || '';
   const currentCat = override.categoryOverride || product.categoryId || '';
+  const currentWeight = override.weight !== undefined ? override.weight : (product.weight || '');
+  const currentVolume = override.volume !== undefined ? override.volume : (product.volume || '');
 
   const titleEl = document.getElementById('modal-product-title');
   if (titleEl) titleEl.textContent = 'Editar Platillo';
@@ -886,6 +980,11 @@ function openEditProductModal(product) {
   if (descInput) descInput.value = currentDesc;
   const catSelect = document.getElementById('prod-category-select');
   if (catSelect) catSelect.value = currentCat;
+
+  const weightInput = document.getElementById('prod-modal-weight');
+  if (weightInput) weightInput.value = currentWeight;
+  const volumeInput = document.getElementById('prod-modal-volume');
+  if (volumeInput) volumeInput.value = currentVolume;
 
   const visInput = document.getElementById('prod-modal-visible');
   if (visInput) visInput.checked = isVisible;
@@ -923,6 +1022,8 @@ async function handleProductSave(form) {
   const price = Number(document.getElementById('prod-base-price').value);
   const categoryId = document.getElementById('prod-category-select').value;
   const descEs = document.getElementById('prod-desc-es').value.trim();
+  const weight = document.getElementById('prod-modal-weight')?.value.trim() || '';
+  const volume = document.getElementById('prod-modal-volume')?.value.trim() || '';
   const isVisible = document.getElementById('prod-modal-visible').checked;
   const isAvailable = document.getElementById('prod-modal-available').checked;
   const isPromo = document.getElementById('prod-modal-promo').checked;
@@ -957,6 +1058,8 @@ async function handleProductSave(form) {
       description: { es: descEs, en: descEs, fr: '' },
       price: price,
       categoryId: categoryId,
+      weight: weight,
+      volume: volume,
       isActive: isVisible,
       isAvailable: isAvailable,
       isPromo: isPromo,
@@ -982,6 +1085,8 @@ async function handleProductSave(form) {
         tags: tags,
         priceOverride: price,
         descriptionOverride: { es: descEs, en: descEs, fr: '' },
+        weight: weight,
+        volume: volume,
         updatedAt: serverTimestamp()
       }, { merge: true });
     }
@@ -1006,7 +1111,9 @@ async function handleProductSave(form) {
       allergens: allergens,
       tags: tags,
       priceOverride: price,
-      descriptionOverride: { es: descEs, en: descEs, fr: '' }
+      descriptionOverride: { es: descEs, en: descEs, fr: '' },
+      weight: weight,
+      volume: volume
     };
 
     delete pendingChanges[productId];
@@ -1160,6 +1267,15 @@ async function saveMarqueeConfig() {
         ...marqueeConfig,
         updatedAt: serverTimestamp()
       }, { merge: true });
+    }
+
+    if (syncChannel) {
+      try {
+        syncChannel.postMessage({
+          type: 'MARQUEE_SYNC',
+          config: marqueeConfig
+        });
+      } catch (e) {}
     }
 
     showToast(`✅ Barra de anuncios actualizada (${marqueeConfig.color.toUpperCase()})`);
@@ -1635,9 +1751,21 @@ async function saveRestaurantSettings() {
   const saveBtn = document.getElementById('btn-save-settings');
   const feedback = document.getElementById('settings-save-feedback');
 
+  const formatTime12h = (timeStr) => {
+    if (!timeStr) return '';
+    const parts = timeStr.split(':').map(Number);
+    if (isNaN(parts[0])) return timeStr;
+    const h = parts[0];
+    const m = isNaN(parts[1]) ? 0 : parts[1];
+    const suffix = h >= 12 ? 'PM' : 'AM';
+    const hour12 = h % 12 || 12;
+    return `${hour12}:${String(m).padStart(2, '0')} ${suffix}`;
+  };
+
   const getVal = (id, fallback = '') => {
     const el = document.getElementById(id);
-    return el ? el.value.trim() : fallback;
+    const val = el ? el.value.trim() : '';
+    return val !== '' ? val : fallback;
   };
 
   const mapsUrlVal = getVal('setting-maps-url', 'https://maps.app.goo.gl/EKib5MFWwCC9paop9');
@@ -1653,6 +1781,16 @@ async function saveRestaurantSettings() {
     if (placeIdEl) placeIdEl.value = placeIdVal;
   }
 
+  const bStart = getVal('setting-breakfast-start', '09:00');
+  const bEnd = getVal('setting-breakfast-end', '13:30');
+  const bLabelDefault = `${formatTime12h(bStart)} - ${formatTime12h(bEnd)}`;
+  const bLabel = getVal('setting-breakfast-label', bLabelDefault);
+
+  const lStart = getVal('setting-lunch-start', '13:30');
+  const lEnd = getVal('setting-lunch-end', '19:30');
+  const lLabelDefault = `${formatTime12h(lStart)} - ${formatTime12h(lEnd)}`;
+  const lLabel = getVal('setting-lunch-label', lLabelDefault);
+
   const updatedSettings = {
     name: getVal('setting-restaurant-name', 'La Curandera'),
     tagline: getVal('setting-tagline', 'MEZCAL · CORTES · SNACKS'),
@@ -1666,14 +1804,14 @@ async function saveRestaurantSettings() {
     instagram: getVal('setting-instagram', 'https://instagram.com/lacurandera.mx'),
     schedule: {
       breakfast: {
-        start: getVal('setting-breakfast-start', '09:00'),
-        end: getVal('setting-breakfast-end', '13:30'),
-        label: getVal('setting-breakfast-label', '9:00 AM - 1:30 PM')
+        start: bStart,
+        end: bEnd,
+        label: bLabel
       },
       lunch: {
-        start: getVal('setting-lunch-start', '13:30'),
-        end: getVal('setting-lunch-end', '19:30'),
-        label: getVal('setting-lunch-label', '1:30 PM - 7:30 PM')
+        start: lStart,
+        end: lEnd,
+        label: lLabel
       },
       days: getVal('setting-days-label', 'Lunes a Domingo')
     }

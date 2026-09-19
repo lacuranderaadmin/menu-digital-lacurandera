@@ -10,12 +10,15 @@
   top: 0;
   left: 0;
   width: 100%;
+  max-width: 100vw;
   z-index: var(--z-header);
   background: rgba(253, 246, 236, 0.92);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-bottom: 2px solid rgba(232, 120, 80, 0.2);
   transition: all var(--transition-smooth);
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
 .site-header.scrolled {
@@ -30,6 +33,8 @@
   padding-top: 0.4rem;
   padding-bottom: 0.4rem;
   gap: 0.5rem;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .header-brand {
@@ -38,6 +43,7 @@
   gap: 0.45rem;
   min-width: 0;
   flex: 0 1 auto;
+  overflow: hidden;
 }
 
 .header-logo {
@@ -187,6 +193,14 @@
   line-height: 1.2;
 }
 
+.btn-review-full {
+  display: inline;
+}
+
+.btn-review-short {
+  display: none;
+}
+
 .btn-review:hover {
   background-color: var(--lc-rosa-hover);
   transform: translateY(-1px);
@@ -202,49 +216,92 @@
 
 @media (max-width: 540px) {
   .header-container {
-    padding-left: 0.75rem;
-    padding-right: 0.75rem;
-    gap: 0.4rem;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    gap: 0.35rem;
   }
   .header-brand {
-    gap: 0.4rem;
-    flex-shrink: 1;
+    gap: 0.35rem;
+    flex: 0 1 auto;
     min-width: 0;
+    overflow: hidden;
   }
   .header-logo {
-    width: 36px;
-    height: 36px;
+    width: 32px;
+    height: 32px;
     flex-shrink: 0;
   }
   .header-title-group {
     min-width: 0;
+    flex: 0 1 auto;
     overflow: hidden;
   }
   .header-title {
-    font-size: 0.84rem;
-    letter-spacing: 0.02em;
+    font-size: clamp(0.7rem, 2.9vw, 0.85rem);
+    letter-spacing: 0.01em;
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .header-subtitle {
-    font-size: 0.5rem;
+    font-size: clamp(0.42rem, 1.7vw, 0.52rem);
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .header-actions {
-    flex-shrink: 0;
+    flex: 0 0 auto;
+    gap: 0.22rem;
+  }
+  .lang-selector {
+    padding: 1.5px;
+  }
+  .lang-flag {
+    display: none;
   }
   .lang-btn {
-    font-size: 0.58rem;
-    padding: 0.12rem 0.35rem;
+    font-size: 0.6rem;
+    padding: 0.15rem 0.38rem;
+    font-weight: 800;
+  }
+  .btn-review-full {
+    display: none;
+  }
+  .btn-review-short {
+    display: inline;
+    font-size: 0.62rem;
+    font-weight: 800;
   }
   .btn-review {
     font-size: 0.62rem;
-    padding: 0.2rem 0.55rem;
+    padding: 0.18rem 0.52rem;
+    gap: 0.2rem;
   }
-  .btn-review span.btn-text-full {
-    display: none;
+}
+
+@media (max-width: 360px) {
+  .header-container {
+    padding-left: 0.35rem;
+    padding-right: 0.35rem;
+    gap: 0.25rem;
   }
-  .btn-review::after {
-    content: 'Reseña ⭐';
+  .header-logo {
+    width: 28px;
+    height: 28px;
+  }
+  .header-title {
+    font-size: 0.68rem;
+  }
+  .header-subtitle {
+    font-size: 0.4rem;
+  }
+  .lang-btn {
+    font-size: 0.55rem;
+    padding: 0.12rem 0.3rem;
+  }
+  .btn-review {
+    font-size: 0.58rem;
+    padding: 0.15rem 0.42rem;
   }
 }
 
@@ -254,6 +311,8 @@
 .streamer-ribbons {
   position: relative;
   width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
   height: 18px;
   overflow: hidden;
   display: flex;
@@ -287,6 +346,8 @@
    Time-Aware Meal Switcher (☀️ Desayunos / 🌙 Comida y Cantina)
    -------------------------------------------------------------------------- */
 .meal-switch-wrapper {
+  position: relative;
+  z-index: 10;
   margin: 1.25rem 0 1.25rem;
   display: flex;
   flex-direction: column;
@@ -295,19 +356,27 @@
 }
 
 .meal-switch-indicator {
+  position: relative;
+  z-index: 15;
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  font-family: var(--font-title);
-  font-size: 0.82rem;
+  justify-content: center;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+  gap: 0.45rem;
+  font-family: var(--font-body);
+  font-size: 0.84rem;
   font-weight: 700;
-  color: var(--lc-negro);
-  background: rgba(255, 255, 255, 0.9);
-  border: 1.5px solid rgba(26, 20, 18, 0.18);
-  padding: 0.35rem 0.95rem;
+  color: #1A1412;
+  background: #FFFFFF;
+  border: 2px solid var(--lc-negro);
+  padding: 0.35rem 1rem;
   border-radius: var(--radius-pill);
-  box-shadow: 0 2px 8px rgba(44, 38, 33, 0.05);
-  letter-spacing: 0.02em;
+  box-shadow: 2.5px 2.5px 0px rgba(0, 0, 0, 0.12);
+  letter-spacing: 0.01em;
+  text-align: center;
+  max-width: 95vw;
+  box-sizing: border-box;
 }
 
 .meal-switch-indicator .status-pulse {
@@ -318,6 +387,32 @@
   box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7);
   animation: pulseGreenDot 2s infinite;
   display: inline-block;
+  flex-shrink: 0;
+}
+
+.meal-switch-indicator .meal-switch-notice-full {
+  display: inline;
+  font-weight: 700;
+  color: #1A1412;
+}
+
+.meal-switch-indicator .meal-switch-notice-short {
+  display: none;
+  font-weight: 700;
+  color: #1A1412;
+}
+
+.meal-switch-indicator .meal-switch-time-badge {
+  font-family: var(--font-body);
+  font-weight: 800;
+  font-size: 0.8rem;
+  color: #000000;
+  background: #F4EBE1;
+  border: 1px solid rgba(0, 0, 0, 0.22);
+  padding: 0.1rem 0.45rem;
+  border-radius: 6px;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
 }
 
 @keyframes pulseGreenDot {
@@ -384,20 +479,54 @@
   transform: translateY(-1px);
 }
 
-@media (max-width: 480px) {
+@media (max-width: 600px) {
+  .meal-switch-wrapper {
+    margin: 0.85rem 0 0.85rem;
+    gap: 0.45rem;
+  }
+
+  .meal-switch-indicator {
+    font-size: 0.72rem;
+    padding: 0.28rem 0.65rem;
+    gap: 0.3rem;
+    white-space: nowrap;
+    border-width: 1.5px;
+    box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.12);
+  }
+
+  .meal-switch-indicator .status-pulse {
+    width: 7px;
+    height: 7px;
+  }
+
+  .meal-switch-notice-full {
+    display: none;
+  }
+
+  .meal-switch-notice-short {
+    display: inline;
+    font-size: 0.72rem;
+  }
+
+  .meal-switch-indicator .meal-switch-time-badge {
+    font-size: 0.7rem;
+    padding: 0.08rem 0.3rem;
+  }
+
   .meal-switch {
     display: flex;
     width: 100%;
-    max-width: 360px;
-    padding: 5px;
+    max-width: min(340px, calc(100vw - 1.7rem));
+    padding: 4px;
     gap: 4px;
-    box-shadow: 3.5px 3.5px 0px var(--lc-negro);
+    box-shadow: 3px 3px 0px var(--lc-negro);
+    box-sizing: border-box;
   }
 
   .meal-option {
     flex: 1;
-    font-size: 0.84rem;
-    padding: 0.65rem 0.6rem;
+    font-size: 0.82rem;
+    padding: 0.55rem 0.5rem;
     letter-spacing: 0.03em;
   }
 }
@@ -412,6 +541,7 @@
   background: transparent;
   width: 100%;
   max-width: 100vw;
+  overflow: hidden;
   box-sizing: border-box;
   padding: 0.5rem 0 0.7rem;
   margin-bottom: 1.8rem;
@@ -456,14 +586,129 @@
 }
 
 /* --------------------------------------------------------------------------
-   Indicador Minimalista de Desplazamiento Horizontal (Scroll Hint)
+   Encabezado de Categorías: Título y Pista de Deslizamiento (Swipe Hint)
    -------------------------------------------------------------------------- */
-.categories-fade-edge {
-  display: none !important;
+.categories-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 clamp(1.25rem, 3.5vw, 3rem) 0.55rem;
+  width: 100%;
+  box-sizing: border-box;
+  user-select: none;
 }
 
-.categories-scroll-hint {
-  display: none !important;
+.categories-title-box {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: var(--lc-negro);
+  color: var(--lc-crema);
+  border: 2px solid var(--lc-negro);
+  box-shadow: 2.5px 2.5px 0px var(--lc-rosa);
+  border-radius: var(--radius-pill);
+  padding: 0.28rem 0.85rem;
+  font-family: var(--font-title);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: default;
+  pointer-events: none;
+  line-height: 1.2;
+}
+
+.categories-title-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--lc-turquesa);
+  box-shadow: 0 0 6px var(--lc-turquesa);
+  flex-shrink: 0;
+}
+
+.categories-swipe-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-title);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--lc-negro);
+  opacity: 0.85;
+}
+
+.swipe-hint-arrow {
+  width: 15px;
+  height: 15px;
+  color: var(--lc-rosa);
+  animation: swipeArrowNudge 1.6s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+@keyframes swipeArrowNudge {
+  0%, 100% {
+    transform: translateX(0);
+    opacity: 0.75;
+  }
+  50% {
+    transform: translateX(5px);
+    opacity: 1;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Barra Deslizadora Interactiva para Scroll Horizontal de Categorías
+   -------------------------------------------------------------------------- */
+.categories-scroll-track-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 0.55rem 0 0.15rem;
+  box-sizing: border-box;
+  transition: opacity 0.3s ease;
+}
+
+.categories-scroll-track {
+  position: relative;
+  width: clamp(140px, 36vw, 240px);
+  height: 6px;
+  background: rgba(26, 26, 26, 0.12);
+  border-radius: 999px;
+  cursor: pointer;
+  touch-action: none;
+  padding: 7px 0;
+  background-clip: content-box;
+  box-sizing: content-box;
+}
+
+.categories-scroll-thumb {
+  position: absolute;
+  top: 7px;
+  left: 0;
+  height: 6px;
+  min-width: 36px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--lc-rosa) 0%, #D8426A 50%, var(--lc-turquesa) 100%);
+  box-shadow: 0 1px 4px rgba(201, 78, 143, 0.45);
+  cursor: grab;
+  outline: none;
+  transition: transform 0.03s linear, width 0.2s ease, filter 0.15s ease;
+}
+
+.categories-scroll-track.is-dragging .categories-scroll-thumb,
+.categories-scroll-thumb:active {
+  cursor: grabbing;
+  filter: brightness(1.15);
+  box-shadow: 0 2px 8px rgba(201, 78, 143, 0.7);
+}
+
+.categories-scroll-thumb:focus-visible {
+  outline: 2px solid var(--lc-turquesa);
+  outline-offset: 2px;
 }
 
 .category-tab {
@@ -968,13 +1213,24 @@ body[data-meal-mode="desayuno"] .product-card:hover .view-details-prompt {
   margin-bottom: 0.5rem;
 }
 
+.modal-price-container {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.15rem;
+  margin-top: 0.25rem;
+}
+
 .modal-price {
-  display: inline-block;
+  display: inline-flex;
+  align-items: baseline;
   font-family: var(--font-title);
-  font-size: 1.35rem;
+  font-size: 1.45rem;
   font-weight: 900;
   color: var(--lc-rosa);
-  margin-bottom: 1rem;
+  line-height: 1;
+  margin-bottom: 0;
 }
 
 .modal-struck-price {
@@ -1020,26 +1276,29 @@ body[data-meal-mode="desayuno"] .product-card:hover .view-details-prompt {
 }
 
 .modal-desc {
-  font-family: var(--font-mono);
-  font-size: 0.95rem;
-  color: var(--lc-gray-800);
-  line-height: 1.6;
-  margin-bottom: 1.25rem;
+  font-family: var(--font-body);
+  font-size: 1.02rem;
+  font-weight: 500;
+  color: #2F2A28;
+  line-height: 1.65;
+  margin-bottom: 1.35rem;
+  letter-spacing: 0.01em;
 }
 
 .modal-allergens-group {
-  margin-top: 1rem;
-  padding-top: 1rem;
-  border-top: 2px dashed rgba(232, 120, 80, 0.3);
+  margin-top: 1.15rem;
+  padding-top: 1.15rem;
+  border-top: 2px dashed rgba(232, 120, 80, 0.35);
 }
 
 .modal-allergens-title {
   font-family: var(--font-title);
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   font-weight: 800;
   text-transform: uppercase;
+  letter-spacing: 0.06em;
   color: var(--lc-terracota);
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.65rem;
 }
 
 .modal-allergens-list {
@@ -1049,13 +1308,19 @@ body[data-meal-mode="desayuno"] .product-card:hover .view-details-prompt {
 }
 
 .allergen-pill {
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  padding: 0.3rem 0.65rem;
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.35rem 0.75rem;
   border-radius: var(--radius-pill);
-  background: var(--lc-arena-subtle);
-  border: 1px solid var(--lc-arena);
-  color: var(--lc-gray-800);
+  background: #FFFDF9;
+  border: 1.5px solid rgba(0, 0, 0, 0.18);
+  color: #38312E;
+  box-shadow: 1.5px 1.5px 0px rgba(0, 0, 0, 0.12);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  line-height: 1.3;
 }
 
 .btn-video-prep {
@@ -1142,6 +1407,19 @@ body[data-meal-mode="desayuno"] .product-card:hover .view-details-prompt {
   }
 }
 
+@media (max-width: 480px) {
+  .fab-whatsapp {
+    bottom: 18px;
+    right: 16px;
+    width: 52px;
+    height: 52px;
+  }
+  .fab-whatsapp svg {
+    width: 28px;
+    height: 28px;
+  }
+}
+
 /* --------------------------------------------------------------------------
    Toast Feedback
    -------------------------------------------------------------------------- */
@@ -1173,23 +1451,17 @@ body[data-meal-mode="desayuno"] .product-card:hover .view-details-prompt {
 /* --------------------------------------------------------------------------
    Vertical Categories Floating Dock (Rail Lateral con Emojis - Lado Derecho)
    -------------------------------------------------------------------------- */
-/* Despejar espacio lateral derecho para que el dock flote libremente sin tocar las tarjetas */
+/* Contenedor de menú interactivo perfectamente centrado y simétrico */
 .menu-interactive-container {
-  padding-left: 14px !important;
-  padding-right: 56px !important;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  box-sizing: border-box;
 }
 
 @media (min-width: 768px) {
   .menu-interactive-container {
-    padding-left: 1.5rem !important;
-    padding-right: 64px !important;
-  }
-}
-
-@media (min-width: 1240px) {
-  .menu-interactive-container {
-    padding-left: 2rem !important;
-    padding-right: 2rem !important;
+    padding-left: 2rem;
+    padding-right: 2rem;
   }
 }
 
@@ -1399,13 +1671,13 @@ body[data-meal-mode="comida"] .dock-emoji-btn.active {
 /* Ajustes Responsive Móvil */
 @media (max-width: 600px) {
   .menu-interactive-container {
-    padding-left: 10px !important;
-    padding-right: 48px !important;
+    padding-left: 0.85rem !important;
+    padding-right: 0.85rem !important;
   }
 
   .categories-bar {
     padding-left: 0.85rem !important;
-    padding-right: 1.25rem !important;
+    padding-right: 0.85rem !important;
   }
 
   .vertical-categories-dock {
@@ -1460,5 +1732,79 @@ body[data-meal-mode="comida"] .dock-emoji-btn.active {
   margin: 1.5rem auto 0.5rem;
   text-align: center;
   letter-spacing: 0.03em;
+}
+
+/* ==========================================================================
+   Badges de Porción (Gramaje y Mililitros) - Menú Digital y Panel Admin
+   ========================================================================== */
+.product-portion-badge {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--lc-negro);
+  background: #FFF4EE;
+  border: 1.5px solid var(--lc-negro);
+  border-radius: 999px;
+  padding: 0.12rem 0.55rem;
+  margin-left: 0.4rem;
+  vertical-align: middle;
+  white-space: nowrap;
+  letter-spacing: 0.02em;
+  box-shadow: 1.5px 1.5px 0px var(--lc-negro);
+  line-height: 1.3;
+}
+
+.modal-portion-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--lc-negro);
+  background: #FFF5EE;
+  border: 1.5px solid var(--lc-negro);
+  box-shadow: 2px 2px 0px var(--lc-negro);
+  border-radius: 999px;
+  padding: 0.22rem 0.75rem;
+  margin: 0;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+  vertical-align: middle;
+  width: fit-content;
+}
+
+/* Inputs de porción en la tabla de administración */
+.table-portion-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.portion-row-input {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.portion-label {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: var(--lc-gray-500);
+  width: 18px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.input-inline-weight,
+.input-inline-volume {
+  width: 92px;
+  font-size: 0.78rem;
+  padding: 0.25rem 0.4rem;
+  font-family: var(--font-mono, monospace);
+  font-weight: 700;
 }
 

@@ -12,23 +12,45 @@ export async function initI18n() {
     currentLang = 'es';
   }
 
+  // 1. Carga instantánea desde caché local (0ms de latencia)
   for (const lang of availableLangs) {
     try {
-      // Usar ruta relativa para compatibilidad con subdirectorios y hosting
+      const cached = localStorage.getItem(`lc_i18n_${lang}`);
+      if (cached) {
+        translations[lang] = JSON.parse(cached);
+      }
+    } catch (e) {}
+  }
+  if (translations[currentLang]) {
+    applyStaticTranslations();
+  }
+
+  // 2. Carga en paralelo (Promise.all) de los archivos de traducción para máxima velocidad
+  const fetchPromises = availableLangs.map(async (lang) => {
+    try {
       const res = await fetch(`i18n/${lang}.json`);
       if (res.ok) {
-        translations[lang] = await res.json();
+        const data = await res.json();
+        translations[lang] = data;
+        try {
+          localStorage.setItem(`lc_i18n_${lang}`, JSON.stringify(data));
+        } catch (e) {}
       } else {
         const fallbackRes = await fetch(`/i18n/${lang}.json`);
         if (fallbackRes.ok) {
-          translations[lang] = await fallbackRes.json();
+          const data = await fallbackRes.json();
+          translations[lang] = data;
+          try {
+            localStorage.setItem(`lc_i18n_${lang}`, JSON.stringify(data));
+          } catch (e) {}
         }
       }
     } catch (err) {
       console.warn(`Could not load translations for ${lang}`, err);
     }
-  }
+  });
 
+  await Promise.all(fetchPromises);
   applyStaticTranslations();
   return currentLang;
 }

@@ -8,7 +8,46 @@ import { firebaseConfig } from './firebase-config.js';
 let activeMealMode = 'desayunos'; // 'desayunos' | 'comida'
 let modalActive = false;
 
-let currentScheduleConfig = null;
+function getStoredSchedule() {
+  try {
+    const cached = localStorage.getItem('lc_restaurant_settings');
+    if (cached) {
+      const parsed = JSON.parse(cached);
+      if (parsed && parsed.schedule) return parsed.schedule;
+    }
+  } catch (e) {}
+  return null;
+}
+
+let currentScheduleConfig = getStoredSchedule();
+
+/**
+ * Convierte formato HH:MM (24h) a formato legible 12h (AM/PM)
+ */
+export function formatTime12h(timeStr) {
+  if (!timeStr) return '';
+  const parts = timeStr.split(':').map(Number);
+  if (isNaN(parts[0])) return timeStr;
+  const h = parts[0];
+  const m = isNaN(parts[1]) ? 0 : parts[1];
+  const suffix = h >= 12 ? 'PM' : 'AM';
+  const hour12 = h % 12 || 12;
+  return `${hour12}:${String(m).padStart(2, '0')} ${suffix}`;
+}
+
+/**
+ * Obtiene la etiqueta amigable del horario asegurando que nunca sea vacía
+ */
+export function getScheduleLabel(shiftConfig, fallbackLabel) {
+  if (!shiftConfig) return fallbackLabel;
+  if (typeof shiftConfig.label === 'string' && shiftConfig.label.trim().length > 0) {
+    return shiftConfig.label.trim();
+  }
+  if (shiftConfig.start && shiftConfig.end) {
+    return `${formatTime12h(shiftConfig.start)} - ${formatTime12h(shiftConfig.end)}`;
+  }
+  return fallbackLabel;
+}
 
 /**
  * Determina el modo de comida inicial según la hora local:
@@ -20,8 +59,13 @@ export function getInitialMealMode(lunchStartMinutes = null) {
   const minutes = now.getMinutes();
   const totalMinutes = hours * 60 + minutes;
 
-  // Si se especifica corte dinámico en minutos (ej: 13:30 -> 810)
-  const cutoff = (typeof lunchStartMinutes === 'number') ? lunchStartMinutes : 810;
+  let cutoff = (typeof lunchStartMinutes === 'number') ? lunchStartMinutes : 810;
+  if (lunchStartMinutes === null && currentScheduleConfig?.lunch?.start) {
+    const parts = currentScheduleConfig.lunch.start.split(':').map(Number);
+    if (!isNaN(parts[0])) {
+      cutoff = parts[0] * 60 + (parts[1] || 0);
+    }
+  }
   return totalMinutes < cutoff ? 'desayunos' : 'comida';
 }
 
@@ -29,6 +73,9 @@ let onModeChangedCallback = null;
 
 export function initUI(callback) {
   onModeChangedCallback = callback;
+  if (!currentScheduleConfig) {
+    currentScheduleConfig = getStoredSchedule();
+  }
   // Inicializar modo según hora
   activeMealMode = getInitialMealMode();
   document.body.setAttribute('data-meal-mode', (activeMealMode === 'desayuno' || activeMealMode === 'desayunos') ? 'desayunos' : 'comida');
@@ -97,7 +144,11 @@ export function getActiveMealMode() {
 export function updateMealSwitchUI(customSchedule = null) {
   if (customSchedule) {
     currentScheduleConfig = customSchedule;
+  } else if (!currentScheduleConfig) {
+    currentScheduleConfig = getStoredSchedule();
   }
+
+  const isMorning = activeMealMode === 'desayunos' || activeMealMode === 'desayuno';
 
   const options = document.querySelectorAll('.meal-option');
   options.forEach(opt => {
@@ -119,25 +170,27 @@ export function updateMealSwitchUI(customSchedule = null) {
     }
   });
 
-  // Micro-copy indicador de horario con dot pulsante
+  // Micro-copy indicador de horario con dot pulsante y tiempo destacado
   const indicator = document.querySelector('.meal-switch-indicator');
   if (indicator) {
-    const isMorning = activeMealMode === 'desayunos' || activeMealMode === 'desayuno';
-    let notice = '';
     const sched = currentScheduleConfig;
-    if (sched) {
-      if (isMorning && sched.breakfast && sched.breakfast.label) {
-        notice = `Servicio de Desayuno activo (${sched.breakfast.label})`;
-      } else if (!isMorning && sched.lunch && sched.lunch.label) {
-        notice = `Servicio de Comida y Cantina activo (${sched.lunch.label})`;
-      }
-    }
-    if (!notice) {
-      notice = isMorning
-        ? t('mealSwitch.scheduleNoticeMorning', 'Servicio de Desayuno activo (9:00 AM - 1:30 PM)')
-        : t('mealSwitch.scheduleNoticeAfternoon', 'Servicio de Comida y Cantina activo (1:30 PM - 7:30 PM)');
-    }
-    indicator.innerHTML = `<span class="status-pulse"></span> <span>${notice}</span>`;
+    const breakfastLabel = getScheduleLabel(sched?.breakfast, '9:00 AM - 1:30 PM');
+    const lunchLabel = getScheduleLabel(sched?.lunch, '1:30 PM - 7:30 PM');
+    const currentLabel = isMorning ? breakfastLabel : lunchLabel;
+
+    const serviceNameFull = isMorning
+      ? t('mealSwitch.serviceMorning', 'Servicio de Desayuno activo')
+      : t('mealSwitch.serviceAfternoon', 'Servicio de Comida y Cantina activo');
+    const serviceNameShort = isMorning
+      ? t('mealSwitch.serviceMorningShort', 'Desayuno activo')
+      : t('mealSwitch.serviceAfternoonShort', 'Comida y Cantina');
+
+    indicator.innerHTML = `
+      <span class="status-pulse" aria-hidden="true"></span>
+      <span class="meal-switch-notice-full">${serviceNameFull}</span>
+      <span class="meal-switch-notice-short">${serviceNameShort}</span>
+      <span class="meal-switch-time-badge">${currentLabel}</span>
+    `;
   }
 }
 
@@ -167,6 +220,39 @@ export function openProductModal(product) {
   const promoTag = product.promoTag || 'PROMO';
 
   if (titleEl) titleEl.textContent = title;
+
+  // Gramaje y Mililitros en el modal (sin emojis para máxima legibilidad y estética)
+  const weight = product.weight || '';
+  const volume = product.volume || '';
+  const portionParts = [];
+  if (weight && String(weight).trim()) {
+    let w = String(weight).trim();
+    if (/^\d+(\.\d+)?$/.test(w)) w += 'g';
+    portionParts.push(w);
+  }
+  if (volume && String(volume).trim()) {
+    let v = String(volume).trim();
+    if (/^\d+(\.\d+)?$/.test(v)) v += 'ml';
+    portionParts.push(v);
+  }
+
+  let portionEl = modalBackdrop.querySelector('.modal-portion-badge');
+  if (portionParts.length > 0) {
+    if (!portionEl) {
+      portionEl = document.createElement('span');
+      portionEl.className = 'modal-portion-badge';
+      const priceContainer = modalBackdrop.querySelector('.modal-price-container');
+      if (priceContainer) {
+        priceContainer.appendChild(portionEl);
+      } else if (priceEl && priceEl.parentNode) {
+        priceEl.parentNode.insertBefore(portionEl, priceEl.nextSibling);
+      }
+    }
+    portionEl.textContent = portionParts.join('  •  ');
+    portionEl.style.display = 'inline-flex';
+  } else if (portionEl) {
+    portionEl.style.display = 'none';
+  }
 
   // Actualizar precio con soporte de promoción
   if (priceEl) {
