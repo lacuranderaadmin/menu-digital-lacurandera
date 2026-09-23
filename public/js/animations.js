@@ -30,6 +30,8 @@ function initHeroVideoAutoplay() {
   };
 
   playVideo();
+  video.addEventListener('canplay', playVideo, { once: true });
+  video.addEventListener('loadedmetadata', playVideo, { once: true });
   ['touchstart', 'click', 'scroll', 'visibilitychange'].forEach(evt => {
     window.addEventListener(evt, playVideo, { passive: true });
   });
@@ -98,11 +100,11 @@ function initHeroAura() {
       this.vy = -(Math.random() * 1.2 + 0.5);
 
       this.size = Math.random() * 5 + 2.5;
-      this.alpha = 0;
       this.targetAlpha = Math.random() * 0.55 + 0.25;
+      this.alpha = initial ? (this.targetAlpha * (Math.random() * 0.5 + 0.5)) : 0;
       this.colorBase = particleColors[Math.floor(Math.random() * particleColors.length)];
-      this.life = 0;
       this.maxLife = Math.random() * 140 + 80;
+      this.life = initial ? Math.floor(Math.random() * (this.maxLife * 0.7)) : 0;
       this.wobbleSpeed = Math.random() * 0.04 + 0.01;
     }
 
@@ -176,11 +178,22 @@ function initHeroAura() {
   let isVisible = true;
   const observer = new IntersectionObserver((entries) => {
     isVisible = entries[0].isIntersecting;
-    if (isVisible && !animationFrameId) {
+    if (isVisible && !animationFrameId && !document.hidden) {
       animate();
     }
   }, { threshold: 0.1 });
   observer.observe(container);
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+        animationFrameId = null;
+      }
+    } else if (isVisible && !animationFrameId) {
+      animate();
+    }
+  });
 
   function animate() {
     if (!isVisible) {
@@ -557,8 +570,11 @@ function initMenuBackgroundAura() {
   const particleCount = isMobile ? 14 : 22;
 
   function resize() {
-    width = canvas.width = Math.min(window.innerWidth, 1280);
-    height = canvas.height = Math.min(window.innerHeight, 720);
+    // Renderizado a resolución calibrada (máx 720x405) para 120 FPS sin pérdida de calidad en plasma difuso
+    const targetW = isMobile ? Math.min(window.innerWidth, 380) : Math.min(window.innerWidth, 720);
+    const targetH = isMobile ? Math.min(window.innerHeight, 640) : Math.min(window.innerHeight, 405);
+    width = canvas.width = targetW;
+    height = canvas.height = targetH;
   }
 
   class AmbientParticle {
@@ -574,9 +590,9 @@ function initMenuBackgroundAura() {
       this.size = Math.random() * 3 + 1.4;
       this.color = brandColors[Math.floor(Math.random() * brandColors.length)];
       this.maxAlpha = Math.random() * 0.45 + 0.35;
-      this.alpha = 0;
-      this.life = initial ? Math.floor(Math.random() * 180) : 0;
       this.maxLife = Math.random() * 260 + 160;
+      this.life = initial ? Math.floor(Math.random() * (this.maxLife * 0.7)) : 0;
+      this.alpha = initial ? (this.maxAlpha * (Math.random() * 0.5 + 0.5)) : 0;
       this.swaySpeed = Math.random() * 0.025 + 0.01;
       this.swayAmount = Math.random() * 2 + 0.8;
       this.swayOffset = Math.random() * Math.PI * 2;
@@ -757,6 +773,17 @@ function initMenuBackgroundAura() {
   }, { threshold: 0.02 });
 
   observer.observe(stage);
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+        animationFrameId = null;
+      }
+    } else if (isVisible && !animationFrameId) {
+      loop();
+    }
+  });
 
   window.addEventListener('resize', () => {
     resize();

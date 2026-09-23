@@ -30,8 +30,13 @@ let allOverrides = {};
 let searchQuery = '';
 let currentMealMode = 'desayunos'; // 'desayunos' | 'comida'
 
-export function setMealMode(mode) {
-  currentMealMode = (mode === 'desayuno' || mode === 'desayunos') ? 'desayunos' : 'comida';
+export function setMealMode(mode, force = false) {
+  const normalized = (mode === 'desayuno' || mode === 'desayunos') ? 'desayunos' : 'comida';
+  const hasRenderedSections = document.getElementById('menu-sections-container')?.children.length > 0;
+  if (!force && currentMealMode === normalized && hasRenderedSections) {
+    return;
+  }
+  currentMealMode = normalized;
   document.body.setAttribute('data-meal-mode', currentMealMode);
   renderCategoriesNav();
   renderMenu();

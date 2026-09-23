@@ -65,15 +65,15 @@ export async function setLanguage(lang) {
   localStorage.setItem('lc-lang', lang);
   window.__LC_CURRENT_LANG__ = lang;
 
-  // Animación fade
-  document.body.style.opacity = '0.85';
-  document.body.style.transition = 'opacity 0.2s ease';
+  // Animación rápida y limpia
+  document.body.style.opacity = '0.92';
+  document.body.style.transition = 'opacity 0.08s ease';
 
   setTimeout(() => {
     applyStaticTranslations();
     window.dispatchEvent(new CustomEvent('langChanged', { detail: { lang } }));
     document.body.style.opacity = '1';
-  }, 180);
+  }, 40);
 }
 
 export function t(path, fallback = '') {

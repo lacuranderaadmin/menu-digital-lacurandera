@@ -90,10 +90,10 @@
   --shadow-rosa: 0 8px 25px rgba(201, 78, 143, 0.3);
   --shadow-turquesa: 0 8px 25px rgba(21, 159, 155, 0.3);
 
-  /* Transitions */
-  --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-smooth: 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
-  --transition-bounce: 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  /* Transitions — Calibradas para máxima velocidad y respuesta inmediata */
+  --transition-fast: 0.12s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-smooth: 0.18s cubic-bezier(0.2, 0.8, 0.2, 1);
+  --transition-bounce: 0.22s cubic-bezier(0.16, 1, 0.3, 1);
 
   /* Z-indexes */
   --z-ribbons: 10;
