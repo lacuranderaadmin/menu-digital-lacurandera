@@ -5,7 +5,6 @@
 import { getLocalizedText, t, getLanguage } from './i18n.js';
 import { firebaseConfig } from './firebase-config.js';
 
-let activeMealMode = 'desayunos'; // 'desayunos' | 'comida'
 let modalActive = false;
 
 function getStoredSchedule() {
@@ -49,15 +48,35 @@ export function getScheduleLabel(shiftConfig, fallbackLabel) {
   return fallbackLabel;
 }
 
+export function getMexicoCityMinutes() {
+  try {
+    const now = new Date();
+    const formatter = new Intl.DateTimeFormat('en-US', {
+      timeZone: 'America/Mexico_City',
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: false
+    });
+    const parts = formatter.formatToParts(now);
+    const hourPart = parts.find(p => p.type === 'hour')?.value;
+    const minPart = parts.find(p => p.type === 'minute')?.value;
+    const h = parseInt(hourPart, 10);
+    const m = parseInt(minPart, 10);
+    if (!isNaN(h) && !isNaN(m)) {
+      return (h % 24) * 60 + m;
+    }
+  } catch (e) {}
+  const now = new Date();
+  return now.getHours() * 60 + now.getMinutes();
+}
+
 /**
- * Determina el modo de comida inicial según la hora local:
- * Respeta el corte configurado por el restaurante (por defecto 13:30 hrs).
+ * Determina el modo de comida inicial según la hora oficial de La Curandera (Tenancingo / Metepec, Edo. Méx.):
+ * Desayunos: 9:00 AM - 1:30 PM (hasta las 13:30 hrs).
+ * Comida: 1:30 PM - 7:30 PM (a partir de las 13:30 hrs).
  */
 export function getInitialMealMode(lunchStartMinutes = null) {
-  const now = new Date();
-  const hours = now.getHours();
-  const minutes = now.getMinutes();
-  const totalMinutes = hours * 60 + minutes;
+  const totalMinutes = getMexicoCityMinutes();
 
   let cutoff = (typeof lunchStartMinutes === 'number') ? lunchStartMinutes : 810;
   if (lunchStartMinutes === null && currentScheduleConfig?.lunch?.start) {
@@ -69,6 +88,7 @@ export function getInitialMealMode(lunchStartMinutes = null) {
   return totalMinutes < cutoff ? 'desayunos' : 'comida';
 }
 
+let activeMealMode = getInitialMealMode();
 let onModeChangedCallback = null;
 
 export function initUI(callback) {
@@ -82,15 +102,33 @@ export function initUI(callback) {
   updateMealSwitchUI();
 
   // Listener para el switch de horario
+  let userManuallySelected = false;
   const switchOptions = document.querySelectorAll('.meal-option');
   switchOptions.forEach(opt => {
     opt.addEventListener('click', (e) => {
       e.preventDefault();
+      userManuallySelected = true;
       const mode = opt.getAttribute('data-mode');
       if (mode && mode !== activeMealMode) {
         setMealModeUI(mode);
       }
     });
+  });
+
+  // Verificación periódica y reactivación de pestaña (detecta el cruce de las 1:30 PM en tiempo real)
+  const checkScheduleShift = () => {
+    if (userManuallySelected) return;
+    const expectedMode = getInitialMealMode();
+    if (expectedMode !== activeMealMode) {
+      setMealModeUI(expectedMode);
+    }
+  };
+
+  setInterval(checkScheduleShift, 20000);
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) {
+      checkScheduleShift();
+    }
   });
 
   // Header scroll blur effect

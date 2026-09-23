@@ -42,14 +42,35 @@
   <link rel="preload" href="data/catalog.json" as="fetch" crossorigin>
 
   <!-- CSS Design System -->
-  <link rel="stylesheet" href="css/tokens.css?v=12.0">
-  <link rel="stylesheet" href="css/base.css?v=12.0">
-  <link rel="stylesheet" href="css/components.css?v=12.0">
-  <link rel="stylesheet" href="css/menu.css?v=12.0">
+  <link rel="stylesheet" href="css/tokens.css?v=15.0">
+  <link rel="stylesheet" href="css/base.css?v=15.0">
+  <link rel="stylesheet" href="css/components.css?v=15.0">
+  <link rel="stylesheet" href="css/menu.css?v=15.0">
 
   <link rel="icon" type="image/png" href="assets/logo/logo.png">
+  <script>
+    (function() {
+      try {
+        var h, m;
+        try {
+          var parts = new Intl.DateTimeFormat('en-US', { timeZone: 'America/Mexico_City', hour: 'numeric', minute: 'numeric', hour12: false }).formatToParts(new Date());
+          h = parseInt(parts.find(function(p){ return p.type === 'hour'; }).value, 10);
+          m = parseInt(parts.find(function(p){ return p.type === 'minute'; }).value, 10);
+        } catch (err) {}
+        if (isNaN(h) || isNaN(m)) {
+          var now = new Date();
+          h = now.getHours();
+          m = now.getMinutes();
+        }
+        var mins = (h % 24) * 60 + m;
+        var isMorning = mins < 810; // 9:00 AM - 1:30 PM
+        var mode = isMorning ? 'desayunos' : 'comida';
+        document.documentElement.setAttribute('data-meal-mode', mode);
+      } catch (e) {}
+    })();
+  </script>
 </head>
-<body data-meal-mode="comida">
+<body>
 
   <!-- Banner Fuera de Línea -->
   <div id="offline-banner" class="offline-banner" data-i18n="status.offline">
@@ -206,12 +227,12 @@
       <div class="meal-switch-wrapper">
         <div class="meal-switch-indicator" id="meal-switch-indicator" role="status" aria-live="polite">
           <span class="status-pulse" aria-hidden="true"></span>
-          <span class="meal-switch-notice-full" data-i18n="mealSwitch.serviceMorning">Servicio de Desayuno activo</span>
-          <span class="meal-switch-notice-short" data-i18n="mealSwitch.serviceMorningShort">Desayuno activo</span>
+          <span class="meal-switch-notice-full">Servicio de Desayuno activo</span>
+          <span class="meal-switch-notice-short">Desayuno activo</span>
           <span class="meal-switch-time-badge">9:00 AM - 1:30 PM</span>
         </div>
         <div class="meal-switch" role="tablist" aria-label="Servicio del menú">
-          <button class="meal-option active" data-mode="desayunos" role="tab" id="tab-desayuno" aria-selected="true">
+          <button class="meal-option" data-mode="desayunos" role="tab" id="tab-desayuno" aria-selected="false">
             <span class="meal-option-text" data-i18n="mealSwitch.desayunos">DESAYUNO</span>
           </button>
           <button class="meal-option" data-mode="comida" role="tab" id="tab-comida" aria-selected="false">
@@ -219,6 +240,51 @@
           </button>
         </div>
       </div>
+      <script>
+        (function() {
+          try {
+            var h, m;
+            try {
+              var parts = new Intl.DateTimeFormat('en-US', { timeZone: 'America/Mexico_City', hour: 'numeric', minute: 'numeric', hour12: false }).formatToParts(new Date());
+              h = parseInt(parts.find(function(p){ return p.type === 'hour'; }).value, 10);
+              m = parseInt(parts.find(function(p){ return p.type === 'minute'; }).value, 10);
+            } catch (err) {}
+            if (isNaN(h) || isNaN(m)) {
+              var now = new Date();
+              h = now.getHours();
+              m = now.getMinutes();
+            }
+            var mins = (h % 24) * 60 + m;
+            var isMorning = mins < 810; // Antes de 1:30 PM (13:30)
+            var mode = isMorning ? 'desayunos' : 'comida';
+            document.body.setAttribute('data-meal-mode', mode);
+            var tabDes = document.getElementById('tab-desayuno');
+            var tabCom = document.getElementById('tab-comida');
+            var ind = document.getElementById('meal-switch-indicator');
+            if (tabDes && tabCom) {
+              if (isMorning) {
+                tabDes.className = 'meal-option active';
+                tabDes.setAttribute('aria-selected', 'true');
+                tabCom.className = 'meal-option';
+                tabCom.setAttribute('aria-selected', 'false');
+              } else {
+                tabDes.className = 'meal-option';
+                tabDes.setAttribute('aria-selected', 'false');
+                tabCom.className = 'meal-option active mode-comida';
+                tabCom.setAttribute('aria-selected', 'true');
+              }
+            }
+            if (ind) {
+              var noticeFull = ind.querySelector('.meal-switch-notice-full');
+              var noticeShort = ind.querySelector('.meal-switch-notice-short');
+              var badge = ind.querySelector('.meal-switch-time-badge');
+              if (noticeFull) noticeFull.textContent = isMorning ? 'Servicio de Desayuno activo' : 'Servicio de Comida y Cantina activo';
+              if (noticeShort) noticeShort.textContent = isMorning ? 'Desayuno activo' : 'Comida y Cantina';
+              if (badge) badge.textContent = isMorning ? '9:00 AM - 1:30 PM' : '1:30 PM - 7:30 PM';
+            }
+          } catch (e) {}
+        })();
+      </script>
 
       <!-- Buscador Inteligente en Tiempo Real -->
       <div class="search-filter-section">
@@ -453,10 +519,10 @@
 
   <!-- Scripts ES6 Modules -->
   <script type="module">
-    import { initI18n, setLanguage } from './js/i18n.js?v=12.0';
-    import { initUI, closeProductModal } from './js/ui.js?v=12.0';
-    import { initMenu, renderCategoriesNav, renderMenu, setMealMode } from './js/menu.js?v=12.0';
-    import { initAnimations } from './js/animations.js?v=12.0';
+    import { initI18n, setLanguage } from './js/i18n.js';
+    import { initUI, closeProductModal } from './js/ui.js';
+    import { initMenu, renderCategoriesNav, renderMenu, setMealMode } from './js/menu.js';
+    import { initAnimations } from './js/animations.js';
 
     // Exponer función de cierre modal
     window.closeProductModal = closeProductModal;
