@@ -19,7 +19,7 @@ import {
   setupWhatsAppFAB, 
   updateMealSwitchUI, 
   getInitialMealMode 
-} from './ui.js';
+} from './ui.js?v=27.0';
 
 let restaurantId = 'la-curandera';
 let branchId = 'metepec';
@@ -127,7 +127,15 @@ export async function initMenu() {
           allOverrides = { ...allOverrides, ...event.data.overrides };
         }
         if (event.data.products && Array.isArray(event.data.products)) {
-          allProducts = event.data.products;
+          allProducts = event.data.products.map(p => {
+            const current = allProducts.find(curr => curr.id === p.id);
+            return {
+              ...p,
+              imageUrl: p.imageUrl || current?.imageUrl || null,
+              imageFallback: p.imageFallback || current?.imageFallback || null,
+              videoUrl: p.videoUrl || current?.videoUrl || null
+            };
+          });
         }
         renderCategoriesNav();
         renderMenu();
@@ -148,7 +156,15 @@ export async function initMenu() {
           allOverrides = { ...allOverrides, ...data.overrides };
         }
         if (data.products && Array.isArray(data.products)) {
-          allProducts = data.products;
+          allProducts = data.products.map(p => {
+            const current = allProducts.find(curr => curr.id === p.id);
+            return {
+              ...p,
+              imageUrl: p.imageUrl || current?.imageUrl || null,
+              imageFallback: p.imageFallback || current?.imageFallback || null,
+              videoUrl: p.videoUrl || current?.videoUrl || null
+            };
+          });
         }
         renderCategoriesNav();
         renderMenu();
@@ -172,6 +188,15 @@ export async function initMenu() {
   // 2. Conexión a Firestore en tiempo real en segundo plano
   if (isConfigured && db) {
     setupRealtimeListeners();
+  }
+
+  // 3. Soporte para abrir platillo directo si hay hash en la URL
+  if (window.location.hash.startsWith('#platillo-')) {
+    const dishId = window.location.hash.replace('#platillo-', '');
+    const targetDish = allProducts.find(p => p.id === dishId);
+    if (targetDish) {
+      setTimeout(() => openProductModal(targetDish), 150);
+    }
   }
 }
 
@@ -203,7 +228,17 @@ function setupRealtimeListeners() {
       if (!snapshot.empty) {
         const loadedProds = [];
         snapshot.forEach(doc => {
-          loadedProds.push({ id: doc.id, ...doc.data() });
+          const docData = doc.data();
+          const localMatch = allProducts.find(p => p.id === doc.id);
+          const effectiveImageUrl = docData.imageUrl || (localMatch && localMatch.imageUrl) || null;
+          const effectiveFallback = docData.imageFallback || (localMatch && localMatch.imageFallback) || null;
+          const effectiveVideoUrl = docData.videoUrl || (localMatch && localMatch.videoUrl) || null;
+          loadedProds.push({ 
+            id: doc.id, 
+            ...docData,
+            ...(effectiveImageUrl ? { imageUrl: effectiveImageUrl, imageFallback: effectiveFallback } : {}),
+            ...(effectiveVideoUrl ? { videoUrl: effectiveVideoUrl } : {})
+          });
         });
         loadedProds.sort((a, b) => (a.order !== undefined ? a.order : 999) - (b.order !== undefined ? b.order : 999));
         allProducts = loadedProds;
@@ -239,7 +274,7 @@ function setupRealtimeListeners() {
 async function loadLocalFallbackData() {
   try {
     // 1. Carga instantánea de 0ms desde localStorage si existe caché previo
-    const cachedCatalog = localStorage.getItem('lc_catalog_cache');
+    const cachedCatalog = localStorage.getItem('lc_catalog_cache_v4');
     if (cachedCatalog) {
       try {
         const data = JSON.parse(cachedCatalog);
@@ -254,14 +289,14 @@ async function loadLocalFallbackData() {
     }
 
     // 2. Fetch paralelo en segundo plano y actualización silenciosa (Stale-While-Revalidate)
-    const res = await fetch('data/catalog.json');
+    const res = await fetch('data/catalog.json?v=27.0');
     if (res.ok) {
       const data = await res.json();
       allCategories = data.categories || [];
       allProducts = data.products || [];
       allOverrides = {};
       try {
-        localStorage.setItem('lc_catalog_cache', JSON.stringify(data));
+        localStorage.setItem('lc_catalog_cache_v4', JSON.stringify(data));
       } catch (e) {}
       renderCategoriesNav();
       renderMenu();
@@ -811,8 +846,10 @@ export function renderMenu() {
       const productAllergens = (override && override.allergens) ? override.allergens : (product.allergens || []);
       const productTags = (override && override.tags) ? override.tags : (product.tags || []);
 
+      const hasImage = Boolean(product.imageUrl);
+      const hasVideo = Boolean(product.videoUrl);
       const card = document.createElement('article');
-      card.className = `product-card ${!isAvailable ? 'is-sold-out' : ''}`;
+      card.className = `product-card ${!isAvailable ? 'is-sold-out' : ''} ${hasImage ? 'has-dish-image' : 'no-dish-image'} ${hasVideo ? 'has-dish-video' : ''}`;
 
       // Precio con soporte de promoción
       let priceHtml = '';
@@ -890,7 +927,39 @@ export function renderMenu() {
         portionBadgeHtml = `<span class="product-portion-badge">${portionParts.join(' · ')}</span>`;
       }
 
+      const mediaHtml = (hasImage || hasVideo) ? `
+        <div class="product-card-media ${hasVideo ? 'has-video' : ''}">
+          ${hasImage ? `
+            <img 
+              src="${product.imageUrl}" 
+              alt="${escapeHtml(rawProductName)}" 
+              class="product-card-img" 
+              loading="lazy" 
+              decoding="async"
+              onerror="this.onerror=null; ${product.imageFallback ? `this.src='${product.imageFallback}';` : `this.closest('.product-card-media').style.display='none';`}"
+            />
+          ` : ''}
+          ${hasVideo ? `
+            <video 
+              class="product-card-video" 
+              src="${product.videoUrl}" 
+              muted 
+              loop 
+              playsinline 
+              preload="metadata"
+              aria-hidden="true"
+            ></video>
+            <span class="product-video-badge" title="Platillo con video">
+              <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+              <span>VIDEO</span>
+            </span>
+          ` : ''}
+          <div class="product-media-overlay" aria-hidden="true"></div>
+        </div>
+      ` : '';
+
       card.innerHTML = `
+        ${mediaHtml}
         <div class="product-card-body">
           <div class="product-header-line">
             <h3 class="product-name">${productNameHtml} ${portionBadgeHtml}</h3>
@@ -903,6 +972,22 @@ export function renderMenu() {
           </div>
         </div>
       `;
+
+      if (hasVideo) {
+        card.addEventListener('mouseenter', () => {
+          const vid = card.querySelector('.product-card-video');
+          if (vid) {
+            vid.play().catch(() => {});
+          }
+        });
+        card.addEventListener('mouseleave', () => {
+          const vid = card.querySelector('.product-card-video');
+          if (vid) {
+            vid.pause();
+            vid.currentTime = 0;
+          }
+        });
+      }
 
       card.addEventListener('click', () => {
         openProductModal({
@@ -929,6 +1014,9 @@ export function renderMenu() {
 
   container.innerHTML = '';
   container.appendChild(fragment);
+
+  // Activar reproducción automática al estar sobre el platillo (viewport en móviles y táctiles)
+  setupCardVideoObservers(container);
 
   // Actualizar píldora de estado de búsqueda en tiempo real
   const statusEl = document.getElementById('search-live-status');
@@ -1301,4 +1389,38 @@ export function buildGoogleMapsEmbedUrl(settings) {
 
   // 5. Fallback seguro siempre al oficial PB (nunca pantalla verde vacía)
   return officialPB;
+}
+
+/**
+ * Observador de visibilidad para reproducir videos de platillos automáticamente
+ * cuando el usuario navega sobre ellos en dispositivos móviles y táctiles.
+ */
+function setupCardVideoObservers(container) {
+  if (!('IntersectionObserver' in window)) return;
+  const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+  
+  const videoCards = container.querySelectorAll('.product-card.has-dish-video');
+  if (videoCards.length === 0) return;
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      const vid = entry.target.querySelector('.product-card-video');
+      if (!vid) return;
+      if (entry.isIntersecting && entry.intersectionRatio >= 0.55) {
+        if (isTouchDevice) {
+          vid.play().catch(() => {});
+          entry.target.classList.add('video-playing');
+        }
+      } else {
+        if (isTouchDevice) {
+          vid.pause();
+          entry.target.classList.remove('video-playing');
+        }
+      }
+    });
+  }, {
+    threshold: [0, 0.55]
+  });
+
+  videoCards.forEach(card => observer.observe(card));
 }

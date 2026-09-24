@@ -146,9 +146,27 @@ export function initUI(callback) {
   // Modal ESC handler
   window.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && modalActive) {
-      closeProductModal();
+      closeProductModal(true);
     }
   });
+
+  // Listener para el botón Atrás / Regresar del navegador y gestos en dispositivos móviles
+  window.addEventListener('popstate', (e) => {
+    if (modalActive) {
+      // El usuario pulsó Atrás en su dispositivo: solo cerramos el modal de detalles SIN salir del menú web
+      closeProductModal(false);
+    }
+  });
+
+  // Cerrar modal al hacer clic en el backdrop oscuro
+  const modalBackdrop = document.getElementById('product-modal');
+  if (modalBackdrop) {
+    modalBackdrop.addEventListener('click', (e) => {
+      if (e.target === modalBackdrop) {
+        closeProductModal(true);
+      }
+    });
+  }
 
   // Configurar botón de reseña de Google
   setupReviewLinks();
@@ -324,17 +342,71 @@ export function openProductModal(product) {
     soldOutAlert.style.display = 'none';
   }
 
-  if (imgEl) {
-    imgEl.src = product.imageUrl || 'assets/logo/logo.png';
-    imgEl.alt = title;
+  // Media: Video o Imagen gastronómica
+  const modalVideo = modalBackdrop.querySelector('.modal-video');
+  const mediaWrapper = modalBackdrop.querySelector('.modal-media-wrapper');
+
+  if (product.videoUrl) {
+    if (modalVideo) {
+      modalVideo.src = product.videoUrl;
+      modalVideo.style.display = 'block';
+      modalVideo.muted = true;
+      modalVideo.play().catch(() => {});
+    }
+    if (imgEl) imgEl.style.display = 'none';
+    if (mediaWrapper) {
+      mediaWrapper.classList.add('has-dish-photo', 'has-modal-video');
+    }
+  } else {
+    if (modalVideo) {
+      modalVideo.pause();
+      modalVideo.removeAttribute('src');
+      modalVideo.load();
+      modalVideo.style.display = 'none';
+    }
+    if (imgEl) {
+      imgEl.style.display = 'block';
+      if (product.imageUrl) {
+        imgEl.alt = title;
+        imgEl.onerror = function() {
+          this.onerror = function() {
+            this.onerror = null;
+            this.src = 'assets/logo/logo.png';
+            if (mediaWrapper) mediaWrapper.classList.remove('has-dish-photo', 'has-modal-video');
+          };
+          if (product.imageFallback) {
+            this.src = product.imageFallback;
+          } else {
+            this.src = 'assets/logo/logo.png';
+            if (mediaWrapper) mediaWrapper.classList.remove('has-dish-photo', 'has-modal-video');
+          }
+        };
+        imgEl.src = product.imageUrl;
+        if (mediaWrapper) {
+          mediaWrapper.classList.add('has-dish-photo');
+          mediaWrapper.classList.remove('has-modal-video');
+        }
+      } else {
+        imgEl.src = 'assets/logo/logo.png';
+        imgEl.alt = title;
+        imgEl.onerror = null;
+        if (mediaWrapper) {
+          mediaWrapper.classList.remove('has-dish-photo', 'has-modal-video');
+        }
+      }
+    }
   }
 
-  // Video de preparación opcional
+  // Botón adicional de ver video / sonido si existe
   if (videoBtn) {
     if (product.videoUrl) {
       videoBtn.style.display = 'inline-flex';
       videoBtn.onclick = () => {
-        window.open(product.videoUrl, '_blank');
+        if (modalVideo) {
+          modalVideo.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          modalVideo.muted = false;
+          modalVideo.play().catch(() => {});
+        }
       };
     } else {
       videoBtn.style.display = 'none';
@@ -364,15 +436,35 @@ export function openProductModal(product) {
   modalBackdrop.classList.add('open');
   modalActive = true;
   document.body.style.overflow = 'hidden';
+
+  // Push state en historial para que el botón "Regresar" del navegador o del teléfono cierre el modal sin salirse del menú
+  const targetHash = '#platillo-' + (product.id || 'detalle');
+  if (window.location.hash !== targetHash) {
+    history.pushState({ modalDishId: product.id }, '', targetHash);
+  }
 }
 
-export function closeProductModal() {
+export function closeProductModal(shouldHistoryBack = true) {
   const modalBackdrop = document.getElementById('product-modal');
   if (modalBackdrop) {
     modalBackdrop.classList.remove('open');
+    const modalVideo = modalBackdrop.querySelector('.modal-video');
+    if (modalVideo) {
+      modalVideo.pause();
+      modalVideo.removeAttribute('src');
+      modalVideo.load();
+      modalVideo.style.display = 'none';
+    }
+    const imgEl = modalBackdrop.querySelector('.modal-img');
+    if (imgEl) imgEl.style.display = 'block';
   }
   modalActive = false;
   document.body.style.overflow = '';
+
+  // Si se cerró mediante acción de usuario (botón regresar, X, o backdrop) y estamos en el hash del platillo, revertimos el historial
+  if (shouldHistoryBack && window.location.hash.startsWith('#platillo-')) {
+    history.back();
+  }
 }
 
 function formatBadgeName(badge) {

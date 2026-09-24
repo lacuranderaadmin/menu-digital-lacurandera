@@ -911,10 +911,98 @@
   color: #5C5248;
 }
 
-.product-card.is-sold-out .product-price-pill {
-  background: #9A928D;
-  border-color: #635C57;
-  box-shadow: 1px 1px 0px #635C57;
+/* Fotografía Gastronómica en Tarjeta de Platillo */
+.product-card-media {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9.2;
+  overflow: hidden;
+  background: #1C1714;
+  border-bottom: 2.5px solid #1C1714;
+}
+
+@media (min-width: 768px) {
+  .product-card-media {
+    aspect-ratio: 16 / 9.2;
+  }
+}
+
+.product-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+  display: block;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), filter 0.3s ease;
+  will-change: transform;
+}
+
+.product-card:hover .product-card-img {
+  transform: scale(1.05);
+}
+
+.product-card.is-sold-out .product-card-img {
+  filter: grayscale(0.7) brightness(0.85);
+}
+
+.product-media-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,0) 65%, rgba(0,0,0,0.22) 100%);
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* Video en Tarjeta de Platillo y Reproducción al estar sobre el platillo */
+.product-card-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 40%;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.product-card:hover .product-card-video,
+.product-card.video-playing .product-card-video {
+  opacity: 1;
+}
+
+/* Badge de Video en Tarjeta */
+.product-video-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(28, 23, 20, 0.88);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  color: #FFE600;
+  font-family: var(--font-title);
+  font-size: 0.65rem;
+  font-weight: 900;
+  letter-spacing: 0.8px;
+  padding: 4px 9px;
+  border-radius: 999px;
+  border: 1.5px solid #FFE600;
+  box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.6);
+  z-index: 4;
+  pointer-events: none;
+  transition: transform 0.25s ease, background 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+}
+
+.product-card:hover .product-video-badge,
+.product-card.video-playing .product-video-badge {
+  background: var(--lc-rosa);
+  color: var(--lc-blanco);
+  border-color: var(--lc-blanco);
+  transform: scale(1.06);
 }
 
 .product-card-body {
@@ -1184,7 +1272,7 @@ body[data-meal-mode="desayuno"] .product-card:hover .view-details-prompt {
   font-size: 1.25rem;
   font-weight: 900;
   z-index: 10;
-  transition: transform var(--transition-fast);
+  transition: transform var(--transition-fast), background var(--transition-fast);
 }
 
 .modal-close-btn:hover {
@@ -1193,19 +1281,95 @@ body[data-meal-mode="desayuno"] .product-card:hover .view-details-prompt {
   color: var(--lc-blanco);
 }
 
+/* Botón Regresar al Menú superior en el modal */
+.modal-back-btn {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  height: 40px;
+  padding: 0 14px 0 10px;
+  border-radius: 999px;
+  background: var(--lc-blanco);
+  border: 2px solid var(--lc-negro);
+  box-shadow: 2px 2px 0px var(--lc-negro);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--lc-negro);
+  cursor: pointer;
+  z-index: 10;
+  transition: all var(--transition-fast);
+}
+
+.modal-back-btn:hover {
+  background: var(--lc-amarillo);
+  transform: translateX(-3px);
+  box-shadow: 3px 3px 0px var(--lc-negro);
+}
+
+.modal-back-btn svg {
+  flex-shrink: 0;
+  color: var(--lc-negro);
+}
+
 .modal-media-wrapper {
   position: relative;
   width: 100%;
-  max-height: 280px;
+  height: 140px;
   overflow: hidden;
-  background: var(--lc-durazno-subtle);
+  background: var(--lc-crema);
   border-bottom: 3px solid var(--lc-negro);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: height 0.25s ease;
+}
+
+.modal-media-wrapper.has-dish-photo {
+  height: 260px;
+  max-height: 320px;
+  background: #1C1714;
+}
+
+.modal-media-wrapper.has-modal-video {
+  height: 300px;
+  max-height: 380px;
+  background: #000;
+}
+
+@media (max-width: 600px) {
+  .modal-media-wrapper.has-dish-photo {
+    height: 220px;
+  }
+  .modal-media-wrapper.has-modal-video {
+    height: 240px;
+  }
 }
 
 .modal-img {
+  width: 90px;
+  height: 90px;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+}
+
+.modal-media-wrapper.has-dish-photo .modal-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center center;
+}
+
+.modal-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+  background: #000;
+  display: block;
 }
 
 .modal-body {
@@ -1349,6 +1513,52 @@ body[data-meal-mode="desayuno"] .product-card:hover .view-details-prompt {
 .btn-video-prep:hover {
   background: var(--lc-turquesa-hover);
   transform: translateY(-2px);
+}
+
+/* Botón inferior grande para regresar al menú desde detalles */
+.modal-footer-actions {
+  margin-top: 1.5rem;
+  padding-top: 1.2rem;
+  border-top: 2px dashed rgba(28, 23, 20, 0.15);
+  display: flex;
+  justify-content: center;
+}
+
+.btn-modal-return {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  width: 100%;
+  max-width: 320px;
+  padding: 0.85rem 1.4rem;
+  background: var(--lc-negro);
+  color: var(--lc-blanco);
+  font-family: var(--font-title);
+  font-size: 0.95rem;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  border: 2px solid var(--lc-negro);
+  border-radius: 999px;
+  box-shadow: 3px 3px 0px var(--lc-rosa);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.btn-modal-return:hover {
+  background: var(--lc-rosa);
+  transform: translateY(-2px);
+  box-shadow: 4px 4px 0px var(--lc-negro);
+}
+
+.btn-modal-return svg {
+  flex-shrink: 0;
+  transition: transform var(--transition-fast);
+}
+
+.btn-modal-return:hover svg {
+  transform: translateX(-4px);
 }
 
 /* --------------------------------------------------------------------------

@@ -595,8 +595,11 @@
         "fr": "Trois tortillas nappées de salsa verte, garnies de poulet ou bœuf."
       },
       "price": 180,
+      "imageUrl": "assets/dishes/enchiladas-tradicionales.webp",
+      "imageFallback": "assets/dishes/enchiladas-tradicionales.png",
       "tags": [
-        "picante"
+        "picante",
+        "recomendado"
       ],
       "allergens": [
         "lacteos"
@@ -666,8 +669,11 @@
         "fr": "Farcies de porc cochinita pibil, oignons rouges marinés et crème."
       },
       "price": 205,
+      "imageUrl": "assets/dishes/enchiladas-yucas.webp",
+      "imageFallback": "assets/dishes/enchiladas-yucas.png",
       "tags": [
-        "hero"
+        "hero",
+        "recomendado"
       ],
       "allergens": [
         "lacteos"
@@ -964,6 +970,8 @@
         "fr": "Club sandwich au blanc de poulet, fromage et frites maison."
       },
       "price": 150,
+      "imageUrl": "assets/dishes/club-sandwich-pollo.webp",
+      "imageFallback": "assets/dishes/club-sandwich-pollo.png",
       "tags": [
         "recomendado"
       ],
@@ -1057,7 +1065,13 @@
         "fr": "Feuilletage croustillant garni de pommes fondantes à la cannelle."
       },
       "price": 60,
-      "tags": [],
+      "imageUrl": "assets/dishes/strudel-manzana.webp",
+      "imageFallback": "assets/dishes/strudel-manzana.png",
+      "videoUrl": "assets/videos/strudel-manzana.mp4",
+      "tags": [
+        "hero",
+        "recomendado"
+      ],
       "allergens": [
         "gluten"
       ],
@@ -1078,6 +1092,8 @@
         "fr": "Gâteau au fromage crémeux: fraise, mûre, framboise ou goyave."
       },
       "price": 60,
+      "imageUrl": "assets/dishes/cheesecake.webp",
+      "imageFallback": "assets/dishes/cheesecake.png",
       "tags": [
         "recomendado"
       ],
@@ -1123,7 +1139,13 @@
         "fr": "Préparés à la minute: Vanille, chocolat, fraise ou café."
       },
       "price": 70,
-      "tags": [],
+      "imageUrl": "assets/dishes/malteadas.webp",
+      "imageFallback": "assets/dishes/malteadas.png",
+      "videoUrl": "assets/videos/malteadas.mp4",
+      "tags": [
+        "hero",
+        "recomendado"
+      ],
       "allergens": [
         "lacteos"
       ],
@@ -1382,8 +1404,11 @@
         "fr": "Orange, fraise, banane et touche de noix de coco."
       },
       "price": 45,
+      "imageUrl": "assets/dishes/jugo-curandero.webp",
+      "imageFallback": "assets/dishes/jugo-curandero.png",
       "tags": [
-        "hero"
+        "hero",
+        "recomendado"
       ],
       "allergens": [],
       "order": 49,
@@ -1553,9 +1578,12 @@
         "fr": "Crevettes marinées au serrano, coriandre et citron."
       },
       "price": 240,
+      "imageUrl": "assets/dishes/aguachile-jade.webp",
+      "imageFallback": "assets/dishes/aguachile-jade.png",
       "tags": [
         "picante",
-        "recomendado"
+        "recomendado",
+        "hero"
       ],
       "allergens": [],
       "order": 57,
@@ -1575,6 +1603,9 @@
         "fr": "Crevettes en réduction d'hibiscus, piment chiltepín et épices."
       },
       "price": 270,
+      "imageUrl": "assets/dishes/aguachile-la-curandera.webp",
+      "imageFallback": "assets/dishes/aguachile-la-curandera.png",
+      "videoUrl": "assets/videos/aguachile-la-curandera.mp4",
       "tags": [
         "hero",
         "recomendado",
@@ -1804,9 +1835,12 @@
         "fr": "Totopos nappés de cheddar, haricots, longaniza dorée et jalapeños."
       },
       "price": 120,
+      "imageUrl": "assets/dishes/nachos-nortenos.webp",
+      "imageFallback": "assets/dishes/nachos-nortenos.png",
       "tags": [
         "hero",
-        "picante"
+        "picante",
+        "recomendado"
       ],
       "allergens": [
         "lacteos"
@@ -1828,9 +1862,12 @@
         "fr": "Ailes au choix: Mangue Habanero, BBQ, Mangue Mezcal ou Tamarin Mezcal."
       },
       "price": 180,
+      "imageUrl": "assets/dishes/alitas.webp",
+      "imageFallback": "assets/dishes/alitas.png",
       "tags": [
         "hero",
-        "picante"
+        "picante",
+        "recomendado"
       ],
       "allergens": [],
       "order": 69,
@@ -1898,6 +1935,8 @@
         "fr": "Bavette arrachera grillée, enchiladas, riz mexicain et poblano."
       },
       "price": 275,
+      "imageUrl": "assets/dishes/tampiquena-arrachera.webp",
+      "imageFallback": "assets/dishes/tampiquena-arrachera.png",
       "tags": [
         "hero",
         "recomendado"
@@ -1930,6 +1969,32 @@
         "lacteos"
       ],
       "order": 73,
+      "isActive": true
+    },
+    {
+      "id": "enchiladas-yucas-comida",
+      "categoryId": "platos-fuertes",
+      "name": {
+        "es": "Enchiladas Yucas",
+        "en": "Enchiladas Yucas (Cochinita Pibil)",
+        "fr": "Enchiladas Yucas (Cochinita Pibil)"
+      },
+      "description": {
+        "es": "3 tortillas bañadas en salsa verde auténtica rellenas de cochinita pibil, cebollita morada encurtida, queso y crema.",
+        "en": "Three tortillas stuffed with slow-cooked cochinita pibil pork, salsa verde, pickled red onions and crema.",
+        "fr": "Farcies de porc cochinita pibil, oignons rouges marinés et crème."
+      },
+      "price": 160,
+      "imageUrl": "assets/dishes/enchiladas-yucas.webp",
+      "imageFallback": "assets/dishes/enchiladas-yucas.png",
+      "tags": [
+        "hero",
+        "recomendado"
+      ],
+      "allergens": [
+        "lacteos"
+      ],
+      "order": 74,
       "isActive": true
     },
     {
@@ -2006,11 +2071,14 @@
         "fr": "Rib Eye Grillé au Feu de Bois (350g)"
       },
       "description": {
-        "es": "Corte selecto jugoso con marmoleo superior. Incluye 3 guarniciones a elegir: guacamole, nopales, elote, frijoles o cebollitas.",
+        "es": "Corte selecto jugoso con marmoleo superior a las brasas. Incluye 3 guarniciones a elegir: guacamole, nopales, elote, frijoles o cebollitas.",
         "en": "Juicy prime marbled steak grilled to your preferred temperature. Includes 3 sides of your choice.",
         "fr": "Viande persillée et juteuse. Comprend 3 garnitures au choix."
       },
       "price": 280,
+      "imageUrl": "assets/dishes/rib-eye-guarniciones.webp",
+      "imageFallback": "assets/dishes/rib-eye-guarniciones.png",
+      "videoUrl": "assets/videos/rib-eye-guarniciones.mp4",
       "tags": [
         "hero",
         "recomendado"
@@ -2047,12 +2115,15 @@
         "fr": "T-Bone Classique (350g)"
       },
       "description": {
-        "es": "Lo mejor del filete y el New York en un solo corte con hueso. Incluye 3 guarniciones.",
+        "es": "Lo mejor del filete y el New York en un solo corte con hueso. Incluye 3 guarniciones a elegir.",
         "en": "The best of tenderloin and strip on the bone. Includes 3 choice sides.",
         "fr": "Filet et faux-filet sur l'os. Comprend 3 accompagnements."
       },
       "price": 290,
+      "imageUrl": "assets/dishes/t-bone-guarniciones.webp",
+      "imageFallback": "assets/dishes/t-bone-guarniciones.png",
       "tags": [
+        "hero",
         "recomendado"
       ],
       "allergens": [],
@@ -2097,6 +2168,9 @@
         "fr": "Double steak de bœuf, double fromage, bacon fumé, ananas rôti et légumes."
       },
       "price": 185,
+      "imageUrl": "assets/dishes/hamburguesa-de-la-casa.webp",
+      "imageFallback": "assets/dishes/hamburguesa-de-la-casa.png",
+      "videoUrl": "assets/videos/hamburguesa-de-la-casa.mp4",
       "tags": [
         "hero",
         "recomendado"
@@ -2131,6 +2205,29 @@
       "isActive": true
     },
     {
+      "id": "morrito",
+      "categoryId": "pa-los-morrillos",
+      "name": {
+        "es": "Morrito",
+        "en": "Morrito Kids Combo",
+        "fr": "Menu Enfant Morrito"
+      },
+      "description": {
+        "es": "Espagueti a la mantequilla + papas a la francesa + 6 nuggets de pollo dorados + 1 juguito pequeño.",
+        "en": "Butter spaghetti + crispy french fries + 6 golden chicken nuggets + juice box.",
+        "fr": "Spaghetti au beurre + frites croustillantes + 6 nuggets de poulet + petit jus."
+      },
+      "price": 55,
+      "imageUrl": "assets/dishes/morrito.webp",
+      "imageFallback": "assets/dishes/morrito.png",
+      "tags": [],
+      "allergens": [
+        "gluten"
+      ],
+      "order": 82.5,
+      "isActive": true
+    },
+    {
       "id": "coctel-la-curandera",
       "categoryId": "cantina-la-curandera",
       "name": {
@@ -2144,12 +2241,39 @@
         "fr": "Mezcal artisanal, jus d'ananas frais, essence de tomate, Tajín et romarin."
       },
       "price": 98,
+      "imageUrl": "assets/dishes/mezcal-curandera.webp",
+      "imageFallback": "assets/dishes/mezcal-curandera.png",
+      "videoUrl": "assets/videos/mezcal-curandera.mp4",
       "tags": [
         "hero",
         "recomendado"
       ],
       "allergens": [],
       "order": 83,
+      "isActive": true
+    },
+    {
+      "id": "mojito-frutos-rojos",
+      "categoryId": "cantina-la-curandera",
+      "name": {
+        "es": "Mojito de frutos rojos",
+        "en": "Red Berries Mezcal Mojito",
+        "fr": "Mojito aux Fruits Rouges et Mezcal"
+      },
+      "description": {
+        "es": "Mezcal de la casa, infusión de frutos rojos macerados, hierbabuena fresca del huerto, limón y escarchado con chilito artesanal.",
+        "en": "House mezcal, muddled fresh red berries, garden mint, lime, and chili-salted rim.",
+        "fr": "Mezcal de la maison, fruits rouges frais pilés, menthe du jardin, citron vert et piment doux."
+      },
+      "price": 98,
+      "imageUrl": "assets/dishes/mojito-frutos-rojos.webp",
+      "imageFallback": "assets/dishes/mojito-frutos-rojos.png",
+      "tags": [
+        "hero",
+        "recomendado"
+      ],
+      "allergens": [],
+      "order": 84,
       "isActive": true
     },
     {

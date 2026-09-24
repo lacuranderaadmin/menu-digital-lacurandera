@@ -1,5 +1,9 @@
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const categories = [
   // DESAYUNOS
@@ -183,7 +187,9 @@ const products = [
     name: { es: "Enchiladas tradicionales", en: "Traditional Enchiladas Verdes (3 pcs)", fr: "Enchiladas Traditionnelles Vertes (3 pcs)" },
     description: { es: "3 piezas bañadas en auténtica salsa verde de la casa, rellenas de pollo, longaniza o bistec.", en: "Three corn tortillas bathed in green salsa, filled with chicken, longaniza, or beef steak.", fr: "Trois tortillas nappées de salsa verte, garnies de poulet ou bœuf." },
     price: 180,
-    tags: ["picante"],
+    imageUrl: "assets/dishes/enchiladas-tradicionales.webp",
+    imageFallback: "assets/dishes/enchiladas-tradicionales.png",
+    tags: ["picante", "recomendado"],
     allergens: ["lacteos"],
     order: 14,
     isActive: true
@@ -216,7 +222,9 @@ const products = [
     name: { es: "Enchiladas Yucas", en: "Enchiladas Yucas (Cochinita Pibil)", fr: "Enchiladas Yucas (Cochinita Pibil)" },
     description: { es: "3 piezas en salsa verde auténtica rellenas de cochinita pibil, cebolla morada encurtida, queso y crema.", en: "Three tortillas stuffed with slow-cooked cochinita pibil pork, salsa verde, pickled red onions and crema.", fr: "Farcies de porc cochinita pibil, oignons rouges marinés et crème." },
     price: 205,
-    tags: ["hero"],
+    imageUrl: "assets/dishes/enchiladas-yucas.webp",
+    imageFallback: "assets/dishes/enchiladas-yucas.png",
+    tags: ["hero", "recomendado"],
     allergens: ["lacteos"],
     order: 17,
     isActive: true
@@ -365,6 +373,8 @@ const products = [
     name: { es: "Club sándwich de pollo", en: "Chicken Club Sandwich with French Fries", fr: "Club Sandwich au Poulet & Frites" },
     description: { es: "Pan tostado con pechuga de pollo, queso, aderezo chipotle cremoso y verduras, con papas a la francesa.", en: "Club sandwich with grilled chicken breast, cheese, chipotle cream, and crispy fries.", fr: "Club sandwich au blanc de poulet, fromage et frites maison." },
     price: 150,
+    imageUrl: "assets/dishes/club-sandwich-pollo.webp",
+    imageFallback: "assets/dishes/club-sandwich-pollo.png",
     tags: ["recomendado"],
     allergens: ["gluten", "lacteos"],
     order: 30,
@@ -413,7 +423,10 @@ const products = [
     name: { es: "Strudel de manzana", en: "Warm Apple Strudel", fr: "Strudel aux Pommes Chaud" },
     description: { es: "Hojaldre dorado crujiente relleno de manzana especiada con canela.", en: "Crisp flaky puff pastry stuffed with spiced cinnamon apples.", fr: "Feuilletage croustillant garni de pommes fondantes à la cannelle." },
     price: 60,
-    tags: [],
+    imageUrl: "assets/dishes/strudel-manzana.webp",
+    imageFallback: "assets/dishes/strudel-manzana.png",
+    videoUrl: "assets/videos/strudel-manzana.mp4",
+    tags: ["hero", "recomendado"],
     allergens: ["gluten"],
     order: 34,
     isActive: true
@@ -424,6 +437,8 @@ const products = [
     name: { es: "Cheesecake", en: "Artisanal Cheesecake", fr: "Cheesecake Maison" },
     description: { es: "Cremoso pastel de queso. Elige tu topping: fresa, zarzamora, frambuesa o guayaba.", en: "Creamy cheesecake with your choice of topping: strawberry, blackberry, raspberry, or guava.", fr: "Gâteau au fromage crémeux: fraise, mûre, framboise ou goyave." },
     price: 60,
+    imageUrl: "assets/dishes/cheesecake.webp",
+    imageFallback: "assets/dishes/cheesecake.png",
     tags: ["recomendado"],
     allergens: ["gluten", "lacteos"],
     order: 35,
@@ -446,7 +461,10 @@ const products = [
     name: { es: "Malteadas cremosas", en: "Classic Milkshakes", fr: "Milkshakes Crémeux" },
     description: { es: "Preparadas al momento: Vainilla, chocolate, fresa o café.", en: "Freshly blended: Vanilla, chocolate, strawberry, or coffee.", fr: "Préparés à la minute: Vanille, chocolat, fraise ou café." },
     price: 70,
-    tags: [],
+    imageUrl: "assets/dishes/malteadas.webp",
+    imageFallback: "assets/dishes/malteadas.png",
+    videoUrl: "assets/videos/malteadas.mp4",
+    tags: ["hero", "recomendado"],
     allergens: ["lacteos"],
     order: 37,
     isActive: true
@@ -582,7 +600,9 @@ const products = [
     name: { es: "Jugo Curandero", en: "Curandero Healing Smoothie", fr: "Smoothie Curandero" },
     description: { es: "Naranja, fresa, plátano y toque refrescante de coco.", en: "Orange, strawberry, banana, and a tropical touch of coconut.", fr: "Orange, fraise, banane et touche de noix de coco." },
     price: 45,
-    tags: ["hero"],
+    imageUrl: "assets/dishes/jugo-curandero.webp",
+    imageFallback: "assets/dishes/jugo-curandero.png",
+    tags: ["hero", "recomendado"],
     allergens: [],
     order: 49,
     isActive: true
@@ -676,7 +696,9 @@ const products = [
     name: { es: "Aguachile Jade", en: "Aguachile Jade (Green Serrano & Herbs)", fr: "Aguachile Jade aux Herbes Fraîches" },
     description: { es: "Camarones en salsa verde de chile serrano, cilantro, cebolla, pepino y toque cítrico.", en: "Succulent shrimp cured in serrano chili, fresh cilantro, lime, and cucumber.", fr: "Crevettes marinées au serrano, coriandre et citron." },
     price: 240,
-    tags: ["picante", "recomendado"],
+    imageUrl: "assets/dishes/aguachile-jade.webp",
+    imageFallback: "assets/dishes/aguachile-jade.png",
+    tags: ["picante", "recomendado", "hero"],
     allergens: [],
     order: 57,
     isActive: true
@@ -687,6 +709,9 @@ const products = [
     name: { es: "Aguachile La Curandera", en: "Aguachile La Curandera (Hibiscus & Chiltepín)", fr: "Aguachile La Curandera (Hibiscus & Chiltepín)" },
     description: { es: "Camarones con infusión reducida de flor de jamaica, chiltepín, cebolla morada, pepino y especias secretas.", en: "Prawns in a signature hibiscus flower reduction, chiltepín, lime, and cucumber.", fr: "Crevettes en réduction d'hibiscus, piment chiltepín et épices." },
     price: 270,
+    imageUrl: "assets/dishes/aguachile-la-curandera.webp",
+    imageFallback: "assets/dishes/aguachile-la-curandera.png",
+    videoUrl: "assets/videos/aguachile-la-curandera.mp4",
     tags: ["hero", "recomendado", "picante"],
     allergens: [],
     order: 58,
@@ -805,7 +830,9 @@ const products = [
     name: { es: "Nachos norteños", en: "Loaded Northern Nachos", fr: "Nachos Gourmands du Nord" },
     description: { es: "Totopos con queso cheddar fundido, frijoles, queso manchego, pico de gallo, longaniza y rodajas de jalapeño.", en: "Tortilla chips with melted cheddar and manchego cheese, refried beans, pico de gallo, longaniza and jalapeños.", fr: "Totopos nappés de cheddar, haricots, longaniza dorée et jalapeños." },
     price: 120,
-    tags: ["hero", "picante"],
+    imageUrl: "assets/dishes/nachos-nortenos.webp",
+    imageFallback: "assets/dishes/nachos-nortenos.png",
+    tags: ["hero", "picante", "recomendado"],
     allergens: ["lacteos"],
     order: 68,
     isActive: true
@@ -816,7 +843,9 @@ const products = [
     name: { es: "Alitas auténticas (7 pzas)", en: "Artisanal Chicken Wings (7 pcs)", fr: "Ailes de Poulet Dorées (7 pcs)" },
     description: { es: "Sabores: Naturales, Mango habanero, BBQ, Búfalo, Habanero cremoso, Mango mezcal o Tamarindo mezcal.", en: "Crispy wings: Natural, Mango Habanero, BBQ, Buffalo, Creamy Habanero, Mango Mezcal, or Tamarind Mezcal.", fr: "Ailes au choix: Mangue Habanero, BBQ, Mangue Mezcal ou Tamarin Mezcal." },
     price: 180,
-    tags: ["hero", "picante"],
+    imageUrl: "assets/dishes/alitas.webp",
+    imageFallback: "assets/dishes/alitas.png",
+    tags: ["hero", "picante", "recomendado"],
     allergens: [],
     order: 69,
     isActive: true
@@ -851,6 +880,8 @@ const products = [
     name: { es: "Tampiqueña de arrachera", en: "Prime Arrachera Tampiqueña", fr: "Tampiqueña de Bavette Arrachera" },
     description: { es: "Arrachera marinada a las brasas con enchiladas rojas o verdes, arroz y rajas poblanas.", en: "Grilled prime arrachera steak served with green or red enchiladas, rice, and poblano strips.", fr: "Bavette arrachera grillée, enchiladas, riz mexicain et poblano." },
     price: 275,
+    imageUrl: "assets/dishes/tampiquena-arrachera.webp",
+    imageFallback: "assets/dishes/tampiquena-arrachera.png",
     tags: ["hero", "recomendado"],
     allergens: ["lacteos"],
     order: 72,
@@ -865,6 +896,19 @@ const products = [
     tags: ["recomendado", "picante"],
     allergens: ["lacteos"],
     order: 73,
+    isActive: true
+  },
+  {
+    id: 'enchiladas-yucas-comida',
+    categoryId: 'platos-fuertes',
+    name: { es: "Enchiladas Yucas", en: "Enchiladas Yucas (Cochinita Pibil)", fr: "Enchiladas Yucas (Cochinita Pibil)" },
+    description: { es: "3 tortillas bañadas en salsa verde auténtica rellenas de cochinita pibil, cebollita morada encurtida, queso y crema.", en: "Three tortillas stuffed with slow-cooked cochinita pibil pork, salsa verde, pickled red onions and crema.", fr: "Farcies de porc cochinita pibil, oignons rouges marinés et crème." },
+    price: 160,
+    imageUrl: "assets/dishes/enchiladas-yucas.webp",
+    imageFallback: "assets/dishes/enchiladas-yucas.png",
+    tags: ["hero", "recomendado"],
+    allergens: ["lacteos"],
+    order: 74,
     isActive: true
   },
 
@@ -908,8 +952,11 @@ const products = [
     id: 'corte-rib-eye',
     categoryId: 'cortes',
     name: { es: "Rib Eye a las brasas (350g)", en: "Grilled Rib Eye Steak (350g)", fr: "Rib Eye Grillé au Feu de Bois (350g)" },
-    description: { es: "Corte selecto jugoso con marmoleo superior. Incluye 3 guarniciones a elegir: guacamole, nopales, elote, frijoles o cebollitas.", en: "Juicy prime marbled steak grilled to your preferred temperature. Includes 3 sides of your choice.", fr: "Viande persillée et juteuse. Comprend 3 garnitures au choix." },
+    description: { es: "Corte selecto jugoso con marmoleo superior a las brasas. Incluye 3 guarniciones a elegir: guacamole, nopales, elote, frijoles o cebollitas.", en: "Juicy prime marbled steak grilled to your preferred temperature. Includes 3 sides of your choice.", fr: "Viande persillée et juteuse. Comprend 3 garnitures au choix." },
     price: 280,
+    imageUrl: "assets/dishes/rib-eye-guarniciones.webp",
+    imageFallback: "assets/dishes/rib-eye-guarniciones.png",
+    videoUrl: "assets/videos/rib-eye-guarniciones.mp4",
     tags: ["hero", "recomendado"],
     allergens: [],
     order: 77,
@@ -930,9 +977,11 @@ const products = [
     id: 'corte-t-bone',
     categoryId: 'cortes',
     name: { es: "T-Bone clásico (350g)", en: "Classic T-Bone Steak (350g)", fr: "T-Bone Classique (350g)" },
-    description: { es: "Lo mejor del filete y el New York en un solo corte con hueso. Incluye 3 guarniciones.", en: "The best of tenderloin and strip on the bone. Includes 3 choice sides.", fr: "Filet et faux-filet sur l'os. Comprend 3 accompagnements." },
+    description: { es: "Lo mejor del filete y el New York en un solo corte con hueso. Incluye 3 guarniciones a elegir.", en: "The best of tenderloin and strip on the bone. Includes 3 choice sides.", fr: "Filet et faux-filet sur l'os. Comprend 3 accompagnements." },
     price: 290,
-    tags: ["recomendado"],
+    imageUrl: "assets/dishes/t-bone-guarniciones.webp",
+    imageFallback: "assets/dishes/t-bone-guarniciones.png",
+    tags: ["hero", "recomendado"],
     allergens: [],
     order: 79,
     isActive: true
@@ -958,6 +1007,9 @@ const products = [
     name: { es: "Hamburguesa de la casa", en: "House Signature Double Burger", fr: "Burger Double Signature de la Maison" },
     description: { es: "Doble carne selecta, queso amarillo y manchego, doble tocino ahumado, piña asada, lechuga, tomate y cebolla.", en: "Double select beef patties, yellow & manchego cheese, double smoked bacon, grilled pineapple, lettuce, tomato.", fr: "Double steak de bœuf, double fromage, bacon fumé, ananas rôti et légumes." },
     price: 185,
+    imageUrl: "assets/dishes/hamburguesa-de-la-casa.webp",
+    imageFallback: "assets/dishes/hamburguesa-de-la-casa.png",
+    videoUrl: "assets/videos/hamburguesa-de-la-casa.mp4",
     tags: ["hero", "recomendado"],
     allergens: ["gluten", "lacteos"],
     order: 81,
@@ -975,6 +1027,21 @@ const products = [
     isActive: true
   },
 
+  // 5.22 PA' LOS MORRILLOS
+  {
+    id: 'morrito',
+    categoryId: 'pa-los-morrillos',
+    name: { es: "Morrito", en: "Morrito Kids Combo", fr: "Menu Enfant Morrito" },
+    description: { es: "Espagueti a la mantequilla + papas a la francesa + 6 nuggets de pollo dorados + 1 juguito pequeño.", en: "Butter spaghetti + crispy french fries + 6 golden chicken nuggets + juice box.", fr: "Spaghetti au beurre + frites croustillantes + 6 nuggets de poulet + petit jus." },
+    price: 55,
+    imageUrl: "assets/dishes/morrito.webp",
+    imageFallback: "assets/dishes/morrito.png",
+    tags: [],
+    allergens: ["gluten"],
+    order: 82.5,
+    isActive: true
+  },
+
   // 5.23 - 5.28 CANTINA LA CURANDERA
   {
     id: 'coctel-la-curandera',
@@ -982,9 +1049,25 @@ const products = [
     name: { es: "Cóctel insignia La Curandera", en: "Signature Cocktail La Curandera", fr: "Cocktail Signature La Curandera" },
     description: { es: "Mezcal artesanal, jugo de piña fresca, tomate, toque de Tajín, limón y aromatizado con rama de romero.", en: "Artisanal mezcal, fresh pineapple juice, tomato essence, Tajin chile rim, lime and burnt rosemary.", fr: "Mezcal artisanal, jus d'ananas frais, essence de tomate, Tajín et romarin." },
     price: 98,
+    imageUrl: "assets/dishes/mezcal-curandera.webp",
+    imageFallback: "assets/dishes/mezcal-curandera.png",
+    videoUrl: "assets/videos/mezcal-curandera.mp4",
     tags: ["hero", "recomendado"],
     allergens: [],
     order: 83,
+    isActive: true
+  },
+  {
+    id: 'mojito-frutos-rojos',
+    categoryId: 'cantina-la-curandera',
+    name: { es: "Mojito de frutos rojos", en: "Red Berries Mezcal Mojito", fr: "Mojito aux Fruits Rouges et Mezcal" },
+    description: { es: "Mezcal de la casa, infusión de frutos rojos macerados, hierbabuena fresca del huerto, limón y escarchado con chilito artesanal.", en: "House mezcal, muddled fresh red berries, garden mint, lime, and chili-salted rim.", fr: "Mezcal de la maison, fruits rouges frais pilés, menthe du jardin, citron vert et piment doux." },
+    price: 98,
+    imageUrl: "assets/dishes/mojito-frutos-rojos.webp",
+    imageFallback: "assets/dishes/mojito-frutos-rojos.png",
+    tags: ["hero", "recomendado"],
+    allergens: [],
+    order: 84,
     isActive: true
   },
   {
