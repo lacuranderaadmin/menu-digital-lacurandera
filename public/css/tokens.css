@@ -98,11 +98,11 @@
   /* Z-indexes */
   --z-ribbons: 10;
   --z-header: 100;
-  --z-sticky-nav: 90;
+  --z-sticky-nav: 95;
   --z-fab: 200;
   --z-modal: 1000;
   --z-toast: 1100;
 
   /* Header & Navigation Offsets */
-  --site-header-height: 88px;
+  --site-header-height: 68px;
 }

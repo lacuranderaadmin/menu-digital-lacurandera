@@ -537,12 +537,11 @@
    -------------------------------------------------------------------------- */
 .categories-nav-wrapper {
   position: sticky;
-  top: var(--site-header-height, 88px);
-  z-index: var(--z-sticky-nav);
+  top: var(--site-header-height, 68px);
+  z-index: var(--z-sticky-nav, 95);
   background: transparent;
   width: 100%;
   max-width: 100vw;
-  overflow: hidden;
   box-sizing: border-box;
   padding: 0.5rem 0 0.7rem;
   margin-bottom: 1.8rem;
@@ -552,19 +551,22 @@
 
 @media (min-width: 768px) {
   .categories-nav-wrapper {
-    top: var(--site-header-height, 98px);
+    top: var(--site-header-height, 74px);
     padding: 0.65rem 0 0.85rem;
   }
 }
 
-/* Fondo 100% transparente para que no aparezca ningún rectángulo blanco detrás de las categorías */
 .categories-nav-wrapper.is-stuck {
-  background: transparent;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-  border-bottom: none;
-  box-shadow: none;
-  padding: 0.5rem 0 0.7rem;
+  background: rgba(248, 241, 231, 0.96);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 2px solid rgba(28, 23, 20, 0.12);
+  box-shadow: 0 4px 18px rgba(28, 23, 20, 0.08);
+  padding: 0.42rem 0 0.52rem;
+}
+
+.categories-nav-wrapper.is-stuck .categories-header {
+  display: none;
 }
 
 .categories-bar {
@@ -777,13 +779,13 @@
    Category Section & Product Grid
    -------------------------------------------------------------------------- */
 .category-section {
-  scroll-margin-top: calc(var(--site-header-height, 88px) + 65px);
+  scroll-margin-top: calc(var(--site-header-height, 68px) + 65px);
   margin-bottom: 2.2rem;
 }
 
 @media (min-width: 768px) {
   .category-section {
-    scroll-margin-top: calc(var(--site-header-height, 98px) + 75px);
+    scroll-margin-top: calc(var(--site-header-height, 74px) + 70px);
     margin-bottom: 3rem;
   }
 }

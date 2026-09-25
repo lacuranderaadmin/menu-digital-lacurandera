@@ -383,6 +383,7 @@ export function renderCategoriesNav() {
 
     btn.addEventListener('click', (e) => {
       e.preventDefault();
+      window.dispatchEvent(new CustomEvent('categoryTabClicked', { detail: { targetId: `cat-${cat.id || cat.slug}` } }));
       document.querySelectorAll('.category-tab').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
 

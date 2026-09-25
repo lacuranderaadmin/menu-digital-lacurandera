@@ -262,76 +262,103 @@ function initScrollSpy() {
   const categoriesBar = document.getElementById('categories-bar');
   if (!categoriesBar) return;
 
-  let activeObserver = null;
+  let isClickScrolling = false;
+  let clickTimer = null;
 
-  function bindObserver() {
-    if (activeObserver) activeObserver.disconnect();
+  window.addEventListener('categoryTabClicked', () => {
+    isClickScrolling = true;
+    clearTimeout(clickTimer);
+    clickTimer = setTimeout(() => {
+      isClickScrolling = false;
+    }, 750);
+  });
+
+  function setActiveCategoryTab(targetId) {
+    const tabs = document.querySelectorAll('.category-tab');
+    let activeTab = null;
+
+    tabs.forEach(tab => {
+      if (tab.getAttribute('data-target') === targetId) {
+        if (!tab.classList.contains('active')) {
+          tabs.forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+          activeTab = tab;
+        } else {
+          activeTab = tab;
+        }
+      }
+    });
+
+    if (activeTab) {
+      const bar = document.getElementById('categories-bar');
+      if (bar) {
+        // Centrar suavemente la pestaña activa en la barra horizontal
+        const targetScrollLeft = activeTab.offsetLeft - (bar.clientWidth / 2) + (activeTab.offsetWidth / 2);
+        bar.scrollTo({
+          left: Math.max(0, targetScrollLeft),
+          behavior: 'smooth'
+        });
+      }
+    }
+
+    // Sincronizar simultáneamente los botones del dock vertical lateral si existe
+    const dockBtns = document.querySelectorAll('.dock-emoji-btn');
+    dockBtns.forEach(btn => {
+      if (btn.getAttribute('data-target') === targetId) {
+        if (!btn.classList.contains('active')) {
+          dockBtns.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+
+          const dockContainer = document.getElementById('dock-emojis-container');
+          if (dockContainer) {
+            dockContainer.scrollTo({
+              top: btn.offsetTop - (dockContainer.clientHeight / 2) + (btn.clientHeight / 2),
+              behavior: 'smooth'
+            });
+          }
+        }
+      }
+    });
+  }
+
+  function handleScrollSpy() {
+    if (isClickScrolling) return;
+
     const sections = document.querySelectorAll('.category-section');
     if (sections.length === 0) return;
 
-    activeObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          const targetId = entry.target.id;
-          const tabs = document.querySelectorAll('.category-tab');
-          tabs.forEach(tab => {
-            if (tab.getAttribute('data-target') === targetId) {
-              if (!tab.classList.contains('active')) {
-                tabs.forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-                
-                // Desplazar EXCLUSIVAMENTE el contenedor horizontal, NUNCA la ventana principal
-                const bar = document.getElementById('categories-bar');
-                if (bar) {
-                  bar.scrollTo({
-                    left: tab.offsetLeft - (bar.clientWidth / 2) + (tab.offsetWidth / 2),
-                    behavior: 'smooth'
-                  });
-                }
-              }
-            }
-          });
+    const siteHeader = document.querySelector('.site-header');
+    const stickyNav = document.querySelector('.categories-nav-wrapper');
+    const headerH = siteHeader ? siteHeader.offsetHeight : 68;
+    const navH = stickyNav ? stickyNav.offsetHeight : 54;
+    const offset = headerH + navH + 30;
 
-          // Sincronizar simultáneamente los botones del dock vertical lateral
-          const dockBtns = document.querySelectorAll('.dock-emoji-btn');
-          dockBtns.forEach(btn => {
-            if (btn.getAttribute('data-target') === targetId) {
-              if (!btn.classList.contains('active')) {
-                dockBtns.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
+    const scrollY = window.pageYOffset || document.documentElement.scrollTop;
+    const isAtBottom = (window.innerHeight + scrollY) >= (document.documentElement.scrollHeight - 70);
 
-                // Asegurar visibilidad dentro del contenedor scrollable del dock si es necesario
-                const dockContainer = document.getElementById('dock-emojis-container');
-                if (dockContainer) {
-                  const btnTop = btn.offsetTop;
-                  const containerH = dockContainer.clientHeight;
-                  dockContainer.scrollTo({
-                    top: btnTop - (containerH / 2) + (btn.clientHeight / 2),
-                    behavior: 'smooth'
-                  });
-                }
-              }
-            }
-          });
+    let activeSection = null;
+
+    if (isAtBottom) {
+      activeSection = sections[sections.length - 1];
+    } else {
+      for (let i = 0; i < sections.length; i++) {
+        const sec = sections[i];
+        const rect = sec.getBoundingClientRect();
+        if (rect.top <= offset) {
+          activeSection = sec;
+        } else {
+          break;
         }
-      });
-    }, {
-      rootMargin: '-110px 0px -65% 0px',
-      threshold: 0
-    });
+      }
+      if (!activeSection) {
+        activeSection = sections[0];
+      }
+    }
 
-    sections.forEach(sec => activeObserver.observe(sec));
+    if (activeSection) {
+      setActiveCategoryTab(activeSection.id);
+    }
   }
-
-  const menuContainer = document.getElementById('menu-sections-container');
-  if (menuContainer) {
-    const mo = new MutationObserver(() => {
-      bindObserver();
-    });
-    mo.observe(menuContainer, { childList: true });
-  }
-
-  bindObserver();
 
   // Sincronización precisa de la altura del header para sticky nav y detección de .is-stuck
   const navWrapper = document.querySelector('.categories-nav-wrapper');
@@ -352,18 +379,33 @@ function initScrollSpy() {
       new ResizeObserver(syncHeader).observe(siteHeaderEl);
     }
 
+    const sentinel = document.getElementById('categories-nav-sentinel');
     const updateStickyState = () => {
       const siteHeader = document.querySelector('.site-header');
-      const headerH = siteHeader ? siteHeader.offsetHeight : 88;
-      const rect = navWrapper.getBoundingClientRect();
-      const isStuck = rect.top <= headerH + 3;
+      const headerH = siteHeader ? siteHeader.offsetHeight : 68;
+      const refEl = sentinel || navWrapper;
+      const rect = refEl.getBoundingClientRect();
+      const isStuck = rect.top <= headerH + 2;
       if (isStuck !== wasStuck) {
         wasStuck = isStuck;
         navWrapper.classList.toggle('is-stuck', isStuck);
       }
     };
-    window.addEventListener('scroll', updateStickyState, { passive: true });
+
+    let scrollTicking = false;
+    window.addEventListener('scroll', () => {
+      if (!scrollTicking) {
+        requestAnimationFrame(() => {
+          updateStickyState();
+          handleScrollSpy();
+          scrollTicking = false;
+        });
+        scrollTicking = true;
+      }
+    }, { passive: true });
+
     updateStickyState();
+    handleScrollSpy();
   }
 
   // Control de visibilidad del Dock Vertical de Categorías (aparece cuando la barra de categorías queda fijada sticky)
