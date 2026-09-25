@@ -1354,6 +1354,9 @@ const CATEGORIES_DEFAULT_EMOJIS = [
 
 let activeCatModalFilter = 'current'; // 'current' | 'desayuno' | 'comida' | 'all'
 let editingCategoryId = null;
+let hasPendingCategoryOrderChanges = false;
+let lastMovedCategoryId = null;
+let draggedCategoryId = null;
 
 function setupCategoriesAdmin() {
   const modal = document.getElementById('modal-manage-categories');
@@ -1362,8 +1365,16 @@ function setupCategoriesAdmin() {
   const form = document.getElementById('form-manage-category');
   const cancelBtn = document.getElementById('btn-cancel-cat-edit');
   const searchInput = document.getElementById('cat-search-input');
+  const saveOrderBtn = document.getElementById('btn-save-categories-order');
   const emojiGrid = document.getElementById('cat-emoji-selector');
   const emojiInput = document.getElementById('cat-form-emoji-input');
+
+  // Guardar orden de categorías
+  if (saveOrderBtn) {
+    saveOrderBtn.addEventListener('click', async () => {
+      await saveCategoryOrder();
+    });
+  }
 
   // Renderizar selector visual de emojis
   if (emojiGrid) {
@@ -1500,9 +1511,22 @@ function renderCategoryItemsList() {
   const container = document.getElementById('categories-items-list');
   const countEl = document.getElementById('cat-total-count');
   const searchInput = document.getElementById('cat-search-input');
+  const saveOrderBtn = document.getElementById('btn-save-categories-order');
   if (!container) return;
 
   if (countEl) countEl.textContent = categories.length;
+
+  if (saveOrderBtn) {
+    if (hasPendingCategoryOrderChanges) {
+      saveOrderBtn.disabled = false;
+      saveOrderBtn.className = 'btn-save-cat-order pending';
+      saveOrderBtn.textContent = '💾 Guardar Orden (Pendiente)';
+    } else {
+      saveOrderBtn.disabled = true;
+      saveOrderBtn.className = 'btn-save-cat-order';
+      saveOrderBtn.textContent = '💾 Guardar Orden';
+    }
+  }
 
   const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
 
@@ -1538,14 +1562,19 @@ function renderCategoryItemsList() {
     return;
   }
 
-  filtered.forEach(cat => {
+  filtered.forEach((cat, index) => {
+    const isFirst = index === 0;
+    const isLast = index === filtered.length - 1;
+    const isMoved = lastMovedCategoryId === cat.id;
+
     const card = document.createElement('div');
-    card.className = `cat-item-card ${editingCategoryId === cat.id ? 'is-editing' : ''}`;
+    card.className = `cat-item-card ${editingCategoryId === cat.id ? 'is-editing' : ''} ${isMoved ? 'just-moved' : ''}`;
     card.setAttribute('data-id', cat.id);
+    card.setAttribute('draggable', 'true');
 
     const emoji = cat.emoji || getCategoryEmoji(cat);
     const nameEs = cat.name?.es || cat.name || cat.id;
-    const orderNum = cat.order !== undefined ? `#${cat.order}` : '';
+    const displayPos = cat.order !== undefined ? `#${cat.order}` : `#${index + 1}`;
 
     // Contar platillos asociados
     const assignedDishes = products.filter(p => p.categoryId === cat.id || p.categoryId === cat.slug).length;
@@ -1572,15 +1601,70 @@ function renderCategoryItemsList() {
           <div class="cat-item-meta">
             <span class="cat-section-pill ${secClass}">${secLabel}</span>
             <span class="cat-dish-count-badge">${assignedDishes} platillos</span>
-            ${orderNum ? `<span style="font-size:0.65rem; font-family:var(--font-mono); color:var(--lc-gray-500);">${orderNum}</span>` : ''}
+            <span class="cat-pos-badge" title="Posición actual">${displayPos}</span>
           </div>
         </div>
       </div>
       <div class="cat-item-actions">
+        <div class="cat-reorder-btns">
+          <button type="button" class="btn-cat-reorder btn-cat-up" data-id="${cat.id}" title="Mover categoría más arriba" ${isFirst ? 'disabled' : ''}>▲</button>
+          <button type="button" class="btn-cat-reorder btn-cat-down" data-id="${cat.id}" title="Mover categoría más abajo" ${isLast ? 'disabled' : ''}>▼</button>
+        </div>
         <button type="button" class="btn-cat-action btn-cat-edit" title="Editar categoría">✏️ Editar</button>
         <button type="button" class="btn-cat-action btn-cat-del" title="Eliminar categoría">🗑️</button>
       </div>
     `;
+
+    // Botones de subir / bajar
+    const upBtn = card.querySelector('.btn-cat-up');
+    const downBtn = card.querySelector('.btn-cat-down');
+    if (upBtn) {
+      upBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        moveCategory(cat.id, 'up');
+      });
+    }
+    if (downBtn) {
+      downBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        moveCategory(cat.id, 'down');
+      });
+    }
+
+    // Drag & Drop
+    card.addEventListener('dragstart', (e) => {
+      draggedCategoryId = cat.id;
+      card.classList.add('is-dragging');
+      e.dataTransfer.effectAllowed = 'move';
+      try {
+        e.dataTransfer.setData('text/plain', cat.id);
+      } catch (err) {}
+    });
+
+    card.addEventListener('dragend', () => {
+      draggedCategoryId = null;
+      document.querySelectorAll('.cat-item-card').forEach(c => {
+        c.classList.remove('is-dragging', 'drag-over');
+      });
+    });
+
+    card.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      if (!draggedCategoryId || draggedCategoryId === cat.id) return;
+      e.dataTransfer.dropEffect = 'move';
+      card.classList.add('drag-over');
+    });
+
+    card.addEventListener('dragleave', () => {
+      card.classList.remove('drag-over');
+    });
+
+    card.addEventListener('drop', (e) => {
+      e.preventDefault();
+      card.classList.remove('drag-over');
+      if (!draggedCategoryId || draggedCategoryId === cat.id) return;
+      handleCategoryDrop(draggedCategoryId, cat.id);
+    });
 
     // Clic Editar
     card.querySelector('.btn-cat-edit').addEventListener('click', () => {
@@ -1594,6 +1678,174 @@ function renderCategoryItemsList() {
 
     container.appendChild(card);
   });
+}
+
+function moveCategory(catId, direction) {
+  const searchInput = document.getElementById('cat-search-input');
+  const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
+
+  let filtered = categories;
+  if (activeCatModalFilter === 'current') {
+    filtered = categories.filter(c => isCategoryInMealMode(c, adminMealMode));
+  } else if (activeCatModalFilter === 'desayuno') {
+    filtered = categories.filter(c => c.section === 'desayuno' || c.section === 'ambos');
+  } else if (activeCatModalFilter === 'comida') {
+    filtered = categories.filter(c => c.section === 'comida' || c.section === 'cantina' || c.section === 'ambos');
+  }
+
+  if (query) {
+    filtered = filtered.filter(c => {
+      const nameEs = (c.name?.es || c.name || '').toLowerCase();
+      const nameEn = (c.name?.en || '').toLowerCase();
+      return nameEs.includes(query) || nameEn.includes(query);
+    });
+  }
+
+  filtered.sort((a, b) => (a.order !== undefined ? a.order : 999) - (b.order !== undefined ? b.order : 999));
+
+  const currentIdx = filtered.findIndex(c => c.id === catId);
+  if (currentIdx === -1) return;
+
+  const targetIdx = direction === 'up' ? currentIdx - 1 : currentIdx + 1;
+  if (targetIdx < 0 || targetIdx >= filtered.length) return;
+
+  const catA = filtered[currentIdx];
+  const catB = filtered[targetIdx];
+
+  // Reubicar catA relativo a catB en el arreglo global categories
+  const idxA = categories.findIndex(c => c.id === catA.id);
+  if (idxA === -1) return;
+  categories.splice(idxA, 1);
+
+  const newIdxB = categories.findIndex(c => c.id === catB.id);
+  if (newIdxB === -1) {
+    categories.push(catA);
+  } else {
+    if (direction === 'up') {
+      categories.splice(newIdxB, 0, catA);
+    } else {
+      categories.splice(newIdxB + 1, 0, catA);
+    }
+  }
+
+  // Renormalizar orden numérico secuencial 1..N
+  categories.forEach((c, idx) => {
+    c.order = idx + 1;
+  });
+
+  hasPendingCategoryOrderChanges = true;
+  lastMovedCategoryId = catA.id;
+
+  if (editingCategoryId === catA.id) {
+    const orderInput = document.getElementById('cat-form-order');
+    if (orderInput) orderInput.value = catA.order;
+  }
+
+  const container = document.getElementById('categories-items-list');
+  const scrollPos = container ? container.scrollTop : 0;
+
+  renderCategoryItemsList();
+
+  if (container) {
+    container.scrollTop = scrollPos;
+  }
+}
+
+function handleCategoryDrop(sourceCatId, targetCatId) {
+  if (sourceCatId === targetCatId) return;
+
+  const idxA = categories.findIndex(c => c.id === sourceCatId);
+  if (idxA === -1) return;
+  const [catA] = categories.splice(idxA, 1);
+
+  const newIdxB = categories.findIndex(c => c.id === targetCatId);
+  if (newIdxB === -1) {
+    categories.push(catA);
+  } else {
+    categories.splice(newIdxB, 0, catA);
+  }
+
+  categories.forEach((c, idx) => {
+    c.order = idx + 1;
+  });
+
+  hasPendingCategoryOrderChanges = true;
+  lastMovedCategoryId = catA.id;
+
+  if (editingCategoryId === catA.id) {
+    const orderInput = document.getElementById('cat-form-order');
+    if (orderInput) orderInput.value = catA.order;
+  }
+
+  const container = document.getElementById('categories-items-list');
+  const scrollPos = container ? container.scrollTop : 0;
+
+  renderCategoryItemsList();
+
+  if (container) {
+    container.scrollTop = scrollPos;
+  }
+}
+
+async function saveCategoryOrder() {
+  const saveBtn = document.getElementById('btn-save-categories-order');
+  if (saveBtn) {
+    saveBtn.disabled = true;
+    saveBtn.className = 'btn-save-cat-order';
+    saveBtn.textContent = '⏳ Guardando orden...';
+  }
+
+  try {
+    // 1. Guardar en Firestore si está configurado (Batch write masivo atómico)
+    if (isConfigured && db) {
+      const batch = writeBatch(db);
+      categories.forEach(cat => {
+        const catRef = doc(db, `restaurants/${restaurantId}/categories/${cat.id}`);
+        batch.set(catRef, { 
+          order: Number(cat.order),
+          updatedAt: serverTimestamp() 
+        }, { merge: true });
+      });
+      await batch.commit();
+    }
+
+    // 2. Actualizar caché local
+    try {
+      localStorage.setItem('lc_catalog_cache_v4', JSON.stringify({ categories, products }));
+    } catch (e) {}
+
+    // 3. Sincronizar en tiempo real inmediata (0ms) a todas las pantallas/menú público
+    broadcastMenuSync({ categories: categories });
+
+    // 4. Actualizar estado y UI
+    hasPendingCategoryOrderChanges = false;
+    populateCategoryDropdowns();
+    updateShiftStats();
+    renderMenuEditorTable();
+    renderCategoryItemsList();
+
+    if (saveBtn) {
+      saveBtn.disabled = true;
+      saveBtn.className = 'btn-save-cat-order saved';
+      saveBtn.textContent = '✓ ¡Orden Guardado!';
+      setTimeout(() => {
+        if (saveBtn && !hasPendingCategoryOrderChanges) {
+          saveBtn.className = 'btn-save-cat-order';
+          saveBtn.textContent = '💾 Guardar Orden';
+        }
+      }, 2500);
+    }
+
+    showToast("✅ ¡Orden de categorías guardado! Los cambios ya están en vivo en el menú público.");
+  } catch (error) {
+    console.error("Error saving category order:", error);
+    showToast("⚠️ Ocurrió un error al guardar el orden de categorías.");
+    if (saveBtn) {
+      saveBtn.disabled = false;
+      saveBtn.className = 'btn-save-cat-order pending';
+      saveBtn.textContent = '💾 Guardar Orden';
+    }
+  }
 }
 
 function editCategory(cat) {
@@ -1682,23 +1934,35 @@ async function handleCategorySave() {
       updatedAt: serverTimestamp()
     };
 
-    if (isConfigured && db) {
-      await setDoc(doc(db, `restaurants/${restaurantId}/categories/${catId}`), catData, { merge: true });
-    }
-
     if (isNew) {
       categories.push(catData);
+      categories.sort((a, b) => (a.order !== undefined ? a.order : 999) - (b.order !== undefined ? b.order : 999));
+      categories.forEach((c, idx) => { c.order = idx + 1; });
       showToast(`✅ Categoría "${nameEs}" creada con éxito.`);
     } else {
       const idx = categories.findIndex(c => c.id === catId || c.slug === catId);
       if (idx !== -1) {
         categories[idx] = { ...categories[idx], ...catData };
       }
+      categories.sort((a, b) => (a.order !== undefined ? a.order : 999) - (b.order !== undefined ? b.order : 999));
+      categories.forEach((c, idx) => { c.order = idx + 1; });
       showToast(`✅ Categoría "${nameEs}" actualizada.`);
     }
 
-    // Ordenar categorías
-    categories.sort((a, b) => (a.order !== undefined ? a.order : 999) - (b.order !== undefined ? b.order : 999));
+    // Persistir todos los órdenes en Firestore si está configurado (Batch write masivo)
+    if (isConfigured && db) {
+      const batch = writeBatch(db);
+      categories.forEach(cat => {
+        const catRef = doc(db, `restaurants/${restaurantId}/categories/${cat.id}`);
+        batch.set(catRef, { 
+          ...cat,
+          order: Number(cat.order),
+          updatedAt: serverTimestamp() 
+        }, { merge: true });
+      });
+      await batch.commit();
+    }
+    hasPendingCategoryOrderChanges = false;
 
     // Actualizar caché local
     try {

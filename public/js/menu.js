@@ -148,6 +148,7 @@ export async function initMenu() {
         }
         if (event.data.categories && Array.isArray(event.data.categories)) {
           allCategories = event.data.categories;
+          allCategories.sort((a, b) => (a.order !== undefined ? a.order : 999) - (b.order !== undefined ? b.order : 999));
           try {
             localStorage.setItem('lc_catalog_cache_v4', JSON.stringify({ categories: allCategories, products: allProducts }));
           } catch (e) {}
@@ -188,6 +189,7 @@ export async function initMenu() {
         }
         if (data.categories && Array.isArray(data.categories)) {
           allCategories = data.categories;
+          allCategories.sort((a, b) => (a.order !== undefined ? a.order : 999) - (b.order !== undefined ? b.order : 999));
           try {
             localStorage.setItem('lc_catalog_cache_v4', JSON.stringify({ categories: allCategories, products: allProducts }));
           } catch (err) {}
@@ -362,6 +364,7 @@ export function renderCategoriesNav() {
       return cat.section === 'comida' || cat.section === 'cantina';
     }
   });
+  filteredCats.sort((a, b) => (a.order !== undefined ? a.order : 999) - (b.order !== undefined ? b.order : 999));
 
   navContainer.innerHTML = '';
 
@@ -776,6 +779,7 @@ export function renderMenu() {
       return cat.section === 'comida' || cat.section === 'cantina';
     }
   });
+  activeCategories.sort((a, b) => (a.order !== undefined ? a.order : 999) - (b.order !== undefined ? b.order : 999));
 
   const fragment = document.createDocumentFragment();
   let visibleProductCount = 0;

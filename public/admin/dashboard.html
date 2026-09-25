@@ -798,7 +798,12 @@
               <button type="button" class="cat-filter-tab" data-cat-filter="comida">🥩 Comida</button>
               <button type="button" class="cat-filter-tab" data-cat-filter="all">Todas (<span id="cat-total-count">0</span>)</button>
             </div>
-            <input type="text" id="cat-search-input" class="form-input" placeholder="Buscar categoría..." style="padding:0.45rem 0.75rem; font-size:0.8rem;" />
+            <div class="cat-search-save-row">
+              <input type="text" id="cat-search-input" class="form-input" placeholder="Buscar categoría..." style="padding:0.45rem 0.75rem; font-size:0.8rem; flex:1;" />
+              <button type="button" id="btn-save-categories-order" class="btn-save-cat-order" disabled title="Guardar cambios de orden y reflejar en el menú público">
+                💾 Guardar Orden
+              </button>
+            </div>
           </div>
 
           <div id="categories-items-list" class="categories-items-scroll">
