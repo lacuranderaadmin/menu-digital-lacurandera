@@ -23,6 +23,7 @@ import { showToast } from './ui.js';
 let restaurantId = 'la-curandera';
 let activeBranchId = 'metepec';
 let activeView = 'branches'; // 'branches' | 'menu-editor' | 'settings'
+let adminMealMode = 'desayuno'; // 'desayuno' | 'comida'
 
 let branches = [
   { id: 'metepec', name: 'La Curandera', address: 'Tenancingo / Metepec, Edo. Méx.', phone: '+52 714 140 0000', isActive: true }
@@ -67,6 +68,7 @@ function broadcastMenuSync(extraData = {}) {
       restaurantId: restaurantId,
       branchId: activeBranchId,
       overrides: menuOverrides,
+      categories: categories,
       productsCount: products.length,
       products: products,
       ...extraData
@@ -108,6 +110,7 @@ export function initAdminDashboard() {
   // 2. Carga inicial instantánea desde catálogo local para que NUNCA esté en blanco
   loadLocalFallback().then(() => {
     populateCategoryDropdowns();
+    updateShiftStats();
     renderBranchesList();
     renderMenuEditorTable();
   });
@@ -219,6 +222,12 @@ function setupDashboardUI(user) {
   // Configuración del Restaurante (Horarios, Google Maps, Contacto, Identidad)
   setupRestaurantSettingsAdmin();
 
+  // Selector de Menú (Desayunos vs Comida)
+  setupShiftSelector();
+
+  // Gestor de Categorías (Agregar, Editar, Eliminar)
+  setupCategoriesAdmin();
+
   // Renderizado inicial inmediato de sucursales
   renderBranchesList();
 }
@@ -252,6 +261,7 @@ async function loadData() {
   if (categories.length === 0 || products.length === 0) {
     await loadLocalFallback();
     populateCategoryDropdowns();
+    updateShiftStats();
     renderBranchesList();
     renderMenuEditorTable();
   }
@@ -282,6 +292,7 @@ async function loadData() {
       overSnap.forEach(d => menuOverrides[d.id] = d.data());
 
       populateCategoryDropdowns();
+      updateShiftStats();
       renderBranchesList();
       renderMenuEditorTable();
     } catch (e) {
@@ -289,6 +300,7 @@ async function loadData() {
       if (categories.length === 0 || products.length === 0) {
         await loadLocalFallback();
         populateCategoryDropdowns();
+        updateShiftStats();
         renderBranchesList();
         renderMenuEditorTable();
       }
@@ -316,23 +328,167 @@ async function loadLocalFallback() {
   }
 }
 
+/* --------------------------------------------------------------------------
+   Helpers para Filtrado por Menú (Desayunos vs Comida)
+   -------------------------------------------------------------------------- */
+export function isCategoryInMealMode(cat, mode) {
+  if (!cat) return false;
+  const section = (cat.section || '').toLowerCase();
+  if (section === 'ambos') return true;
+  if (mode === 'desayuno' || mode === 'desayunos') {
+    return section === 'desayuno';
+  } else {
+    return section === 'comida' || section === 'cantina';
+  }
+}
+
+export function getCategoryEmoji(cat) {
+  if (cat && cat.emoji) return cat.emoji;
+  const slug = (cat.slug || cat.id || '').toLowerCase();
+  const emojis = {
+    'pa-curar-el-alma': '🍳',
+    'lo-enchi-loso': '🌶️',
+    'tacos-dorados': '🌮',
+    'pa-caldear': '🥣',
+    'sandwich-y-algo-mas': '🥪',
+    'pa-los-peques': '🥞',
+    'dulce-remedio': '🍰',
+    'pa-calentar-el-espiritu': '☕',
+    'jugueria-la-curandera': '🧃',
+    'bebidas-sin-alcohol': '🥤',
+    'mockteleria': '🍹',
+    'sabores-de-cuaresma': '🦐',
+    'pa-empezar': '🥑',
+    'pa-cuidarte': '🥗',
+    'sopas-y-pastas': '🍲',
+    'snacks': '🍟',
+    'platos-fuertes': '🥘',
+    'taqueria-la-curandera': '🌮',
+    'cortes': '🥩',
+    'burritos': '🌯',
+    'burguers-y-jocho': '🍔',
+    'pa-los-morrillos': '👶',
+    'cantina-la-curandera': '🥃',
+  };
+  if (emojis[slug]) return emojis[slug];
+  const name = typeof cat.name === 'object' ? (cat.name.es || '').toLowerCase() : (cat.name || '').toLowerCase();
+  if (name.includes('huevo') || name.includes('curar')) return '🍳';
+  if (name.includes('chilaquile') || name.includes('enchi') || name.includes('picante')) return '🌶️';
+  if (name.includes('taco')) return '🌮';
+  if (name.includes('caldo') || name.includes('sopa') || name.includes('pasta')) return '🍲';
+  if (name.includes('corte') || name.includes('carne')) return '🥩';
+  if (name.includes('marisco') || name.includes('pescado') || name.includes('cuaresma') || name.includes('camar')) return '🦐';
+  if (name.includes('ensalada') || name.includes('cuidarte')) return '🥗';
+  if (name.includes('snack') || name.includes('alita') || name.includes('papa')) return '🍟';
+  if (name.includes('postre') || name.includes('dulce')) return '🍰';
+  if (name.includes('café') || name.includes('espíritu')) return '☕';
+  if (name.includes('jugo') || name.includes('juguería')) return '🧃';
+  if (name.includes('bebida') || name.includes('refresco')) return '🥤';
+  if (name.includes('coctel') || name.includes('mocktail')) return '🍹';
+  if (name.includes('mezcal') || name.includes('cantina') || name.includes('trago')) return '🥃';
+  if (name.includes('burger') || name.includes('jocho')) return '🍔';
+  if (name.includes('burrito')) return '🌯';
+  if (name.includes('infantil') || name.includes('peque') || name.includes('morrillo')) return '👶';
+  return '🍽️';
+}
+
+function updateShiftStats() {
+  const desCats = categories.filter(c => isCategoryInMealMode(c, 'desayuno'));
+  const comCats = categories.filter(c => isCategoryInMealMode(c, 'comida'));
+
+  const desCatIds = new Set();
+  desCats.forEach(c => { if (c.id) desCatIds.add(c.id); if (c.slug) desCatIds.add(c.slug); });
+
+  const comCatIds = new Set();
+  comCats.forEach(c => { if (c.id) comCatIds.add(c.id); if (c.slug) comCatIds.add(c.slug); });
+
+  const desProds = products.filter(p => desCatIds.has(p.categoryId)).length;
+  const comProds = products.filter(p => comCatIds.has(p.categoryId)).length;
+
+  const desStatsEl = document.getElementById('shift-desayuno-stats');
+  if (desStatsEl) {
+    desStatsEl.textContent = `${desCats.length} categorías · ${desProds} platillos`;
+  }
+
+  const comStatsEl = document.getElementById('shift-comida-stats');
+  if (comStatsEl) {
+    comStatsEl.textContent = `${comCats.length} categorías · ${comProds} platillos`;
+  }
+}
+
+function setupShiftSelector() {
+  const btnDesayuno = document.getElementById('btn-shift-desayuno');
+  const btnComida = document.getElementById('btn-shift-comida');
+
+  if (btnDesayuno) {
+    btnDesayuno.addEventListener('click', () => {
+      setAdminMealMode('desayuno');
+    });
+  }
+
+  if (btnComida) {
+    btnComida.addEventListener('click', () => {
+      setAdminMealMode('comida');
+    });
+  }
+}
+
+function setAdminMealMode(mode) {
+  adminMealMode = mode;
+  categoryFilter = 'all';
+
+  const btnDesayuno = document.getElementById('btn-shift-desayuno');
+  const btnComida = document.getElementById('btn-shift-comida');
+
+  if (btnDesayuno && btnComida) {
+    if (mode === 'desayuno') {
+      btnDesayuno.classList.add('active');
+      btnDesayuno.setAttribute('aria-selected', 'true');
+      btnComida.classList.remove('active');
+      btnComida.setAttribute('aria-selected', 'false');
+    } else {
+      btnComida.classList.add('active');
+      btnComida.setAttribute('aria-selected', 'true');
+      btnDesayuno.classList.remove('active');
+      btnDesayuno.setAttribute('aria-selected', 'false');
+    }
+  }
+
+  populateCategoryDropdowns();
+  updateShiftStats();
+  renderMenuEditorTable();
+}
+
 function populateCategoryDropdowns() {
   const catFilter = document.getElementById('admin-cat-filter');
   const catSelect = document.getElementById('prod-category-select');
 
+  // Filtrar categorías según el menú actualmente seleccionado (Desayunos vs Comida)
+  const filteredCats = categories.filter(c => isCategoryInMealMode(c, adminMealMode));
+
   if (catFilter) {
-    catFilter.innerHTML = '<option value="all">Todas las Categorías</option>';
-    categories.forEach(cat => {
+    const modeLabel = adminMealMode === 'desayuno' ? 'Desayunos' : 'Comida';
+    catFilter.innerHTML = `<option value="all">Todas las Categorías (${modeLabel})</option>`;
+    filteredCats.forEach(cat => {
       const name = cat.name?.es || cat.name || cat.id;
-      catFilter.innerHTML += `<option value="${cat.id || cat.slug}">${name}</option>`;
+      const emoji = cat.emoji || getCategoryEmoji(cat);
+      catFilter.innerHTML += `<option value="${cat.id || cat.slug}">${emoji} ${name}</option>`;
     });
+
+    if (categoryFilter !== 'all' && !filteredCats.some(c => (c.id === categoryFilter || c.slug === categoryFilter))) {
+      categoryFilter = 'all';
+      catFilter.value = 'all';
+    } else {
+      catFilter.value = categoryFilter;
+    }
   }
 
   if (catSelect) {
     catSelect.innerHTML = '';
-    categories.forEach(cat => {
+    filteredCats.forEach(cat => {
       const name = cat.name?.es || cat.name || cat.id;
-      catSelect.innerHTML += `<option value="${cat.id || cat.slug}">${name}</option>`;
+      const emoji = cat.emoji || getCategoryEmoji(cat);
+      catSelect.innerHTML += `<option value="${cat.id || cat.slug}">${emoji} ${name}</option>`;
     });
   }
 }
@@ -379,7 +535,17 @@ function renderMenuEditorTable() {
 
   tbody.innerHTML = '';
 
+  // 1. Conjunto de categorías válidas para el menú seleccionado (Desayunos vs Comida)
+  const validCatIds = new Set();
+  categories.filter(c => isCategoryInMealMode(c, adminMealMode)).forEach(c => {
+    if (c.id) validCatIds.add(c.id);
+    if (c.slug) validCatIds.add(c.slug);
+  });
+
   const filtered = products.filter(product => {
+    // Filtrar estrictamente por el menú activo seleccionado
+    if (!validCatIds.has(product.categoryId)) return false;
+
     // Filtro categoría
     if (categoryFilter !== 'all' && product.categoryId !== categoryFilter) return false;
 
@@ -410,10 +576,11 @@ function renderMenuEditorTable() {
   });
 
   if (filtered.length === 0) {
+    const modeLabel = adminMealMode === 'desayuno' ? 'Menú de Desayunos' : 'Menú de Comida';
     tbody.innerHTML = `
       <tr>
-        <td colspan="8" style="text-align:center; padding:3rem 1rem; color:var(--lc-gray-500); font-family:var(--font-mono);">
-          No se encontraron platillos con los filtros seleccionados.
+        <td colspan="9" style="text-align:center; padding:3rem 1rem; color:var(--lc-gray-500); font-family:var(--font-mono);">
+          No se encontraron platillos en el <strong>${modeLabel}</strong> con los filtros seleccionados.
         </td>
       </tr>
     `;
@@ -438,13 +605,15 @@ function renderMenuEditorTable() {
     const allergens = override.allergens || product.allergens || [];
     const tags = override.tags || product.tags || [];
 
-    // Generar opciones de categoría para el selector en fila
+    // Generar opciones de categoría para el selector en fila (del menú activo)
     let catOptionsHtml = '';
-    categories.forEach(cat => {
+    const activeMenuCats = categories.filter(c => isCategoryInMealMode(c, adminMealMode));
+    activeMenuCats.forEach(cat => {
       const cId = cat.id || cat.slug;
       const cName = cat.name?.es || cat.name || cId;
+      const emoji = cat.emoji || getCategoryEmoji(cat);
       const selected = cId === currentCat ? 'selected' : '';
-      catOptionsHtml += `<option value="${cId}" ${selected}>${cName}</option>`;
+      catOptionsHtml += `<option value="${cId}" ${selected}>${emoji} ${cName}</option>`;
     });
 
     // Badges de alérgenos y etiquetas
@@ -938,8 +1107,15 @@ function openAddProductModal() {
   renderModalAllergenChips();
 
   const catSelect = document.getElementById('prod-category-select');
-  if (catSelect && categories.length > 0) {
-    catSelect.value = categories[0].id || categories[0].slug;
+  const activeMenuCats = categories.filter(c => isCategoryInMealMode(c, adminMealMode));
+  if (catSelect && activeMenuCats.length > 0) {
+    catSelect.innerHTML = '';
+    activeMenuCats.forEach(cat => {
+      const name = cat.name?.es || cat.name || cat.id;
+      const emoji = cat.emoji || getCategoryEmoji(cat);
+      catSelect.innerHTML += `<option value="${cat.id || cat.slug}">${emoji} ${name}</option>`;
+    });
+    catSelect.value = activeMenuCats[0].id || activeMenuCats[0].slug;
   }
 
   modal.classList.add('open');
@@ -978,8 +1154,22 @@ function openEditProductModal(product) {
   if (priceInput) priceInput.value = currentPrice;
   const descInput = document.getElementById('prod-desc-es');
   if (descInput) descInput.value = currentDesc;
+
   const catSelect = document.getElementById('prod-category-select');
-  if (catSelect) catSelect.value = currentCat;
+  if (catSelect) {
+    const activeMenuCats = categories.filter(c => isCategoryInMealMode(c, adminMealMode));
+    if (currentCat && !activeMenuCats.some(c => c.id === currentCat || c.slug === currentCat)) {
+      const currentCatObj = categories.find(c => c.id === currentCat || c.slug === currentCat);
+      if (currentCatObj) activeMenuCats.push(currentCatObj);
+    }
+    catSelect.innerHTML = '';
+    activeMenuCats.forEach(cat => {
+      const name = cat.name?.es || cat.name || cat.id;
+      const emoji = cat.emoji || getCategoryEmoji(cat);
+      catSelect.innerHTML += `<option value="${cat.id || cat.slug}">${emoji} ${name}</option>`;
+    });
+    catSelect.value = currentCat;
+  }
 
   const weightInput = document.getElementById('prod-modal-weight');
   if (weightInput) weightInput.value = currentWeight;
@@ -1136,6 +1326,428 @@ async function handleProductSave(form) {
 function escapeHtml(str) {
   if (!str) return '';
   return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
+/* --------------------------------------------------------------------------
+   Gestión de Categorías de la Carta (Agregar, Editar, Eliminar y Sincronizar)
+   -------------------------------------------------------------------------- */
+const CATEGORIES_DEFAULT_EMOJIS = [
+  '🍳', '🌶️', '🌮', '🥣', '🥪', '🥞', '🍰', '☕', 
+  '🧃', '🥤', '🍹', '🦐', '🥑', '🥗', '🍲', '🍟', 
+  '🥘', '🥩', '🌯', '🍔', '👶', '🥃', '🍺', '🧀', 
+  '🫔', '🍕', '🍧', '🍦', '🍽️', '✨'
+];
+
+let activeCatModalFilter = 'current'; // 'current' | 'desayuno' | 'comida' | 'all'
+let editingCategoryId = null;
+
+function setupCategoriesAdmin() {
+  const modal = document.getElementById('modal-manage-categories');
+  const openBtn = document.getElementById('btn-open-categories-modal');
+  const closeBtn = document.getElementById('btn-close-cat-modal');
+  const form = document.getElementById('form-manage-category');
+  const cancelBtn = document.getElementById('btn-cancel-cat-edit');
+  const searchInput = document.getElementById('cat-search-input');
+  const emojiGrid = document.getElementById('cat-emoji-selector');
+  const emojiInput = document.getElementById('cat-form-emoji-input');
+
+  // Renderizar selector visual de emojis
+  if (emojiGrid) {
+    emojiGrid.innerHTML = '';
+    CATEGORIES_DEFAULT_EMOJIS.forEach(emoji => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'emoji-pick-btn';
+      btn.textContent = emoji;
+      btn.title = `Seleccionar emoji ${emoji}`;
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.emoji-pick-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        if (emojiInput) emojiInput.value = emoji;
+      });
+      emojiGrid.appendChild(btn);
+    });
+  }
+
+  // Sincronizar input de emoji manual con botones
+  if (emojiInput) {
+    emojiInput.addEventListener('input', (e) => {
+      const val = e.target.value.trim();
+      document.querySelectorAll('.emoji-pick-btn').forEach(b => {
+        if (b.textContent === val) b.classList.add('selected');
+        else b.classList.remove('selected');
+      });
+    });
+  }
+
+  // Abrir Modal
+  if (openBtn && modal) {
+    openBtn.addEventListener('click', () => {
+      resetCategoryForm();
+      activeCatModalFilter = 'current';
+      document.querySelectorAll('.cat-filter-tab').forEach(t => {
+        if (t.getAttribute('data-cat-filter') === 'current') t.classList.add('active');
+        else t.classList.remove('active');
+      });
+      const currentTab = document.getElementById('tab-cat-current');
+      if (currentTab) {
+        currentTab.textContent = adminMealMode === 'desayuno' ? '🍳 Del Menú Desayunos' : '🥩 Del Menú Comida';
+      }
+      renderCategoryItemsList();
+      modal.classList.add('open');
+    });
+  }
+
+  // Cerrar Modal
+  if (closeBtn && modal) {
+    closeBtn.addEventListener('click', () => {
+      modal.classList.remove('open');
+    });
+  }
+
+  // Tabs de filtro dentro del modal
+  document.querySelectorAll('.cat-filter-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.cat-filter-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      activeCatModalFilter = tab.getAttribute('data-cat-filter') || 'current';
+      renderCategoryItemsList();
+    });
+  });
+
+  // Buscador de categorías dentro del modal
+  if (searchInput) {
+    searchInput.addEventListener('input', () => {
+      renderCategoryItemsList();
+    });
+  }
+
+  // Cancelar Edición
+  if (cancelBtn) {
+    cancelBtn.addEventListener('click', () => {
+      resetCategoryForm();
+    });
+  }
+
+  // Guardar Categoría (Crear o Editar)
+  if (form) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      await handleCategorySave();
+    });
+  }
+}
+
+function resetCategoryForm() {
+  editingCategoryId = null;
+  const form = document.getElementById('form-manage-category');
+  if (form) form.reset();
+
+  const idInput = document.getElementById('cat-form-id');
+  if (idInput) idInput.value = '';
+
+  const titleEl = document.getElementById('cat-form-title');
+  if (titleEl) titleEl.textContent = '+ Nueva Categoría';
+
+  const badgeEl = document.getElementById('cat-form-badge');
+  if (badgeEl) {
+    badgeEl.textContent = 'Creación';
+    badgeEl.className = 'badge-mode-new';
+  }
+
+  const cancelBtn = document.getElementById('btn-cancel-cat-edit');
+  if (cancelBtn) cancelBtn.style.display = 'none';
+
+  const submitBtn = document.getElementById('btn-submit-category');
+  if (submitBtn) submitBtn.textContent = '💾 Guardar Categoría';
+
+  const sectionSelect = document.getElementById('cat-form-section');
+  if (sectionSelect) {
+    sectionSelect.value = adminMealMode === 'desayuno' ? 'desayuno' : 'comida';
+  }
+
+  const orderInput = document.getElementById('cat-form-order');
+  if (orderInput) {
+    orderInput.value = categories.length + 1;
+  }
+
+  const emojiInput = document.getElementById('cat-form-emoji-input');
+  if (emojiInput) emojiInput.value = '🍽️';
+
+  document.querySelectorAll('.emoji-pick-btn').forEach(b => {
+    if (b.textContent === '🍽️') b.classList.add('selected');
+    else b.classList.remove('selected');
+  });
+
+  document.querySelectorAll('.cat-item-card').forEach(c => c.classList.remove('is-editing'));
+}
+
+function renderCategoryItemsList() {
+  const container = document.getElementById('categories-items-list');
+  const countEl = document.getElementById('cat-total-count');
+  const searchInput = document.getElementById('cat-search-input');
+  if (!container) return;
+
+  if (countEl) countEl.textContent = categories.length;
+
+  const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
+
+  // Filtrar según tab activa
+  let filtered = categories;
+  if (activeCatModalFilter === 'current') {
+    filtered = categories.filter(c => isCategoryInMealMode(c, adminMealMode));
+  } else if (activeCatModalFilter === 'desayuno') {
+    filtered = categories.filter(c => c.section === 'desayuno' || c.section === 'ambos');
+  } else if (activeCatModalFilter === 'comida') {
+    filtered = categories.filter(c => c.section === 'comida' || c.section === 'cantina' || c.section === 'ambos');
+  }
+
+  if (query) {
+    filtered = filtered.filter(c => {
+      const nameEs = (c.name?.es || c.name || '').toLowerCase();
+      const nameEn = (c.name?.en || '').toLowerCase();
+      return nameEs.includes(query) || nameEn.includes(query);
+    });
+  }
+
+  // Ordenar por order
+  filtered.sort((a, b) => (a.order !== undefined ? a.order : 999) - (b.order !== undefined ? b.order : 999));
+
+  container.innerHTML = '';
+
+  if (filtered.length === 0) {
+    container.innerHTML = `
+      <div style="text-align:center; padding:2rem 1rem; color:var(--lc-gray-500); font-family:var(--font-mono); font-size:0.85rem;">
+        No hay categorías en esta vista.
+      </div>
+    `;
+    return;
+  }
+
+  filtered.forEach(cat => {
+    const card = document.createElement('div');
+    card.className = `cat-item-card ${editingCategoryId === cat.id ? 'is-editing' : ''}`;
+    card.setAttribute('data-id', cat.id);
+
+    const emoji = cat.emoji || getCategoryEmoji(cat);
+    const nameEs = cat.name?.es || cat.name || cat.id;
+    const orderNum = cat.order !== undefined ? `#${cat.order}` : '';
+
+    // Contar platillos asociados
+    const assignedDishes = products.filter(p => p.categoryId === cat.id || p.categoryId === cat.slug).length;
+
+    // Badge de sección
+    let secClass = 'sec-desayuno';
+    let secLabel = '🍳 Desayuno';
+    if (cat.section === 'comida') {
+      secClass = 'sec-comida';
+      secLabel = '🥩 Comida';
+    } else if (cat.section === 'ambos') {
+      secClass = 'sec-ambos';
+      secLabel = '✨ Ambos';
+    } else if (cat.section === 'cantina') {
+      secClass = 'sec-cantina';
+      secLabel = '🥃 Cantina';
+    }
+
+    card.innerHTML = `
+      <div class="cat-item-main">
+        <span class="cat-item-emoji">${emoji}</span>
+        <div class="cat-item-text">
+          <span class="cat-item-name">${nameEs}</span>
+          <div class="cat-item-meta">
+            <span class="cat-section-pill ${secClass}">${secLabel}</span>
+            <span class="cat-dish-count-badge">${assignedDishes} platillos</span>
+            ${orderNum ? `<span style="font-size:0.65rem; font-family:var(--font-mono); color:var(--lc-gray-500);">${orderNum}</span>` : ''}
+          </div>
+        </div>
+      </div>
+      <div class="cat-item-actions">
+        <button type="button" class="btn-cat-action btn-cat-edit" title="Editar categoría">✏️ Editar</button>
+        <button type="button" class="btn-cat-action btn-cat-del" title="Eliminar categoría">🗑️</button>
+      </div>
+    `;
+
+    // Clic Editar
+    card.querySelector('.btn-cat-edit').addEventListener('click', () => {
+      editCategory(cat);
+    });
+
+    // Clic Eliminar
+    card.querySelector('.btn-cat-del').addEventListener('click', () => {
+      deleteCategory(cat.id, nameEs, assignedDishes);
+    });
+
+    container.appendChild(card);
+  });
+}
+
+function editCategory(cat) {
+  editingCategoryId = cat.id;
+  const idInput = document.getElementById('cat-form-id');
+  const nameEsInput = document.getElementById('cat-form-name-es');
+  const nameEnInput = document.getElementById('cat-form-name-en');
+  const sectionSelect = document.getElementById('cat-form-section');
+  const orderInput = document.getElementById('cat-form-order');
+  const emojiInput = document.getElementById('cat-form-emoji-input');
+  const titleEl = document.getElementById('cat-form-title');
+  const badgeEl = document.getElementById('cat-form-badge');
+  const cancelBtn = document.getElementById('btn-cancel-cat-edit');
+  const submitBtn = document.getElementById('btn-submit-category');
+
+  const nameEs = cat.name?.es || cat.name || '';
+  const nameEn = cat.name?.en || '';
+  const emoji = cat.emoji || getCategoryEmoji(cat);
+
+  if (idInput) idInput.value = cat.id;
+  if (nameEsInput) nameEsInput.value = nameEs;
+  if (nameEnInput) nameEnInput.value = nameEn;
+  if (sectionSelect) sectionSelect.value = cat.section || 'desayuno';
+  if (orderInput) orderInput.value = cat.order !== undefined ? cat.order : '';
+  if (emojiInput) emojiInput.value = emoji;
+
+  if (titleEl) titleEl.textContent = `✏️ Editar: ${nameEs}`;
+  if (badgeEl) {
+    badgeEl.textContent = 'Editando';
+    badgeEl.className = 'badge-mode-edit';
+  }
+  if (cancelBtn) cancelBtn.style.display = 'inline-block';
+  if (submitBtn) submitBtn.textContent = '💾 Actualizar Categoría';
+
+  // Highlight emoji
+  document.querySelectorAll('.emoji-pick-btn').forEach(b => {
+    if (b.textContent === emoji) b.classList.add('selected');
+    else b.classList.remove('selected');
+  });
+
+  renderCategoryItemsList();
+  if (nameEsInput) nameEsInput.focus();
+}
+
+async function handleCategorySave() {
+  const id = document.getElementById('cat-form-id').value.trim();
+  const nameEs = document.getElementById('cat-form-name-es').value.trim();
+  const nameEn = document.getElementById('cat-form-name-en').value.trim();
+  const section = document.getElementById('cat-form-section').value;
+  const rawOrder = document.getElementById('cat-form-order').value;
+  const emoji = document.getElementById('cat-form-emoji-input').value.trim() || '🍽️';
+
+  if (!nameEs) {
+    alert("El nombre de la categoría en español es obligatorio.");
+    return;
+  }
+
+  const submitBtn = document.getElementById('btn-submit-category');
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Guardando...';
+  }
+
+  try {
+    const isNew = !id;
+    // Generar slug/id limpio
+    const catId = isNew 
+      ? (nameEs.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || `cat_${Date.now()}`)
+      : id;
+
+    const order = rawOrder !== '' ? Number(rawOrder) : (categories.length + 1);
+
+    const catData = {
+      id: catId,
+      slug: catId,
+      name: {
+        es: nameEs,
+        en: nameEn || nameEs,
+        fr: ''
+      },
+      section: section,
+      order: order,
+      emoji: emoji,
+      icon: 'maguey',
+      isActive: true,
+      updatedAt: serverTimestamp()
+    };
+
+    if (isConfigured && db) {
+      await setDoc(doc(db, `restaurants/${restaurantId}/categories/${catId}`), catData, { merge: true });
+    }
+
+    if (isNew) {
+      categories.push(catData);
+      showToast(`✅ Categoría "${nameEs}" creada con éxito.`);
+    } else {
+      const idx = categories.findIndex(c => c.id === catId || c.slug === catId);
+      if (idx !== -1) {
+        categories[idx] = { ...categories[idx], ...catData };
+      }
+      showToast(`✅ Categoría "${nameEs}" actualizada.`);
+    }
+
+    // Ordenar categorías
+    categories.sort((a, b) => (a.order !== undefined ? a.order : 999) - (b.order !== undefined ? b.order : 999));
+
+    // Actualizar caché local
+    try {
+      localStorage.setItem('lc_catalog_cache_v4', JSON.stringify({ categories, products }));
+    } catch (e) {}
+
+    // Sincronizar en tiempo real inmediata (0ms)
+    broadcastMenuSync({ categories: categories });
+
+    // Actualizar UI
+    resetCategoryForm();
+    populateCategoryDropdowns();
+    updateShiftStats();
+    renderMenuEditorTable();
+    renderCategoryItemsList();
+  } catch (error) {
+    console.error("Error saving category:", error);
+    showToast("⚠️ Ocurrió un error al guardar la categoría.");
+  } finally {
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = '💾 Guardar Categoría';
+    }
+  }
+}
+
+async function deleteCategory(catId, catName, assignedDishesCount = 0) {
+  const confirmMsg = assignedDishesCount > 0
+    ? `¿Estás seguro de que deseas eliminar la categoría "${catName}"?\n\n⚠️ Tiene ${assignedDishesCount} platillos asociados que quedarán sin categoría visible en las mesas.`
+    : `¿Estás seguro de que deseas eliminar la categoría "${catName}"?`;
+
+  if (!confirm(confirmMsg)) return;
+
+  try {
+    if (isConfigured && db) {
+      await deleteDoc(doc(db, `restaurants/${restaurantId}/categories/${catId}`));
+    }
+
+    categories = categories.filter(c => c.id !== catId && c.slug !== catId);
+
+    // Actualizar caché local
+    try {
+      localStorage.setItem('lc_catalog_cache_v4', JSON.stringify({ categories, products }));
+    } catch (e) {}
+
+    if (editingCategoryId === catId) {
+      resetCategoryForm();
+    }
+
+    // Sincronizar en tiempo real inmediata
+    broadcastMenuSync({ categories: categories });
+
+    // Actualizar UI
+    populateCategoryDropdowns();
+    updateShiftStats();
+    renderMenuEditorTable();
+    renderCategoryItemsList();
+
+    showToast(`🗑️ Categoría "${catName}" eliminada de la carta.`);
+  } catch (error) {
+    console.error("Error deleting category:", error);
+    showToast("⚠️ Ocurrió un error al eliminar la categoría.");
+  }
 }
 
 /* --------------------------------------------------------------------------

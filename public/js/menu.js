@@ -137,6 +137,12 @@ export async function initMenu() {
             };
           });
         }
+        if (event.data.categories && Array.isArray(event.data.categories)) {
+          allCategories = event.data.categories;
+          try {
+            localStorage.setItem('lc_catalog_cache_v4', JSON.stringify({ categories: allCategories, products: allProducts }));
+          } catch (e) {}
+        }
         renderCategoriesNav();
         renderMenu();
       } else if (event.data && event.data.type === 'SETTINGS_SYNC' && event.data.settings) {
@@ -165,6 +171,12 @@ export async function initMenu() {
               videoUrl: p.videoUrl || current?.videoUrl || null
             };
           });
+        }
+        if (data.categories && Array.isArray(data.categories)) {
+          allCategories = data.categories;
+          try {
+            localStorage.setItem('lc_catalog_cache_v4', JSON.stringify({ categories: allCategories, products: allProducts }));
+          } catch (err) {}
         }
         renderCategoriesNav();
         renderMenu();
@@ -208,13 +220,16 @@ function setupRealtimeListeners() {
     // 1. Categorías en tiempo real
     const catCol = collection(db, `restaurants/${restaurantId}/categories`);
     onSnapshot(catCol, (snapshot) => {
-      if (!snapshot.empty) {
-        const loadedCats = [];
-        snapshot.forEach(doc => {
-          loadedCats.push({ id: doc.id, ...doc.data() });
-        });
+      const loadedCats = [];
+      snapshot.forEach(doc => {
+        loadedCats.push({ id: doc.id, ...doc.data() });
+      });
+      if (loadedCats.length > 0) {
         loadedCats.sort((a, b) => (a.order !== undefined ? a.order : 999) - (b.order !== undefined ? b.order : 999));
         allCategories = loadedCats;
+        try {
+          localStorage.setItem('lc_catalog_cache_v4', JSON.stringify({ categories: allCategories, products: allProducts }));
+        } catch (e) {}
         renderCategoriesNav();
         renderMenu();
       }
@@ -431,6 +446,7 @@ export const CATEGORY_EMOJIS = {
 };
 
 export function getCategoryEmoji(cat) {
+  if (cat && cat.emoji) return cat.emoji;
   const slug = (cat.slug || cat.id || '').toLowerCase();
   if (CATEGORY_EMOJIS[slug]) return CATEGORY_EMOJIS[slug];
 
