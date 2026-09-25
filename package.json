@@ -14,7 +14,9 @@
     "deploy:rules": "npx -y firebase-tools deploy --only firestore:rules,storage"
   },
   "dependencies": {
-    "firebase": "^10.14.1"
+    "firebase": "^10.14.1",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^4.2.1"
   },
   "devDependencies": {
     "serve": "^14.2.3"

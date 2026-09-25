@@ -19,6 +19,7 @@ import {
 } from './firebase-init.js';
 import { checkAdminAuth, logoutAdmin } from './admin-auth.js';
 import { showToast } from './ui.js';
+import { initPhysicalMenuAdmin } from './physical-menu-editor.js';
 
 let restaurantId = 'la-curandera';
 let activeBranchId = 'metepec';
@@ -242,7 +243,7 @@ function switchView(viewName) {
     }
   });
 
-  const views = ['view-branches', 'view-menu-editor', 'view-settings'];
+  const views = ['view-branches', 'view-menu-editor', 'view-settings', 'view-physical-menu'];
   views.forEach(v => {
     const el = document.getElementById(v);
     if (el) el.style.display = 'none';
@@ -254,6 +255,7 @@ function switchView(viewName) {
   if (viewName === 'branches') renderBranchesList();
   if (viewName === 'menu-editor') renderMenuEditorTable();
   if (viewName === 'settings') loadRestaurantSettings();
+  if (viewName === 'physical-menu') initPhysicalMenuAdmin();
 }
 
 async function loadData() {

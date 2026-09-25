@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lacurandera-v2';
+const CACHE_NAME = 'lacurandera-v3';
 const PRECACHE_ASSETS = [
   './',
   './index.html',
@@ -7,11 +7,13 @@ const PRECACHE_ASSETS = [
   './css/base.css',
   './css/components.css',
   './css/menu.css',
+  './css/physical-menu.css',
   './js/i18n.js',
   './js/ui.js',
   './js/menu.js',
   './js/animations.js',
-  './assets/logo/logo.png'
+  './assets/logo/logo.png',
+  './assets/logo/curandera-emblem-lineart.png'
 ];
 
 self.addEventListener('install', (e) => {
