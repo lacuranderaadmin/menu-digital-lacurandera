@@ -741,13 +741,32 @@
 
 .footer-credits {
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: 0.78rem;
   color: var(--lc-arena);
+  line-height: 1.6;
 }
 
+.footer-credits a.creai-link,
 .footer-credits a {
-  color: var(--lc-turquesa);
-  font-weight: 700;
+  color: #00F0FF;
+  font-weight: 800;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1.5px;
+  text-decoration-color: rgba(0, 240, 255, 0.6);
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+  transition: all var(--transition-fast);
+  display: inline-block;
+}
+
+.footer-credits a.creai-link:hover,
+.footer-credits a:hover {
+  color: #FFFFFF;
+  background: rgba(0, 240, 255, 0.2);
+  text-decoration-color: #00F0FF;
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.4);
+  transform: translateY(-1px);
 }
 
 /* --------------------------------------------------------------------------

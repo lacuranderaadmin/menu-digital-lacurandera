@@ -115,7 +115,7 @@
     "viewReviews": "⭐ Écrire un Avis sur Google Maps",
     "directions": "📍 Comment venir (Ouvrir dans Google Maps)",
     "currencyNotice": "Tous les prix sont en Pesos Mexicains (MXN). Taxes incluses.",
-    "credits": "Menu digital artisanal conçu avec soin par CreAi Studios · La Curandera © 2026"
+    "credits": "Menu digital artisanal conçu avec soin par <a href=\"https://creaistudios.com/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"creai-link\" title=\"CreAI Studio | Automatización y Desarrollo con IA\">CreAi Studios</a> · La Curandera © 2026"
   },
   "status": {
     "offline": "Pas de connexion internet. Affichage du dernier menu enregistré.",

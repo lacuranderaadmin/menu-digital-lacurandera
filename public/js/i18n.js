@@ -137,6 +137,8 @@ export function applyStaticTranslations() {
     if (translation) {
       if (el.tagName === 'INPUT' && el.getAttribute('placeholder')) {
         el.setAttribute('placeholder', translation);
+      } else if (el.hasAttribute('data-i18n-html') || (typeof translation === 'string' && translation.includes('<a '))) {
+        el.innerHTML = translation;
       } else {
         el.textContent = translation;
       }
