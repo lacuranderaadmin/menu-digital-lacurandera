@@ -30,6 +30,10 @@ let allOverrides = {};
 let searchQuery = '';
 let currentMealMode = 'desayunos'; // 'desayunos' | 'comida'
 
+export function isDishLogo(url) {
+  return typeof url === 'string' && (url.includes('logo/logo.png') || url.endsWith('/logo.png') || url === 'assets/logo/logo.png' || url === '../assets/logo/logo.png');
+}
+
 export function setMealMode(mode, force = false) {
   const normalized = (mode === 'desayuno' || mode === 'desayunos') ? 'desayunos' : 'comida';
   const hasRenderedSections = document.getElementById('menu-sections-container')?.children.length > 0;
@@ -129,11 +133,16 @@ export async function initMenu() {
         if (event.data.products && Array.isArray(event.data.products)) {
           allProducts = event.data.products.map(p => {
             const current = allProducts.find(curr => curr.id === p.id);
+            const rawImg = p.imageUrl !== undefined ? p.imageUrl : current?.imageUrl;
+            const validImg = (rawImg && !isDishLogo(rawImg)) ? rawImg : null;
+            const rawFallback = p.imageFallback !== undefined ? p.imageFallback : current?.imageFallback;
+            const validFallback = (rawFallback && !isDishLogo(rawFallback)) ? rawFallback : null;
+            const validVideo = p.videoUrl || current?.videoUrl || null;
             return {
               ...p,
-              imageUrl: p.imageUrl || current?.imageUrl || null,
-              imageFallback: p.imageFallback || current?.imageFallback || null,
-              videoUrl: p.videoUrl || current?.videoUrl || null
+              imageUrl: validImg,
+              imageFallback: validFallback,
+              videoUrl: validVideo
             };
           });
         }
@@ -164,11 +173,16 @@ export async function initMenu() {
         if (data.products && Array.isArray(data.products)) {
           allProducts = data.products.map(p => {
             const current = allProducts.find(curr => curr.id === p.id);
+            const rawImg = p.imageUrl !== undefined ? p.imageUrl : current?.imageUrl;
+            const validImg = (rawImg && !isDishLogo(rawImg)) ? rawImg : null;
+            const rawFallback = p.imageFallback !== undefined ? p.imageFallback : current?.imageFallback;
+            const validFallback = (rawFallback && !isDishLogo(rawFallback)) ? rawFallback : null;
+            const validVideo = p.videoUrl || current?.videoUrl || null;
             return {
               ...p,
-              imageUrl: p.imageUrl || current?.imageUrl || null,
-              imageFallback: p.imageFallback || current?.imageFallback || null,
-              videoUrl: p.videoUrl || current?.videoUrl || null
+              imageUrl: validImg,
+              imageFallback: validFallback,
+              videoUrl: validVideo
             };
           });
         }
@@ -245,14 +259,23 @@ function setupRealtimeListeners() {
         snapshot.forEach(doc => {
           const docData = doc.data();
           const localMatch = allProducts.find(p => p.id === doc.id);
-          const effectiveImageUrl = docData.imageUrl || (localMatch && localMatch.imageUrl) || null;
-          const effectiveFallback = docData.imageFallback || (localMatch && localMatch.imageFallback) || null;
+          const rawImg = (docData.imageUrl !== undefined && docData.imageUrl !== null) 
+            ? docData.imageUrl 
+            : (localMatch && localMatch.imageUrl);
+          const effectiveImageUrl = (rawImg && !isDishLogo(rawImg)) ? rawImg : null;
+
+          const rawFallback = (docData.imageFallback !== undefined && docData.imageFallback !== null)
+            ? docData.imageFallback
+            : (localMatch && localMatch.imageFallback);
+          const effectiveFallback = (rawFallback && !isDishLogo(rawFallback)) ? rawFallback : null;
+
           const effectiveVideoUrl = docData.videoUrl || (localMatch && localMatch.videoUrl) || null;
           loadedProds.push({ 
             id: doc.id, 
             ...docData,
-            ...(effectiveImageUrl ? { imageUrl: effectiveImageUrl, imageFallback: effectiveFallback } : {}),
-            ...(effectiveVideoUrl ? { videoUrl: effectiveVideoUrl } : {})
+            imageUrl: effectiveImageUrl,
+            imageFallback: effectiveFallback,
+            videoUrl: effectiveVideoUrl
           });
         });
         loadedProds.sort((a, b) => (a.order !== undefined ? a.order : 999) - (b.order !== undefined ? b.order : 999));
@@ -862,7 +885,7 @@ export function renderMenu() {
       const productAllergens = (override && override.allergens) ? override.allergens : (product.allergens || []);
       const productTags = (override && override.tags) ? override.tags : (product.tags || []);
 
-      const hasImage = Boolean(product.imageUrl);
+      const hasImage = Boolean(product.imageUrl && !isDishLogo(product.imageUrl));
       const hasVideo = Boolean(product.videoUrl);
       const card = document.createElement('article');
       card.className = `product-card ${!isAvailable ? 'is-sold-out' : ''} ${hasImage ? 'has-dish-image' : 'no-dish-image'} ${hasVideo ? 'has-dish-video' : ''}`;

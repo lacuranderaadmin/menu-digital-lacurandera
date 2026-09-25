@@ -366,7 +366,9 @@ export function openProductModal(product) {
     }
     if (imgEl) {
       imgEl.style.display = 'block';
-      if (product.imageUrl) {
+      const isLogo = (url) => typeof url === 'string' && (url.includes('logo/logo.png') || url.endsWith('/logo.png') || url === 'assets/logo/logo.png' || url === '../assets/logo/logo.png');
+      const hasRealImg = Boolean(product.imageUrl && !isLogo(product.imageUrl));
+      if (hasRealImg) {
         imgEl.alt = title;
         imgEl.onerror = function() {
           this.onerror = function() {
@@ -374,7 +376,7 @@ export function openProductModal(product) {
             this.src = 'assets/logo/logo.png';
             if (mediaWrapper) mediaWrapper.classList.remove('has-dish-photo', 'has-modal-video');
           };
-          if (product.imageFallback) {
+          if (product.imageFallback && !isLogo(product.imageFallback)) {
             this.src = product.imageFallback;
           } else {
             this.src = 'assets/logo/logo.png';

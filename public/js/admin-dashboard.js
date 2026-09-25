@@ -1241,6 +1241,13 @@ async function handleProductSave(form) {
   try {
     const isNew = !id;
     const productId = isNew ? ('prod_' + Date.now()) : id;
+    const existing = !isNew ? products.find(p => p.id === productId) : null;
+
+    // Solo conservar imagen/video si el platillo ya contaba con multimedia propia y no el logo por defecto
+    const isLogoImage = (url) => typeof url === 'string' && (url.includes('logo/logo.png') || url.endsWith('/logo.png') || url === 'assets/logo/logo.png');
+    const existingImageUrl = (existing && existing.imageUrl && !isLogoImage(existing.imageUrl)) ? existing.imageUrl : null;
+    const existingImageFallback = (existing && existing.imageFallback && !isLogoImage(existing.imageFallback)) ? existing.imageFallback : null;
+    const existingVideoUrl = (existing && existing.videoUrl) ? existing.videoUrl : null;
 
     const productData = {
       id: productId,
@@ -1257,9 +1264,14 @@ async function handleProductSave(form) {
       promoTag: promoTag,
       allergens: allergens,
       tags: tags,
-      imageUrl: '../assets/logo/logo.png',
+      imageUrl: existingImageUrl,
+      imageFallback: existingImageFallback,
+      videoUrl: existingVideoUrl,
       updatedAt: serverTimestamp()
     };
+    if (existing && existing.order !== undefined) {
+      productData.order = existing.order;
+    }
 
     if (isConfigured && db) {
       await setDoc(doc(db, `restaurants/${restaurantId}/products/${productId}`), productData, { merge: true });
