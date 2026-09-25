@@ -84,6 +84,43 @@
   box-shadow: 2px 2px 0px rgba(0,0,0,0.4);
 }
 
+.physical-design-selector {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 0.3rem;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.physical-design-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.9rem;
+  border-radius: var(--radius-sm);
+  border: none;
+  background: transparent;
+  color: var(--lc-crema);
+  font-family: var(--font-title);
+  font-weight: 800;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.physical-design-btn:hover {
+  color: var(--lc-blanco);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.physical-design-btn.active {
+  background: var(--lc-turquesa);
+  color: var(--lc-negro);
+  box-shadow: 2px 2px 0px rgba(0,0,0,0.4);
+}
+
 .physical-top-actions {
   display: flex;
   align-items: center;

@@ -1,0 +1,1677 @@
+[
+  {
+    "pageNumber": 1,
+    "width": 816,
+    "height": 1056,
+    "bgColor": "#FDF6EC",
+    "hasEmblem": true,
+    "items": [
+      {
+        "id": "des_dig_p1_badge",
+        "x": 80,
+        "y": 65,
+        "text": "✦ CARTA FÍSICA · EDICIÓN MENÚ DIGITAL ✦",
+        "fontSize": 11,
+        "fontFamily": "Gotham-Bold",
+        "color": "#E87850",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p1_brand",
+        "x": 80,
+        "y": 115,
+        "text": "LA CURANDERA",
+        "fontSize": 54,
+        "fontFamily": "Hansief",
+        "color": "#C94E8F",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p1_subtitle",
+        "x": 82,
+        "y": 185,
+        "text": "COCINA TRADICIONAL & REMEDIOS DEL ALMA",
+        "fontSize": 14,
+        "fontFamily": "Gotham-Bold",
+        "color": "#159F9B",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p1_type",
+        "x": 82,
+        "y": 215,
+        "text": "MENÚ DE DESAYUNOS Y JUGUERÍA ARTESANAL",
+        "fontSize": 12,
+        "fontFamily": "Montserrat",
+        "color": "#2C2621",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p1_sep1",
+        "x": 82,
+        "y": 250,
+        "text": "═════════════════════════════════════════════════",
+        "fontSize": 12,
+        "fontFamily": "JetBrains Mono",
+        "color": "#E87850",
+        "bold": false
+      },
+      {
+        "id": "des_dig_p1_hist_title",
+        "x": 82,
+        "y": 300,
+        "text": "EL AUTÉNTICO SABOR DE NUESTRAS RAÍCES",
+        "fontSize": 18,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p1_hist_p1",
+        "x": 82,
+        "y": 345,
+        "text": "La Curandera nace de un sueño entre mi esposa y yo:\ncrear un lugar donde pudiéramos reunir todo lo que nos\ninspiraba en ese momento de la vida: la generosidad de la\ncocina tradicional, el amor a la tierra y el calor del hogar.",
+        "fontSize": 12,
+        "fontFamily": "Montserrat",
+        "color": "#2C2621",
+        "bold": false
+      },
+      {
+        "id": "des_dig_p1_hist_p2",
+        "x": 82,
+        "y": 440,
+        "text": "Durante la búsqueda del nombre encontramos una coincidencia muy\nespecial: en mi familia, mi bisabuela era la curandera del pueblo,\nde esas mujeres que con hierbas, pócimas y remedios caseros\nlograban hacerte sentir mejor el cuerpo y el espíritu.",
+        "fontSize": 12,
+        "fontFamily": "Montserrat",
+        "color": "#2C2621",
+        "bold": false
+      },
+      {
+        "id": "des_dig_p1_hist_p3",
+        "x": 82,
+        "y": 535,
+        "text": "Así adoptamos este nombre, como un homenaje sincero a esos\npersonajes místicos y a las tradiciones ancestrales que viven en\nnuestro México.",
+        "fontSize": 12,
+        "fontFamily": "Montserrat",
+        "color": "#2C2621",
+        "bold": false
+      },
+      {
+        "id": "des_dig_p1_pillars_title",
+        "x": 82,
+        "y": 630,
+        "text": "✦ NUESTROS COMPROMISOS CON TU MESA ✦",
+        "fontSize": 13,
+        "fontFamily": "Gotham-Bold",
+        "color": "#159F9B",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p1_pil_1",
+        "x": 82,
+        "y": 665,
+        "text": "✓ Carne 100% libre de clembuterol y de proveedores certificados",
+        "fontSize": 11.5,
+        "fontFamily": "Montserrat",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p1_pil_2",
+        "x": 82,
+        "y": 698,
+        "text": "✓ Pan de masa madre artesanal en la mayoría de nuestros platillos",
+        "fontSize": 11.5,
+        "fontFamily": "Montserrat",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p1_pil_3",
+        "x": 82,
+        "y": 731,
+        "text": "✓ Frutas, hortalizas y vegetales 100% frescos de la región",
+        "fontSize": 11.5,
+        "fontFamily": "Montserrat",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p1_pil_4",
+        "x": 82,
+        "y": 764,
+        "text": "✓ Frijoles de la olla refritos a diario y tortillas hechas a mano",
+        "fontSize": 11.5,
+        "fontFamily": "Montserrat",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p1_sep2",
+        "x": 82,
+        "y": 810,
+        "text": "─────────────────────────────────────────────────",
+        "fontSize": 12,
+        "fontFamily": "JetBrains Mono",
+        "color": "#CCAD93",
+        "bold": false
+      },
+      {
+        "id": "des_dig_p1_welcome",
+        "x": 82,
+        "y": 845,
+        "text": "Bienvenido siempre a tu casa, LA CURANDERA.\nArq. Arturo Garduño y Familia",
+        "fontSize": 13,
+        "fontFamily": "Gotham-Bold",
+        "color": "#C94E8F",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p1_loc",
+        "x": 82,
+        "y": 910,
+        "text": "Tenancingo, Estado de México · Desayunos a partir de las 8:30 AM",
+        "fontSize": 11,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "des_dig_p1_footer",
+        "x": 82,
+        "y": 970,
+        "text": "LA CURANDERA  ·  COCINA MEXICANA  ·  HOJA 1 DE 5",
+        "fontSize": 10,
+        "fontFamily": "JetBrains Mono",
+        "color": "#9E8E81",
+        "bold": true
+      }
+    ]
+  },
+  {
+    "pageNumber": 2,
+    "width": 816,
+    "height": 1056,
+    "bgColor": "#FDF6EC",
+    "hasEmblem": false,
+    "items": [
+      {
+        "id": "des_dig_p2_hdr_brand",
+        "x": 55,
+        "y": 45,
+        "text": "LA CURANDERA",
+        "fontSize": 22,
+        "fontFamily": "Hansief",
+        "color": "#C94E8F",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p2_hdr_tag",
+        "x": 230,
+        "y": 50,
+        "text": "DESAYUNOS · PA' CURAR EL ALMA",
+        "fontSize": 10.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#159F9B",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p2_hdr_pnum",
+        "x": 685,
+        "y": 50,
+        "text": "HOJA 2 DE 5",
+        "fontSize": 10,
+        "fontFamily": "JetBrains Mono",
+        "color": "#6D6258",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p2_cat_title",
+        "x": 55,
+        "y": 85,
+        "text": "☀️ PA' CURAR EL ALMA",
+        "fontSize": 21,
+        "fontFamily": "Gotham-Bold",
+        "color": "#C94E8F",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p2_cat_sub",
+        "x": 55,
+        "y": 115,
+        "text": "Huevos preparados al momento con ingredientes frescos, servidos con frijoles refritos y totopos.",
+        "fontSize": 10.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "des_dig_p2_item_0_title",
+        "x": 55,
+        "y": 150,
+        "text": "Huevos revueltos a la mexicana  ·  $180",
+        "fontSize": 12.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p2_item_0_desc",
+        "x": 55,
+        "y": 168,
+        "text": "Con jitomate, cebolla y chile serrano. Servidos con frijoles refritos y totopos crujientes.",
+        "fontSize": 9.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "des_dig_p2_item_1_title",
+        "x": 55,
+        "y": 220,
+        "text": "Huevos revueltos con salchicha  ·  $180",
+        "fontSize": 12.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p2_item_1_desc",
+        "x": 55,
+        "y": 238,
+        "text": "Huevos revueltos con salchicha, servidos con frijoles refritos y totopos.",
+        "fontSize": 9.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "des_dig_p2_item_2_title",
+        "x": 55,
+        "y": 290,
+        "text": "Huevos revueltos con jamón  ·  $180",
+        "fontSize": 12.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p2_item_2_desc",
+        "x": 55,
+        "y": 308,
+        "text": "Con jamón seleccionado, servidos con frijoles refritos y totopos.",
+        "fontSize": 9.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "des_dig_p2_item_3_title",
+        "x": 55,
+        "y": 360,
+        "text": "Huevos revueltos con longaniza  ·  $180",
+        "fontSize": 12.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p2_item_3_desc",
+        "x": 55,
+        "y": 378,
+        "text": "Con longaniza artesanal de la región, servidos con frijoles refritos y totopos.",
+        "fontSize": 9.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "des_dig_p2_item_4_title",
+        "x": 55,
+        "y": 430,
+        "text": "Huevos rancheros  ·  $185",
+        "fontSize": 12.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p2_item_4_desc",
+        "x": 55,
+        "y": 448,
+        "text": "2 huevos estrellados sobre tortilla de maíz, bañados en auténtica salsa de jitomate.",
+        "fontSize": 9.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "des_dig_p2_item_5_title",
+        "x": 55,
+        "y": 500,
+        "text": "Huevos divorciados  ·  $210",
+        "fontSize": 12.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p2_item_5_desc",
+        "x": 55,
+        "y": 518,
+        "text": "2 huevos estrellados montados sobre tortillas, uno en salsa verde y otro en salsa roja.",
+        "fontSize": 9.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "des_dig_p2_item_6_title",
+        "x": 55,
+        "y": 570,
+        "text": "Huevos norteños  ·  $195",
+        "fontSize": 12.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p2_item_6_desc",
+        "x": 55,
+        "y": 588,
+        "text": "Revueltos con trozos de tortilla frita dorada, chile, cebolla y salsa de jitomate.",
+        "fontSize": 9.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "des_dig_p2_item_7_title",
+        "x": 425,
+        "y": 150,
+        "text": "Omelette de rajas poblanas con elote  ·  $205",
+        "fontSize": 12.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p2_item_7_desc",
+        "x": 425,
+        "y": 168,
+        "text": "Servido con frijoles refritos y totopos.",
+        "fontSize": 9.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "des_dig_p2_item_8_title",
+        "x": 425,
+        "y": 220,
+        "text": "Omelette de jamón y queso  ·  $210",
+        "fontSize": 12.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p2_item_8_desc",
+        "x": 425,
+        "y": 238,
+        "text": "Con queso fundido y jamón de pavo. Servido con frijoles refritos y totopos.",
+        "fontSize": 9.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "des_dig_p2_item_9_title",
+        "x": 425,
+        "y": 290,
+        "text": "Omelette de champiñón con queso  ·  $185",
+        "fontSize": 12.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p2_item_9_desc",
+        "x": 425,
+        "y": 308,
+        "text": "Champiñones salteados y queso fundido. Con frijoles refritos y totopos.",
+        "fontSize": 9.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "des_dig_p2_item_10_title",
+        "x": 425,
+        "y": 360,
+        "text": "Molletes clásicos  ·  $185",
+        "fontSize": 12.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p2_item_10_desc",
+        "x": 425,
+        "y": 378,
+        "text": "Bolillo tostado con frijoles refritos, queso manchego fundido y pico de gallo fresco.",
+        "fontSize": 9.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "des_dig_p2_item_11_title",
+        "x": 425,
+        "y": 430,
+        "text": "Molletes con longaniza  ·  $210",
+        "fontSize": 12.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p2_item_11_desc",
+        "x": 425,
+        "y": 448,
+        "text": "Bolillo con frijoles, queso fundido, longaniza bien doradita y pico de gallo.",
+        "fontSize": 9.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "des_dig_p2_item_12_title",
+        "x": 425,
+        "y": 500,
+        "text": "Mollepizza  ·  $210",
+        "fontSize": 12.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p2_item_12_desc",
+        "x": 425,
+        "y": 518,
+        "text": "Base de salsa de tomate especiada con pepperoni y queso fundido sobre bolillo.",
+        "fontSize": 9.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "des_dig_p2_ftr_note",
+        "x": 55,
+        "y": 990,
+        "text": "✦ Todos nuestros huevos son de rancho y se preparan al momento con aceite limpio de maíz.",
+        "fontSize": 9.5,
+        "fontFamily": "Montserrat",
+        "color": "#E87850",
+        "bold": true
+      }
+    ]
+  },
+  {
+    "pageNumber": 3,
+    "width": 816,
+    "height": 1056,
+    "bgColor": "#FDF6EC",
+    "hasEmblem": false,
+    "items": [
+      {
+        "id": "des_dig_p3_hdr_brand",
+        "x": 55,
+        "y": 45,
+        "text": "LA CURANDERA",
+        "fontSize": 22,
+        "fontFamily": "Hansief",
+        "color": "#C94E8F",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p3_hdr_tag",
+        "x": 230,
+        "y": 50,
+        "text": "DESAYUNOS · ENCHILADAS & CHILAQUILES",
+        "fontSize": 10.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#159F9B",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p3_hdr_pnum",
+        "x": 685,
+        "y": 50,
+        "text": "HOJA 3 DE 5",
+        "fontSize": 10,
+        "fontFamily": "JetBrains Mono",
+        "color": "#6D6258",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p3_cat1_title",
+        "x": 55,
+        "y": 85,
+        "text": "🌶️ LO ENCHI-LOSO (ENCHILADAS & CHILAQUILES)",
+        "fontSize": 20,
+        "fontFamily": "Gotham-Bold",
+        "color": "#C94E8F",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p3_cat1_sub",
+        "x": 55,
+        "y": 115,
+        "text": "Elige tu proteína: Pollo deshebrado, Longaniza artesanal, Bistec tierno o Arrachera marinada.",
+        "fontSize": 10.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "des_dig_p3_ench_0_title",
+        "x": 55,
+        "y": 150,
+        "text": "Enchiladas tradicionales  ·  $180",
+        "fontSize": 12.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p3_ench_0_desc",
+        "x": 55,
+        "y": 168,
+        "text": "3 piezas bañadas en auténtica salsa verde de la casa, rellenas de pollo, longaniza o bistec.",
+        "fontSize": 9.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "des_dig_p3_ench_1_title",
+        "x": 55,
+        "y": 222,
+        "text": "Enchiladas La Curandera  ·  $210",
+        "fontSize": 12.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p3_ench_1_desc",
+        "x": 55,
+        "y": 240,
+        "text": "3 piezas bañadas en nuestra salsa especial roja secreta, rellenas de arrachera tierna.",
+        "fontSize": 9.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "des_dig_p3_ench_2_title",
+        "x": 55,
+        "y": 294,
+        "text": "Enchiladas suizas  ·  $195",
+        "fontSize": 12.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p3_ench_2_desc",
+        "x": 55,
+        "y": 312,
+        "text": "3 piezas en salsa auténtica suiza cremosa, gratinadas con queso manchego, con pollo, longaniza o bistec.",
+        "fontSize": 9.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "des_dig_p3_ench_3_title",
+        "x": 55,
+        "y": 366,
+        "text": "Enchiladas Yucas  ·  $205",
+        "fontSize": 12.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p3_ench_3_desc",
+        "x": 55,
+        "y": 384,
+        "text": "3 piezas en salsa verde auténtica rellenas de cochinita pibil, cebolla morada encurtida, queso y crema.",
+        "fontSize": 9.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "des_dig_p3_ench_4_title",
+        "x": 55,
+        "y": 438,
+        "text": "Enchiladas del Patrón  ·  $210",
+        "fontSize": 12.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p3_ench_4_desc",
+        "x": 55,
+        "y": 456,
+        "text": "3 piezas bañadas en nuestra auténtica salsa verde rellenas de jugosa arrachera.",
+        "fontSize": 9.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "des_dig_p3_ench_5_title",
+        "x": 425,
+        "y": 150,
+        "text": "Chilaquiles tradicionales  ·  $185",
+        "fontSize": 12.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p3_ench_5_desc",
+        "x": 425,
+        "y": 168,
+        "text": "Totopos crocantes bañados en salsa verde con crema, queso fresco, y pollo, longaniza o bistec.",
+        "fontSize": 9.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "des_dig_p3_ench_6_title",
+        "x": 425,
+        "y": 222,
+        "text": "Chilaquiles La Curandera  ·  $210",
+        "fontSize": 12.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p3_ench_6_desc",
+        "x": 425,
+        "y": 240,
+        "text": "Totopos bañados en nuestra salsa roja auténtica acompañados de arrachera.",
+        "fontSize": 9.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "des_dig_p3_ench_7_title",
+        "x": 425,
+        "y": 294,
+        "text": "Chilaquiles del Patrón  ·  $210",
+        "fontSize": 12.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p3_ench_7_desc",
+        "x": 425,
+        "y": 312,
+        "text": "Totopos bañados en auténtica salsa verde acompañados de arrachera.",
+        "fontSize": 9.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "des_dig_p3_ench_8_title",
+        "x": 425,
+        "y": 366,
+        "text": "Enfrijoladas de pollo  ·  $185",
+        "fontSize": 12.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p3_ench_8_desc",
+        "x": 425,
+        "y": 384,
+        "text": "3 tortillas bañadas en suave salsa de frijol negro, rellenas de pollo y cubiertas con crema y queso.",
+        "fontSize": 9.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "des_dig_p3_cat2_title",
+        "x": 55,
+        "y": 540,
+        "text": "🌮 TACOS DORADOS (ORDEN DE 3 PZAS)",
+        "fontSize": 19,
+        "fontFamily": "Gotham-Bold",
+        "color": "#159F9B",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p3_cat2_sub",
+        "x": 55,
+        "y": 568,
+        "text": "Acompañados de lechuga fresca, queso de rancho, crema artesanal y salsa verde o roja.",
+        "fontSize": 10.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "des_dig_p3_taco_0_title",
+        "x": 55,
+        "y": 605,
+        "text": "Tacos dorados de pollo  ·  $140",
+        "fontSize": 12.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p3_taco_0_desc",
+        "x": 55,
+        "y": 623,
+        "text": "3 piezas crujientes acompañadas de lechuga fresca, queso de rancho y crema.",
+        "fontSize": 9.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "des_dig_p3_taco_1_title",
+        "x": 55,
+        "y": 677,
+        "text": "Tacos dorados de frijol con pollo  ·  $150",
+        "fontSize": 12.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p3_taco_1_desc",
+        "x": 55,
+        "y": 695,
+        "text": "3 piezas doraditas rellenas de frijol y pollo, con lechuga, queso y crema.",
+        "fontSize": 9.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "des_dig_p3_taco_2_title",
+        "x": 425,
+        "y": 605,
+        "text": "Tacos dorados de frijol con queso manchego  ·  $150",
+        "fontSize": 12.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p3_taco_2_desc",
+        "x": 425,
+        "y": 623,
+        "text": "3 piezas con frijol y queso manchego derretido, lechuga, queso y crema.",
+        "fontSize": 9.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "des_dig_p3_taco_3_title",
+        "x": 425,
+        "y": 677,
+        "text": "Tacos dorados Obispo  ·  $160",
+        "fontSize": 12.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p3_taco_3_desc",
+        "x": 425,
+        "y": 695,
+        "text": "3 piezas rellenas del auténtico y tradicional obispo de Tenancingo.",
+        "fontSize": 9.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "des_dig_p3_callout",
+        "x": 55,
+        "y": 780,
+        "text": "✦ ESPECIALIDAD LOCAL: TACOS DORADOS DE OBISPO\nElaborados con el emblemático obispo artesanal de Tenancingo, Estado de México.",
+        "fontSize": 11,
+        "fontFamily": "Gotham-Bold",
+        "color": "#E87850",
+        "bold": true
+      }
+    ]
+  },
+  {
+    "pageNumber": 4,
+    "width": 816,
+    "height": 1056,
+    "bgColor": "#FDF6EC",
+    "hasEmblem": false,
+    "items": [
+      {
+        "id": "des_dig_p4_hdr_brand",
+        "x": 55,
+        "y": 45,
+        "text": "LA CURANDERA",
+        "fontSize": 22,
+        "fontFamily": "Hansief",
+        "color": "#C94E8F",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p4_hdr_tag",
+        "x": 230,
+        "y": 50,
+        "text": "DESAYUNOS · CALDOS, SÁNDWICHES & PEQUES",
+        "fontSize": 10.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#159F9B",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p4_hdr_pnum",
+        "x": 685,
+        "y": 50,
+        "text": "HOJA 4 DE 5",
+        "fontSize": 10,
+        "fontFamily": "JetBrains Mono",
+        "color": "#6D6258",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p4_cat1_title",
+        "x": 55,
+        "y": 90,
+        "text": "🥣 PA' CALDEAR (CALDOS RECONFORTANTES)",
+        "fontSize": 19,
+        "fontFamily": "Gotham-Bold",
+        "color": "#E87850",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p4_cat1_sub",
+        "x": 55,
+        "y": 118,
+        "text": "Caldos calientes hechos a fuego lento, ideales para reconfortar el espíritu matutino.",
+        "fontSize": 10.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "des_dig_p4_caldo_0_title",
+        "x": 55,
+        "y": 150,
+        "text": "Caldo rojo  ·  $85",
+        "fontSize": 12.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p4_caldo_0_desc",
+        "x": 55,
+        "y": 168,
+        "text": "Caldo tradicional de chiles secos con verdura, menudencia y pollo tierno.",
+        "fontSize": 9.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "des_dig_p4_caldo_1_title",
+        "x": 55,
+        "y": 225,
+        "text": "Pancita o Menudo  ·  $130",
+        "fontSize": 12.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p4_caldo_1_desc",
+        "x": 55,
+        "y": 243,
+        "text": "(Sábado, domingo y lunes) Caldo de guajillo especiado con aguacate y bolillito crujiente.",
+        "fontSize": 9.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "des_dig_p4_cat2_title",
+        "x": 55,
+        "y": 330,
+        "text": "🥪 SÁNDWICH Y ALGO MÁS (PAN DE MASA MADRE)",
+        "fontSize": 19,
+        "fontFamily": "Gotham-Bold",
+        "color": "#159F9B",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p4_cat2_sub",
+        "x": 55,
+        "y": 358,
+        "text": "Servidos con papas a la francesa o ensalada de la casa con aderezos artesanales.",
+        "fontSize": 10.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "des_dig_p4_sand_0_title",
+        "x": 55,
+        "y": 390,
+        "text": "Club sándwich  ·  $130",
+        "fontSize": 12.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p4_sand_0_desc",
+        "x": 55,
+        "y": 408,
+        "text": "Pan tostado con jamón de pavo, queso, aderezo chipotle cremoso y verduras, acompañado de papas a la francesa.",
+        "fontSize": 9.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "des_dig_p4_sand_1_title",
+        "x": 55,
+        "y": 465,
+        "text": "Club sándwich de pollo  ·  $150",
+        "fontSize": 12.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p4_sand_1_desc",
+        "x": 55,
+        "y": 483,
+        "text": "Pan tostado con pechuga de pollo, queso, aderezo chipotle cremoso y verduras, con papas a la francesa.",
+        "fontSize": 9.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "des_dig_p4_sand_2_title",
+        "x": 55,
+        "y": 540,
+        "text": "Toast de aguacate con huevo  ·  $150",
+        "fontSize": 12.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p4_sand_2_desc",
+        "x": 55,
+        "y": 558,
+        "text": "2 piezas de pan masa madre tostado con aguacate fresco, huevos pochados y un toque de salsa macha.",
+        "fontSize": 9.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "des_dig_p4_cat3_title",
+        "x": 55,
+        "y": 650,
+        "text": "⭐ PA' LOS MÁS PEQUES (MENÚ INFANTIL)",
+        "fontSize": 19,
+        "fontFamily": "Gotham-Bold",
+        "color": "#C94E8F",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p4_cat3_sub",
+        "x": 55,
+        "y": 678,
+        "text": "Platillos deliciosos pensados para consentir a los niños, con su lechita de sabor incluida.",
+        "fontSize": 10.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "des_dig_p4_peque_0_title",
+        "x": 55,
+        "y": 710,
+        "text": "Calate  ·  $130",
+        "fontSize": 12.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p4_peque_0_desc",
+        "x": 55,
+        "y": 728,
+        "text": "2 mini hotcakes esponjosos + 1 lechita (chocolate, fresa o vainilla) + 1 huevito revuelto.",
+        "fontSize": 9.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "des_dig_p4_peque_1_title",
+        "x": 55,
+        "y": 785,
+        "text": "Chilpayate  ·  $85",
+        "fontSize": 12.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p4_peque_1_desc",
+        "x": 55,
+        "y": 803,
+        "text": "½ mollete sencillo con pico de gallo + 1 lechita (chocolate, fresa o vainilla).",
+        "fontSize": 9.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "des_dig_p4_quality",
+        "x": 55,
+        "y": 890,
+        "text": "✦ Todos nuestros panes son horneados artesanalmente y fermentados lentamente con masa madre.",
+        "fontSize": 10.5,
+        "fontFamily": "Montserrat",
+        "color": "#E87850",
+        "bold": true
+      }
+    ]
+  },
+  {
+    "pageNumber": 5,
+    "width": 816,
+    "height": 1056,
+    "bgColor": "#FDF6EC",
+    "hasEmblem": false,
+    "items": [
+      {
+        "id": "des_dig_p5_hdr_brand",
+        "x": 55,
+        "y": 45,
+        "text": "LA CURANDERA",
+        "fontSize": 22,
+        "fontFamily": "Hansief",
+        "color": "#C94E8F",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p5_hdr_tag",
+        "x": 230,
+        "y": 50,
+        "text": "DESAYUNOS · DULCE REMEDIO, JUGUERÍA & CAFÉ",
+        "fontSize": 10.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#159F9B",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p5_hdr_pnum",
+        "x": 685,
+        "y": 50,
+        "text": "HOJA 5 DE 5",
+        "fontSize": 10,
+        "fontFamily": "JetBrains Mono",
+        "color": "#6D6258",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p5_col1_title1",
+        "x": 55,
+        "y": 85,
+        "text": "🧁 DULCE REMEDIO",
+        "fontSize": 18,
+        "fontFamily": "Gotham-Bold",
+        "color": "#C94E8F",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p5_col1_sub1",
+        "x": 55,
+        "y": 110,
+        "text": "Hotcakes, pan francés artesanal y repostería casera.",
+        "fontSize": 10,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "des_dig_p5_postre_0_title",
+        "x": 55,
+        "y": 135,
+        "text": "Strudel de manzana  ·  $60",
+        "fontSize": 11.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p5_postre_0_desc",
+        "x": 55,
+        "y": 151,
+        "text": "Hojaldre dorado crujiente relleno de manzana especiada con canela.",
+        "fontSize": 9,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "des_dig_p5_postre_1_title",
+        "x": 55,
+        "y": 193,
+        "text": "Cheesecake  ·  $60",
+        "fontSize": 11.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p5_postre_1_desc",
+        "x": 55,
+        "y": 209,
+        "text": "Cremoso pastel de queso. Elige tu topping: fresa, zarzamora, frambuesa o guayaba.",
+        "fontSize": 9,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "des_dig_p5_postre_2_title",
+        "x": 55,
+        "y": 251,
+        "text": "Helado artesanal  ·  $55",
+        "fontSize": 11.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p5_postre_2_desc",
+        "x": 55,
+        "y": 267,
+        "text": "Vainilla, chocolate o fresa natural.",
+        "fontSize": 9,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "des_dig_p5_postre_3_title",
+        "x": 55,
+        "y": 309,
+        "text": "Malteadas cremosas  ·  $70",
+        "fontSize": 11.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p5_postre_3_desc",
+        "x": 55,
+        "y": 325,
+        "text": "Preparadas al momento: Vainilla, chocolate, fresa o café.",
+        "fontSize": 9,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "des_dig_p5_postre_4_title",
+        "x": 55,
+        "y": 367,
+        "text": "Hotcakes La Curandera (3 pzas)  ·  $120",
+        "fontSize": 11.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p5_postre_4_desc",
+        "x": 55,
+        "y": 383,
+        "text": "3 piezas con fresas frescas y topping: lechera, nutella, mermelada de guayaba de la casa o miel de agave. (Clásico $90 / Relleno $99).",
+        "fontSize": 9,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "des_dig_p5_postre_5_title",
+        "x": 55,
+        "y": 425,
+        "text": "Pan francés (2 pzas)  ·  $99",
+        "fontSize": 11.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p5_postre_5_desc",
+        "x": 55,
+        "y": 441,
+        "text": "Pan remojado en leche y huevo con azúcar, canela y fresas. Clásico $80 / Relleno de frutos rojos y queso crema $99.",
+        "fontSize": 9,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "des_dig_p5_col1_title2",
+        "x": 55,
+        "y": 498,
+        "text": "☕ PA' CALENTAR EL ESPÍRITU",
+        "fontSize": 18,
+        "fontFamily": "Gotham-Bold",
+        "color": "#E87850",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p5_col1_sub2",
+        "x": 55,
+        "y": 523,
+        "text": "Café de grano mexicano, chocolate de metate y especialidades.",
+        "fontSize": 10,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "des_dig_p5_cafe_0_title",
+        "x": 55,
+        "y": 548,
+        "text": "Chocolate tradicional lechero  ·  $45",
+        "fontSize": 11.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p5_cafe_0_desc",
+        "x": 55,
+        "y": 564,
+        "text": "Batido a mano con molinillo tradicional de madera.",
+        "fontSize": 9,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "des_dig_p5_cafe_1_title",
+        "x": 55,
+        "y": 603,
+        "text": "Café con leche (Lechero)  ·  $55",
+        "fontSize": 11.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p5_cafe_1_desc",
+        "x": 55,
+        "y": 619,
+        "text": "Café aromático vertido con leche caliente espumosa.",
+        "fontSize": 9,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "des_dig_p5_cafe_2_title",
+        "x": 55,
+        "y": 658,
+        "text": "Capuchino clásico  ·  $50",
+        "fontSize": 11.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p5_cafe_2_desc",
+        "x": 55,
+        "y": 674,
+        "text": "Espresso italiano con abundante crema de leche.",
+        "fontSize": 9,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "des_dig_p5_cafe_3_title",
+        "x": 55,
+        "y": 713,
+        "text": "Café de olla  ·  $45",
+        "fontSize": 11.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p5_cafe_3_desc",
+        "x": 55,
+        "y": 729,
+        "text": "Hervido en barro con piloncillo, canela en raja y especias de la curandera.",
+        "fontSize": 9,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "des_dig_p5_cafe_4_title",
+        "x": 55,
+        "y": 768,
+        "text": "Café americano  ·  $45",
+        "fontSize": 11.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p5_cafe_4_desc",
+        "x": 55,
+        "y": 784,
+        "text": "Grano seleccionado 100% mexicano tostado medio.",
+        "fontSize": 9,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "des_dig_p5_col2_title1",
+        "x": 425,
+        "y": 85,
+        "text": "🍊 JUGUERÍA LA CURANDERA",
+        "fontSize": 18,
+        "fontFamily": "Gotham-Bold",
+        "color": "#159F9B",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p5_col2_sub1",
+        "x": 425,
+        "y": 110,
+        "text": "Jugos naturales recién exprimidos con frutas frescas locales.",
+        "fontSize": 10,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "des_dig_p5_jugo_0_title",
+        "x": 425,
+        "y": 135,
+        "text": "Jugo de naranja clásico  ·  $40",
+        "fontSize": 11.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p5_jugo_0_desc",
+        "x": 425,
+        "y": 151,
+        "text": "100% natural, recién exprimido al momento.",
+        "fontSize": 9,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "des_dig_p5_jugo_1_title",
+        "x": 425,
+        "y": 193,
+        "text": "Jugo Rojo Amor  ·  $45",
+        "fontSize": 11.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p5_jugo_1_desc",
+        "x": 425,
+        "y": 209,
+        "text": "Naranja natural combinada con frutos rojos frescos.",
+        "fontSize": 9,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "des_dig_p5_jugo_2_title",
+        "x": 425,
+        "y": 251,
+        "text": "Jugo Pura Vitamina C  ·  $45",
+        "fontSize": 11.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p5_jugo_2_desc",
+        "x": 425,
+        "y": 267,
+        "text": "Naranja, piña, guayaba fresca y miel de abeja pura.",
+        "fontSize": 9,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "des_dig_p5_jugo_3_title",
+        "x": 425,
+        "y": 309,
+        "text": "Jugo Verde Nopal  ·  $45",
+        "fontSize": 11.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p5_jugo_3_desc",
+        "x": 425,
+        "y": 325,
+        "text": "Naranja, nopal tierno, apio, perejil, guayaba y piña.",
+        "fontSize": 9,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "des_dig_p5_jugo_4_title",
+        "x": 425,
+        "y": 367,
+        "text": "Jugo Curandero  ·  $45",
+        "fontSize": 11.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p5_jugo_4_desc",
+        "x": 425,
+        "y": 383,
+        "text": "Naranja, fresa, plátano y toque refrescante de coco.",
+        "fontSize": 9,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "des_dig_p5_jugo_5_title",
+        "x": 425,
+        "y": 425,
+        "text": "Mix fruta de temporada  ·  $65",
+        "fontSize": 11.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p5_jugo_5_desc",
+        "x": 425,
+        "y": 441,
+        "text": "Frutas frescas de la región servidas con yogurt natural, miel de abeja y granola artesanal.",
+        "fontSize": 9,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "des_dig_p5_col2_title2",
+        "x": 425,
+        "y": 498,
+        "text": "🍹 BEBIDAS SIN ALCOHOL & MOCKTAILS",
+        "fontSize": 18,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p5_col2_sub2",
+        "x": 425,
+        "y": 523,
+        "text": "Aguas del día, infusiones artesanales y mocktails refrescantes.",
+        "fontSize": 10,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "des_dig_p5_beb_0_title",
+        "x": 425,
+        "y": 548,
+        "text": "Agua mineral Topo Chico preparada  ·  $35",
+        "fontSize": 11.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p5_beb_0_desc",
+        "x": 425,
+        "y": 564,
+        "text": "Agua mineral con jugo de limón fresco y escarchado de sal de grano.",
+        "fontSize": 9,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "des_dig_p5_beb_1_title",
+        "x": 425,
+        "y": 603,
+        "text": "Jarra de agua La Curandera (2 L)  ·  $90",
+        "fontSize": 11.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p5_beb_1_desc",
+        "x": 425,
+        "y": 619,
+        "text": "Infusión fría artesanal de guayaba, pera y manzana fresca.",
+        "fontSize": 9,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "des_dig_p5_beb_2_title",
+        "x": 425,
+        "y": 658,
+        "text": "Jarra de agua fresca tradicional (2 L)  ·  $85",
+        "fontSize": 11.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p5_beb_2_desc",
+        "x": 425,
+        "y": 674,
+        "text": "Horchata con canela, flor de jamaica o tamarindo natural.",
+        "fontSize": 9,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "des_dig_p5_beb_3_title",
+        "x": 425,
+        "y": 713,
+        "text": "Limonada con pepino y hierbabuena  ·  $48",
+        "fontSize": 11.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p5_beb_3_desc",
+        "x": 425,
+        "y": 729,
+        "text": "Pepino macerado, hierbabuena fresca del huerto y limón con agua mineral.",
+        "fontSize": 9,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "des_dig_p5_beb_4_title",
+        "x": 425,
+        "y": 768,
+        "text": "Piñada cremosa  ·  $58",
+        "fontSize": 11.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "des_dig_p5_beb_4_desc",
+        "x": 425,
+        "y": 784,
+        "text": "Piña natural, crema de coco, leche evaporada y canela espolvoreada.",
+        "fontSize": 9,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      }
+    ]
+  }
+]

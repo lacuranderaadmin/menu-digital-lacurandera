@@ -16,11 +16,19 @@ import {
 import { showToast } from './ui.js';
 
 let currentType = 'desayuno'; // 'desayuno' | 'comida'
+let currentDesign = 'tradicional'; // 'tradicional' | 'digital'
 let currentPageIndex = 0;
 let menusData = {
-  desayuno: null,
-  comida: null
+  desayuno_tradicional: null,
+  comida_tradicional: null,
+  desayuno_digital: null,
+  comida_digital: null
 };
+
+// Helper para clave de menú compuesta
+function getMenuKey(type = currentType, design = currentDesign) {
+  return `${type}_${design}`;
+}
 let selectedItemId = null;
 let zoomScale = 0.75;
 let isDragging = false;
@@ -32,6 +40,40 @@ let isEditorInitialized = false;
 
 // Títulos amigables para cada hoja de las cartas originales
 const PAGE_TITLES = {
+  desayuno_tradicional: [
+    'Pág. 1: Portada y Raíces',
+    'Pág. 2: Dulce Remedio & Hotcakes',
+    'Pág. 3: Juguería & Bebidas',
+    'Pág. 4: Huevos, Omelettes & Enchiladas',
+    'Pág. 5: Tacos Dorados, Caldos & Pa\' Peques'
+  ],
+  comida_tradicional: [
+    'Pág. 1: Portada y Raíces',
+    'Pág. 2: Sabores de Cuaresma',
+    'Pág. 3: Dulce Remedio & Cafetería',
+    'Pág. 4: Cantina La Curandera & Cocteles',
+    'Pág. 5: Cervezas & Mezcalería',
+    'Pág. 6: Tequilas & Destilados',
+    'Pág. 7: Pa\' Empezar, Ensaladas & Sopas',
+    'Pág. 8: Platos Fuertes, Tacos & Cortes',
+    'Pág. 9: Burritos, Hamburguesas & Snacks'
+  ],
+  desayuno_digital: [
+    'Pág. 1: Portada & Sabiduría Curandera',
+    'Pág. 2: Pa\' Curar el Alma (Huevos)',
+    'Pág. 3: Lo Enchi-loso & Tacos Dorados',
+    'Pág. 4: Caldos, Sándwiches & Peques',
+    'Pág. 5: Dulce Remedio, Jugos & Café'
+  ],
+  comida_digital: [
+    'Pág. 1: Portada & Cantina Tradicional',
+    'Pág. 2: Entradas, Ensaladas & Sopas',
+    'Pág. 3: Sabores de Cuaresma (Mariscos)',
+    'Pág. 4: Platos Fuertes, Cortes & Tacos',
+    'Pág. 5: Burritos, Burguers & Jocho',
+    'Pág. 6: Dulce Remedio & Cafetería',
+    'Pág. 7: Cantina La Curandera & Mezcales'
+  ],
   desayuno: [
     'Pág. 1: Portada y Raíces',
     'Pág. 2: Dulce Remedio & Hotcakes',
@@ -54,14 +96,16 @@ const PAGE_TITLES = {
 
 // Preset de colores de la identidad de La Curandera
 const COLOR_PRESETS = [
-  { name: 'Negro', hex: '#000000' },
-  { name: 'Blanco', hex: '#FFFFFF' },
+  { name: 'Negro Carbón', hex: '#1C1714' },
+  { name: 'Gris Grafito', hex: '#2C2621' },
+  { name: 'Blanco Puro', hex: '#FFFFFF' },
   { name: 'Rosa Curandera', hex: '#C94E8F' },
-  { name: 'Turquesa', hex: '#159F9B' },
-  { name: 'Terracota', hex: '#E87850' },
-  { name: 'Crema Arena', hex: '#CCAD93' },
-  { name: 'Melocotón', hex: '#EF937A' },
-  { name: 'Dorado', hex: '#E6A13B' }
+  { name: 'Turquesa Sagrado', hex: '#159F9B' },
+  { name: 'Terracota Cálido', hex: '#E87850' },
+  { name: 'Crema Menú Digital', hex: '#FDF6EC' },
+  { name: 'Crema Arena Tradicional', hex: '#CCAD93' },
+  { name: 'Melocotón Artesanal', hex: '#EF937A' },
+  { name: 'Dorado Mostaza', hex: '#E6A13B' }
 ];
 
 export async function initPhysicalMenuAdmin() {
@@ -71,7 +115,8 @@ export async function initPhysicalMenuAdmin() {
   }
 
   // Cargar datos si aún no están listos
-  if (!menusData.desayuno || !menusData.comida) {
+  const key = getMenuKey();
+  if (!menusData[key]) {
     await loadInitialMenusData();
   }
 
@@ -86,30 +131,32 @@ export async function initPhysicalMenuAdmin() {
  */
 async function loadInitialMenusData() {
   try {
-    // 1. Cargar Desayunos
-    menusData.desayuno = await loadSingleMenuData('desayuno');
-    // 2. Cargar Comidas
-    menusData.comida = await loadSingleMenuData('comida');
+    const key = getMenuKey();
+    if (!menusData[key]) {
+      menusData[key] = await loadSingleMenuData(currentType, currentDesign);
+    }
   } catch (err) {
     console.error('Error cargando datos de carta física:', err);
     showToast('⚠️ No se pudieron cargar los datos de carta física.');
   }
 }
 
-async function loadSingleMenuData(type) {
-  const localKey = `lc_physical_menu_${type}_v1`;
+async function loadSingleMenuData(type, design = currentDesign) {
+  const isTrad = design === 'tradicional';
+  const localKey = isTrad ? `lc_physical_menu_${type}_v1` : `lc_physical_menu_${type}_digital_v1`;
+  const firestoreDocId = isTrad ? type : `${type}_digital`;
   
   // A. Intentar Firestore primero si está configurado
   if (isConfigured && db) {
     try {
-      const snap = await getDoc(doc(db, `restaurants/la-curandera/physicalMenus/${type}`));
+      const snap = await getDoc(doc(db, `restaurants/la-curandera/physicalMenus/${firestoreDocId}`));
       if (snap.exists() && snap.data().pages && Array.isArray(snap.data().pages)) {
         const pages = snap.data().pages;
         localStorage.setItem(localKey, JSON.stringify(pages));
         return pages;
       }
     } catch (e) {
-      console.warn(`Firestore load error for physical menu ${type}:`, e);
+      console.warn(`Firestore load error for physical menu ${firestoreDocId}:`, e);
     }
   }
 
@@ -122,7 +169,8 @@ async function loadSingleMenuData(type) {
   }
 
   // C. Fallback a templates JSON pre-extraídos
-  const url = `../data/carta_${type}_template.json`;
+  const templateFilename = isTrad ? `carta_${type}_template.json` : `carta_${type}_digital_template.json`;
+  const url = `../data/${templateFilename}`;
   const res = await fetch(url);
   if (res.ok) {
     const data = await res.json();
@@ -144,6 +192,15 @@ function setupPhysicalEditorEvents() {
   if (btnTypeDesayuno && btnTypeComida) {
     btnTypeDesayuno.addEventListener('click', () => switchMenuType('desayuno'));
     btnTypeComida.addEventListener('click', () => switchMenuType('comida'));
+  }
+
+  // Selector de Versión de Diseño: Tradicional vs Menú Digital
+  const btnDesignTrad = document.getElementById('btn-design-tradicional');
+  const btnDesignDig = document.getElementById('btn-design-digital');
+
+  if (btnDesignTrad && btnDesignDig) {
+    btnDesignTrad.addEventListener('click', () => switchDesign('tradicional'));
+    btnDesignDig.addEventListener('click', () => switchDesign('digital'));
   }
 
   // Botón Guardar Cambios
@@ -271,7 +328,7 @@ function setupPhysicalEditorEvents() {
 /**
  * Cambia el tipo de menú entre Desayunos y Comidas
  */
-function switchMenuType(type) {
+async function switchMenuType(type) {
   if (currentType === type) return;
   currentType = type;
   currentPageIndex = 0;
@@ -281,9 +338,40 @@ function switchMenuType(type) {
     b.classList.toggle('active', b.getAttribute('data-type') === type);
   });
 
+  const key = getMenuKey();
+  if (!menusData[key]) {
+    menusData[key] = await loadSingleMenuData(currentType, currentDesign);
+  }
+
   renderPagesList();
   renderCurrentPage();
   renderInspector();
+}
+
+/**
+ * Cambia la versión de diseño entre Tradicional y Menú Digital
+ */
+async function switchDesign(design) {
+  if (currentDesign === design) return;
+  currentDesign = design;
+  currentPageIndex = 0;
+  selectedItemId = null;
+
+  document.querySelectorAll('.physical-design-btn').forEach(b => {
+    b.classList.toggle('active', b.getAttribute('data-design') === design);
+  });
+
+  const key = getMenuKey();
+  if (!menusData[key]) {
+    menusData[key] = await loadSingleMenuData(currentType, currentDesign);
+  }
+
+  renderPagesList();
+  renderCurrentPage();
+  renderInspector();
+
+  const label = design === 'digital' ? 'Menú Digital' : 'Tradicional';
+  showToast(`✨ Cambiado a diseño: ${label}`);
 }
 
 /**
@@ -325,8 +413,9 @@ function renderPagesList() {
   const container = document.getElementById('physical-pages-list');
   if (!container) return;
 
-  const pages = menusData[currentType] || [];
-  const titles = PAGE_TITLES[currentType] || [];
+  const key = getMenuKey();
+  const pages = menusData[key] || [];
+  const titles = PAGE_TITLES[key] || PAGE_TITLES[currentType] || [];
 
   container.innerHTML = '';
   pages.forEach((p, idx) => {
@@ -361,7 +450,7 @@ function renderCurrentPage() {
   const sheet = document.getElementById('physical-paper-sheet');
   if (!sheet) return;
 
-  const pages = menusData[currentType] || [];
+  const pages = menusData[getMenuKey()] || [];
   const page = pages[currentPageIndex];
   if (!page) {
     sheet.innerHTML = '<div style="padding:2rem; color:#888;">No hay páginas disponibles.</div>';
@@ -447,6 +536,8 @@ function getCssFontFamily(font) {
   const f = font.toLowerCase();
   if (f.includes('hansief')) return "'Hansief', 'Montserrat', sans-serif";
   if (f.includes('sourcecode') || f.includes('mono')) return "'JetBrains Mono', monospace";
+  if (f.includes('montserrat')) return "'Montserrat', -apple-system, sans-serif";
+  if (f.includes('caveat')) return "'Caveat Brush', 'Kalam', cursive";
   if (f.includes('gotham')) return "'Gotham-Bold', 'Gotham', 'Montserrat', sans-serif";
   return "'Gotham-Bold', sans-serif";
 }
@@ -631,7 +722,7 @@ function renderInspector() {
     if (panelItem) panelItem.style.display = 'none';
     if (panelPage) panelPage.style.display = 'flex';
 
-    const pages = menusData[currentType] || [];
+    const pages = menusData[getMenuKey()] || [];
     const page = pages[currentPageIndex];
     const inpPageBg = document.getElementById('insp-page-bg');
     if (inpPageBg && page) inpPageBg.value = page.bgColor || '#CCAD93';
@@ -669,7 +760,7 @@ function renderCurrentPageTextsList() {
   const container = document.getElementById('current-page-texts-list');
   if (!container) return;
 
-  const pages = menusData[currentType] || [];
+  const pages = menusData[getMenuKey()] || [];
   const page = pages[currentPageIndex];
   if (!page || !page.items || page.items.length === 0) {
     container.innerHTML = '<span style="font-size:0.75rem; color:#888;">No hay textos en esta hoja.</span>';
@@ -701,7 +792,7 @@ function focusInspectorTextarea() {
 
 function getSelectedItem() {
   if (!selectedItemId) return null;
-  const pages = menusData[currentType] || [];
+  const pages = menusData[getMenuKey()] || [];
   const page = pages[currentPageIndex];
   if (!page || !page.items) return null;
   return page.items.find(i => i.id === selectedItemId);
@@ -726,7 +817,7 @@ function updateSelectedItemProp(prop, value) {
 }
 
 function updateCurrentPageBg(hex) {
-  const pages = menusData[currentType] || [];
+  const pages = menusData[getMenuKey()] || [];
   const page = pages[currentPageIndex];
   if (!page) return;
 
@@ -741,7 +832,7 @@ function updateCurrentPageBg(hex) {
  * Operaciones: Agregar, Duplicar, Eliminar elementos y hojas
  */
 function addNewTextItem() {
-  const pages = menusData[currentType] || [];
+  const pages = menusData[getMenuKey()] || [];
   const page = pages[currentPageIndex];
   if (!page) return;
 
@@ -772,7 +863,7 @@ function duplicateSelectedItem() {
   const item = getSelectedItem();
   if (!item) return;
 
-  const pages = menusData[currentType] || [];
+  const pages = menusData[getMenuKey()] || [];
   const page = pages[currentPageIndex];
   if (!page) return;
 
@@ -797,7 +888,7 @@ function deleteSelectedItem() {
   const item = getSelectedItem();
   if (!item) return;
 
-  const pages = menusData[currentType] || [];
+  const pages = menusData[getMenuKey()] || [];
   const page = pages[currentPageIndex];
   if (!page) return;
 
@@ -811,13 +902,13 @@ function deleteSelectedItem() {
 }
 
 function addNewPage() {
-  const pages = menusData[currentType] || [];
+  const pages = menusData[getMenuKey()] || [];
   const newNum = pages.length + 1;
   const newPage = {
     pageNumber: newNum,
     width: 816,
     height: 1056,
-    bgColor: '#CCAD93',
+    bgColor: currentDesign === 'digital' ? '#FDF6EC' : '#CCAD93',
     hasEmblem: false,
     items: [
       {
@@ -845,7 +936,7 @@ function addNewPage() {
 }
 
 function duplicateCurrentPage() {
-  const pages = menusData[currentType] || [];
+  const pages = menusData[getMenuKey()] || [];
   const page = pages[currentPageIndex];
   if (!page) return;
 
@@ -865,7 +956,7 @@ function duplicateCurrentPage() {
 }
 
 function deleteCurrentPage() {
-  const pages = menusData[currentType] || [];
+  const pages = menusData[getMenuKey()] || [];
   if (pages.length <= 1) {
     showToast('⚠️ No puedes eliminar la única hoja de la carta.');
     return;
@@ -888,8 +979,9 @@ function deleteCurrentPage() {
 
 function saveToLocalStorageDraft() {
   try {
-    const key = `lc_physical_menu_${currentType}_v1`;
-    localStorage.setItem(key, JSON.stringify(menusData[currentType]));
+    const isTrad = currentDesign === 'tradicional';
+    const localKey = isTrad ? `lc_physical_menu_${currentType}_v1` : `lc_physical_menu_${currentType}_digital_v1`;
+    localStorage.setItem(localKey, JSON.stringify(menusData[getMenuKey()]));
   } catch (e) {}
 }
 
@@ -904,20 +996,25 @@ async function savePhysicalMenu() {
   }
 
   try {
-    const pages = menusData[currentType] || [];
-    const localKey = `lc_physical_menu_${currentType}_v1`;
+    const pages = menusData[getMenuKey()] || [];
+    const isTrad = currentDesign === 'tradicional';
+    const localKey = isTrad ? `lc_physical_menu_${currentType}_v1` : `lc_physical_menu_${currentType}_digital_v1`;
+    const firestoreDocId = isTrad ? currentType : `${currentType}_digital`;
+
     localStorage.setItem(localKey, JSON.stringify(pages));
 
     if (isConfigured && db) {
-      await setDoc(doc(db, `restaurants/la-curandera/physicalMenus/${currentType}`), {
+      await setDoc(doc(db, `restaurants/la-curandera/physicalMenus/${firestoreDocId}`), {
         type: currentType,
+        design: currentDesign,
         pages: pages,
         updatedAt: serverTimestamp()
       }, { merge: true });
     }
 
     const typeLabel = currentType === 'desayuno' ? 'Desayunos' : 'Comidas';
-    showToast(`✅ Carta de ${typeLabel} guardada correctamente.`);
+    const designLabel = currentDesign === 'digital' ? '(Estilo Menú Digital)' : '(Diseño Tradicional)';
+    showToast(`✅ Carta de ${typeLabel} ${designLabel} guardada correctamente.`);
   } catch (err) {
     console.error('Error saving physical menu:', err);
     showToast('⚠️ Error al guardar los cambios en la nube.');
@@ -934,21 +1031,24 @@ async function savePhysicalMenu() {
  */
 async function resetPhysicalMenuToTemplate() {
   const typeLabel = currentType === 'desayuno' ? 'Desayunos' : 'Comidas';
-  if (!confirm(`¿Estás seguro de restablecer la Carta de ${typeLabel} a los valores originales de los PDFs oficiales? Se perderán las modificaciones no guardadas.`)) {
+  const designLabel = currentDesign === 'digital' ? 'Menú Digital' : 'Tradicional';
+  if (!confirm(`¿Estás seguro de restablecer la Carta de ${typeLabel} (${designLabel}) a su plantilla original? Se perderán las modificaciones no guardadas en esta versión.`)) {
     return;
   }
 
   try {
-    const res = await fetch(`../data/carta_${currentType}_template.json`);
+    const isTrad = currentDesign === 'tradicional';
+    const templateFilename = isTrad ? `carta_${currentType}_template.json` : `carta_${currentType}_digital_template.json`;
+    const res = await fetch(`../data/${templateFilename}`);
     if (res.ok) {
-      menusData[currentType] = await res.json();
+      menusData[getMenuKey()] = await res.json();
       currentPageIndex = 0;
       selectedItemId = null;
       renderPagesList();
       renderCurrentPage();
       renderInspector();
       saveToLocalStorageDraft();
-      showToast(`🔄 Carta de ${typeLabel} restablecida al diseño original.`);
+      showToast(`🔄 Carta de ${typeLabel} (${designLabel}) restablecida al diseño original.`);
     }
   } catch (e) {
     showToast('⚠️ No se pudo restablecer el template.');
@@ -964,7 +1064,7 @@ async function downloadPhysicalMenuPDF() {
     return;
   }
 
-  const pages = menusData[currentType] || [];
+  const pages = menusData[getMenuKey()] || [];
   if (pages.length === 0) {
     showToast('⚠️ No hay páginas para exportar.');
     return;
@@ -1066,9 +1166,10 @@ async function downloadPhysicalMenuPDF() {
 
     document.body.removeChild(renderContainer);
 
+    const isTrad = currentDesign === 'tradicional';
     const filename = currentType === 'desayuno' 
-      ? 'La_Curandera_Menu_Desayunos_Carta.pdf' 
-      : 'La_Curandera_Menu_Comidas_Carta.pdf';
+      ? (isTrad ? 'La_Curandera_Menu_Desayunos_Tradicional_Carta.pdf' : 'La_Curandera_Menu_Desayunos_Digital_Carta.pdf') 
+      : (isTrad ? 'La_Curandera_Menu_Comidas_Tradicional_Carta.pdf' : 'La_Curandera_Menu_Comidas_Digital_Carta.pdf');
 
     pdf.save(filename);
     showToast(`✅ PDF descargado exitosamente: ${filename}`);

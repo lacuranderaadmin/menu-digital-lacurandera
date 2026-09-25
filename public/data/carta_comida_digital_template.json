@@ -1,0 +1,1825 @@
+[
+  {
+    "pageNumber": 1,
+    "width": 816,
+    "height": 1056,
+    "bgColor": "#FDF6EC",
+    "hasEmblem": true,
+    "items": [
+      {
+        "id": "com_dig_p1_badge",
+        "x": 80,
+        "y": 65,
+        "text": "✦ CARTA FÍSICA · EDICIÓN MENÚ DIGITAL ✦",
+        "fontSize": 11,
+        "fontFamily": "Gotham-Bold",
+        "color": "#E87850",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p1_brand",
+        "x": 80,
+        "y": 115,
+        "text": "LA CURANDERA",
+        "fontSize": 54,
+        "fontFamily": "Hansief",
+        "color": "#C94E8F",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p1_subtitle",
+        "x": 82,
+        "y": 185,
+        "text": "COCINA TRADICIONAL, CORTES & CANTINA ANCESTRAL",
+        "fontSize": 14,
+        "fontFamily": "Gotham-Bold",
+        "color": "#159F9B",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p1_type",
+        "x": 82,
+        "y": 215,
+        "text": "MENÚ DE COMIDAS, MARISCOS & MEZCALERÍA",
+        "fontSize": 12,
+        "fontFamily": "Montserrat",
+        "color": "#2C2621",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p1_sep1",
+        "x": 82,
+        "y": 250,
+        "text": "═════════════════════════════════════════════════",
+        "fontSize": 12,
+        "fontFamily": "JetBrains Mono",
+        "color": "#E87850",
+        "bold": false
+      },
+      {
+        "id": "com_dig_p1_hist_title",
+        "x": 82,
+        "y": 300,
+        "text": "EL VERDADERO SABOR DE LA TIERRA Y LAS BRASAS",
+        "fontSize": 18,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p1_hist_p1",
+        "x": 82,
+        "y": 345,
+        "text": "En La Curandera cada comida es un festejo a nuestras raíces.\nCortes selectos asados con leña y carbón, aguachiles frescos con\nrecetas secretas de la costa y guisos de herencia familiar que curan el alma.",
+        "fontSize": 12,
+        "fontFamily": "Montserrat",
+        "color": "#2C2621",
+        "bold": false
+      },
+      {
+        "id": "com_dig_p1_hist_p2",
+        "x": 82,
+        "y": 440,
+        "text": "Nuestra cantina rinde tributo a los destilados de México: mezcales\nancestrales de Zumpahuacán y Oaxaca, tequilas reposados, cócteles de autor\ny cervezas bien heladas servidas con el auténtico toque clamatado.",
+        "fontSize": 12,
+        "fontFamily": "Montserrat",
+        "color": "#2C2621",
+        "bold": false
+      },
+      {
+        "id": "com_dig_p1_pillars_title",
+        "x": 82,
+        "y": 560,
+        "text": "✦ NUESTROS COMPROMISOS EN CADA PLATILLO ✦",
+        "fontSize": 13,
+        "fontFamily": "Gotham-Bold",
+        "color": "#159F9B",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p1_pil_1",
+        "x": 82,
+        "y": 595,
+        "text": "✓ Cortes de carne selectos (300-350g) con marmoleo superior a las brasas",
+        "fontSize": 11.5,
+        "fontFamily": "Montserrat",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p1_pil_2",
+        "x": 82,
+        "y": 628,
+        "text": "✓ Mariscos y camarones frescos preparados al momento con cítricos naturales",
+        "fontSize": 11.5,
+        "fontFamily": "Montserrat",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p1_pil_3",
+        "x": 82,
+        "y": 661,
+        "text": "✓ Guacamoles y salsas molcajeteadas preparadas al momento en tu mesa",
+        "fontSize": 11.5,
+        "fontFamily": "Montserrat",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p1_pil_4",
+        "x": 82,
+        "y": 694,
+        "text": "✓ Mezcales artesanales silvestres y destilados 100% de agave mexicano",
+        "fontSize": 11.5,
+        "fontFamily": "Montserrat",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p1_sep2",
+        "x": 82,
+        "y": 760,
+        "text": "─────────────────────────────────────────────────",
+        "fontSize": 12,
+        "fontFamily": "JetBrains Mono",
+        "color": "#CCAD93",
+        "bold": false
+      },
+      {
+        "id": "com_dig_p1_welcome",
+        "x": 82,
+        "y": 795,
+        "text": "¡Salud, buen provecho y bienvenidos a La Curandera!\nFamilia Garduño y Equipo",
+        "fontSize": 13,
+        "fontFamily": "Gotham-Bold",
+        "color": "#C94E8F",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p1_loc",
+        "x": 82,
+        "y": 860,
+        "text": "Tenancingo, Estado de México · Servicio diario de comidas y cantina",
+        "fontSize": 11,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "com_dig_p1_footer",
+        "x": 82,
+        "y": 970,
+        "text": "LA CURANDERA  ·  COCINA MEXICANA & CANTINA  ·  HOJA 1 DE 7",
+        "fontSize": 10,
+        "fontFamily": "JetBrains Mono",
+        "color": "#9E8E81",
+        "bold": true
+      }
+    ]
+  },
+  {
+    "pageNumber": 2,
+    "width": 816,
+    "height": 1056,
+    "bgColor": "#FDF6EC",
+    "hasEmblem": false,
+    "items": [
+      {
+        "id": "com_dig_p2_hdr_brand",
+        "x": 55,
+        "y": 45,
+        "text": "LA CURANDERA",
+        "fontSize": 22,
+        "fontFamily": "Hansief",
+        "color": "#C94E8F",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p2_hdr_tag",
+        "x": 230,
+        "y": 50,
+        "text": "COMIDAS · ENTRADAS, ENSALADAS & SOPAS",
+        "fontSize": 10.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#159F9B",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p2_hdr_pnum",
+        "x": 685,
+        "y": 50,
+        "text": "HOJA 2 DE 7",
+        "fontSize": 10,
+        "fontFamily": "JetBrains Mono",
+        "color": "#6D6258",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p2_col1_t1",
+        "x": 55,
+        "y": 85,
+        "text": "🥑 PA' EMPEZAR (ENTRADAS AL CENTRO)",
+        "fontSize": 18,
+        "fontFamily": "Gotham-Bold",
+        "color": "#C94E8F",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p2_col1_s1",
+        "x": 55,
+        "y": 110,
+        "text": "Ideales para compartir al centro con totopos y tortillas calientes.",
+        "fontSize": 10,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "com_dig_p2_emp_0_title",
+        "x": 55,
+        "y": 135,
+        "text": "Cazuela de queso fundido  ·  $135",
+        "fontSize": 12,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p2_emp_0_desc",
+        "x": 55,
+        "y": 153,
+        "text": "Queso asadero fundido burbujeante con chistorra doradita y 5 tortillas de harina recién hechas.",
+        "fontSize": 9.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "com_dig_p2_emp_1_title",
+        "x": 55,
+        "y": 207,
+        "text": "Guacamole tradicional  ·  $90",
+        "fontSize": 12,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p2_emp_1_desc",
+        "x": 55,
+        "y": 225,
+        "text": "Aguacate Hass fresco machacado con jitomate, cebolla, cilantro, limón y totopos de maíz.",
+        "fontSize": 9.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "com_dig_p2_emp_2_title",
+        "x": 55,
+        "y": 279,
+        "text": "Guacamole con chicharrón norteño  ·  $195",
+        "fontSize": 12,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p2_emp_2_desc",
+        "x": 55,
+        "y": 297,
+        "text": "Nuestra receta de guacamole copada con trozos crujientes de chicharrón de cerdo norteño carnoso.",
+        "fontSize": 9.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "com_dig_p2_col1_t2",
+        "x": 55,
+        "y": 366,
+        "text": "🥗 PA' CUIDARTE (ENSALADAS FRESCAS)",
+        "fontSize": 18,
+        "fontFamily": "Gotham-Bold",
+        "color": "#159F9B",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p2_col1_s2",
+        "x": 55,
+        "y": 391,
+        "text": "Hojas tiernas, vinagretas de la casa y frutos frescos.",
+        "fontSize": 10,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "com_dig_p2_ens_0_title",
+        "x": 55,
+        "y": 416,
+        "text": "Ensalada La Curandera  ·  $145",
+        "fontSize": 12,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p2_ens_0_desc",
+        "x": 55,
+        "y": 434,
+        "text": "Mix de lechuga fresca, manzana, durazno, arándano, nuez, ajonjolí garapiñado, arrachera y aderezo miel mostaza.",
+        "fontSize": 9.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "com_dig_p2_ens_1_title",
+        "x": 55,
+        "y": 488,
+        "text": "Ensalada campesina  ·  $110",
+        "fontSize": 12,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p2_ens_1_desc",
+        "x": 55,
+        "y": 506,
+        "text": "Mix de lechugas, pepino, jitomate, cebolla morada, aguacate y cubitos de queso manchego. (Extra pollo +$20).",
+        "fontSize": 9.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "com_dig_p2_col2_t1",
+        "x": 425,
+        "y": 85,
+        "text": "🍲 SOPAS Y PASTAS",
+        "fontSize": 18,
+        "fontFamily": "Gotham-Bold",
+        "color": "#E87850",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p2_col2_s1",
+        "x": 425,
+        "y": 110,
+        "text": "Caldos y pastas elaborados al momento con recetas caseras.",
+        "fontSize": 10,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "com_dig_p2_sop_0_title",
+        "x": 425,
+        "y": 135,
+        "text": "Sopa azteca o de tortilla  ·  $90",
+        "fontSize": 12,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p2_sop_0_desc",
+        "x": 425,
+        "y": 153,
+        "text": "Tiras crujientes de tortilla en caldillo de jitomate con chicharrón, aguacate, crema y queso Oaxaca.",
+        "fontSize": 9.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "com_dig_p2_sop_1_title",
+        "x": 425,
+        "y": 207,
+        "text": "Fusilli al chipotle  ·  $95",
+        "fontSize": 12,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p2_sop_1_desc",
+        "x": 425,
+        "y": 225,
+        "text": "Pasta fusilli al dente en salsa cremosa de chipotle acompañada de trocitos de arrachera.",
+        "fontSize": 9.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "com_dig_p2_col2_t2",
+        "x": 425,
+        "y": 294,
+        "text": "🍟 SNACKS PARA COMPARTIR",
+        "fontSize": 18,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p2_col2_s2",
+        "x": 425,
+        "y": 319,
+        "text": "Antojos crujientes para picar y acompañar tu cerveza o cóctel.",
+        "fontSize": 10,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "com_dig_p2_snk_0_title",
+        "x": 425,
+        "y": 344,
+        "text": "Nachos norteños  ·  $120",
+        "fontSize": 12,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p2_snk_0_desc",
+        "x": 425,
+        "y": 362,
+        "text": "Totopos con queso cheddar fundido, frijoles, queso manchego, pico de gallo, longaniza y rodajas de jalapeño.",
+        "fontSize": 9.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "com_dig_p2_snk_1_title",
+        "x": 425,
+        "y": 416,
+        "text": "Alitas auténticas (7 pzas)  ·  $180",
+        "fontSize": 12,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p2_snk_1_desc",
+        "x": 425,
+        "y": 434,
+        "text": "Sabores: Naturales, Mango habanero, BBQ, Búfalo, Habanero cremoso, Mango mezcal o Tamarindo mezcal.",
+        "fontSize": 9.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "com_dig_p2_snk_2_title",
+        "x": 425,
+        "y": 488,
+        "text": "Costillas de elote dulce  ·  $120",
+        "fontSize": 12,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p2_snk_2_desc",
+        "x": 425,
+        "y": 506,
+        "text": "Costillitas de elote dulce doradas a las brasas con aderezo especial de la casa.",
+        "fontSize": 9.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      }
+    ]
+  },
+  {
+    "pageNumber": 3,
+    "width": 816,
+    "height": 1056,
+    "bgColor": "#FDF6EC",
+    "hasEmblem": false,
+    "items": [
+      {
+        "id": "com_dig_p3_hdr_brand",
+        "x": 55,
+        "y": 45,
+        "text": "LA CURANDERA",
+        "fontSize": 22,
+        "fontFamily": "Hansief",
+        "color": "#C94E8F",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p3_hdr_tag",
+        "x": 230,
+        "y": 50,
+        "text": "COMIDAS · MARISCOS & AGUACHILES",
+        "fontSize": 10.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#159F9B",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p3_hdr_pnum",
+        "x": 685,
+        "y": 50,
+        "text": "HOJA 3 DE 7",
+        "fontSize": 10,
+        "fontFamily": "JetBrains Mono",
+        "color": "#6D6258",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p3_title",
+        "x": 55,
+        "y": 90,
+        "text": "🦐 SABORES DE CUARESMA & MARISCOS FRESCOS",
+        "fontSize": 21,
+        "fontFamily": "Gotham-Bold",
+        "color": "#159F9B",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p3_sub",
+        "x": 55,
+        "y": 120,
+        "text": "Camarones y pescados frescos marinados al instante con cítricos naturales, chiltepín y salsas artesanales.",
+        "fontSize": 10.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "com_dig_p3_mar_0_title",
+        "x": 55,
+        "y": 160,
+        "text": "Aguachile rojo  ·  $260",
+        "fontSize": 13.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p3_mar_0_desc",
+        "x": 55,
+        "y": 182,
+        "text": "Camarones frescos marinados en limón, chiltepín, pepino en medias lunas, cebolla morada y especias.",
+        "fontSize": 10.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "com_dig_p3_mar_1_title",
+        "x": 55,
+        "y": 245,
+        "text": "Aguachile Jade  ·  $240",
+        "fontSize": 13.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p3_mar_1_desc",
+        "x": 55,
+        "y": 267,
+        "text": "Camarones en salsa verde de chile serrano, cilantro, cebolla, pepino y toque cítrico.",
+        "fontSize": 10.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "com_dig_p3_mar_2_title",
+        "x": 55,
+        "y": 330,
+        "text": "Aguachile La Curandera  ·  $270",
+        "fontSize": 13.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p3_mar_2_desc",
+        "x": 55,
+        "y": 352,
+        "text": "Camarones con infusión reducida de flor de jamaica, chiltepín, cebolla morada, pepino y especias secretas.",
+        "fontSize": 10.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "com_dig_p3_mar_3_title",
+        "x": 55,
+        "y": 415,
+        "text": "Ceviche tropical  ·  $180",
+        "fontSize": 13.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p3_mar_3_desc",
+        "x": 55,
+        "y": 437,
+        "text": "Pescado fresco con jitomate, cilantro, chile serrano, mango dulce picado, pepino, apio y limón.",
+        "fontSize": 10.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "com_dig_p3_mar_4_title",
+        "x": 55,
+        "y": 500,
+        "text": "Caldo de camarón  ·  $160",
+        "fontSize": 13.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p3_mar_4_desc",
+        "x": 55,
+        "y": 522,
+        "text": "Tradicional caldito rojo aromático con camarones enteros y verduras de la estación.",
+        "fontSize": 10.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "com_dig_p3_maridaje_title",
+        "x": 55,
+        "y": 640,
+        "text": "✦ RECOMENDACIÓN DE MARIDAJE DE LA CASA ✦",
+        "fontSize": 13,
+        "fontFamily": "Gotham-Bold",
+        "color": "#E87850",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p3_maridaje_desc",
+        "x": 55,
+        "y": 670,
+        "text": "Nuestros aguachiles y ceviches maridan a la perfección con una cerveza bien fría clamatada,\ncon nuestro Cóctel Insignia La Curandera a base de mezcal y piña fresca, o con un Mocktail refrescante\nde pepino y hierbabuena.",
+        "fontSize": 11,
+        "fontFamily": "Montserrat",
+        "color": "#2C2621",
+        "bold": false
+      }
+    ]
+  },
+  {
+    "pageNumber": 4,
+    "width": 816,
+    "height": 1056,
+    "bgColor": "#FDF6EC",
+    "hasEmblem": false,
+    "items": [
+      {
+        "id": "com_dig_p4_hdr_brand",
+        "x": 55,
+        "y": 45,
+        "text": "LA CURANDERA",
+        "fontSize": 22,
+        "fontFamily": "Hansief",
+        "color": "#C94E8F",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p4_hdr_tag",
+        "x": 230,
+        "y": 50,
+        "text": "COMIDAS · PLATOS FUERTES, CORTES & TACOS",
+        "fontSize": 10.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#159F9B",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p4_hdr_pnum",
+        "x": 685,
+        "y": 50,
+        "text": "HOJA 4 DE 7",
+        "fontSize": 10,
+        "fontFamily": "JetBrains Mono",
+        "color": "#6D6258",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p4_col1_title",
+        "x": 55,
+        "y": 85,
+        "text": "🥩 PLATOS FUERTES DE LA CASA",
+        "fontSize": 18,
+        "fontFamily": "Gotham-Bold",
+        "color": "#C94E8F",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p4_col1_sub",
+        "x": 55,
+        "y": 110,
+        "text": "Tradición en cada bocado con guarniciones abundantes.",
+        "fontSize": 10,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "com_dig_p4_fue_0_title",
+        "x": 55,
+        "y": 135,
+        "text": "Tampiqueña La Curandera  ·  $245",
+        "fontSize": 12,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p4_fue_0_desc",
+        "x": 55,
+        "y": 153,
+        "text": "Cecina o bistec suave acompañado de enchiladas rojas, arroz mexicano y rajas poblanas con crema.",
+        "fontSize": 9.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "com_dig_p4_fue_1_title",
+        "x": 55,
+        "y": 210,
+        "text": "Tampiqueña de arrachera  ·  $275",
+        "fontSize": 12,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p4_fue_1_desc",
+        "x": 55,
+        "y": 228,
+        "text": "Arrachera marinada a las brasas con enchiladas rojas o verdes, arroz y rajas poblanas.",
+        "fontSize": 9.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "com_dig_p4_fue_2_title",
+        "x": 55,
+        "y": 285,
+        "text": "Cecina puerca enchilada  ·  $210",
+        "fontSize": 12,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p4_fue_2_desc",
+        "x": 55,
+        "y": 303,
+        "text": "Cecina de cerdo enchilada artesanal con guacamole fresco, frijoles refritos y rebanada de queso de rancho.",
+        "fontSize": 9.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "com_dig_p4_fue_3_title",
+        "x": 55,
+        "y": 360,
+        "text": "Enchiladas Yucas  ·  $160",
+        "fontSize": 12,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p4_fue_3_desc",
+        "x": 55,
+        "y": 378,
+        "text": "3 tortillas bañadas en salsa verde auténtica rellenas de cochinita pibil, cebollita morada encurtida, queso y crema.",
+        "fontSize": 9.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "com_dig_p4_col1_t2",
+        "x": 55,
+        "y": 450,
+        "text": "🔥 CORTES SELECTOS (300-350G)",
+        "fontSize": 18,
+        "fontFamily": "Gotham-Bold",
+        "color": "#E87850",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p4_col1_s2",
+        "x": 55,
+        "y": 475,
+        "text": "A las brasas con 3 guarniciones a tu elección.",
+        "fontSize": 10,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "com_dig_p4_cor_0_title",
+        "x": 55,
+        "y": 500,
+        "text": "Rib Eye a las brasas (350g)  ·  $280",
+        "fontSize": 12,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p4_cor_0_desc",
+        "x": 55,
+        "y": 518,
+        "text": "Corte selecto jugoso con marmoleo superior a las brasas. Incluye 3 guarniciones a elegir: guacamole, nopales, elote, frijoles o cebollitas.",
+        "fontSize": 9.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "com_dig_p4_cor_1_title",
+        "x": 55,
+        "y": 575,
+        "text": "New York Strip (350g)  ·  $290",
+        "fontSize": 12,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p4_cor_1_desc",
+        "x": 55,
+        "y": 593,
+        "text": "Corte magro y tierno con gran sabor. Incluye 3 guarniciones a elegir.",
+        "fontSize": 9.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "com_dig_p4_cor_2_title",
+        "x": 55,
+        "y": 650,
+        "text": "T-Bone clásico (350g)  ·  $290",
+        "fontSize": 12,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p4_cor_2_desc",
+        "x": 55,
+        "y": 668,
+        "text": "Lo mejor del filete y el New York en un solo corte con hueso. Incluye 3 guarniciones a elegir.",
+        "fontSize": 9.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "com_dig_p4_col2_title",
+        "x": 425,
+        "y": 85,
+        "text": "🌮 TAQUERÍA LA CURANDERA (3 PZAS)",
+        "fontSize": 18,
+        "fontFamily": "Gotham-Bold",
+        "color": "#159F9B",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p4_col2_sub",
+        "x": 425,
+        "y": 110,
+        "text": "Tortillas de maíz o harina con nopales asados, cebollitas cambray y salsas.",
+        "fontSize": 10,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "com_dig_p4_taq_0_title",
+        "x": 425,
+        "y": 135,
+        "text": "Orden de tacos de arrachera (3 pzas)  ·  $130",
+        "fontSize": 12,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p4_taq_0_desc",
+        "x": 425,
+        "y": 153,
+        "text": "3 piezas en tortilla de maíz o harina con nopales asados, cebollitas y frijoles de la olla.",
+        "fontSize": 9.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "com_dig_p4_taq_1_title",
+        "x": 425,
+        "y": 210,
+        "text": "Tacos Villamelón (3 pzas)  ·  $130",
+        "fontSize": 12,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p4_taq_1_desc",
+        "x": 425,
+        "y": 228,
+        "text": "Cecina con longaniza y trocitos de chicharrón con salsa especial de chile guajillo, cilantro y cebollita.",
+        "fontSize": 9.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "com_dig_p4_taq_2_title",
+        "x": 425,
+        "y": 285,
+        "text": "Tacos de cochinita pibil (3 pzas)  ·  $130",
+        "fontSize": 12,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p4_taq_2_desc",
+        "x": 425,
+        "y": 303,
+        "text": "Cerdo marinado en achiote horneado lento, servidos con cebolla morada encurtida y salsa de habanero.",
+        "fontSize": 9.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "com_dig_p4_box",
+        "x": 425,
+        "y": 380,
+        "text": "✦ EL SECRETO DEL ASADOR\nNuestros cortes se sellan a alta temperatura para concentrar los jugos naturales y brindar una textura suave incomparable.",
+        "fontSize": 10.5,
+        "fontFamily": "Montserrat",
+        "color": "#E87850",
+        "bold": true
+      }
+    ]
+  },
+  {
+    "pageNumber": 5,
+    "width": 816,
+    "height": 1056,
+    "bgColor": "#FDF6EC",
+    "hasEmblem": false,
+    "items": [
+      {
+        "id": "com_dig_p5_hdr_brand",
+        "x": 55,
+        "y": 45,
+        "text": "LA CURANDERA",
+        "fontSize": 22,
+        "fontFamily": "Hansief",
+        "color": "#C94E8F",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p5_hdr_tag",
+        "x": 230,
+        "y": 50,
+        "text": "COMIDAS · BURRITOS, BURGUERS & JOCHOS",
+        "fontSize": 10.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#159F9B",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p5_hdr_pnum",
+        "x": 685,
+        "y": 50,
+        "text": "HOJA 5 DE 7",
+        "fontSize": 10,
+        "fontFamily": "JetBrains Mono",
+        "color": "#6D6258",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p5_cat1_t",
+        "x": 55,
+        "y": 90,
+        "text": "🌯 BURRITOS ESTILO NORTEÑO",
+        "fontSize": 19,
+        "fontFamily": "Gotham-Bold",
+        "color": "#C94E8F",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p5_cat1_s",
+        "x": 55,
+        "y": 118,
+        "text": "Gran tortilla sobaquera de harina con carnes selectas y guacamole fresco.",
+        "fontSize": 10.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "com_dig_p5_bur_0_title",
+        "x": 55,
+        "y": 150,
+        "text": "Burrito de arrachera  ·  $160",
+        "fontSize": 13,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p5_bur_0_desc",
+        "x": 55,
+        "y": 170,
+        "text": "Gran tortilla de harina con arrachera, pico de gallo, guacamole, queso manchego, frijoles y aderezo chipotle.",
+        "fontSize": 10,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "com_dig_p5_cat2_t",
+        "x": 55,
+        "y": 280,
+        "text": "🍔 BURGUERS & JOCHO LA CURANDERA",
+        "fontSize": 19,
+        "fontFamily": "Gotham-Bold",
+        "color": "#159F9B",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p5_cat2_s",
+        "x": 55,
+        "y": 308,
+        "text": "Pan brioche artesanal, doble carne selecta y papas a la francesa crujientes.",
+        "fontSize": 10.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "com_dig_p5_brg_0_title",
+        "x": 55,
+        "y": 340,
+        "text": "Hamburguesa de la casa  ·  $185",
+        "fontSize": 13,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p5_brg_0_desc",
+        "x": 55,
+        "y": 360,
+        "text": "Doble carne selecta, queso amarillo y manchego, doble tocino ahumado, piña asada, lechuga, tomate y cebolla.",
+        "fontSize": 10,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "com_dig_p5_brg_1_title",
+        "x": 55,
+        "y": 415,
+        "text": "Jocho La Curandera  ·  $85",
+        "fontSize": 13,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p5_brg_1_desc",
+        "x": 55,
+        "y": 435,
+        "text": "Salchicha envuelta en tocino crujiente en pan brioche con papas a la francesa y pico de gallo.",
+        "fontSize": 10,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "com_dig_p5_cat3_t",
+        "x": 55,
+        "y": 520,
+        "text": "⭐ PA' LOS MORRILLOS (MENÚ INFANTIL)",
+        "fontSize": 19,
+        "fontFamily": "Gotham-Bold",
+        "color": "#E87850",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p5_cat3_s",
+        "x": 55,
+        "y": 548,
+        "text": "Menú especial balanceado y divertido para los pequeños de la mesa.",
+        "fontSize": 10.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "com_dig_p5_mor_0_title",
+        "x": 55,
+        "y": 580,
+        "text": "Morrito  ·  $55",
+        "fontSize": 13,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p5_mor_0_desc",
+        "x": 55,
+        "y": 600,
+        "text": "Espagueti a la mantequilla + papas a la francesa + 6 nuggets de pollo dorados + 1 juguito pequeño.",
+        "fontSize": 10,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      }
+    ]
+  },
+  {
+    "pageNumber": 6,
+    "width": 816,
+    "height": 1056,
+    "bgColor": "#FDF6EC",
+    "hasEmblem": false,
+    "items": [
+      {
+        "id": "com_dig_p6_hdr_brand",
+        "x": 55,
+        "y": 45,
+        "text": "LA CURANDERA",
+        "fontSize": 22,
+        "fontFamily": "Hansief",
+        "color": "#C94E8F",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p6_hdr_tag",
+        "x": 230,
+        "y": 50,
+        "text": "COMIDAS · POSTRES, CAFÉ & BEBIDAS",
+        "fontSize": 10.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#159F9B",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p6_hdr_pnum",
+        "x": 685,
+        "y": 50,
+        "text": "HOJA 6 DE 7",
+        "fontSize": 10,
+        "fontFamily": "JetBrains Mono",
+        "color": "#6D6258",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p6_col1_t1",
+        "x": 55,
+        "y": 85,
+        "text": "🧁 DULCE REMEDIO (POSTRES CASEROS)",
+        "fontSize": 18,
+        "fontFamily": "Gotham-Bold",
+        "color": "#C94E8F",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p6_col1_s1",
+        "x": 55,
+        "y": 110,
+        "text": "El final perfecto para consentir el paladar.",
+        "fontSize": 10,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "com_dig_p6_pos_0_title",
+        "x": 55,
+        "y": 135,
+        "text": "Strudel de manzana  ·  $60",
+        "fontSize": 11.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p6_pos_0_desc",
+        "x": 55,
+        "y": 151,
+        "text": "Hojaldre dorado crujiente relleno de manzana especiada con canela.",
+        "fontSize": 9,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "com_dig_p6_pos_1_title",
+        "x": 55,
+        "y": 193,
+        "text": "Cheesecake  ·  $60",
+        "fontSize": 11.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p6_pos_1_desc",
+        "x": 55,
+        "y": 209,
+        "text": "Cremoso pastel de queso. Elige tu topping: fresa, zarzamora, frambuesa o guayaba.",
+        "fontSize": 9,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "com_dig_p6_pos_2_title",
+        "x": 55,
+        "y": 251,
+        "text": "Helado artesanal  ·  $55",
+        "fontSize": 11.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p6_pos_2_desc",
+        "x": 55,
+        "y": 267,
+        "text": "Vainilla, chocolate o fresa natural.",
+        "fontSize": 9,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "com_dig_p6_pos_3_title",
+        "x": 55,
+        "y": 309,
+        "text": "Malteadas cremosas  ·  $70",
+        "fontSize": 11.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p6_pos_3_desc",
+        "x": 55,
+        "y": 325,
+        "text": "Preparadas al momento: Vainilla, chocolate, fresa o café.",
+        "fontSize": 9,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "com_dig_p6_pos_4_title",
+        "x": 55,
+        "y": 367,
+        "text": "Hotcakes La Curandera (3 pzas)  ·  $120",
+        "fontSize": 11.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p6_pos_4_desc",
+        "x": 55,
+        "y": 383,
+        "text": "3 piezas con fresas frescas y topping: lechera, nutella, mermelada de guayaba de la casa o miel de agave. (Clásico $90 / Relleno $99).",
+        "fontSize": 9,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "com_dig_p6_pos_5_title",
+        "x": 55,
+        "y": 425,
+        "text": "Pan francés (2 pzas)  ·  $99",
+        "fontSize": 11.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p6_pos_5_desc",
+        "x": 55,
+        "y": 441,
+        "text": "Pan remojado en leche y huevo con azúcar, canela y fresas. Clásico $80 / Relleno de frutos rojos y queso crema $99.",
+        "fontSize": 9,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "com_dig_p6_col1_t2",
+        "x": 55,
+        "y": 498,
+        "text": "☕ PA' CALENTAR EL ESPÍRITU",
+        "fontSize": 18,
+        "fontFamily": "Gotham-Bold",
+        "color": "#E87850",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p6_col1_s2",
+        "x": 55,
+        "y": 523,
+        "text": "Café de altura mexicano y chocolate tradicional.",
+        "fontSize": 10,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "com_dig_p6_caf_0_title",
+        "x": 55,
+        "y": 548,
+        "text": "Chocolate tradicional lechero  ·  $45",
+        "fontSize": 11.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p6_caf_0_desc",
+        "x": 55,
+        "y": 564,
+        "text": "Batido a mano con molinillo tradicional de madera.",
+        "fontSize": 9,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "com_dig_p6_caf_1_title",
+        "x": 55,
+        "y": 603,
+        "text": "Café con leche (Lechero)  ·  $55",
+        "fontSize": 11.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p6_caf_1_desc",
+        "x": 55,
+        "y": 619,
+        "text": "Café aromático vertido con leche caliente espumosa.",
+        "fontSize": 9,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "com_dig_p6_caf_2_title",
+        "x": 55,
+        "y": 658,
+        "text": "Capuchino clásico  ·  $50",
+        "fontSize": 11.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p6_caf_2_desc",
+        "x": 55,
+        "y": 674,
+        "text": "Espresso italiano con abundante crema de leche.",
+        "fontSize": 9,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "com_dig_p6_caf_3_title",
+        "x": 55,
+        "y": 713,
+        "text": "Café de olla  ·  $45",
+        "fontSize": 11.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p6_caf_3_desc",
+        "x": 55,
+        "y": 729,
+        "text": "Hervido en barro con piloncillo, canela en raja y especias de la curandera.",
+        "fontSize": 9,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "com_dig_p6_caf_4_title",
+        "x": 55,
+        "y": 768,
+        "text": "Café americano  ·  $45",
+        "fontSize": 11.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p6_caf_4_desc",
+        "x": 55,
+        "y": 784,
+        "text": "Grano seleccionado 100% mexicano tostado medio.",
+        "fontSize": 9,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "com_dig_p6_col2_t1",
+        "x": 425,
+        "y": 85,
+        "text": "🍹 BEBIDAS SIN ALCOHOL & MOCKTAILS",
+        "fontSize": 18,
+        "fontFamily": "Gotham-Bold",
+        "color": "#159F9B",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p6_col2_s1",
+        "x": 425,
+        "y": 110,
+        "text": "Aguas de sabor natural en jarra y mocktails de autor.",
+        "fontSize": 10,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "com_dig_p6_beb_0_title",
+        "x": 425,
+        "y": 135,
+        "text": "Agua mineral Topo Chico preparada  ·  $35",
+        "fontSize": 12,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p6_beb_0_desc",
+        "x": 425,
+        "y": 153,
+        "text": "Agua mineral con jugo de limón fresco y escarchado de sal de grano.",
+        "fontSize": 9.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "com_dig_p6_beb_1_title",
+        "x": 425,
+        "y": 203,
+        "text": "Jarra de agua La Curandera (2 L)  ·  $90",
+        "fontSize": 12,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p6_beb_1_desc",
+        "x": 425,
+        "y": 221,
+        "text": "Infusión fría artesanal de guayaba, pera y manzana fresca.",
+        "fontSize": 9.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "com_dig_p6_beb_2_title",
+        "x": 425,
+        "y": 271,
+        "text": "Jarra de agua fresca tradicional (2 L)  ·  $85",
+        "fontSize": 12,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p6_beb_2_desc",
+        "x": 425,
+        "y": 289,
+        "text": "Horchata con canela, flor de jamaica o tamarindo natural.",
+        "fontSize": 9.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "com_dig_p6_beb_3_title",
+        "x": 425,
+        "y": 339,
+        "text": "Limonada con pepino y hierbabuena  ·  $48",
+        "fontSize": 12,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p6_beb_3_desc",
+        "x": 425,
+        "y": 357,
+        "text": "Pepino macerado, hierbabuena fresca del huerto y limón con agua mineral.",
+        "fontSize": 9.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "com_dig_p6_beb_4_title",
+        "x": 425,
+        "y": 407,
+        "text": "Piñada cremosa  ·  $58",
+        "fontSize": 12,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p6_beb_4_desc",
+        "x": 425,
+        "y": 425,
+        "text": "Piña natural, crema de coco, leche evaporada y canela espolvoreada.",
+        "fontSize": 9.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      }
+    ]
+  },
+  {
+    "pageNumber": 7,
+    "width": 816,
+    "height": 1056,
+    "bgColor": "#FDF6EC",
+    "hasEmblem": false,
+    "items": [
+      {
+        "id": "com_dig_p7_hdr_brand",
+        "x": 55,
+        "y": 45,
+        "text": "LA CURANDERA",
+        "fontSize": 22,
+        "fontFamily": "Hansief",
+        "color": "#C94E8F",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p7_hdr_tag",
+        "x": 230,
+        "y": 50,
+        "text": "COMIDAS · CANTINA & DESTILADOS",
+        "fontSize": 10.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#159F9B",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p7_hdr_pnum",
+        "x": 685,
+        "y": 50,
+        "text": "HOJA 7 DE 7",
+        "fontSize": 10,
+        "fontFamily": "JetBrains Mono",
+        "color": "#6D6258",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p7_title",
+        "x": 55,
+        "y": 85,
+        "text": "🥃 CANTINA LA CURANDERA (MEZCALES & COCTELES)",
+        "fontSize": 20,
+        "fontFamily": "Gotham-Bold",
+        "color": "#C94E8F",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p7_sub",
+        "x": 55,
+        "y": 115,
+        "text": "Pócimas, remedios tradicionales, mezcales de origen y cócteles insignia.",
+        "fontSize": 10.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "com_dig_p7_can_0_title",
+        "x": 55,
+        "y": 150,
+        "text": "Cóctel insignia La Curandera  ·  $98",
+        "fontSize": 12.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p7_can_0_desc",
+        "x": 55,
+        "y": 168,
+        "text": "Mezcal artesanal, jugo de piña fresca, tomate, toque de Tajín, limón y aromatizado con rama de romero.",
+        "fontSize": 9.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "com_dig_p7_can_1_title",
+        "x": 55,
+        "y": 230,
+        "text": "Mojito de frutos rojos  ·  $98",
+        "fontSize": 12.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p7_can_1_desc",
+        "x": 55,
+        "y": 248,
+        "text": "Mezcal de la casa, infusión de frutos rojos macerados, hierbabuena fresca del huerto, limón y escarchado con chilito artesanal.",
+        "fontSize": 9.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "com_dig_p7_can_2_title",
+        "x": 55,
+        "y": 310,
+        "text": "Mezcalita de jamaica o tamarindo  ·  $85",
+        "fontSize": 12.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p7_can_2_desc",
+        "x": 55,
+        "y": 328,
+        "text": "Mezcal de la casa macerado con infusión de jamaica o tamarindo y toque de sal de gusano.",
+        "fontSize": 9.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "com_dig_p7_can_3_title",
+        "x": 55,
+        "y": 390,
+        "text": "Cantarito de mezcal o tequila  ·  $99",
+        "fontSize": 12.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p7_can_3_desc",
+        "x": 55,
+        "y": 408,
+        "text": "Servido en cantarito de barro con cítricos frescos (toronja, naranja, limón), refresco de toronja y sal.",
+        "fontSize": 9.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "com_dig_p7_can_4_title",
+        "x": 425,
+        "y": 150,
+        "text": "La Piedra (El antídoto pa' la cruda)  ·  $100",
+        "fontSize": 12.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p7_can_4_desc",
+        "x": 425,
+        "y": 168,
+        "text": "El mejor remedio tradicional: derecho o con agua mineral, anís, tequila reposado y licor de hierbas curativas.",
+        "fontSize": 9.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "com_dig_p7_can_5_title",
+        "x": 425,
+        "y": 230,
+        "text": "Tarro de litro clamatado  ·  $90",
+        "fontSize": 12.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p7_can_5_desc",
+        "x": 425,
+        "y": 248,
+        "text": "Cerveza fría a elección, jugo de limón, sal, mezcla de salsas negras y Clamato original.",
+        "fontSize": 9.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "com_dig_p7_can_6_title",
+        "x": 425,
+        "y": 310,
+        "text": "Mezcal Cannabis Sta. Ana Despoblado  ·  $80",
+        "fontSize": 12.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p7_can_6_desc",
+        "x": 425,
+        "y": 328,
+        "text": "Destilado en Zumpahuacán con infusión herbal única. Caballito $80 · Botella $800.",
+        "fontSize": 9.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "com_dig_p7_can_7_title",
+        "x": 425,
+        "y": 390,
+        "text": "Mezcal Ojo de Tigre, Oaxaca  ·  $90",
+        "fontSize": 12.5,
+        "fontFamily": "Gotham-Bold",
+        "color": "#1C1714",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p7_can_7_desc",
+        "x": 425,
+        "y": 408,
+        "text": "Ensamble de maguey Espadín y Tobalá. Notas ahumadas y cítricas. Caballito $90 · Botella $1,200.",
+        "fontSize": 9.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      },
+      {
+        "id": "com_dig_p7_quote",
+        "x": 55,
+        "y": 600,
+        "text": "✦ \"PARA TODO MAL, MEZCAL; PARA TODO BIEN, TAMBIÉN; Y SI NO HAY REMEDIO: LITRO Y MEDIO.\"",
+        "fontSize": 12,
+        "fontFamily": "Gotham-Bold",
+        "color": "#E87850",
+        "bold": true
+      },
+      {
+        "id": "com_dig_p7_disclaimer",
+        "x": 55,
+        "y": 640,
+        "text": "El consumo responsable es nuestra prioridad. Venta exclusiva a mayores de 18 años.",
+        "fontSize": 9.5,
+        "fontFamily": "Montserrat",
+        "color": "#6D6258",
+        "bold": false
+      }
+    ]
+  }
+]

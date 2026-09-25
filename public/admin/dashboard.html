@@ -490,6 +490,16 @@
               </button>
             </div>
 
+            <!-- Selector de Versión de Diseño: Tradicional vs Menú Digital -->
+            <div class="physical-design-selector" title="Selecciona la versión de diseño de la carta física">
+              <button type="button" id="btn-design-tradicional" class="physical-design-btn active" data-design="tradicional" title="Carta física con diseño original escaneado">
+                <span>📜 Diseño Tradicional</span>
+              </button>
+              <button type="button" id="btn-design-digital" class="physical-design-btn" data-design="digital" title="Carta física con colores, tipografías y datos del Menú Digital actual">
+                <span>✨ Diseño Menú Digital</span>
+              </button>
+            </div>
+
             <!-- Botones de Acción Global -->
             <div class="physical-top-actions">
               <button type="button" id="btn-phys-add-text" class="btn-phys-action btn-phys-add-text" title="Agregar un nuevo texto o platillo a esta hoja">
@@ -559,7 +569,9 @@
                   <select id="insp-item-font" class="inspector-select">
                     <option value="Gotham-Bold">Gotham Bold (Platillos y Precios)</option>
                     <option value="Hansief">Hansief (Títulos Grandes)</option>
+                    <option value="Montserrat">Montserrat (Estilo Menú Digital)</option>
                     <option value="SourceCodeVariable-Roman">JetBrains Mono / Source (Descripciones)</option>
+                    <option value="Caveat Brush">Caveat Brush (Acentos y Mística)</option>
                   </select>
                 </div>
 
