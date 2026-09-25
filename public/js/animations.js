@@ -329,9 +329,10 @@ function initScrollSpy() {
 
     const siteHeader = document.querySelector('.site-header');
     const stickyNav = document.querySelector('.categories-nav-wrapper');
-    const headerH = siteHeader ? siteHeader.offsetHeight : 68;
+    const isHeaderHidden = siteHeader ? siteHeader.classList.contains('header-hidden') : false;
+    const headerH = (siteHeader && !isHeaderHidden) ? siteHeader.offsetHeight : 0;
     const navH = stickyNav ? stickyNav.offsetHeight : 54;
-    const offset = headerH + navH + 30;
+    const offset = headerH + navH + 20;
 
     const scrollY = window.pageYOffset || document.documentElement.scrollTop;
     const isAtBottom = (window.innerHeight + scrollY) >= (document.documentElement.scrollHeight - 70);
@@ -382,7 +383,8 @@ function initScrollSpy() {
     const sentinel = document.getElementById('categories-nav-sentinel');
     const updateStickyState = () => {
       const siteHeader = document.querySelector('.site-header');
-      const headerH = siteHeader ? siteHeader.offsetHeight : 68;
+      const isHeaderHidden = siteHeader ? siteHeader.classList.contains('header-hidden') : false;
+      const headerH = (siteHeader && !isHeaderHidden) ? siteHeader.offsetHeight : 0;
       const refEl = sentinel || navWrapper;
       const rect = refEl.getBoundingClientRect();
       const isStuck = rect.top <= headerH + 2;
@@ -414,7 +416,8 @@ function initScrollSpy() {
     const updateDockVisibility = () => {
       if (navWrapper) {
         const siteHeader = document.querySelector('.site-header');
-        const headerH = siteHeader ? siteHeader.offsetHeight : 88;
+        const isHeaderHidden = siteHeader ? siteHeader.classList.contains('header-hidden') : false;
+        const headerH = (siteHeader && !isHeaderHidden) ? siteHeader.offsetHeight : 0;
         const rect = navWrapper.getBoundingClientRect();
         // Visible exclusivamente cuando la barra de categorías se fija como sticky o se navega por los productos
         const isNearProducts = rect.top <= headerH + 10;

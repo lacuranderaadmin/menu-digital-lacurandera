@@ -401,11 +401,9 @@ export function renderCategoriesNav() {
       }
 
       if (targetEl) {
-        const siteHeader = document.querySelector('.site-header');
         const stickyNav = document.querySelector('.categories-nav-wrapper');
-        const headerH = siteHeader ? siteHeader.getBoundingClientRect().height : 70;
-        const navH = stickyNav ? stickyNav.getBoundingClientRect().height : 52;
-        const totalOffset = headerH + navH + 12;
+        const navH = stickyNav ? stickyNav.getBoundingClientRect().height : 54;
+        const totalOffset = navH + 12;
         const rect = targetEl.getBoundingClientRect();
         const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
         const targetPos = Math.round(rect.top + scrollTop - totalOffset);
@@ -569,11 +567,9 @@ export function renderVerticalCategoriesDock(filteredCats) {
       }
 
       if (targetEl) {
-        const siteHeader = document.querySelector('.site-header');
         const stickyNav = document.querySelector('.categories-nav-wrapper');
-        const headerH = siteHeader ? siteHeader.getBoundingClientRect().height : 70;
-        const navH = stickyNav ? stickyNav.getBoundingClientRect().height : 52;
-        const totalOffset = headerH + navH + 12;
+        const navH = stickyNav ? stickyNav.getBoundingClientRect().height : 54;
+        const totalOffset = navH + 12;
         const rect = targetEl.getBoundingClientRect();
         const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
         const targetPos = Math.round(rect.top + scrollTop - totalOffset);

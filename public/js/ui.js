@@ -131,17 +131,19 @@ export function initUI(callback) {
     }
   });
 
-  // Header scroll blur effect
-  window.addEventListener('scroll', () => {
+  // Header scroll hide & blur effect
+  const updateHeaderOnScroll = () => {
     const header = document.querySelector('.site-header');
     if (header) {
-      if (window.scrollY > 40) {
-        header.classList.add('scrolled');
+      if (window.scrollY > 50) {
+        header.classList.add('scrolled', 'header-hidden');
       } else {
-        header.classList.remove('scrolled');
+        header.classList.remove('scrolled', 'header-hidden');
       }
     }
-  }, { passive: true });
+  };
+  window.addEventListener('scroll', updateHeaderOnScroll, { passive: true });
+  updateHeaderOnScroll();
 
   // Modal ESC handler
   window.addEventListener('keydown', (e) => {

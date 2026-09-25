@@ -16,9 +16,15 @@
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-bottom: 2px solid rgba(232, 120, 80, 0.2);
-  transition: all var(--transition-smooth);
+  transition: transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.25s ease, background 0.2s ease, box-shadow 0.2s ease;
   overflow: hidden;
   box-sizing: border-box;
+}
+
+.site-header.header-hidden {
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
 }
 
 .site-header.scrolled {
@@ -537,7 +543,7 @@
    -------------------------------------------------------------------------- */
 .categories-nav-wrapper {
   position: sticky;
-  top: var(--site-header-height, 68px);
+  top: 0;
   z-index: var(--z-sticky-nav, 95);
   background: rgba(248, 241, 231, 0.98);
   backdrop-filter: blur(12px);
@@ -554,7 +560,7 @@
 
 @media (min-width: 768px) {
   .categories-nav-wrapper {
-    top: var(--site-header-height, 74px);
+    top: 0;
     padding: 0.65rem 0 0.85rem;
   }
 }
@@ -782,13 +788,13 @@
    Category Section & Product Grid
    -------------------------------------------------------------------------- */
 .category-section {
-  scroll-margin-top: calc(var(--site-header-height, 68px) + 65px);
+  scroll-margin-top: 85px;
   margin-bottom: 2.2rem;
 }
 
 @media (min-width: 768px) {
   .category-section {
-    scroll-margin-top: calc(var(--site-header-height, 74px) + 70px);
+    scroll-margin-top: 90px;
     margin-bottom: 3rem;
   }
 }
@@ -1690,7 +1696,7 @@ body[data-meal-mode="desayuno"] .product-card:hover .view-details-prompt {
   position: fixed;
   right: 12px;
   left: auto;
-  top: calc(var(--site-header-height, 88px) + 85px);
+  top: 104px;
   transform: none;
   z-index: 85;
   display: flex;
@@ -1704,7 +1710,7 @@ body[data-meal-mode="desayuno"] .product-card:hover .view-details-prompt {
   box-shadow: -3px 3px 0px var(--lc-negro), 0 10px 28px rgba(0, 0, 0, 0.12);
   padding: 6px 3px;
   width: 40px;
-  max-height: calc(100vh - var(--site-header-height, 88px) - 180px);
+  max-height: calc(100vh - 128px);
   box-sizing: border-box;
   opacity: 0;
   pointer-events: none;
@@ -1905,11 +1911,11 @@ body[data-meal-mode="comida"] .dock-emoji-btn.active {
   .vertical-categories-dock {
     right: 4px;
     left: auto;
-    top: calc(var(--site-header-height, 70px) + 75px);
+    top: 98px;
     transform: none;
     width: 36px;
     padding: 5px 2px;
-    max-height: calc(100dvh - var(--site-header-height, 70px) - 165px);
+    max-height: calc(100dvh - 116px);
     border-radius: 20px;
     box-shadow: -2px 2px 0px var(--lc-negro), 0 6px 20px rgba(0, 0, 0, 0.1);
   }
