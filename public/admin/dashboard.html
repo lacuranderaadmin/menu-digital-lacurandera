@@ -763,6 +763,36 @@
             <textarea id="prod-desc-es" class="form-input" rows="2" placeholder="Ingredientes, preparación y detalles para el comensal..." required></textarea>
           </div>
 
+          <!-- Traducciones Multilingües Opcionales / Auto-generadas -->
+          <details style="background:var(--lc-gray-100); border:1.5px solid var(--lc-negro); border-radius:var(--radius-md); padding:0.6rem 0.85rem;">
+            <summary style="font-weight:800; font-size:0.82rem; cursor:pointer; font-family:var(--font-mono); color:var(--lc-negro); display:flex; align-items:center; justify-content:space-between; user-select:none;">
+              <span>🌐 Idiomas Adicionales (Inglés &amp; Francés)</span>
+              <span style="font-size:0.75rem; color:var(--lc-turquesa); font-weight:700;">Opcional / Auto-generado ✨</span>
+            </summary>
+            <div style="display:flex; flex-direction:column; gap:0.6rem; margin-top:0.6rem;">
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.5rem;">
+                <div>
+                  <label class="form-label" for="prod-name-en" style="font-size:0.72rem;">Nombre en Inglés (US EN)</label>
+                  <input type="text" id="prod-name-en" class="form-input" placeholder="Auto-traducido si está vacío" style="font-size:0.8rem;" />
+                </div>
+                <div>
+                  <label class="form-label" for="prod-name-fr" style="font-size:0.72rem;">Nombre en Francés (FR FR)</label>
+                  <input type="text" id="prod-name-fr" class="form-input" placeholder="Auto-traducido si está vacío" style="font-size:0.8rem;" />
+                </div>
+              </div>
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.5rem;">
+                <div>
+                  <label class="form-label" for="prod-desc-en" style="font-size:0.72rem;">Descripción en Inglés (US EN)</label>
+                  <textarea id="prod-desc-en" class="form-input" rows="2" placeholder="Auto-traducido si está vacío" style="font-size:0.8rem;"></textarea>
+                </div>
+                <div>
+                  <label class="form-label" for="prod-desc-fr" style="font-size:0.72rem;">Descripción en Francés (FR FR)</label>
+                  <textarea id="prod-desc-fr" class="form-input" rows="2" placeholder="Auto-traducido si está vacío" style="font-size:0.8rem;"></textarea>
+                </div>
+              </div>
+            </div>
+          </details>
+
           <!-- Alérgenos y Preferencias Dietéticas (Chips Interactivas) -->
           <div class="form-group">
             <label class="form-label">Alérgenos &amp; Sellos Dietéticos (Toca para activar/desactivar)</label>
@@ -840,9 +870,15 @@
               <input type="text" id="cat-form-name-es" class="form-input" placeholder="Ej: Especialidades al Horno" required />
             </div>
 
-            <div class="form-group">
-              <label class="form-label" for="cat-form-name-en">Nombre en Inglés (Opcional)</label>
-              <input type="text" id="cat-form-name-en" class="form-input" placeholder="Ej: Oven Specialties" />
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:0.75rem;">
+              <div class="form-group">
+                <label class="form-label" for="cat-form-name-en">Nombre en Inglés (Opcional)</label>
+                <input type="text" id="cat-form-name-en" class="form-input" placeholder="Ej: Oven Specialties" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="cat-form-name-fr">Nombre en Francés (Opcional)</label>
+                <input type="text" id="cat-form-name-fr" class="form-input" placeholder="Ej: Spécialités au Four" />
+              </div>
             </div>
 
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:0.75rem;">
@@ -892,7 +928,7 @@
   <script src="../js/libs/jspdf.umd.min.js"></script>
 
   <script type="module">
-    import { initAdminDashboard } from '../js/admin-dashboard.js?v=5.0';
+    import { initAdminDashboard } from '../js/admin-dashboard.js?v=6.0';
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', initAdminDashboard);
     } else {

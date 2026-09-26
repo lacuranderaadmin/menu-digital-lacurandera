@@ -8,8 +8,8 @@
       "icon": "sol",
       "name": {
         "es": "Pa' Curar el Alma",
-        "en": "Soul Healing (Breakfast)",
-        "fr": "Pour Guérir l'Âme"
+        "en": "Soul Healers (Breakfast)",
+        "fr": "Pour Guérir l'Âme (Petits-Déjeuners)"
       },
       "isActive": true
     },
@@ -86,8 +86,8 @@
       "icon": "corazon",
       "name": {
         "es": "Dulce Remedio",
-        "en": "Dulce Remedio (Desserts)",
-        "fr": "Desserts & Douceurs"
+        "en": "Sweet Remedy (Desserts)",
+        "fr": "Douceurs & Desserts Maison"
       },
       "isActive": true
     },
@@ -2402,6 +2402,57 @@
       ],
       "allergens": [],
       "order": 89,
+      "isActive": true
+    },
+    {
+      "id": "prod_1790349552621",
+      "categoryId": "dulce-remedio",
+      "name": {
+        "es": "Panqué de elote",
+        "en": "Sweet Corn Cake",
+        "fr": "Gâteau de Maïs Doux"
+      },
+      "description": {
+        "es": "Delicioso panqué artesanal elaborado con elote dulce tierno.",
+        "en": "Delicious artisanal sweet corn cake, tender and warm.",
+        "fr": "Délicieux gâteau artisanal au maïs doux, tendre et savoureux."
+      },
+      "price": 65,
+      "order": 35,
+      "isActive": true
+    },
+    {
+      "id": "prod_1790349587246",
+      "categoryId": "dulce-remedio",
+      "name": {
+        "es": "Pay de limón",
+        "en": "Key Lime Pie",
+        "fr": "Tarte au Citron Vert"
+      },
+      "description": {
+        "es": "Cremoso pay de limón fresco con costra crujiente de galleta.",
+        "en": "Creamy fresh key lime pie with crunchy biscuit crust.",
+        "fr": "Tarte crémeuse au citron vert frais sur croûte sablée croustillante."
+      },
+      "price": 70,
+      "order": 36,
+      "isActive": true
+    },
+    {
+      "id": "prod_1790349770333",
+      "categoryId": "dulce-remedio",
+      "name": {
+        "es": "Pan Francés Curandero",
+        "en": "Curandero Stuffed French Toast",
+        "fr": "Pain Perdu Curandero Farcis"
+      },
+      "description": {
+        "es": "Relleno de crema suave con frutos rojos frescos.",
+        "en": "Stuffed with sweet cream and fresh wild berries.",
+        "fr": "Garni de crème onctueuse et de fruits des bois frais."
+      },
+      "price": 85,
+      "order": 37,
       "isActive": true
     }
   ]

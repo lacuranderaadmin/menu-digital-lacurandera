@@ -20,6 +20,7 @@ import {
 import { checkAdminAuth, logoutAdmin } from './admin-auth.js';
 import { showToast } from './ui.js';
 import { initPhysicalMenuAdmin } from './physical-menu-editor.js';
+import { translateCulinaryText } from './culinary-translator.js?v=30.0';
 
 let restaurantId = 'la-curandera';
 let activeBranchId = 'metepec';
@@ -1079,6 +1080,14 @@ function openAddProductModal() {
   if (priceInput) priceInput.value = '';
   const descInput = document.getElementById('prod-desc-es');
   if (descInput) descInput.value = '';
+  const nameEnInput = document.getElementById('prod-name-en');
+  if (nameEnInput) nameEnInput.value = '';
+  const nameFrInput = document.getElementById('prod-name-fr');
+  if (nameFrInput) nameFrInput.value = '';
+  const descEnInput = document.getElementById('prod-desc-en');
+  if (descEnInput) descEnInput.value = '';
+  const descFrInput = document.getElementById('prod-desc-fr');
+  if (descFrInput) descFrInput.value = '';
   const visInput = document.getElementById('prod-modal-visible');
   if (visInput) visInput.checked = true;
 
@@ -1156,6 +1165,22 @@ function openEditProductModal(product) {
   if (priceInput) priceInput.value = currentPrice;
   const descInput = document.getElementById('prod-desc-es');
   if (descInput) descInput.value = currentDesc;
+
+  const currentNameEn = (product.name?.en && product.name.en.toLowerCase() !== currentName.toLowerCase()) ? product.name.en : '';
+  const currentNameFr = product.name?.fr || '';
+  const currentDescEn = (override.descriptionOverride?.en && override.descriptionOverride.en.toLowerCase() !== currentDesc.toLowerCase()) 
+    ? override.descriptionOverride.en 
+    : (product.description?.en && product.description.en.toLowerCase() !== currentDesc.toLowerCase() ? product.description.en : '');
+  const currentDescFr = override.descriptionOverride?.fr || product.description?.fr || '';
+
+  const nameEnInput = document.getElementById('prod-name-en');
+  if (nameEnInput) nameEnInput.value = currentNameEn;
+  const nameFrInput = document.getElementById('prod-name-fr');
+  if (nameFrInput) nameFrInput.value = currentNameFr;
+  const descEnInput = document.getElementById('prod-desc-en');
+  if (descEnInput) descEnInput.value = currentDescEn;
+  const descFrInput = document.getElementById('prod-desc-fr');
+  if (descFrInput) descFrInput.value = currentDescFr;
 
   const catSelect = document.getElementById('prod-category-select');
   if (catSelect) {
@@ -1251,10 +1276,35 @@ async function handleProductSave(form) {
     const existingImageFallback = (existing && existing.imageFallback && !isLogoImage(existing.imageFallback)) ? existing.imageFallback : null;
     const existingVideoUrl = (existing && existing.videoUrl) ? existing.videoUrl : null;
 
+    const inputNameEn = document.getElementById('prod-name-en')?.value.trim();
+    const inputNameFr = document.getElementById('prod-name-fr')?.value.trim();
+    const inputDescEn = document.getElementById('prod-desc-en')?.value.trim();
+    const inputDescFr = document.getElementById('prod-desc-fr')?.value.trim();
+
+    let finalNameEn = inputNameEn || (existing?.name?.en && existing.name.en.toLowerCase() !== nameEs.toLowerCase() ? existing.name.en : '');
+    if (!finalNameEn || finalNameEn.toLowerCase() === nameEs.toLowerCase()) {
+      finalNameEn = translateCulinaryText(nameEs, 'en', true);
+    }
+
+    let finalNameFr = inputNameFr || (existing?.name?.fr ? existing.name.fr : '');
+    if (!finalNameFr || finalNameFr.toLowerCase() === nameEs.toLowerCase()) {
+      finalNameFr = translateCulinaryText(nameEs, 'fr', true);
+    }
+
+    let finalDescEn = inputDescEn || (existing?.description?.en && existing.description.en.toLowerCase() !== descEs.toLowerCase() ? existing.description.en : '');
+    if (descEs && (!finalDescEn || finalDescEn.toLowerCase() === descEs.toLowerCase())) {
+      finalDescEn = translateCulinaryText(descEs, 'en', false);
+    }
+
+    let finalDescFr = inputDescFr || (existing?.description?.fr ? existing.description.fr : '');
+    if (descEs && (!finalDescFr || finalDescFr.toLowerCase() === descEs.toLowerCase())) {
+      finalDescFr = translateCulinaryText(descEs, 'fr', false);
+    }
+
     const productData = {
       id: productId,
-      name: { es: nameEs, en: nameEs, fr: '' },
-      description: { es: descEs, en: descEs, fr: '' },
+      name: { es: nameEs, en: finalNameEn || nameEs, fr: finalNameFr || nameEs },
+      description: { es: descEs, en: finalDescEn || descEs, fr: finalDescFr || descEs },
       price: price,
       categoryId: categoryId,
       weight: weight,
@@ -1288,7 +1338,7 @@ async function handleProductSave(form) {
         allergens: allergens,
         tags: tags,
         priceOverride: price,
-        descriptionOverride: { es: descEs, en: descEs, fr: '' },
+        descriptionOverride: { es: descEs, en: finalDescEn || descEs, fr: finalDescFr || descEs },
         weight: weight,
         volume: volume,
         updatedAt: serverTimestamp()
@@ -1315,7 +1365,7 @@ async function handleProductSave(form) {
       allergens: allergens,
       tags: tags,
       priceOverride: price,
-      descriptionOverride: { es: descEs, en: descEs, fr: '' },
+      descriptionOverride: { es: descEs, en: finalDescEn || descEs, fr: finalDescFr || descEs },
       weight: weight,
       volume: volume
     };
@@ -1470,6 +1520,8 @@ function resetCategoryForm() {
 
   const idInput = document.getElementById('cat-form-id');
   if (idInput) idInput.value = '';
+  const nameFrInput = document.getElementById('cat-form-name-fr');
+  if (nameFrInput) nameFrInput.value = '';
 
   const titleEl = document.getElementById('cat-form-title');
   if (titleEl) titleEl.textContent = '+ Nueva Categoría';
@@ -1862,12 +1914,15 @@ function editCategory(cat) {
   const submitBtn = document.getElementById('btn-submit-category');
 
   const nameEs = cat.name?.es || cat.name || '';
-  const nameEn = cat.name?.en || '';
+  const nameEn = (cat.name?.en && cat.name.en.toLowerCase() !== nameEs.toLowerCase()) ? cat.name.en : '';
+  const nameFr = cat.name?.fr || '';
   const emoji = cat.emoji || getCategoryEmoji(cat);
 
   if (idInput) idInput.value = cat.id;
   if (nameEsInput) nameEsInput.value = nameEs;
   if (nameEnInput) nameEnInput.value = nameEn;
+  const nameFrInput = document.getElementById('cat-form-name-fr');
+  if (nameFrInput) nameFrInput.value = nameFr;
   if (sectionSelect) sectionSelect.value = cat.section || 'desayuno';
   if (orderInput) orderInput.value = cat.order !== undefined ? cat.order : '';
   if (emojiInput) emojiInput.value = emoji;
@@ -1894,6 +1949,7 @@ async function handleCategorySave() {
   const id = document.getElementById('cat-form-id').value.trim();
   const nameEs = document.getElementById('cat-form-name-es').value.trim();
   const nameEn = document.getElementById('cat-form-name-en').value.trim();
+  const nameFr = document.getElementById('cat-form-name-fr')?.value.trim();
   const section = document.getElementById('cat-form-section').value;
   const rawOrder = document.getElementById('cat-form-order').value;
   const emoji = document.getElementById('cat-form-emoji-input').value.trim() || '🍽️';
@@ -1916,6 +1972,18 @@ async function handleCategorySave() {
       ? (nameEs.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || `cat_${Date.now()}`)
       : id;
 
+    const existingCat = !isNew ? categories.find(c => c.id === catId || c.slug === catId) : null;
+
+    let finalNameEn = nameEn || (existingCat?.name?.en && existingCat.name.en.toLowerCase() !== nameEs.toLowerCase() ? existingCat.name.en : '');
+    if (!finalNameEn || finalNameEn.toLowerCase() === nameEs.toLowerCase()) {
+      finalNameEn = translateCulinaryText(nameEs, 'en', true);
+    }
+
+    let finalNameFr = nameFr || (existingCat?.name?.fr ? existingCat.name.fr : '');
+    if (!finalNameFr || finalNameFr.toLowerCase() === nameEs.toLowerCase()) {
+      finalNameFr = translateCulinaryText(nameEs, 'fr', true);
+    }
+
     const order = rawOrder !== '' ? Number(rawOrder) : (categories.length + 1);
 
     const catData = {
@@ -1923,8 +1991,8 @@ async function handleCategorySave() {
       slug: catId,
       name: {
         es: nameEs,
-        en: nameEn || nameEs,
-        fr: ''
+        en: finalNameEn || nameEs,
+        fr: finalNameFr || nameEs
       },
       section: section,
       order: order,

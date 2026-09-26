@@ -3,13 +3,17 @@
  * Soporte para Español (ES), Inglés (EN) y Francés (FR)
  */
 
-let currentLang = localStorage.getItem('lc-lang') || 'es';
-const translations = {};
+const globalScope = typeof window !== 'undefined' ? window : globalThis;
+globalScope.__LC_TRANSLATIONS__ = globalScope.__LC_TRANSLATIONS__ || {};
+const translations = globalScope.__LC_TRANSLATIONS__;
+let currentLang = globalScope.__LC_CURRENT_LANG__ || (typeof localStorage !== 'undefined' ? localStorage.getItem('lc-lang') : null) || 'es';
+globalScope.__LC_CURRENT_LANG__ = currentLang;
 const availableLangs = ['es', 'en', 'fr'];
 
 export async function initI18n() {
   if (!availableLangs.includes(currentLang)) {
     currentLang = 'es';
+    globalScope.__LC_CURRENT_LANG__ = 'es';
   }
 
   // 1. Carga instantánea desde caché local (0ms de latencia)
@@ -28,7 +32,7 @@ export async function initI18n() {
   // 2. Carga en paralelo (Promise.all) de los archivos de traducción para máxima velocidad
   const fetchPromises = availableLangs.map(async (lang) => {
     try {
-      const res = await fetch(`i18n/${lang}.json`);
+      const res = await fetch(`i18n/${lang}.json?v=30.0`);
       if (res.ok) {
         const data = await res.json();
         translations[lang] = data;
@@ -36,7 +40,7 @@ export async function initI18n() {
           localStorage.setItem(`lc_i18n_${lang}`, JSON.stringify(data));
         } catch (e) {}
       } else {
-        const fallbackRes = await fetch(`/i18n/${lang}.json`);
+        const fallbackRes = await fetch(`/i18n/${lang}.json?v=30.0`);
         if (fallbackRes.ok) {
           const data = await fallbackRes.json();
           translations[lang] = data;
@@ -56,24 +60,62 @@ export async function initI18n() {
 }
 
 export function getLanguage() {
-  return currentLang || localStorage.getItem('lc-lang') || 'es';
+  return globalScope.__LC_CURRENT_LANG__ || currentLang || (typeof localStorage !== 'undefined' ? localStorage.getItem('lc-lang') : null) || 'es';
 }
 
 export async function setLanguage(lang) {
   if (!availableLangs.includes(lang)) return;
   currentLang = lang;
-  localStorage.setItem('lc-lang', lang);
-  window.__LC_CURRENT_LANG__ = lang;
+  globalScope.__LC_CURRENT_LANG__ = lang;
+  if (typeof localStorage !== 'undefined') {
+    localStorage.setItem('lc-lang', lang);
+  }
+
+  // Actualizar inmediatamente estado visual de botones para retroalimentación instantánea (0ms)
+  if (typeof document !== 'undefined') {
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      const btnLang = btn.getAttribute('data-lang');
+      if (btnLang === currentLang) {
+        btn.classList.add('active');
+      } else {
+        btn.classList.remove('active');
+      }
+    });
+  }
+
+  // Asegurar que las traducciones del idioma seleccionado estén cargadas
+  if (!translations[lang]) {
+    try {
+      const res = await fetch(`i18n/${lang}.json?v=30.0`);
+      if (res.ok) {
+        translations[lang] = await res.json();
+        try {
+          localStorage.setItem(`lc_i18n_${lang}`, JSON.stringify(translations[lang]));
+        } catch (e) {}
+      } else {
+        const fallbackRes = await fetch(`/i18n/${lang}.json?v=30.0`);
+        if (fallbackRes.ok) {
+          translations[lang] = await fallbackRes.json();
+        }
+      }
+    } catch (e) {}
+  }
 
   // Animación rápida y limpia
-  document.body.style.opacity = '0.92';
-  document.body.style.transition = 'opacity 0.08s ease';
+  if (typeof document !== 'undefined' && document.body) {
+    document.body.style.opacity = '0.94';
+    document.body.style.transition = 'opacity 0.08s ease';
+  }
 
   setTimeout(() => {
     applyStaticTranslations();
-    window.dispatchEvent(new CustomEvent('langChanged', { detail: { lang } }));
-    document.body.style.opacity = '1';
-  }, 40);
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('langChanged', { detail: { lang } }));
+    }
+    if (typeof document !== 'undefined' && document.body) {
+      document.body.style.opacity = '1';
+    }
+  }, 35);
 }
 
 export function t(path, fallback = '') {
@@ -130,6 +172,7 @@ export function getLocalizedText(field, lang = getLanguage()) {
 }
 
 export function applyStaticTranslations() {
+  if (typeof document === 'undefined') return;
   const elements = document.querySelectorAll('[data-i18n]');
   elements.forEach(el => {
     const key = el.getAttribute('data-i18n');

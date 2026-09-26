@@ -2,7 +2,7 @@
  * LA CURANDERA — UI Interactions & Microanimations
  */
 
-import { getLocalizedText, t, getLanguage } from './i18n.js';
+import { getLocalizedText, t, getLanguage } from './i18n.js?v=30.0';
 import { firebaseConfig } from './firebase-config.js';
 
 let modalActive = false;
@@ -267,10 +267,12 @@ export function openProductModal(product) {
   const allergensContainer = modalBackdrop.querySelector('.modal-allergens-list');
 
   const lang = getLanguage();
-  const title = getLocalizedText(product.name, lang);
-  const desc = (product.description && typeof product.description === 'object')
-    ? getLocalizedText(product.description, lang)
-    : (product.effectiveDesc !== undefined ? product.effectiveDesc : getLocalizedText(product.description, lang));
+  const title = (product.effectiveName !== undefined && product.effectiveName !== '')
+    ? product.effectiveName
+    : getLocalizedText(product.name, lang);
+  const desc = (product.effectiveDesc !== undefined && product.effectiveDesc !== '')
+    ? product.effectiveDesc
+    : getLocalizedText(product.description, lang);
   const price = product.effectivePrice !== undefined ? product.effectivePrice : product.price;
   const isAvailable = product.isAvailable !== false;
   const isPromo = product.isPromo === true;

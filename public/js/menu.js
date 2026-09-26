@@ -12,14 +12,15 @@ import {
   orderBy, 
   isConfigured 
 } from './firebase-init.js';
-import { getLocalizedText, t, getLanguage } from './i18n.js';
+import { getLocalizedText, t, getLanguage } from './i18n.js?v=30.0';
+import { translateCulinaryText } from './culinary-translator.js?v=30.0';
 import { 
   openProductModal, 
   setupReviewLinks, 
   setupWhatsAppFAB, 
   updateMealSwitchUI, 
   getInitialMealMode 
-} from './ui.js?v=27.0';
+} from './ui.js?v=30.0';
 
 let restaurantId = 'la-curandera';
 let branchId = 'metepec';
@@ -29,6 +30,180 @@ let allProducts = [];
 let allOverrides = {};
 let searchQuery = '';
 let currentMealMode = 'desayunos'; // 'desayunos' | 'comida'
+let fallbackCatalog = { categories: [], products: [] };
+
+try {
+  const cachedMaster = localStorage.getItem('lc_master_catalog_v30');
+  if (cachedMaster) {
+    const parsed = JSON.parse(cachedMaster);
+    if (parsed && parsed.categories && parsed.products) {
+      fallbackCatalog = parsed;
+    }
+  }
+} catch (e) {}
+
+// Sincronizar re-renderizado inmediato al cambiar de idioma en cualquier momento
+window.addEventListener('langChanged', () => {
+  renderCategoriesNav();
+  renderMenu();
+});
+
+const CATEGORY_SECTION_KEY_MAP = {
+  'pa-curar-el-alma': 'paCurarElAlma',
+  'lo-enchi-loso': 'loEnchiloso',
+  'tacos-dorados': 'tacosDorados',
+  'pa-caldear': 'paCaldear',
+  'sandwich-y-algo-mas': 'sandwichYMas',
+  'pa-los-peques': 'paLosPeques',
+  'dulce-remedio': 'dulceRemedio',
+  'remedio-dulce': 'dulceRemedio',
+  'pa-calentar-el-espiritu': 'paCalentarElEspiritu',
+  'jugueria-la-curandera': 'jugueria',
+  'jugueria': 'jugueria',
+  'bebidas-sin-alcohol': 'bebidasSinAlcohol',
+  'mockteleria': 'mockteleria',
+  'sabores-de-cuaresma': 'saboresDeCuaresma',
+  'pa-empezar': 'paEmpezar',
+  'pa-cuidarte': 'paCuidarte',
+  'sopas-y-pastas': 'sopasYPastas',
+  'snacks': 'snacks',
+  'platos-fuertes': 'platosFuertes',
+  'taqueria-la-curandera': 'taqueria',
+  'taqueria': 'taqueria',
+  'cortes': 'cortes',
+  'burritos': 'burritos',
+  'burguers-y-jocho': 'burguersYJocho',
+  'pa-los-morrillos': 'paLosMorrillos',
+  'cantina-la-curandera': 'cantina',
+  'cantina': 'cantina'
+};
+
+export function getCategoryLocalizedName(category, lang = getLanguage()) {
+  if (!category) return '';
+  const targetLang = lang || getLanguage() || 'es';
+
+  if (targetLang === 'es') {
+    return getLocalizedText(category.name, 'es');
+  }
+
+  // 1. Si la categoría tiene un nombre específico en ese idioma y no es idéntico al español
+  const rawCatName = category.name;
+  if (rawCatName && typeof rawCatName === 'object') {
+    const directVal = rawCatName[targetLang];
+    const esVal = rawCatName.es || '';
+    if (directVal && directVal.trim() !== '' && directVal.trim().toLowerCase() !== esVal.trim().toLowerCase()) {
+      return directVal.trim();
+    }
+  }
+
+  // 2. Buscar en el catálogo local de respaldo maestro (data/catalog.json)
+  const catMatch = fallbackCatalog.categories?.find(c => c.id === category.id || c.slug === category.slug);
+  if (catMatch && catMatch.name && typeof catMatch.name === 'object') {
+    const catVal = catMatch.name[targetLang];
+    const catEs = catMatch.name.es || '';
+    if (catVal && catVal.trim() !== '' && catVal.trim().toLowerCase() !== catEs.trim().toLowerCase()) {
+      return catVal.trim();
+    }
+  }
+
+  // 3. Buscar en i18n/en.json o fr.json mediante el mapa de secciones
+  const slug = category.slug || category.id || '';
+  const sectionKey = CATEGORY_SECTION_KEY_MAP[slug];
+  if (sectionKey) {
+    const sectionTrans = t(`sections.${sectionKey}`);
+    if (sectionTrans && !sectionTrans.startsWith('sections.')) {
+      return sectionTrans;
+    }
+  }
+
+  // 4. Si targetLang es francés, intentar en inglés antes de caer a español
+  if (targetLang === 'fr') {
+    const enVal = getCategoryLocalizedName(category, 'en');
+    const esVal = getCategoryLocalizedName(category, 'es');
+    if (enVal && enVal.trim().toLowerCase() !== esVal.trim().toLowerCase()) {
+      return enVal;
+    }
+  }
+
+  // 5. Traductor culinario automático para categorías nuevas o editadas
+  const esCatName = getLocalizedText(category.name, 'es') || category.id || '';
+  const translatedCat = translateCulinaryText(esCatName, targetLang, true);
+  if (translatedCat && translatedCat.trim() !== '') {
+    return translatedCat.trim();
+  }
+
+  // 6. Fallback final a español
+  return esCatName;
+}
+
+export function getProductLocalizedField(product, fieldName, lang = getLanguage()) {
+  if (!product) return '';
+  const targetLang = lang || getLanguage() || 'es';
+  const override = allOverrides[product.id];
+  const overrideField = override ? override[`${fieldName}Override`] : null;
+
+  if (targetLang === 'es') {
+    if (overrideField) {
+      const text = getLocalizedText(overrideField, 'es');
+      if (text && text.trim() !== '') return text;
+    }
+    return getLocalizedText(product[fieldName], 'es');
+  }
+
+  // Si estamos en EN o FR:
+  // 1. ¿El override tiene una traducción REAL para targetLang (que no sea copia del español)?
+  if (overrideField && typeof overrideField === 'object') {
+    const overrideVal = overrideField[targetLang];
+    const overrideEs = overrideField.es || '';
+    if (overrideVal && overrideVal.trim() !== '' && overrideVal.trim().toLowerCase() !== overrideEs.trim().toLowerCase()) {
+      return overrideVal.trim();
+    }
+  }
+
+  // 2. ¿El producto cargado tiene traducción auténtica para targetLang?
+  if (product[fieldName] && typeof product[fieldName] === 'object') {
+    const prodVal = product[fieldName][targetLang];
+    const prodEs = product[fieldName].es || '';
+    if (prodVal && prodVal.trim() !== '' && prodVal.trim().toLowerCase() !== prodEs.trim().toLowerCase()) {
+      return prodVal.trim();
+    }
+  }
+
+  // 3. Buscar en el catálogo local de respaldo (data/catalog.json) que contiene el diccionario maestro
+  const catalogMatch = fallbackCatalog.products?.find(p => p.id === product.id);
+  if (catalogMatch && catalogMatch[fieldName] && typeof catalogMatch[fieldName] === 'object') {
+    const catVal = catalogMatch[fieldName][targetLang];
+    const catEs = catalogMatch[fieldName].es || '';
+    if (catVal && catVal.trim() !== '' && catVal.trim().toLowerCase() !== catEs.trim().toLowerCase()) {
+      return catVal.trim();
+    }
+  }
+
+  // 4. Si targetLang es 'fr', intentar obtener en 'en' antes de volver a español
+  if (targetLang === 'fr') {
+    const enVal = getProductLocalizedField(product, fieldName, 'en');
+    const esVal = getProductLocalizedField(product, fieldName, 'es');
+    if (enVal && enVal.trim().toLowerCase() !== esVal.trim().toLowerCase()) {
+      return enVal;
+    }
+  }
+
+  // 5. Traductor culinario dinámico para productos nuevos o editados en tiempo real
+  const esText = (overrideField ? getLocalizedText(overrideField, 'es') : '') || getLocalizedText(product[fieldName], 'es');
+  if (esText && esText.trim() !== '') {
+    const autoTrans = translateCulinaryText(esText, targetLang, fieldName === 'name');
+    if (autoTrans && autoTrans.trim() !== '') {
+      return autoTrans.trim();
+    }
+  }
+
+  // 6. Fallback a español (override si existe, o valor base)
+  if (overrideField) {
+    const text = getLocalizedText(overrideField, 'es');
+    if (text && text.trim() !== '') return text;
+  }
+  return getLocalizedText(product[fieldName], 'es');
+}
 
 export function isDishLogo(url) {
   return typeof url === 'string' && (url.includes('logo/logo.png') || url.endsWith('/logo.png') || url === 'assets/logo/logo.png' || url === '../assets/logo/logo.png');
@@ -313,28 +488,47 @@ function setupRealtimeListeners() {
  */
 async function loadLocalFallbackData() {
   try {
-    // 1. Carga instantánea de 0ms desde localStorage si existe caché previo
-    const cachedCatalog = localStorage.getItem('lc_catalog_cache_v4');
-    if (cachedCatalog) {
+    // 1. Cargar diccionario maestro desde caché dedicada (0ms)
+    const cachedMaster = localStorage.getItem('lc_master_catalog_v30');
+    if (cachedMaster) {
       try {
-        const data = JSON.parse(cachedCatalog);
-        if (data.categories && data.products && allCategories.length === 0) {
-          allCategories = data.categories;
-          allProducts = data.products;
-          allOverrides = {};
-          renderCategoriesNav();
-          renderMenu();
+        const data = JSON.parse(cachedMaster);
+        if (data.categories && data.products) {
+          fallbackCatalog = data;
         }
       } catch (e) {}
     }
 
-    // 2. Fetch paralelo en segundo plano y actualización silenciosa (Stale-While-Revalidate)
-    const res = await fetch('data/catalog.json?v=27.0');
+    // 2. Carga instantánea de 0ms desde localStorage si existe caché previo de catálogo
+    const cachedCatalog = localStorage.getItem('lc_catalog_cache_v4');
+    if (cachedCatalog) {
+      try {
+        const data = JSON.parse(cachedCatalog);
+        if (data.categories && data.products) {
+          if (allCategories.length === 0) {
+            allCategories = data.categories;
+            allProducts = data.products;
+            allOverrides = {};
+            renderCategoriesNav();
+            renderMenu();
+          }
+        }
+      } catch (e) {}
+    }
+
+    // 3. Fetch paralelo en segundo plano y actualización silenciosa (Stale-While-Revalidate)
+    const res = await fetch('data/catalog.json?v=30.0');
     if (res.ok) {
       const data = await res.json();
-      allCategories = data.categories || [];
-      allProducts = data.products || [];
-      allOverrides = {};
+      fallbackCatalog = data;
+      try {
+        localStorage.setItem('lc_master_catalog_v30', JSON.stringify(data));
+      } catch (e) {}
+      if (allCategories.length === 0) {
+        allCategories = data.categories || [];
+        allProducts = data.products || [];
+        allOverrides = {};
+      }
       try {
         localStorage.setItem('lc_catalog_cache_v4', JSON.stringify(data));
       } catch (e) {}
@@ -374,7 +568,7 @@ export function renderCategoriesNav() {
     btn.setAttribute('data-target', `cat-${cat.id || cat.slug}`);
 
     const iconSrc = cat.iconSvg || `assets/icons/${cat.icon || 'maguey'}.svg`;
-    const catName = getLocalizedText(cat.name);
+    const catName = getCategoryLocalizedName(cat, getLanguage());
 
     btn.innerHTML = `
       <img src="${iconSrc}" class="cat-icon" alt="" onerror="this.src='assets/icons/maguey.svg'"/>
@@ -530,7 +724,7 @@ export function renderVerticalCategoriesDock(filteredCats) {
     btn.className = `dock-emoji-btn ${index === 0 ? 'active' : ''}`;
     const targetId = `cat-${cat.id || cat.slug}`;
     btn.setAttribute('data-target', targetId);
-    const catName = getLocalizedText(cat.name);
+    const catName = getCategoryLocalizedName(cat, getLanguage());
     const emoji = getCategoryEmoji(cat);
     btn.setAttribute('aria-label', catName);
     btn.setAttribute('title', catName);
@@ -694,15 +888,15 @@ function evaluateProductMatch(product, categoryName, query) {
   const tokens = query.trim().split(/\s+/).map(removeAccents).filter(t => t.length > 0);
   if (tokens.length === 0) return { matches: true, score: 0 };
 
-  const currentName = removeAccents(getLocalizedText(product.name));
-  const nameEs = removeAccents(getLocalizedText(product.name, 'es'));
-  const nameEn = removeAccents(getLocalizedText(product.name, 'en'));
-  const nameFr = removeAccents(getLocalizedText(product.name, 'fr'));
+  const currentName = removeAccents(getProductLocalizedField(product, 'name'));
+  const nameEs = removeAccents(getProductLocalizedField(product, 'name', 'es'));
+  const nameEn = removeAccents(getProductLocalizedField(product, 'name', 'en'));
+  const nameFr = removeAccents(getProductLocalizedField(product, 'name', 'fr'));
 
-  const currentDesc = removeAccents(getLocalizedText(product.description));
-  const descEs = removeAccents(getLocalizedText(product.description, 'es'));
-  const descEn = removeAccents(getLocalizedText(product.description, 'en'));
-  const descFr = removeAccents(getLocalizedText(product.description, 'fr'));
+  const currentDesc = removeAccents(getProductLocalizedField(product, 'description'));
+  const descEs = removeAccents(getProductLocalizedField(product, 'description', 'es'));
+  const descEn = removeAccents(getProductLocalizedField(product, 'description', 'en'));
+  const descFr = removeAccents(getProductLocalizedField(product, 'description', 'fr'));
 
   const catStr = removeAccents(categoryName || '');
   const tagsStr = (product.tags || []).map(removeAccents).join(' ');
@@ -782,7 +976,7 @@ export function renderMenu() {
   let visibleProductCount = 0;
 
   activeCategories.forEach(category => {
-    const catName = getLocalizedText(category.name);
+    const catName = getCategoryLocalizedName(category, currentLang);
 
     // Obtener y filtrar productos de esta categoría con el buscador inteligente
     const categoryProducts = allProducts.filter(p => {
@@ -845,14 +1039,11 @@ export function renderMenu() {
         ? override.priceOverride 
         : product.price;
 
-      const rawProductDesc = (override && override.descriptionOverride)
-        ? getLocalizedText(override.descriptionOverride)
-        : getLocalizedText(product.description);
+      // Descripción efectiva multilingüe con respaldo inteligente
+      const rawProductDesc = getProductLocalizedField(product, 'description', currentLang);
 
-      // Nombre efectivo (permite override del admin o nombre maestro)
-      const rawProductName = (override && override.nameOverride)
-        ? getLocalizedText(override.nameOverride)
-        : getLocalizedText(product.name);
+      // Nombre efectivo multilingüe (permite override o catálogo auténtico)
+      const rawProductName = getProductLocalizedField(product, 'name', currentLang);
 
       // Subrayado y resaltado inteligente de coincidencias de búsqueda
       const productNameHtml = searchQuery 
@@ -1032,6 +1223,7 @@ export function renderMenu() {
       card.addEventListener('click', () => {
         openProductModal({
           ...product,
+          effectiveName: rawProductName,
           name: rawProductName,
           effectivePrice,
           effectiveDesc: rawProductDesc,
