@@ -1089,6 +1089,11 @@
   border: 1.5px solid #1C1714;
   box-shadow: 1.5px 1.5px 0px #1C1714;
   white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

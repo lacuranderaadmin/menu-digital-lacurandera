@@ -6,23 +6,69 @@
 
 @font-face {
   font-family: 'Gotham-Bold';
-  src: url('../assets/fonts/Gotham-Bold.ttf') format('truetype');
-  font-weight: 700;
+  src: url('../assets/fonts/Gotham-Bold.woff2?v=32.0') format('woff2'),
+       url('../assets/fonts/Gotham-Bold.woff?v=32.0') format('woff'),
+       url('../assets/fonts/Gotham-Bold.ttf?v=32.0') format('truetype');
+  font-weight: 100 900;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
   font-family: 'Gotham';
-  src: url('../assets/fonts/Gotham-Bold.ttf') format('truetype');
+  src: url('../assets/fonts/Gotham-Bold.woff2?v=32.0') format('woff2'),
+       url('../assets/fonts/Gotham-Bold.woff?v=32.0') format('woff'),
+       url('../assets/fonts/Gotham-Bold.ttf?v=32.0') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Explicit weight aliases for robust Safari iOS matching */
+@font-face {
+  font-family: 'Gotham-Bold';
+  src: url('../assets/fonts/Gotham-Bold.woff2?v=32.0') format('woff2'),
+       url('../assets/fonts/Gotham-Bold.woff?v=32.0') format('woff'),
+       url('../assets/fonts/Gotham-Bold.ttf?v=32.0') format('truetype');
   font-weight: 700;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
+  font-family: 'Gotham-Bold';
+  src: url('../assets/fonts/Gotham-Bold.woff2?v=32.0') format('woff2'),
+       url('../assets/fonts/Gotham-Bold.woff?v=32.0') format('woff'),
+       url('../assets/fonts/Gotham-Bold.ttf?v=32.0') format('truetype');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Gotham-Bold';
+  src: url('../assets/fonts/Gotham-Bold.woff2?v=32.0') format('woff2'),
+       url('../assets/fonts/Gotham-Bold.woff?v=32.0') format('woff'),
+       url('../assets/fonts/Gotham-Bold.ttf?v=32.0') format('truetype');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Gotham-Bold';
+  src: url('../assets/fonts/Gotham-Bold.woff2?v=32.0') format('woff2'),
+       url('../assets/fonts/Gotham-Bold.woff?v=32.0') format('woff'),
+       url('../assets/fonts/Gotham-Bold.ttf?v=32.0') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
   font-family: 'Hansief';
-  src: url('../assets/fonts/Hansief.ttf') format('truetype');
+  src: url('../assets/fonts/Hansief.woff2?v=32.0') format('woff2'),
+       url('../assets/fonts/Hansief.ttf?v=32.0') format('truetype');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
