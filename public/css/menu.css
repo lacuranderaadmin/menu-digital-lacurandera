@@ -387,7 +387,7 @@
   padding: 0.85rem 3rem 0.85rem 3.2rem;
   border: 2.5px solid var(--lc-negro);
   border-radius: var(--radius-pill);
-  font-family: var(--font-title);
+  font-family: 'Montserrat', var(--font-title);
   font-size: 0.92rem;
   font-weight: 600;
   color: var(--lc-negro);
@@ -403,7 +403,7 @@
 
 .search-input::placeholder,
 .search-input::-webkit-input-placeholder {
-  font-family: inherit;
+  font-family: 'Montserrat', -apple-system, sans-serif !important;
   color: #8C7E74;
   font-weight: 500;
   font-size: 0.88rem;

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lacurandera-v9';
+const CACHE_NAME = 'lacurandera-v16';
 const PRECACHE_ASSETS = [
   './',
   './index.html',
@@ -7,7 +7,6 @@ const PRECACHE_ASSETS = [
   './css/base.css',
   './css/components.css',
   './css/menu.css',
-  './css/physical-menu.css',
   './js/i18n.js',
   './js/ui.js',
   './js/menu.js',
@@ -40,8 +39,22 @@ self.addEventListener('fetch', (e) => {
   const url = new URL(e.request.url);
   if (url.origin !== self.location.origin) return;
 
-  // Network-First para páginas (document / navigation) para reflejar cambios en tiempo real
-  if (e.request.mode === 'navigate' || e.request.destination === 'document') {
+  // Bypassear absolutamente el panel administrativo /admin/ y editores para reflejo inmediato en tiempo real
+  if (url.pathname.includes('/admin') || url.pathname.includes('admin-dashboard') || url.pathname.includes('physical-menu')) {
+    return;
+  }
+
+  // Network-First para páginas (document / navigation) y archivos de código/datos para reflejar cambios en tiempo real
+  if (
+    e.request.mode === 'navigate' ||
+    e.request.destination === 'document' ||
+    e.request.destination === 'script' ||
+    e.request.destination === 'style' ||
+    url.pathname.endsWith('.html') ||
+    url.pathname.endsWith('.js') ||
+    url.pathname.endsWith('.css') ||
+    url.pathname.endsWith('.json')
+  ) {
     e.respondWith(
       fetch(e.request).then(res => {
         if (res && res.status === 200) {
@@ -54,17 +67,18 @@ self.addEventListener('fetch', (e) => {
     return;
   }
 
-  // Stale-While-Revalidate para recursos estáticos con refresco en segundo plano
+  // Para imágenes, fuentes y medios: Cache-First con fallback a red
   e.respondWith(
     caches.match(e.request).then(cached => {
-      const fetchPromise = fetch(e.request).then(res => {
+      if (cached) return cached;
+      return fetch(e.request).then(res => {
         if (res && res.status === 200) {
           const clone = res.clone();
           caches.open(CACHE_NAME).then(cache => cache.put(e.request, clone));
         }
         return res;
-      }).catch(() => cached);
-      return cached || fetchPromise;
+      }).catch(() => null);
     })
   );
 });
+

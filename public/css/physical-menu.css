@@ -167,6 +167,42 @@
   color: var(--lc-negro);
 }
 
+.btn-phys-sync {
+  background: #2563EB;
+  color: #FFFFFF;
+  box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.4);
+  position: relative;
+}
+
+.btn-phys-sync:hover {
+  background: #1D4ED8;
+  color: #FFFFFF;
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0px rgba(0, 0, 0, 0.5);
+}
+
+.btn-phys-sync:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0px rgba(0, 0, 0, 0.5);
+}
+
+@keyframes pulseSyncGlow {
+  0% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.8), 2px 2px 0px rgba(0,0,0,0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(37, 99, 235, 0), 2px 2px 0px rgba(0,0,0,0.4); }
+  100% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0), 2px 2px 0px rgba(0,0,0,0.4); }
+}
+
+.btn-phys-sync.pulse-needs-update {
+  animation: pulseSyncGlow 1.6s infinite;
+  border-color: #93C5FD;
+  background: #1D4ED8;
+}
+
+.btn-phys-sync.is-syncing {
+  pointer-events: none;
+  opacity: 0.85;
+}
+
 .btn-phys-add-text {
   background: #FFD152;
   color: var(--lc-negro);
@@ -452,6 +488,73 @@
 
 .btn-item-quick.delete:hover {
   background: var(--lc-rojo, #d93838);
+}
+
+/* Individual Positioned Image Item (Fotos de Platillos) */
+.physical-image-item {
+  position: absolute;
+  cursor: move;
+  box-sizing: border-box;
+  border: 2px solid transparent;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  z-index: 4;
+  user-select: none;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.physical-image-item:hover {
+  border-color: rgba(201, 78, 143, 0.7);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+}
+
+.physical-image-item.is-selected {
+  border: 2px solid var(--lc-rosa);
+  box-shadow: 0 0 0 2px rgba(201, 78, 143, 0.35), 0 6px 16px rgba(0, 0, 0, 0.45);
+  z-index: 20;
+}
+
+.physical-image-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  pointer-events: none;
+  border-radius: inherit;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.physical-image-item .phys-img-badge {
+  position: absolute;
+  bottom: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.85);
+  color: #FFF;
+  font-size: 9px;
+  font-family: var(--font-title);
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 3px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+  z-index: 25;
+}
+
+.physical-image-item:hover .phys-img-badge,
+.physical-image-item.is-selected .phys-img-badge {
+  opacity: 1;
+}
+
+.insp-img-size-preset {
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.insp-img-size-preset:hover {
+  background: var(--lc-turquesa);
+  color: var(--lc-negro);
 }
 
 /* --------------------------------------------------------------------------

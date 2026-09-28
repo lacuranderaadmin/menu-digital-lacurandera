@@ -10,11 +10,11 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat+Brush&family=JetBrains+Mono:ital,wght@0,400;0,500;0,700;1,400&family=Kalam:wght@700&family=Montserrat:wght@400;600;700;800;900&display=swap">
 
-  <link rel="stylesheet" href="../css/tokens.css">
-  <link rel="stylesheet" href="../css/base.css">
-  <link rel="stylesheet" href="../css/components.css">
-  <link rel="stylesheet" href="../css/admin.css">
-  <link rel="stylesheet" href="../css/physical-menu.css">
+  <link rel="stylesheet" href="../css/tokens.css?v=35.0">
+  <link rel="stylesheet" href="../css/base.css?v=35.0">
+  <link rel="stylesheet" href="../css/components.css?v=35.0">
+  <link rel="stylesheet" href="../css/admin.css?v=35.0">
+  <link rel="stylesheet" href="../css/physical-menu.css?v=35.0">
 
   <link rel="icon" type="image/png" href="../assets/logo/logo.png">
 </head>
@@ -505,8 +505,8 @@
               <button type="button" id="btn-phys-add-text" class="btn-phys-action btn-phys-add-text" title="Agregar un nuevo texto o platillo a esta hoja">
                 <span>➕ Agregar Texto</span>
               </button>
-              <button type="button" id="btn-phys-reset" class="btn-phys-action btn-phys-reset" title="Restablecer diseño al original de los PDFs oficiales">
-                <span>🔄 Restablecer</span>
+              <button type="button" id="btn-phys-sync" class="btn-phys-action btn-phys-sync" title="Sincronizar y actualizar platillos, precios e imágenes con el Menú Digital">
+                <span>🔄 ACTUALIZAR</span>
               </button>
               <button type="button" id="btn-phys-save" class="btn-phys-action btn-phys-save" title="Guardar modificaciones en la nube">
                 <span>💾 Guardar Cambios</span>
@@ -559,44 +559,83 @@
                   <span>Editar Texto</span>
                 </div>
 
-                <div class="inspector-field">
-                  <label class="inspector-label" for="insp-item-text">Contenido del Texto</label>
-                  <textarea id="insp-item-text" class="inspector-textarea" placeholder="Escribe el texto aquí..."></textarea>
-                </div>
-
-                <div class="inspector-field">
-                  <label class="inspector-label" for="insp-item-font">Tipografía Oficial</label>
-                  <select id="insp-item-font" class="inspector-select">
-                    <option value="Gotham-Bold">Gotham Bold (Platillos y Precios)</option>
-                    <option value="Hansief">Hansief (Títulos Grandes)</option>
-                    <option value="Montserrat">Montserrat (Estilo Menú Digital)</option>
-                    <option value="SourceCodeVariable-Roman">JetBrains Mono / Source (Descripciones)</option>
-                    <option value="Caveat Brush">Caveat Brush (Acentos y Mística)</option>
-                  </select>
-                </div>
-
-                <div class="inspector-row">
+                <!-- Controles específicos para TEXTO -->
+                <div id="inspector-text-fields" style="display:flex; flex-direction:column; gap:0.85rem;">
                   <div class="inspector-field">
-                    <label class="inspector-label" for="insp-item-size">Tamaño (px)</label>
-                    <input type="number" id="insp-item-size" class="inspector-input" min="6" max="120" step="0.5" />
+                    <label class="inspector-label" for="insp-item-text">Contenido del Texto</label>
+                    <textarea id="insp-item-text" class="inspector-textarea" placeholder="Escribe el texto aquí..."></textarea>
                   </div>
+
                   <div class="inspector-field">
-                    <label class="inspector-label">Estilo</label>
-                    <button type="button" id="insp-item-bold" class="btn-admin-secondary" style="padding:0.45rem; font-weight:900;">
-                      Negrita [B]
-                    </button>
+                    <label class="inspector-label" for="insp-item-font">Tipografía Oficial</label>
+                    <select id="insp-item-font" class="inspector-select">
+                      <option value="Gotham-Bold">Gotham Bold (Platillos y Precios)</option>
+                      <option value="Hansief">Hansief (Títulos Grandes)</option>
+                      <option value="Montserrat">Montserrat (Estilo Menú Digital)</option>
+                      <option value="SourceCodeVariable-Roman">JetBrains Mono / Source (Descripciones)</option>
+                      <option value="Caveat Brush">Caveat Brush (Acentos y Mística)</option>
+                    </select>
+                  </div>
+
+                  <div class="inspector-row">
+                    <div class="inspector-field">
+                      <label class="inspector-label" for="insp-item-size">Tamaño (px)</label>
+                      <input type="number" id="insp-item-size" class="inspector-input" min="6" max="120" step="0.5" />
+                    </div>
+                    <div class="inspector-field">
+                      <label class="inspector-label">Estilo</label>
+                      <button type="button" id="insp-item-bold" class="btn-admin-secondary" style="padding:0.45rem; font-weight:900;">
+                        Negrita [B]
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="inspector-field">
+                    <input type="range" id="insp-item-size-range" min="8" max="80" step="1" style="accent-color:var(--lc-rosa);" />
+                  </div>
+
+                  <div class="inspector-field">
+                    <label class="inspector-label" for="insp-item-color">Color del Texto</label>
+                    <div style="display:flex; gap:0.5rem; align-items:center;">
+                      <input type="color" id="insp-item-color" style="width:40px; height:32px; border:none; border-radius:4px; cursor:pointer;" />
+                      <div id="item-color-presets" class="color-presets-row"></div>
+                    </div>
                   </div>
                 </div>
 
-                <div class="inspector-field">
-                  <input type="range" id="insp-item-size-range" min="8" max="80" step="1" style="accent-color:var(--lc-rosa);" />
-                </div>
+                <!-- Controles específicos para IMAGEN DE PLATILLO -->
+                <div id="inspector-image-fields" style="display:none; flex-direction:column; gap:0.85rem;">
+                  <div class="inspector-field">
+                    <label class="inspector-label">Vista Previa de Imagen</label>
+                    <div id="insp-img-preview-box" style="width:100%; height:110px; border-radius:8px; overflow:hidden; border:1.5px solid rgba(255,255,255,0.2); background:#111; display:flex; align-items:center; justify-content:center;">
+                      <img id="insp-img-preview" src="" alt="Platillo" style="width:100%; height:100%; object-fit:cover;" />
+                    </div>
+                    <span id="insp-img-name" style="font-size:0.75rem; color:var(--lc-crema); margin-top:0.35rem; display:block; font-weight:700;"></span>
+                  </div>
 
-                <div class="inspector-field">
-                  <label class="inspector-label" for="insp-item-color">Color del Texto</label>
-                  <div style="display:flex; gap:0.5rem; align-items:center;">
-                    <input type="color" id="insp-item-color" style="width:40px; height:32px; border:none; border-radius:4px; cursor:pointer;" />
-                    <div id="item-color-presets" class="color-presets-row"></div>
+                  <div class="inspector-row">
+                    <div class="inspector-field">
+                      <label class="inspector-label" for="insp-img-width">Ancho (px)</label>
+                      <input type="number" id="insp-img-width" class="inspector-input" min="30" max="600" step="5" />
+                    </div>
+                    <div class="inspector-field">
+                      <label class="inspector-label" for="insp-img-height">Alto (px)</label>
+                      <input type="number" id="insp-img-height" class="inspector-input" min="30" max="600" step="5" />
+                    </div>
+                  </div>
+
+                  <div class="inspector-field">
+                    <label class="inspector-label" for="insp-img-radius">Borde Redondeado</label>
+                    <input type="range" id="insp-img-radius" min="0" max="30" step="2" style="accent-color:var(--lc-rosa);" />
+                  </div>
+
+                  <div class="inspector-field">
+                    <label class="inspector-label">Tamaños Rápidos</label>
+                    <div style="display:flex; gap:0.35rem;">
+                      <button type="button" class="btn-admin-secondary insp-img-size-preset" data-w="90" data-h="65" style="flex:1; padding:0.3rem 0.2rem; font-size:0.7rem;">S (90x65)</button>
+                      <button type="button" class="btn-admin-secondary insp-img-size-preset" data-w="120" data-h="85" style="flex:1; padding:0.3rem 0.2rem; font-size:0.7rem;">M (120x85)</button>
+                      <button type="button" class="btn-admin-secondary insp-img-size-preset" data-w="160" data-h="115" style="flex:1; padding:0.3rem 0.2rem; font-size:0.7rem;">L (160x115)</button>
+                    </div>
                   </div>
                 </div>
 
@@ -928,7 +967,7 @@
   <script src="../js/libs/jspdf.umd.min.js"></script>
 
   <script type="module">
-    import { initAdminDashboard } from '../js/admin-dashboard.js?v=6.0';
+    import { initAdminDashboard } from '../js/admin-dashboard.js?v=36.0';
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', initAdminDashboard);
     } else {

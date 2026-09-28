@@ -186,7 +186,7 @@
   gap: 0.35rem;
   background-color: var(--lc-rosa);
   color: var(--lc-blanco);
-  font-family: var(--font-title);
+  font-family: 'Montserrat', var(--font-title);
   font-size: 0.68rem;
   font-weight: 800;
   padding: 0.25rem 0.72rem;
@@ -1080,7 +1080,7 @@
   flex-shrink: 0;
   background: linear-gradient(135deg, #C94E8F, #B03477);
   color: #FFFFFF;
-  font-family: var(--font-title);
+  font-family: 'Montserrat', var(--font-title);
   font-weight: 900;
   font-size: 1rem;
   letter-spacing: 0.03em;
@@ -1961,7 +1961,7 @@ body[data-meal-mode="comida"] .dock-emoji-btn.active {
 
 /* Nota de divisa y moneda para turistas */
 .footer-currency-notice {
-  font-family: var(--font-title);
+  font-family: 'Montserrat', var(--font-title);
   font-size: 0.82rem;
   font-weight: 700;
   color: var(--lc-durazno);

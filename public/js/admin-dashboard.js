@@ -19,7 +19,7 @@ import {
 } from './firebase-init.js';
 import { checkAdminAuth, logoutAdmin } from './admin-auth.js';
 import { showToast } from './ui.js';
-import { initPhysicalMenuAdmin } from './physical-menu-editor.js';
+import { initPhysicalMenuAdmin } from './physical-menu-editor.js?v=36.0';
 import { translateCulinaryText } from './culinary-translator.js?v=30.0';
 
 let restaurantId = 'la-curandera';
@@ -85,9 +85,24 @@ function broadcastMenuSync(extraData = {}) {
 
     // 2. LocalStorage Event (respaldo 0ms cross-tab y recarga rápida)
     localStorage.setItem('lc_menu_sync_event', JSON.stringify(payload));
+    localStorage.setItem('lc_menu_sync_timestamp', String(payload.timestamp || Date.now()));
   } catch (err) {
     console.warn("Error en broadcastMenuSync:", err);
   }
+}
+
+export function getDigitalMenuCatalog() {
+  return {
+    products: products || [],
+    categories: categories || [],
+    menuOverrides: menuOverrides || {},
+    pendingChanges: pendingChanges || {},
+    activeBranchId: activeBranchId,
+    restaurantId: restaurantId
+  };
+}
+if (typeof window !== 'undefined') {
+  window.getDigitalMenuCatalog = getDigitalMenuCatalog;
 }
 
 const ALLERGEN_OPTIONS = [
@@ -280,11 +295,36 @@ async function loadData() {
         categories = loadedCats;
       }
 
-      // 2. Cargar Productos
+      // 2. Cargar Productos (preservando imágenes de catálogo si Firestore no las incluye)
       const prodSnap = await getDocs(collection(db, `restaurants/${restaurantId}/products`));
       if (!prodSnap.empty) {
+        let fallbackProds = [];
+        try {
+          const res = await fetch('../data/catalog.json');
+          if (res.ok) {
+            const catData = await res.json();
+            fallbackProds = catData.products || [];
+          }
+        } catch (e) {}
+
+        const isDishLogo = (url) => typeof url === 'string' && (url.includes('logo/logo.png') || url.endsWith('/logo.png') || url === 'assets/logo/logo.png');
+
         const loadedProds = [];
-        prodSnap.forEach(d => loadedProds.push({ id: d.id, ...d.data() }));
+        prodSnap.forEach(d => {
+          const data = d.data();
+          const fallbackMatch = fallbackProds.find(p => p.id === d.id);
+          const rawImg = data.imageUrl || fallbackMatch?.imageUrl || null;
+          const validImg = (rawImg && !isDishLogo(rawImg)) ? rawImg : null;
+          const rawFallback = data.imageFallback || fallbackMatch?.imageFallback || null;
+          const validFallback = (rawFallback && !isDishLogo(rawFallback)) ? rawFallback : null;
+
+          loadedProds.push({
+            id: d.id,
+            ...data,
+            imageUrl: validImg,
+            imageFallback: validFallback
+          });
+        });
         loadedProds.sort((a, b) => (a.order !== undefined ? a.order : 999) - (b.order !== undefined ? b.order : 999));
         products = loadedProds;
       }

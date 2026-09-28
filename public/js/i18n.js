@@ -32,7 +32,7 @@ export async function initI18n() {
   // 2. Carga en paralelo (Promise.all) de los archivos de traducción para máxima velocidad
   const fetchPromises = availableLangs.map(async (lang) => {
     try {
-      const res = await fetch(`i18n/${lang}.json?v=30.0`);
+      const res = await fetch(`i18n/${lang}.json?v=35.0`);
       if (res.ok) {
         const data = await res.json();
         translations[lang] = data;
@@ -40,7 +40,7 @@ export async function initI18n() {
           localStorage.setItem(`lc_i18n_${lang}`, JSON.stringify(data));
         } catch (e) {}
       } else {
-        const fallbackRes = await fetch(`/i18n/${lang}.json?v=30.0`);
+        const fallbackRes = await fetch(`/i18n/${lang}.json?v=35.0`);
         if (fallbackRes.ok) {
           const data = await fallbackRes.json();
           translations[lang] = data;

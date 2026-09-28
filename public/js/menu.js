@@ -12,15 +12,15 @@ import {
   orderBy, 
   isConfigured 
 } from './firebase-init.js';
-import { getLocalizedText, t, getLanguage } from './i18n.js?v=30.0';
-import { translateCulinaryText } from './culinary-translator.js?v=30.0';
+import { getLocalizedText, t, getLanguage } from './i18n.js?v=35.0';
+import { translateCulinaryText } from './culinary-translator.js?v=35.0';
 import { 
   openProductModal, 
   setupReviewLinks, 
   setupWhatsAppFAB, 
   updateMealSwitchUI, 
   getInitialMealMode 
-} from './ui.js?v=30.0';
+} from './ui.js?v=35.0';
 
 let restaurantId = 'la-curandera';
 let branchId = 'metepec';

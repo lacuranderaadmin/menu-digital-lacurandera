@@ -7,8 +7,10 @@
 
 import { 
   db, 
+  collection,
   doc, 
   getDoc, 
+  getDocs,
   setDoc, 
   serverTimestamp, 
   isConfigured 
@@ -124,6 +126,17 @@ export async function initPhysicalMenuAdmin() {
   renderPagesList();
   renderCurrentPage();
   renderInspector();
+
+  // Comprobar si hay cambios recientes del Menú Digital pendientes de sincronizar
+  const btnSync = document.getElementById('btn-phys-sync') || document.getElementById('btn-phys-reset');
+  if (btnSync) {
+    const syncTime = localStorage.getItem('lc_menu_sync_timestamp');
+    const lastPhysSync = localStorage.getItem('lc_last_physical_sync');
+    if (syncTime && (!lastPhysSync || Number(syncTime) > Number(lastPhysSync))) {
+      btnSync.classList.add('pulse-needs-update');
+      btnSync.setAttribute('title', 'Hay cambios recientes en el Menú Digital listos para sincronizar');
+    }
+  }
 }
 
 /**
@@ -215,10 +228,26 @@ function setupPhysicalEditorEvents() {
     btnDownload.addEventListener('click', downloadPhysicalMenuPDF);
   }
 
-  // Botón Restablecer Original
-  const btnReset = document.getElementById('btn-phys-reset');
-  if (btnReset) {
-    btnReset.addEventListener('click', resetPhysicalMenuToTemplate);
+  // Botón ACTUALIZAR (Sincronizar información e imágenes con el Menú Digital)
+  const btnSync = document.getElementById('btn-phys-sync') || document.getElementById('btn-phys-reset');
+  if (btnSync) {
+    btnSync.addEventListener('click', syncDigitalMenuToPhysicalMenu);
+
+    // Escuchar notificaciones en tiempo real cuando se hagan cambios en el Editor de Menú Digital
+    try {
+      const menuSyncChannel = new BroadcastChannel('lc_menu_sync');
+      menuSyncChannel.onmessage = (e) => {
+        btnSync.classList.add('pulse-needs-update');
+        btnSync.setAttribute('title', 'Hay cambios recientes en el Menú Digital listos para sincronizar');
+      };
+    } catch (err) {}
+
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'lc_menu_sync_event') {
+        btnSync.classList.add('pulse-needs-update');
+        btnSync.setAttribute('title', 'Hay cambios recientes en el Menú Digital listos para sincronizar');
+      }
+    });
   }
 
   // Botón Agregar Texto
@@ -314,6 +343,44 @@ function setupPhysicalEditorEvents() {
   if (inpPageBg) {
     inpPageBg.addEventListener('input', (e) => updateCurrentPageBg(e.target.value));
   }
+
+  // Inspector de Imágenes de Platillos
+  const inpImgWidth = document.getElementById('insp-img-width');
+  const inpImgHeight = document.getElementById('insp-img-height');
+  const inpImgRadius = document.getElementById('insp-img-radius');
+
+  if (inpImgWidth) {
+    inpImgWidth.addEventListener('input', (e) => {
+      const val = Number(e.target.value);
+      if (val >= 20) updateSelectedItemProp('width', val);
+    });
+  }
+  if (inpImgHeight) {
+    inpImgHeight.addEventListener('input', (e) => {
+      const val = Number(e.target.value);
+      if (val >= 20) updateSelectedItemProp('height', val);
+    });
+  }
+  if (inpImgRadius) {
+    inpImgRadius.addEventListener('input', (e) => {
+      const val = Number(e.target.value);
+      if (!isNaN(val)) updateSelectedItemProp('borderRadius', val);
+    });
+  }
+
+  // Botones de presets rápidos de tamaño para imágenes (S, M, L)
+  document.querySelectorAll('.insp-img-size-preset').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const w = Number(btn.getAttribute('data-w'));
+      const h = Number(btn.getAttribute('data-h'));
+      if (w && h) {
+        updateSelectedItemProp('width', w);
+        updateSelectedItemProp('height', h);
+        if (inpImgWidth) inpImgWidth.value = w;
+        if (inpImgHeight) inpImgHeight.value = h;
+      }
+    });
+  });
 
   // Atajos de teclado para mover o borrar elementos seleccionados
   window.addEventListener('keydown', handleEditorKeyDown);
@@ -469,8 +536,63 @@ function renderCurrentPage() {
     sheet.appendChild(emblemImg);
   }
 
-  // Renderizar cada texto como elemento interactivo posicionable
+  // Renderizar cada elemento (texto o imagen) como interactivo posicionable
   (page.items || []).forEach(item => {
+    // Renderizado especial si el elemento es una IMAGEN de platillo
+    if (item.type === 'image') {
+      const el = document.createElement('div');
+      el.id = `phys-item-${item.id}`;
+      el.className = `physical-image-item ${item.id === selectedItemId ? 'is-selected' : ''}`;
+      el.style.left = `${item.x}px`;
+      el.style.top = `${item.y}px`;
+      el.style.width = `${item.width || 95}px`;
+      el.style.height = `${item.height || 65}px`;
+      el.style.borderRadius = `${item.borderRadius !== undefined ? item.borderRadius : 8}px`;
+
+      const img = document.createElement('img');
+      img.src = item.url;
+      img.alt = item.dishName || 'Platillo';
+      img.draggable = false;
+      img.style.borderRadius = `${item.borderRadius !== undefined ? item.borderRadius : 8}px`;
+      img.onerror = () => {
+        img.src = '../assets/logo/curandera-emblem-lineart.png';
+      };
+      el.appendChild(img);
+
+      const badge = document.createElement('div');
+      badge.className = 'phys-img-badge';
+      badge.textContent = item.dishName || 'Platillo';
+      el.appendChild(badge);
+
+      // Barra flotante rápida si está seleccionado
+      if (item.id === selectedItemId) {
+        const quickBar = document.createElement('div');
+        quickBar.className = 'item-quick-toolbar';
+        quickBar.innerHTML = `
+          <button class="btn-item-quick dup" title="Duplicar imagen">📋 Copiar</button>
+          <button class="btn-item-quick delete" title="Eliminar imagen">🗑️ Borrar</button>
+        `;
+
+        quickBar.querySelector('.dup').addEventListener('click', (e) => {
+          e.stopPropagation();
+          duplicateSelectedItem();
+        });
+        quickBar.querySelector('.delete').addEventListener('click', (e) => {
+          e.stopPropagation();
+          deleteSelectedItem();
+        });
+
+        el.appendChild(quickBar);
+      }
+
+      // Evento MouseDown / TouchStart para arrastrar
+      el.addEventListener('mousedown', (e) => startDragItem(e, item));
+      el.addEventListener('touchstart', (e) => startDragItemTouch(e, item), { passive: false });
+
+      sheet.appendChild(el);
+      return;
+    }
+
     const el = document.createElement('div');
     el.id = `phys-item-${item.id}`;
     el.className = `physical-text-item ${item.id === selectedItemId ? 'is-selected' : ''}`;
@@ -691,33 +813,60 @@ function renderInspector() {
     if (panelItem) panelItem.style.display = 'flex';
     if (panelPage) panelPage.style.display = 'none';
 
-    const inpText = document.getElementById('insp-item-text');
-    const inpFont = document.getElementById('insp-item-font');
-    const inpSize = document.getElementById('insp-item-size');
-    const inpSizeRange = document.getElementById('insp-item-size-range');
-    const inpBold = document.getElementById('insp-item-bold');
-    const inpColor = document.getElementById('insp-item-color');
+    const textFields = document.getElementById('inspector-text-fields');
+    const imageFields = document.getElementById('inspector-image-fields');
+    const titleSpan = panelItem?.querySelector('.inspector-section-title span');
+
     const inpX = document.getElementById('insp-item-x');
     const inpY = document.getElementById('insp-item-y');
-
-    if (inpText) inpText.value = item.text;
-    if (inpFont) {
-      const f = (item.fontFamily || '').toLowerCase();
-      if (f.includes('hansief')) inpFont.value = 'Hansief';
-      else if (f.includes('sourcecode') || f.includes('mono')) inpFont.value = 'SourceCodeVariable-Roman';
-      else inpFont.value = 'Gotham-Bold';
-    }
-    if (inpSize) inpSize.value = item.fontSize;
-    if (inpSizeRange) inpSizeRange.value = item.fontSize;
-    if (inpBold) inpBold.classList.toggle('active', Boolean(item.bold));
-    if (inpColor) inpColor.value = item.color || '#000000';
     if (inpX) inpX.value = item.x;
     if (inpY) inpY.value = item.y;
 
-    renderColorPresets('item-color-presets', item.color, (hex) => {
-      if (inpColor) inpColor.value = hex;
-      updateSelectedItemProp('color', hex);
-    });
+    if (item.type === 'image') {
+      if (textFields) textFields.style.display = 'none';
+      if (imageFields) imageFields.style.display = 'flex';
+      if (titleSpan) titleSpan.textContent = 'Propiedades de Imagen';
+
+      const previewImg = document.getElementById('insp-img-preview');
+      const imgName = document.getElementById('insp-img-name');
+      const inpWidth = document.getElementById('insp-img-width');
+      const inpHeight = document.getElementById('insp-img-height');
+      const inpRadius = document.getElementById('insp-img-radius');
+
+      if (previewImg) previewImg.src = item.url || '';
+      if (imgName) imgName.textContent = item.dishName || 'Platillo';
+      if (inpWidth) inpWidth.value = item.width || 95;
+      if (inpHeight) inpHeight.value = item.height || 65;
+      if (inpRadius) inpRadius.value = item.borderRadius !== undefined ? item.borderRadius : 8;
+    } else {
+      if (textFields) textFields.style.display = 'flex';
+      if (imageFields) imageFields.style.display = 'none';
+      if (titleSpan) titleSpan.textContent = 'Editar Texto';
+
+      const inpText = document.getElementById('insp-item-text');
+      const inpFont = document.getElementById('insp-item-font');
+      const inpSize = document.getElementById('insp-item-size');
+      const inpSizeRange = document.getElementById('insp-item-size-range');
+      const inpBold = document.getElementById('insp-item-bold');
+      const inpColor = document.getElementById('insp-item-color');
+
+      if (inpText) inpText.value = item.text;
+      if (inpFont) {
+        const f = (item.fontFamily || '').toLowerCase();
+        if (f.includes('hansief')) inpFont.value = 'Hansief';
+        else if (f.includes('sourcecode') || f.includes('mono')) inpFont.value = 'SourceCodeVariable-Roman';
+        else inpFont.value = 'Gotham-Bold';
+      }
+      if (inpSize) inpSize.value = item.fontSize;
+      if (inpSizeRange) inpSizeRange.value = item.fontSize;
+      if (inpBold) inpBold.classList.toggle('active', Boolean(item.bold));
+      if (inpColor) inpColor.value = item.color || '#000000';
+
+      renderColorPresets('item-color-presets', item.color, (hex) => {
+        if (inpColor) inpColor.value = hex;
+        updateSelectedItemProp('color', hex);
+      });
+    }
   } else {
     if (panelItem) panelItem.style.display = 'none';
     if (panelPage) panelPage.style.display = 'flex';
@@ -763,20 +912,26 @@ function renderCurrentPageTextsList() {
   const pages = menusData[getMenuKey()] || [];
   const page = pages[currentPageIndex];
   if (!page || !page.items || page.items.length === 0) {
-    container.innerHTML = '<span style="font-size:0.75rem; color:#888;">No hay textos en esta hoja.</span>';
+    container.innerHTML = '<span style="font-size:0.75rem; color:#888;">No hay elementos en esta hoja.</span>';
     return;
   }
 
   container.innerHTML = '';
-  page.items.slice(0, 15).forEach((it) => {
+  page.items.slice(0, 30).forEach((it) => {
     const row = document.createElement('div');
     row.style.cssText = 'padding:0.4rem; background:rgba(255,255,255,0.05); border-radius:4px; font-size:0.75rem; cursor:pointer; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; margin-bottom:0.3rem;';
-    row.textContent = it.text.replace(/\n/g, ' ');
+    if (it.type === 'image') {
+      row.innerHTML = `<span style="color:var(--lc-rosa); font-weight:700;">🖼️ Imagen:</span> ${escapeHtml(it.dishName || 'Platillo')}`;
+    } else {
+      row.textContent = `📝 ${(it.text || '').replace(/\n/g, ' ')}`;
+    }
     row.addEventListener('click', () => {
       selectedItemId = it.id;
       renderCurrentPage();
       renderInspector();
-      focusInspectorTextarea();
+      if (it.type !== 'image') {
+        focusInspectorTextarea();
+      }
     });
     container.appendChild(row);
   });
@@ -808,6 +963,13 @@ function updateSelectedItemProp(prop, value) {
     if (prop === 'text') domEl.textContent = value;
     if (prop === 'x') domEl.style.left = `${value}px`;
     if (prop === 'y') domEl.style.top = `${value}px`;
+    if (prop === 'width') domEl.style.width = `${value}px`;
+    if (prop === 'height') domEl.style.height = `${value}px`;
+    if (prop === 'borderRadius') {
+      domEl.style.borderRadius = `${value}px`;
+      const imgChild = domEl.querySelector('img');
+      if (imgChild) imgChild.style.borderRadius = `${value}px`;
+    }
     if (prop === 'fontSize') domEl.style.fontSize = `${value}px`;
     if (prop === 'fontFamily') domEl.style.fontFamily = getCssFontFamily(value);
     if (prop === 'color') domEl.style.color = value;
@@ -988,15 +1150,17 @@ function saveToLocalStorageDraft() {
 /**
  * Guarda los cambios permanentemente en Firestore y localStorage
  */
-async function savePhysicalMenu() {
+async function savePhysicalMenu(silent = false) {
   const btn = document.getElementById('btn-phys-save');
-  if (btn) {
+  if (btn && !silent) {
     btn.disabled = true;
     btn.textContent = 'Guardando...';
   }
 
   try {
-    const pages = menusData[getMenuKey()] || [];
+    const rawPages = menusData[getMenuKey()] || [];
+    // Limpiar cualquier propiedad undefined antes de almacenar
+    const pages = JSON.parse(JSON.stringify(rawPages));
     const isTrad = currentDesign === 'tradicional';
     const localKey = isTrad ? `lc_physical_menu_${currentType}_v1` : `lc_physical_menu_${currentType}_digital_v1`;
     const firestoreDocId = isTrad ? currentType : `${currentType}_digital`;
@@ -1004,22 +1168,28 @@ async function savePhysicalMenu() {
     localStorage.setItem(localKey, JSON.stringify(pages));
 
     if (isConfigured && db) {
-      await setDoc(doc(db, `restaurants/la-curandera/physicalMenus/${firestoreDocId}`), {
-        type: currentType,
-        design: currentDesign,
-        pages: pages,
-        updatedAt: serverTimestamp()
-      }, { merge: true });
+      try {
+        await setDoc(doc(db, `restaurants/la-curandera/physicalMenus/${firestoreDocId}`), {
+          type: currentType,
+          design: currentDesign,
+          pages: pages,
+          updatedAt: serverTimestamp()
+        }, { merge: true });
+      } catch (fsErr) {
+        console.warn('Firestore setDoc warn in savePhysicalMenu:', fsErr);
+      }
     }
 
-    const typeLabel = currentType === 'desayuno' ? 'Desayunos' : 'Comidas';
-    const designLabel = currentDesign === 'digital' ? '(Estilo Menú Digital)' : '(Diseño Tradicional)';
-    showToast(`✅ Carta de ${typeLabel} ${designLabel} guardada correctamente.`);
+    if (!silent) {
+      const typeLabel = currentType === 'desayuno' ? 'Desayunos' : 'Comidas';
+      const designLabel = currentDesign === 'digital' ? '(Estilo Menú Digital)' : '(Diseño Tradicional)';
+      showToast(`✅ Carta de ${typeLabel} ${designLabel} guardada correctamente.`);
+    }
   } catch (err) {
     console.error('Error saving physical menu:', err);
-    showToast('⚠️ Error al guardar los cambios en la nube.');
+    if (!silent) showToast('⚠️ Error al guardar los cambios en la nube.');
   } finally {
-    if (btn) {
+    if (btn && !silent) {
       btn.disabled = false;
       btn.innerHTML = '💾 Guardar Cambios';
     }
@@ -1027,32 +1197,614 @@ async function savePhysicalMenu() {
 }
 
 /**
- * Restablece la carta actual al template original de los PDFs oficiales
+ * ACTUALIZAR: Sincroniza la información del Menú Digital con el Editor de Carta Física.
+ * Sincroniza nombres, precios, descripciones e inserta/actualiza las imágenes de los platillos.
  */
-async function resetPhysicalMenuToTemplate() {
-  const typeLabel = currentType === 'desayuno' ? 'Desayunos' : 'Comidas';
-  const designLabel = currentDesign === 'digital' ? 'Menú Digital' : 'Tradicional';
-  if (!confirm(`¿Estás seguro de restablecer la Carta de ${typeLabel} (${designLabel}) a su plantilla original? Se perderán las modificaciones no guardadas en esta versión.`)) {
-    return;
+async function syncDigitalMenuToPhysicalMenu() {
+  const btn = document.getElementById('btn-phys-sync') || document.getElementById('btn-phys-reset');
+  const originalBtnHtml = btn ? btn.innerHTML : '';
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<span>⏳ Sincronizando...</span>';
+    btn.classList.add('is-syncing');
+    btn.classList.remove('pulse-needs-update');
   }
 
   try {
-    const isTrad = currentDesign === 'tradicional';
-    const templateFilename = isTrad ? `carta_${currentType}_template.json` : `carta_${currentType}_digital_template.json`;
-    const res = await fetch(`../data/${templateFilename}`);
-    if (res.ok) {
-      menusData[getMenuKey()] = await res.json();
-      currentPageIndex = 0;
-      selectedItemId = null;
-      renderPagesList();
-      renderCurrentPage();
-      renderInspector();
-      saveToLocalStorageDraft();
-      showToast(`🔄 Carta de ${typeLabel} (${designLabel}) restablecida al diseño original.`);
+    // 1. Obtener catálogo y overrides en vivo (Memoria + Firestore en tiempo real + Fallback)
+    let catalogData = null;
+    if (typeof window.getDigitalMenuCatalog === 'function') {
+      try {
+        catalogData = window.getDigitalMenuCatalog();
+      } catch (e) {
+        console.warn('Error reading window.getDigitalMenuCatalog:', e);
+      }
     }
-  } catch (e) {
-    showToast('⚠️ No se pudo restablecer el template.');
+
+    let memoryProducts = (catalogData && Array.isArray(catalogData.products)) ? catalogData.products : [];
+    let categories = (catalogData && Array.isArray(catalogData.categories)) ? catalogData.categories : [];
+    let memoryOverrides = (catalogData && catalogData.menuOverrides) ? catalogData.menuOverrides : {};
+    let pendingChanges = (catalogData && catalogData.pendingChanges) ? catalogData.pendingChanges : {};
+    const restaurantId = catalogData?.restaurantId || 'la-curandera';
+    const activeBranchId = catalogData?.activeBranchId || 'metepec';
+
+    // Consultar Firestore y Catálogo en paralelo con Promise.allSettled (3x más veloz)
+    let firestoreOverrides = {};
+    let firestoreProducts = [];
+    let fallbackProducts = [];
+    let fallbackCategories = [];
+
+    const fetchTasks = [];
+
+    if (isConfigured && db) {
+      fetchTasks.push(
+        getDocs(collection(db, `restaurants/${restaurantId}/branches/${activeBranchId}/menuOverrides`))
+          .then(overSnap => { overSnap.forEach(d => { firestoreOverrides[d.id] = d.data(); }); })
+          .catch(e => console.warn('Firestore live overrides fetch warn:', e))
+      );
+      fetchTasks.push(
+        getDocs(collection(db, `restaurants/${restaurantId}/products`))
+          .then(prodSnap => { prodSnap.forEach(d => { firestoreProducts.push({ id: d.id, ...d.data() }); }); })
+          .catch(e => console.warn('Firestore live products fetch warn:', e))
+      );
+    }
+
+    fetchTasks.push(
+      fetch('../data/catalog.json')
+        .then(res => res.ok ? res.json() : null)
+        .then(data => {
+          if (data) {
+            fallbackProducts = data.products || [];
+            fallbackCategories = data.categories || [];
+          }
+        })
+        .catch(e => console.warn('Error fetching fallback catalog.json:', e))
+    );
+
+    await Promise.allSettled(fetchTasks);
+
+    // Combinar productos respetando prioridad: Firestore > Memoria > Fallback
+    const isDishLogo = (url) => typeof url === 'string' && (url.includes('logo/logo.png') || url.endsWith('/logo.png') || url === 'assets/logo/logo.png');
+
+    const productsMap = new Map();
+    // 1. Base catálogo maestro con imágenes
+    fallbackProducts.forEach(p => {
+      if (!p || !p.id) return;
+      productsMap.set(p.id, {
+        ...p,
+        imageUrl: (p.imageUrl && !isDishLogo(p.imageUrl)) ? p.imageUrl : null,
+        imageFallback: (p.imageFallback && !isDishLogo(p.imageFallback)) ? p.imageFallback : null
+      });
+    });
+
+    // 2. Firestore productos (sobrescribe precios, nombres, conservando imagen si la tiene)
+    firestoreProducts.forEach(p => {
+      if (!p || !p.id) return;
+      const prev = productsMap.get(p.id) || {};
+      const validImg = (p.imageUrl && !isDishLogo(p.imageUrl)) ? p.imageUrl : prev.imageUrl;
+      const validFallback = (p.imageFallback && !isDishLogo(p.imageFallback)) ? p.imageFallback : prev.imageFallback;
+      productsMap.set(p.id, {
+        ...prev,
+        ...p,
+        imageUrl: validImg,
+        imageFallback: validFallback
+      });
+    });
+
+    // 3. Productos en memoria del panel admin
+    memoryProducts.forEach(p => {
+      if (!p || !p.id) return;
+      const prev = productsMap.get(p.id) || {};
+      const validImg = (p.imageUrl && !isDishLogo(p.imageUrl)) ? p.imageUrl : prev.imageUrl;
+      const validFallback = (p.imageFallback && !isDishLogo(p.imageFallback)) ? p.imageFallback : prev.imageFallback;
+      productsMap.set(p.id, {
+        ...prev,
+        ...p,
+        imageUrl: validImg,
+        imageFallback: validFallback
+      });
+    });
+
+    const allProducts = Array.from(productsMap.values());
+
+    if (categories.length === 0 && fallbackCategories.length > 0) {
+      categories = fallbackCategories;
+    }
+
+    const mergedOverrides = { ...firestoreOverrides, ...memoryOverrides };
+
+    if (allProducts.length === 0) {
+      showToast('⚠️ No se encontraron platillos en el Menú Digital para sincronizar.');
+      return;
+    }
+
+    // 2. Funciones auxiliares de extracción segura, normalización y tokens
+    const extractString = (val) => {
+      if (val === null || val === undefined) return '';
+      if (typeof val === 'string') return val;
+      if (typeof val === 'number') return String(val);
+      if (typeof val === 'object') {
+        if (typeof val.es === 'string') return val.es;
+        if (typeof val.en === 'string') return val.en;
+        if (typeof val.value === 'string') return val.value;
+        if (typeof val.name === 'string') return val.name;
+        if (typeof val.description === 'string') return val.description;
+        const strVal = Object.values(val).find(v => typeof v === 'string' && v.trim().length > 0);
+        if (strVal) return strVal;
+        return '';
+      }
+      return String(val);
+    };
+
+    const STOP_WORDS = new Set(['de', 'la', 'el', 'los', 'las', 'con', 'del', 'al', 'en', 'para', 'por', 'piezas', 'pzas', 'orden', 'clasico', 'clasica', 'tradicional', 'autentica', 'autentico']);
+
+    const norm = (str) => {
+      return extractString(str)
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-z0-9]/g, '')
+        .trim();
+    };
+
+    const getTokens = (str) => {
+      return extractString(str)
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-z0-9\s]/g, ' ')
+        .split(/\s+/)
+        .filter(w => w.length >= 3 && !STOP_WORDS.has(w));
+    };
+
+    const formatImgUrl = (url) => {
+      if (!url || typeof url !== 'string') return '';
+      if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:') || url.startsWith('/')) {
+        return url;
+      }
+      if (url.startsWith('../')) {
+        return url;
+      }
+      return '../' + url.replace(/^\.\//, '');
+    };
+
+    const getEffectiveData = (prod) => {
+      const pId = prod.id;
+      const over = mergedOverrides[pId] || {};
+      const pend = pendingChanges[pId] || {};
+
+      // 1. Nombre
+      let rawName = '';
+      if (pend.nameOverride !== undefined && pend.nameOverride !== null) rawName = pend.nameOverride;
+      else if (pend.name !== undefined && pend.name !== null) rawName = pend.name;
+      else if (over.nameOverride !== undefined && over.nameOverride !== null) rawName = over.nameOverride;
+      else if (over.name !== undefined && over.name !== null) rawName = over.name;
+      else if (prod.name !== undefined && prod.name !== null) rawName = prod.name;
+      else if (prod.nameOverride !== undefined && prod.nameOverride !== null) rawName = prod.nameOverride;
+
+      let name = extractString(rawName).replace(/\[object Object\]/g, '').trim();
+
+      // 2. Precio
+      let price = prod.price;
+      if (pend.priceOverride !== undefined && pend.priceOverride !== null && pend.priceOverride !== '') {
+        price = pend.priceOverride;
+      } else if (over.priceOverride !== undefined && over.priceOverride !== null && over.priceOverride !== '') {
+        price = over.priceOverride;
+      } else if (prod.price !== undefined && prod.price !== null) {
+        price = prod.price;
+      }
+      const numPrice = Number(price) || 0;
+
+      // 3. Descripción
+      let rawDesc = '';
+      if (pend.descriptionOverride !== undefined && pend.descriptionOverride !== null) rawDesc = pend.descriptionOverride;
+      else if (pend.description !== undefined && pend.description !== null) rawDesc = pend.description;
+      else if (over.descriptionOverride !== undefined && over.descriptionOverride !== null) rawDesc = over.descriptionOverride;
+      else if (over.description !== undefined && over.description !== null) rawDesc = over.description;
+      else if (prod.description !== undefined && prod.description !== null) rawDesc = prod.description;
+      else if (prod.descriptionOverride !== undefined && prod.descriptionOverride !== null) rawDesc = prod.descriptionOverride;
+
+      let desc = extractString(rawDesc).replace(/\[object Object\]/g, '').trim();
+
+      // 4. Imagen (respetando prioridad: pending > overrides > product > imageFallback)
+      let rawImg = pend.imageUrl || over.imageUrl || prod.imageUrl || prod.imageFallback || '';
+      let img = extractString(rawImg).trim();
+      if (img && (img.includes('logo/logo.png') || img.endsWith('/logo.png') || img === 'assets/logo/logo.png')) {
+        img = '';
+      }
+
+      return {
+        id: pId,
+        name: name,
+        price: numPrice,
+        description: desc,
+        imageUrl: formatImgUrl(img)
+      };
+    };
+
+    // Mapa de categorías para filtrar Desayuno vs Comida
+    const catMap = {};
+    fallbackCategories.forEach(c => {
+      if (c.id) catMap[c.id] = c;
+      if (c.slug) catMap[c.slug] = c;
+    });
+    categories.forEach(c => {
+      if (c.id) catMap[c.id] = { ...(catMap[c.id] || {}), ...c };
+      if (c.slug) catMap[c.slug] = { ...(catMap[c.slug] || {}), ...c };
+    });
+
+    const isProductInCurrentMeal = (prod) => {
+      const cat = catMap[prod.categoryId];
+      if (!cat) return false;
+      const section = (cat.section || '').toLowerCase();
+      if (section === 'ambos') return true;
+      if (currentType === 'desayuno') {
+        return section === 'desayuno';
+      } else {
+        return section === 'comida' || section === 'cantina';
+      }
+    };
+
+    const pages = menusData[getMenuKey()] || [];
+    if (pages.length === 0) {
+      showToast('⚠️ No hay páginas disponibles en esta carta.');
+      return;
+    }
+
+    let updatedTextsCount = 0;
+    let addedImagesCount = 0;
+    let updatedImagesCount = 0;
+    let newDishesAddedCount = 0;
+
+    const relevantProducts = allProducts.filter(isProductInCurrentMeal);
+    const matchedProductIds = new Set();
+
+    // 3. Sincronizar platillos en las hojas de la carta física
+    pages.forEach(page => {
+      if (!page.items) page.items = [];
+
+      // Sanear cualquier texto previo que contenga "[object Object]" o no sea string
+      page.items.forEach(it => {
+        if (typeof it.text === 'string') {
+          if (it.text.includes('[object Object]')) {
+            it.text = it.text.replace(/\[object Object\]/g, '').trim();
+          }
+        } else if (it.type !== 'image' && it.text) {
+          it.text = extractString(it.text).replace(/\[object Object\]/g, '').trim();
+        }
+      });
+
+      relevantProducts.forEach(prod => {
+        const effective = getEffectiveData(prod);
+        if (!effective.name || effective.name === '[object Object]') return;
+
+        const pNorm = norm(effective.name);
+        const pTokens = getTokens(effective.name);
+
+        if (currentDesign === 'digital') {
+          // --- DISEÑO MENÚ DIGITAL ---
+          let matchedItem = page.items.find(it => {
+            if (it.type === 'image') return false;
+            if (it.dishId && it.dishId === prod.id) return true;
+            const itemText = extractString(it.text);
+            const titlePart = itemText.split(/·|\$|\n/)[0];
+            const normTitle = norm(titlePart);
+            return normTitle === pNorm || (pNorm.length >= 5 && normTitle.includes(pNorm));
+          });
+
+          // Si no coincidió por título completo, intentar por tokens significativos
+          if (!matchedItem && pTokens.length >= 2) {
+            matchedItem = page.items.find(it => {
+              const itemText = extractString(it.text);
+              if (it.type === 'image' || itemText.trim().startsWith('$')) return false;
+              const titlePart = itemText.split(/·|\$|\n/)[0];
+              const normTitle = norm(titlePart);
+              let tokenHits = 0;
+              pTokens.forEach(t => { if (normTitle.includes(t)) tokenHits++; });
+              return tokenHits === pTokens.length || (tokenHits >= 2 && tokenHits >= pTokens.length - 1);
+            });
+          }
+
+          if (matchedItem) {
+            matchedProductIds.add(prod.id);
+            matchedItem.dishId = prod.id;
+
+            const cleanName = effective.name;
+            const cleanDesc = effective.description;
+
+            const newTitle = `${cleanName}  ·  $${effective.price}`;
+            if (matchedItem.text !== newTitle) {
+              matchedItem.text = newTitle;
+              updatedTextsCount++;
+            }
+
+            // Buscar item de descripción contiguo
+            const descItem = page.items.find(it => {
+              if (it.type === 'image' || it === matchedItem) return false;
+              if (it.id === `${matchedItem.id}_desc` || it.id === matchedItem.id.replace('_title', '_desc')) return true;
+              return Math.abs(it.x - matchedItem.x) < 25 && (it.y > matchedItem.y && it.y < matchedItem.y + 36);
+            });
+
+            if (descItem && cleanDesc && descItem.text !== cleanDesc) {
+              descItem.text = cleanDesc;
+              descItem.dishId = prod.id;
+              updatedTextsCount++;
+            }
+
+            // Sincronizar o insertar imagen si el platillo cuenta con una
+            if (effective.imageUrl) {
+              let existingImg = page.items.find(it => it.type === 'image' && (it.dishId === prod.id || norm(it.dishName) === pNorm));
+              if (existingImg) {
+                if (existingImg.url !== effective.imageUrl || existingImg.dishName !== effective.name) {
+                  existingImg.url = effective.imageUrl;
+                  existingImg.dishName = effective.name;
+                  updatedImagesCount++;
+                }
+              } else {
+                const imgX = matchedItem.x < 300 ? 295 : 665;
+                const imgY = Math.max(10, Math.min(990, matchedItem.y - 4));
+                page.items.push({
+                  id: `img_${prod.id}_${Date.now()}`,
+                  type: 'image',
+                  dishId: prod.id,
+                  dishName: effective.name,
+                  url: effective.imageUrl,
+                  x: imgX,
+                  y: imgY,
+                  width: 95,
+                  height: 65,
+                  borderRadius: 8
+                });
+                addedImagesCount++;
+              }
+            }
+          }
+        } else {
+          // --- DISEÑO TRADICIONAL ---
+          let matchedItem = page.items.find(it => {
+            if (it.type === 'image') return false;
+            if (it.dishId && it.dishId === prod.id) return true;
+            const normIt = norm(it.text);
+            return normIt === pNorm || (pNorm.length >= 5 && normIt.startsWith(pNorm));
+          });
+
+          // Si no hubo coincidencia exacta, usar coincidencia por tokens
+          if (!matchedItem) {
+            let bestScore = 0;
+            let candidate = null;
+
+            page.items.forEach(it => {
+              const itemText = extractString(it.text);
+              if (it.type === 'image' || itemText.trim().startsWith('$')) return;
+              const normIt = norm(itemText);
+              if (normIt.length < 3) return;
+
+              let hits = 0;
+              pTokens.forEach(t => { if (normIt.includes(t)) hits++; });
+
+              if (pTokens.length > 0 && hits === pTokens.length) {
+                if (80 + hits > bestScore) { bestScore = 80 + hits; candidate = it; }
+              } else if (pTokens.length >= 2 && hits >= 2) {
+                if (50 + hits > bestScore) { bestScore = 50 + hits; candidate = it; }
+              } else if (pTokens.some(t => t.length >= 6 && normIt.includes(t))) {
+                if (40 > bestScore) { bestScore = 40; candidate = it; }
+              }
+            });
+
+            if (candidate && bestScore >= 40) {
+              matchedItem = candidate;
+            }
+          }
+
+          if (matchedItem) {
+            matchedProductIds.add(prod.id);
+            matchedItem.dishId = prod.id;
+
+            // En tradicional, si no es una lista agrupada con viñeta, actualizar nombre y descripción
+            const itText = extractString(matchedItem.text);
+            if (!itText.includes('•') && itText.length < 80) {
+              const cleanName = effective.name;
+              const cleanDesc = effective.description;
+              const updatedText = cleanDesc ? `${cleanName}\n${cleanDesc}` : cleanName;
+              if (matchedItem.text !== updatedText) {
+                matchedItem.text = updatedText;
+                updatedTextsCount++;
+              }
+            }
+
+            // Buscar precio contiguo en tradicional (mismo Y ± 22px, x mayor, empieza con $)
+            const priceItem = page.items.find(it => {
+              if (it.type === 'image' || it === matchedItem) return false;
+              const pText = extractString(it.text).trim();
+              return Math.abs(it.y - matchedItem.y) < 22 && it.x > matchedItem.x && pText.startsWith('$');
+            });
+
+            if (priceItem) {
+              const newPriceText = `$${effective.price}`;
+              if (priceItem.text !== newPriceText) {
+                priceItem.text = newPriceText;
+                updatedTextsCount++;
+              }
+            }
+
+            // Sincronizar o insertar imagen si el platillo cuenta con una
+            if (effective.imageUrl) {
+              let existingImg = page.items.find(it => it.type === 'image' && (it.dishId === prod.id || norm(it.dishName) === pNorm));
+              if (existingImg) {
+                if (existingImg.url !== effective.imageUrl || existingImg.dishName !== effective.name) {
+                  existingImg.url = effective.imageUrl;
+                  existingImg.dishName = effective.name;
+                  updatedImagesCount++;
+                }
+              } else {
+                const imgX = Math.min(680, matchedItem.x + 195);
+                const imgY = Math.max(10, Math.min(990, matchedItem.y - 2));
+                page.items.push({
+                  id: `img_${prod.id}_${Date.now()}`,
+                  type: 'image',
+                  dishId: prod.id,
+                  dishName: effective.name,
+                  url: effective.imageUrl,
+                  x: imgX,
+                  y: imgY,
+                  width: 95,
+                  height: 65,
+                  borderRadius: 8
+                });
+                addedImagesCount++;
+              }
+            }
+          }
+        }
+      });
+    });
+
+    // 4. Agregar platillos nuevos del Menú Digital que aún no existen en ninguna hoja
+    const unplacedProducts = relevantProducts.filter(p => !matchedProductIds.has(p.id));
+    if (unplacedProducts.length > 0) {
+      const targetPage = pages[pages.length - 1];
+      let currentY = 180;
+      (targetPage.items || []).forEach(it => {
+        if (it.y && it.y > currentY && it.y < 850) {
+          currentY = it.y + 70;
+        }
+      });
+
+      unplacedProducts.forEach(prod => {
+        const effective = getEffectiveData(prod);
+        if (!effective.name || effective.name === '[object Object]') return;
+
+        const cleanName = effective.name;
+        const cleanDesc = effective.description;
+
+        if (currentY > 960) currentY = 200;
+
+        if (currentDesign === 'digital') {
+          targetPage.items.push({
+            id: `sync_item_${prod.id}_title`,
+            dishId: prod.id,
+            x: 55,
+            y: currentY,
+            text: `${cleanName}  ·  $${effective.price}`,
+            fontSize: 12.5,
+            fontFamily: 'Gotham-Bold',
+            color: '#1C1714',
+            bold: true
+          });
+          if (cleanDesc) {
+            targetPage.items.push({
+              id: `sync_item_${prod.id}_desc`,
+              dishId: prod.id,
+              x: 55,
+              y: currentY + 18,
+              text: cleanDesc,
+              fontSize: 9.5,
+              fontFamily: 'Montserrat',
+              color: '#6D6258',
+              bold: false
+            });
+          }
+          if (effective.imageUrl) {
+            targetPage.items.push({
+              id: `img_${prod.id}_${Date.now()}`,
+              type: 'image',
+              dishId: prod.id,
+              dishName: cleanName,
+              url: effective.imageUrl,
+              x: 295,
+              y: currentY - 2,
+              width: 95,
+              height: 65,
+              borderRadius: 8
+            });
+            addedImagesCount++;
+          }
+        } else {
+          targetPage.items.push({
+            id: `sync_item_${prod.id}`,
+            dishId: prod.id,
+            x: 95,
+            y: currentY,
+            text: cleanDesc ? `${cleanName}\n${cleanDesc}` : cleanName,
+            fontSize: 11,
+            fontFamily: 'SourceCodeVariable-Roman',
+            color: '#000000',
+            bold: false
+          });
+          targetPage.items.push({
+            id: `sync_price_${prod.id}`,
+            x: 290,
+            y: currentY,
+            text: `$${effective.price}`,
+            fontSize: 12.5,
+            fontFamily: 'SourceCodeVariable-Roman',
+            color: '#000000',
+            bold: true
+          });
+          if (effective.imageUrl) {
+            targetPage.items.push({
+              id: `img_${prod.id}_${Date.now()}`,
+              type: 'image',
+              dishId: prod.id,
+              dishName: cleanName,
+              url: effective.imageUrl,
+              x: 340,
+              y: currentY - 2,
+              width: 95,
+              height: 65,
+              borderRadius: 8
+            });
+            addedImagesCount++;
+          }
+        }
+
+        currentY += 75;
+        newDishesAddedCount++;
+      });
+    }
+
+    // 5. Guardar permanentemente en borrador local y en Firestore
+    saveToLocalStorageDraft();
+    await savePhysicalMenu(true);
+
+    // 6. Si el usuario estaba en Hoja 1 (Portada sin platillos), pasar a Hoja 2 para ver los platillos inmediatamente
+    if (currentPageIndex === 0 && pages.length > 1) {
+      currentPageIndex = 1;
+    }
+
+    // 7. Renderizar vistas con datos frescos
+    renderPagesList();
+    renderCurrentPage();
+    renderInspector();
+
+    // Guardar marca de tiempo de sincronización exitosa
+    localStorage.setItem('lc_last_physical_sync', String(Date.now()));
+
+    const summaryParts = [];
+    if (updatedTextsCount > 0) summaryParts.push(`${updatedTextsCount} textos actualizados`);
+    if (addedImagesCount > 0) summaryParts.push(`${addedImagesCount} imágenes agregadas`);
+    if (updatedImagesCount > 0) summaryParts.push(`${updatedImagesCount} imágenes sincronizadas`);
+    if (newDishesAddedCount > 0) summaryParts.push(`${newDishesAddedCount} platillos nuevos incorporados`);
+
+    if (summaryParts.length === 0) {
+      showToast('✅ La carta física ya está 100% sincronizada con el Menú Digital.');
+    } else {
+      showToast(`🔄 ¡Carta Física Sincronizada! ${summaryParts.join(', ')}.`);
+    }
+  } catch (err) {
+    console.error('Error al sincronizar carta física con menú digital:', err);
+    showToast('⚠️ Ocurrió un error durante la sincronización.');
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = originalBtnHtml;
+      btn.classList.remove('is-syncing');
+    }
   }
+}
+
+async function resetPhysicalMenuToTemplate() {
+  return syncDigitalMenuToPhysicalMenu();
 }
 
 /**
@@ -1127,21 +1879,39 @@ async function downloadPhysicalMenuPDF() {
       }
 
       (p.items || []).forEach(it => {
-        const itemEl = document.createElement('div');
-        itemEl.style.cssText = `
-          position: absolute;
-          left: ${it.x}px;
-          top: ${it.y}px;
-          font-size: ${it.fontSize}px;
-          font-family: ${getCssFontFamily(it.fontFamily)};
-          color: ${it.color || '#000000'};
-          font-weight: ${it.bold ? '800' : '400'};
-          line-height: 1.25;
-          white-space: pre-wrap;
-          z-index: 5;
-        `;
-        itemEl.textContent = it.text;
-        renderContainer.appendChild(itemEl);
+        if (it.type === 'image') {
+          const imgEl = document.createElement('img');
+          imgEl.src = it.url;
+          imgEl.crossOrigin = 'anonymous';
+          imgEl.style.cssText = `
+            position: absolute;
+            left: ${it.x}px;
+            top: ${it.y}px;
+            width: ${it.width || 95}px;
+            height: ${it.height || 65}px;
+            border-radius: ${it.borderRadius !== undefined ? it.borderRadius : 8}px;
+            object-fit: cover;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+            z-index: 4;
+          `;
+          renderContainer.appendChild(imgEl);
+        } else {
+          const itemEl = document.createElement('div');
+          itemEl.style.cssText = `
+            position: absolute;
+            left: ${it.x}px;
+            top: ${it.y}px;
+            font-size: ${it.fontSize}px;
+            font-family: ${getCssFontFamily(it.fontFamily)};
+            color: ${it.color || '#000000'};
+            font-weight: ${it.bold ? '800' : '400'};
+            line-height: 1.25;
+            white-space: pre-wrap;
+            z-index: 5;
+          `;
+          itemEl.textContent = it.text;
+          renderContainer.appendChild(itemEl);
+        }
       });
 
       // Capturar la hoja a escala 2x (300 DPI aprox para impresión nítida)
