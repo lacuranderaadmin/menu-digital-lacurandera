@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lacurandera-v7';
+const CACHE_NAME = 'lacurandera-v8';
 const PRECACHE_ASSETS = [
   './',
   './index.html',
@@ -13,6 +13,7 @@ const PRECACHE_ASSETS = [
   './js/menu.js',
   './js/culinary-translator.js',
   './js/animations.js',
+  './assets/fonts/Gotham-Bold.ttf',
   './assets/logo/logo.png',
   './assets/logo/curandera-emblem-lineart.png'
 ];

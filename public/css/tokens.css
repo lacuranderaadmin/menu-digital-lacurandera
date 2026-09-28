@@ -26,6 +26,7 @@
   font-weight: 400;
   font-style: normal;
   font-display: swap;
+  unicode-range: U+0041-005A, U+0020;
 }
 
 :root {
@@ -68,12 +69,12 @@
   --lc-whatsapp-dark: #1EBE5D;
 
   /* Typography (Identidad Oficial) */
-  --font-brand: 'Gotham-Bold', 'Gotham', 'Montserrat', -apple-system, sans-serif;
-  --font-title: 'Gotham-Bold', 'Gotham', 'Montserrat', -apple-system, sans-serif;
+  --font-brand: 'Gotham-Bold', 'Gotham', 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif;
+  --font-title: 'Gotham-Bold', 'Gotham', 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif;
   --font-accent: 'Hansief', sans-serif;
   --font-script: 'Caveat Brush', 'Kalam', cursive;
   --font-mono: 'JetBrains Mono', monospace;
-  --font-body: 'Montserrat', -apple-system, sans-serif;
+  --font-body: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif;
 
   /* Border Radii */
   --radius-sm: 8px;

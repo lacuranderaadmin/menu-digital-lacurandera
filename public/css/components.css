@@ -197,6 +197,8 @@
   animation: pulseSlight 6s infinite ease-in-out;
   white-space: nowrap;
   line-height: 1.2;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .btn-review-full {
@@ -1087,6 +1089,8 @@
   border: 1.5px solid #1C1714;
   box-shadow: 1.5px 1.5px 0px #1C1714;
   white-space: nowrap;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .product-price-pill.is-promo {
@@ -1960,6 +1964,8 @@ body[data-meal-mode="comida"] .dock-emoji-btn.active {
   margin: 1.5rem auto 0.5rem;
   text-align: center;
   letter-spacing: 0.03em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* ==========================================================================
