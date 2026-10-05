@@ -44,11 +44,11 @@
   <link rel="preload" href="assets/fonts/Gotham-Bold.woff2?v=35.0" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat+Brush&family=JetBrains+Mono:ital,wght@0,400;0,500;0,700;1,400&family=Kalam:wght@700&family=Montserrat:wght@400;600;700;800;900&display=swap">
 
-  <!-- CSS Design System (v35.0 Multi-language & Cross-platform Font Rendering) -->
-  <link rel="stylesheet" href="css/tokens.css?v=35.0">
-  <link rel="stylesheet" href="css/base.css?v=35.0">
-  <link rel="stylesheet" href="css/components.css?v=35.0">
-  <link rel="stylesheet" href="css/menu.css?v=35.0">
+  <!-- CSS Design System (v38.0 Mobile Responsive Header Badges) -->
+  <link rel="stylesheet" href="css/tokens.css?v=38.0">
+  <link rel="stylesheet" href="css/base.css?v=38.0">
+  <link rel="stylesheet" href="css/components.css?v=38.0">
+  <link rel="stylesheet" href="css/menu.css?v=38.0">
 
   <link rel="icon" type="image/png" href="assets/logo/logo.png">
   <script>
@@ -158,57 +158,60 @@
   </section>
 
   <!-- Franja Dinámica de Frases de Marca (Infinite Marquee Ticker) -->
-  <div class="marquee-ticker-section" aria-label="Frases de La Curandera">
+  <div class="marquee-ticker-section" aria-label="Frases y Promociones de La Curandera">
     <div class="marquee-ticker-container">
       <div class="marquee-track" id="marquee-track">
-        <div class="marquee-item">
-          <span>PÁ TODO MAL, MEZCAL; Y PÁ TODO BIEN, TAMBIÉN</span>
-          <img src="assets/icons/maguey.svg" class="marquee-sep" alt="" />
+        <div class="marquee-group">
+          <div class="marquee-item">
+            <span>PÁ TODO MAL, MEZCAL; Y PÁ TODO BIEN, TAMBIÉN</span>
+            <img src="assets/icons/maguey.svg" class="marquee-sep" alt="" />
+          </div>
+          <div class="marquee-item">
+            <span class="highlight">Cocina que cura · Tragos que conectan</span>
+            <img src="assets/icons/hierbas.svg" class="marquee-sep" alt="" />
+          </div>
+          <div class="marquee-item">
+            <span>AQUÍ TE LA VAMOS A CURAR</span>
+            <img src="assets/icons/corazon.svg" class="marquee-sep" alt="" />
+          </div>
+          <div class="marquee-item">
+            <span class="highlight">México siempre cura</span>
+            <img src="assets/icons/sol.svg" class="marquee-sep" alt="" />
+          </div>
+          <div class="marquee-item">
+            <span>UN TRAGO AL DÍA ES LA CLAVE DE LA ALEGRÍA</span>
+            <img src="assets/icons/limon.svg" class="marquee-sep" alt="" />
+          </div>
+          <div class="marquee-item">
+            <span class="highlight">Más que un restaurante, una experiencia que cura el alma</span>
+            <img src="assets/icons/pocima.svg" class="marquee-sep" alt="" />
+          </div>
         </div>
-        <div class="marquee-item">
-          <span class="highlight">Cocina que cura · Tragos que conectan</span>
-          <img src="assets/icons/hierbas.svg" class="marquee-sep" alt="" />
-        </div>
-        <div class="marquee-item">
-          <span>AQUÍ TE LA VAMOS A CURAR</span>
-          <img src="assets/icons/corazon.svg" class="marquee-sep" alt="" />
-        </div>
-        <div class="marquee-item">
-          <span class="highlight">México siempre cura</span>
-          <img src="assets/icons/sol.svg" class="marquee-sep" alt="" />
-        </div>
-        <div class="marquee-item">
-          <span>UN TRAGO AL DÍA ES LA CLAVE DE LA ALEGRÍA</span>
-          <img src="assets/icons/limon.svg" class="marquee-sep" alt="" />
-        </div>
-        <div class="marquee-item">
-          <span class="highlight">Más que un restaurante, una experiencia que cura el alma</span>
-          <img src="assets/icons/pocima.svg" class="marquee-sep" alt="" />
-        </div>
-        <!-- Duplicado idéntico para loop infinito continuo sin saltos -->
-        <div class="marquee-item">
-          <span>PÁ TODO MAL, MEZCAL; Y PÁ TODO BIEN, TAMBIÉN</span>
-          <img src="assets/icons/maguey.svg" class="marquee-sep" alt="" />
-        </div>
-        <div class="marquee-item">
-          <span class="highlight">Cocina que cura · Tragos que conectan</span>
-          <img src="assets/icons/hierbas.svg" class="marquee-sep" alt="" />
-        </div>
-        <div class="marquee-item">
-          <span>AQUÍ TE LA VAMOS A CURAR</span>
-          <img src="assets/icons/corazon.svg" class="marquee-sep" alt="" />
-        </div>
-        <div class="marquee-item">
-          <span class="highlight">México siempre cura</span>
-          <img src="assets/icons/sol.svg" class="marquee-sep" alt="" />
-        </div>
-        <div class="marquee-item">
-          <span>UN TRAGO AL DÍA ES LA CLAVE DE LA ALEGRÍA</span>
-          <img src="assets/icons/limon.svg" class="marquee-sep" alt="" />
-        </div>
-        <div class="marquee-item">
-          <span class="highlight">Más que un restaurante, una experiencia que cura el alma</span>
-          <img src="assets/icons/pocima.svg" class="marquee-sep" alt="" />
+        <div class="marquee-group" aria-hidden="true">
+          <div class="marquee-item">
+            <span>PÁ TODO MAL, MEZCAL; Y PÁ TODO BIEN, TAMBIÉN</span>
+            <img src="assets/icons/maguey.svg" class="marquee-sep" alt="" />
+          </div>
+          <div class="marquee-item">
+            <span class="highlight">Cocina que cura · Tragos que conectan</span>
+            <img src="assets/icons/hierbas.svg" class="marquee-sep" alt="" />
+          </div>
+          <div class="marquee-item">
+            <span>AQUÍ TE LA VAMOS A CURAR</span>
+            <img src="assets/icons/corazon.svg" class="marquee-sep" alt="" />
+          </div>
+          <div class="marquee-item">
+            <span class="highlight">México siempre cura</span>
+            <img src="assets/icons/sol.svg" class="marquee-sep" alt="" />
+          </div>
+          <div class="marquee-item">
+            <span>UN TRAGO AL DÍA ES LA CLAVE DE LA ALEGRÍA</span>
+            <img src="assets/icons/limon.svg" class="marquee-sep" alt="" />
+          </div>
+          <div class="marquee-item">
+            <span class="highlight">Más que un restaurante, una experiencia que cura el alma</span>
+            <img src="assets/icons/pocima.svg" class="marquee-sep" alt="" />
+          </div>
         </div>
       </div>
     </div>
@@ -241,6 +244,9 @@
           <button class="meal-option" data-mode="comida" role="tab" id="tab-comida" aria-selected="false">
             <span class="meal-option-text" data-i18n="mealSwitch.comida">COMIDA</span>
           </button>
+          <button class="meal-option" data-mode="cantina" role="tab" id="tab-cantina" aria-selected="false">
+            <span class="meal-option-text" data-i18n="mealSwitch.cantina">CANTINA</span>
+          </button>
         </div>
       </div>
       <script>
@@ -263,26 +269,31 @@
             document.body.setAttribute('data-meal-mode', mode);
             var tabDes = document.getElementById('tab-desayuno');
             var tabCom = document.getElementById('tab-comida');
+            var tabCan = document.getElementById('tab-cantina');
             var ind = document.getElementById('meal-switch-indicator');
-            if (tabDes && tabCom) {
+            if (tabDes && tabCom && tabCan) {
               if (isMorning) {
                 tabDes.className = 'meal-option active';
                 tabDes.setAttribute('aria-selected', 'true');
                 tabCom.className = 'meal-option';
                 tabCom.setAttribute('aria-selected', 'false');
+                tabCan.className = 'meal-option';
+                tabCan.setAttribute('aria-selected', 'false');
               } else {
                 tabDes.className = 'meal-option';
                 tabDes.setAttribute('aria-selected', 'false');
                 tabCom.className = 'meal-option active mode-comida';
                 tabCom.setAttribute('aria-selected', 'true');
+                tabCan.className = 'meal-option';
+                tabCan.setAttribute('aria-selected', 'false');
               }
             }
             if (ind) {
               var noticeFull = ind.querySelector('.meal-switch-notice-full');
               var noticeShort = ind.querySelector('.meal-switch-notice-short');
               var badge = ind.querySelector('.meal-switch-time-badge');
-              if (noticeFull) noticeFull.textContent = isMorning ? 'Servicio de Desayuno activo' : 'Servicio de Comida y Cantina activo';
-              if (noticeShort) noticeShort.textContent = isMorning ? 'Desayuno activo' : 'Comida y Cantina';
+              if (noticeFull) noticeFull.textContent = isMorning ? 'Servicio de Desayuno activo' : 'Servicio de Comida activo';
+              if (noticeShort) noticeShort.textContent = isMorning ? 'Desayuno activo' : 'Comida activa';
               if (badge) badge.textContent = isMorning ? '9:00 AM - 1:30 PM' : '1:30 PM - 7:30 PM';
             }
           } catch (e) {}
@@ -543,10 +554,10 @@
 
   <!-- Scripts ES6 Modules -->
   <script type="module">
-    import { initI18n, setLanguage } from './js/i18n.js?v=35.0';
-    import { initUI, closeProductModal } from './js/ui.js?v=35.0';
-    import { initMenu, renderCategoriesNav, renderMenu, setMealMode } from './js/menu.js?v=35.0';
-    import { initAnimations } from './js/animations.js?v=35.0';
+    import { initI18n, setLanguage } from './js/i18n.js?v=38.0';
+    import { initUI, closeProductModal } from './js/ui.js?v=38.0';
+    import { initMenu, renderCategoriesNav, renderMenu, setMealMode } from './js/menu.js?v=38.0';
+    import { initAnimations } from './js/animations.js?v=38.0';
 
     // Exponer función de cierre modal
     window.closeProductModal = closeProductModal;

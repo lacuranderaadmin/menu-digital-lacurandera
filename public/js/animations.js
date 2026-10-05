@@ -238,14 +238,21 @@ function initMarqueeInteraction() {
   const marquee = document.querySelector('.marquee-ticker-container');
   if (!marquee) return;
 
-  // Al hacer hover en desktop o touch en móvil, el marquee disminuye suavemente la velocidad
-  marquee.addEventListener('mouseenter', () => {
-    marquee.classList.add('paused');
-  });
+  // Solo pausar en escritorio con ratón/puntero fino (no en pantallas táctiles de móvil)
+  if (window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    marquee.addEventListener('mouseenter', () => {
+      marquee.classList.add('paused');
+    });
 
-  marquee.addEventListener('mouseleave', () => {
+    marquee.addEventListener('mouseleave', () => {
+      marquee.classList.remove('paused');
+    });
+  }
+
+  // En móvil táctil (Android / iPhone), asegurar que ningún toque o deslizamiento congele la barra
+  marquee.addEventListener('touchstart', () => {
     marquee.classList.remove('paused');
-  });
+  }, { passive: true });
 }
 
 export function initCardsTiltAndSheen() {

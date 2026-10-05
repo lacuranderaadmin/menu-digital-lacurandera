@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lacurandera-v16';
+const CACHE_NAME = 'lacurandera-v19';
 const PRECACHE_ASSETS = [
   './',
   './index.html',

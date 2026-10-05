@@ -185,7 +185,13 @@ export function initUI(callback) {
 }
 
 export function setMealModeUI(mode) {
-  activeMealMode = (mode === 'desayuno' || mode === 'desayunos') ? 'desayunos' : 'comida';
+  if (mode === 'cantina') {
+    activeMealMode = 'cantina';
+  } else if (mode === 'comida') {
+    activeMealMode = 'comida';
+  } else {
+    activeMealMode = 'desayunos';
+  }
   document.body.setAttribute('data-meal-mode', activeMealMode);
   updateMealSwitchUI();
   if (onModeChangedCallback) {
@@ -206,24 +212,23 @@ export function updateMealSwitchUI(customSchedule = null) {
     currentScheduleConfig = getStoredSchedule();
   }
 
-  const isMorning = activeMealMode === 'desayunos' || activeMealMode === 'desayuno';
-
   const options = document.querySelectorAll('.meal-option');
   options.forEach(opt => {
     const mode = opt.getAttribute('data-mode');
     const isSelected = (mode === activeMealMode) || 
-                       (mode === 'desayunos' && activeMealMode === 'desayuno');
+                       ((mode === 'desayuno' || mode === 'desayunos') && (activeMealMode === 'desayuno' || activeMealMode === 'desayunos'));
 
     if (isSelected) {
       opt.classList.add('active');
       opt.setAttribute('aria-selected', 'true');
+      opt.classList.remove('mode-comida', 'mode-cantina');
       if (mode === 'comida') {
         opt.classList.add('mode-comida');
-      } else {
-        opt.classList.remove('mode-comida');
+      } else if (mode === 'cantina') {
+        opt.classList.add('mode-cantina');
       }
     } else {
-      opt.classList.remove('active', 'mode-comida');
+      opt.classList.remove('active', 'mode-comida', 'mode-cantina');
       opt.setAttribute('aria-selected', 'false');
     }
   });
@@ -234,14 +239,21 @@ export function updateMealSwitchUI(customSchedule = null) {
     const sched = currentScheduleConfig;
     const breakfastLabel = getScheduleLabel(sched?.breakfast, '9:00 AM - 1:30 PM');
     const lunchLabel = getScheduleLabel(sched?.lunch, '1:30 PM - 7:30 PM');
-    const currentLabel = isMorning ? breakfastLabel : lunchLabel;
+    const cantinaLabel = 'Todo el día';
 
-    const serviceNameFull = isMorning
-      ? t('mealSwitch.serviceMorning', 'Servicio de Desayuno activo')
-      : t('mealSwitch.serviceAfternoon', 'Servicio de Comida y Cantina activo');
-    const serviceNameShort = isMorning
-      ? t('mealSwitch.serviceMorningShort', 'Desayuno activo')
-      : t('mealSwitch.serviceAfternoonShort', 'Comida y Cantina');
+    let currentLabel = breakfastLabel;
+    let serviceNameFull = t('mealSwitch.serviceMorning', 'Servicio de Desayuno activo');
+    let serviceNameShort = t('mealSwitch.serviceMorningShort', 'Desayuno activo');
+
+    if (activeMealMode === 'comida') {
+      currentLabel = lunchLabel;
+      serviceNameFull = t('mealSwitch.serviceAfternoon', 'Servicio de Comida activo');
+      serviceNameShort = t('mealSwitch.serviceAfternoonShort', 'Comida activa');
+    } else if (activeMealMode === 'cantina') {
+      currentLabel = cantinaLabel;
+      serviceNameFull = t('mealSwitch.serviceCantina', 'Cantina La Curandera activa');
+      serviceNameShort = t('mealSwitch.serviceCantinaShort', 'Cantina activa');
+    }
 
     indicator.innerHTML = `
       <span class="status-pulse" aria-hidden="true"></span>

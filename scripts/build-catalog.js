@@ -6,566 +6,1060 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const categories = [
-  // DESAYUNOS
-  { id: 'pa-curar-el-alma', slug: 'pa-curar-el-alma', order: 1, section: 'desayuno', icon: 'sol', name: { es: "Pa' Curar el Alma", en: "Soul Healing (Breakfast)", fr: "Pour Guérir l'Âme" }, isActive: true },
-  { id: 'lo-enchi-loso', slug: 'lo-enchi-loso', order: 2, section: 'desayuno', icon: 'chile', name: { es: "Lo Enchi-loso", en: "Lo Enchi-loso (Spicy)", fr: "Spécialités Épicées" }, isActive: true },
-  { id: 'tacos-dorados', slug: 'tacos-dorados', order: 3, section: 'desayuno', icon: 'tortilla', name: { es: "Tacos Dorados", en: "Tacos Dorados (Crispy Tacos)", fr: "Tacos Croustillants" }, isActive: true },
-  { id: 'pa-caldear', slug: 'pa-caldear', order: 4, section: 'desayuno', icon: 'pocima', name: { es: "Pa' Caldear", en: "Pa' Caldear (Broths)", fr: "Bouillons Chauds" }, isActive: true },
-  { id: 'sandwich-y-algo-mas', slug: 'sandwich-y-algo-mas', order: 5, section: 'desayuno', icon: 'corazon', name: { es: "Sándwich y Algo Más", en: "Sandwiches & More", fr: "Sandwichs & Plus" }, isActive: true },
-  { id: 'pa-los-peques', slug: 'pa-los-peques', order: 6, section: 'desayuno', icon: 'estrella', name: { es: "Pa' los Más Peques", en: "Kids Breakfast", fr: "Menu Petits" }, isActive: true },
-  { id: 'dulce-remedio', slug: 'dulce-remedio', order: 7, section: 'ambos', icon: 'corazon', name: { es: "Dulce Remedio", en: "Dulce Remedio (Desserts)", fr: "Desserts & Douceurs" }, isActive: true },
-  { id: 'pa-calentar-el-espiritu', slug: 'pa-calentar-el-espiritu', order: 8, section: 'ambos', icon: 'sol', name: { es: "Pa' Calentar el Espíritu", en: "Pa' Calentar el Espíritu (Coffee & Tea)", fr: "Boissons Chaudes" }, isActive: true },
-  { id: 'jugueria-la-curandera', slug: 'jugueria-la-curandera', order: 9, section: 'desayuno', icon: 'limon', name: { es: "Juguería La Curandera", en: "Fresh Juices & Smoothies", fr: "Jus Naturels" }, isActive: true },
-  { id: 'bebidas-sin-alcohol', slug: 'bebidas-sin-alcohol', order: 10, section: 'ambos', icon: 'pocima', name: { es: "Bebidas sin Alcohol", en: "Non-Alcoholic Drinks", fr: "Boissons sans Alcool" }, isActive: true },
-  { id: 'mockteleria', slug: 'mockteleria', order: 11, section: 'ambos', icon: 'limon', name: { es: "Mocktelería", en: "Craft Mocktails", fr: "Mocktails Artisanaux" }, isActive: true },
+  // ==========================================
+  // ☀️ SECCIÓN 1: DESAYUNOS (9:00 AM - 1:30 PM)
+  // ==========================================
+  {
+    id: 'pa-curar-el-alma',
+    slug: 'pa-curar-el-alma',
+    order: 1,
+    section: 'desayuno',
+    icon: 'sol',
+    name: {
+      es: "Pa' Curar el Alma",
+      en: "Soul Healers (Breakfast)",
+      fr: "Pour Guérir l'Âme"
+    },
+    note: {
+      es: "Todos los desayunos incluyen: café de olla, café americano o té + fruta de temporada + jugo de temporada + bolillos tostado con mermelada de la casa",
+      en: "All breakfasts include: café de olla, American coffee or tea + seasonal fruit + seasonal juice + toasted bread with house jam",
+      fr: "Tous les petits-déjeuners comprennent : café traditionnel, café américain ou thé + fruits de saison + jus de saison + pain grillé et confiture maison"
+    },
+    isActive: true
+  },
+  {
+    id: 'lo-enchi-loso',
+    slug: 'lo-enchi-loso',
+    order: 2,
+    section: 'desayuno',
+    icon: 'chile',
+    name: {
+      es: "Lo Enchi-loso",
+      en: "Lo Enchi-loso (Spicy Delights)",
+      fr: "Spécialités Épicées"
+    },
+    isActive: true
+  },
+  {
+    id: 'tacos-dorados',
+    slug: 'tacos-dorados',
+    order: 3,
+    section: 'desayuno',
+    icon: 'tortilla',
+    name: {
+      es: "Tacos Dorados",
+      en: "Crispy Golden Tacos",
+      fr: "Tacos Croustillants"
+    },
+    isActive: true
+  },
+  {
+    id: 'sandwich-y-algo-mas',
+    slug: 'sandwich-y-algo-mas',
+    order: 4,
+    section: 'desayuno',
+    icon: 'corazon',
+    name: {
+      es: "Sándwich y Algo Más",
+      en: "Sandwiches & More",
+      fr: "Sandwichs & Plus"
+    },
+    isActive: true
+  },
+  {
+    id: 'pa-caldear',
+    slug: 'pa-caldear',
+    order: 5,
+    section: 'desayuno',
+    icon: 'pocima',
+    name: {
+      es: "Pa' Caldear",
+      en: "Warm Broths",
+      fr: "Bouillons Chauds"
+    },
+    isActive: true
+  },
+  {
+    id: 'pa-los-peques',
+    slug: 'pa-los-peques',
+    order: 6,
+    section: 'desayuno',
+    icon: 'estrella',
+    name: {
+      es: "Pa' los Peques",
+      en: "Kids Breakfast",
+      fr: "Menu Petits"
+    },
+    isActive: true
+  },
+  {
+    id: 'dulce-remedio-desayuno',
+    slug: 'dulce-remedio-desayuno',
+    order: 7,
+    section: 'desayuno',
+    icon: 'corazon',
+    name: {
+      es: "Dulce Remedio",
+      en: "Sweet Remedies (Breakfast)",
+      fr: "Douceurs & Desserts"
+    },
+    isActive: true
+  },
+  {
+    id: 'pa-calentar-el-espiritu',
+    slug: 'pa-calentar-el-espiritu',
+    order: 8,
+    section: 'ambos',
+    icon: 'sol',
+    name: {
+      es: "Pa' Calentar el Espíritu",
+      en: "Coffee & Hot Drinks",
+      fr: "Boissons Chaudes & Café"
+    },
+    isActive: true
+  },
+  {
+    id: 'jugueria-la-curandera',
+    slug: 'jugueria-la-curandera',
+    order: 9,
+    section: 'desayuno',
+    icon: 'limon',
+    name: {
+      es: "Juguería La Curandera",
+      en: "Juicery & Smoothies",
+      fr: "Bar à Jus & Vitamines"
+    },
+    isActive: true
+  },
+  {
+    id: 'bebidas-sin-alcohol',
+    slug: 'bebidas-sin-alcohol',
+    order: 10,
+    section: 'ambos',
+    icon: 'pocima',
+    name: {
+      es: "Bebidas sin Alcohol",
+      en: "Non-Alcoholic Drinks",
+      fr: "Boissons sans Alcool"
+    },
+    isActive: true
+  },
+  {
+    id: 'mockteleria',
+    slug: 'mockteleria',
+    order: 11,
+    section: 'ambos',
+    icon: 'limon',
+    name: {
+      es: "Mocktelería",
+      en: "Craft Mocktails",
+      fr: "Mocktails Artisanaux"
+    },
+    isActive: true
+  },
 
-  // COMIDA Y CANTINA
-  { id: 'sabores-de-cuaresma', slug: 'sabores-de-cuaresma', order: 12, section: 'comida', icon: 'limon', name: { es: "Sabores de Cuaresma", en: "Seafood Delights (Cuaresma)", fr: "Saveurs Marines" }, isActive: true },
-  { id: 'pa-empezar', slug: 'pa-empezar', order: 13, section: 'comida', icon: 'tortilla', name: { es: "Pa' Empezar", en: "Starters & Appetizers", fr: "Entrées à Partager" }, isActive: true },
-  { id: 'pa-cuidarte', slug: 'pa-cuidarte', order: 14, section: 'comida', icon: 'hierbas', name: { es: "Pa' Cuidarte (Ensaladas)", en: "Fresh Salads", fr: "Salades Fraîches" }, isActive: true },
-  { id: 'sopas-y-pastas', slug: 'sopas-y-pastas', order: 15, section: 'comida', icon: 'pocima', name: { es: "Sopas y Pastas", en: "Traditional Soups & Pastas", fr: "Soupes et Pâtes" }, isActive: true },
-  { id: 'snacks', slug: 'snacks', order: 16, section: 'comida', icon: 'maiz', name: { es: "Snacks", en: "Snacks & Munchies", fr: "Snacks Mexicains" }, isActive: true },
-  { id: 'platos-fuertes', slug: 'platos-fuertes', order: 17, section: 'comida', icon: 'corazon', name: { es: "Platos Fuertes", en: "Main Specialties", fr: "Plats Principaux" }, isActive: true },
-  { id: 'taqueria-la-curandera', slug: 'taqueria-la-curandera', order: 18, section: 'comida', icon: 'tortilla', name: { es: "Taquería La Curandera", en: "Taquería (3 pcs)", fr: "Taquería Artisanale" }, isActive: true },
-  { id: 'cortes', slug: 'cortes', order: 19, section: 'comida', icon: 'sol', name: { es: "Cortes Selectos (300-350g)", en: "Prime Steaks", fr: "Viandes Sélectionnées" }, isActive: true },
-  { id: 'burritos', slug: 'burritos', order: 20, section: 'comida', icon: 'tortilla', name: { es: "Burritos", en: "Northern Burritos", fr: "Burritos Généreux" }, isActive: true },
-  { id: 'burguers-y-jocho', slug: 'burguers-y-jocho', order: 21, section: 'comida', icon: 'estrella', name: { es: "Burguers y Jocho", en: "Burgers & Mexican Jocho", fr: "Burgers & Jocho" }, isActive: true },
-  { id: 'pa-los-morrillos', slug: 'pa-los-morrillos', order: 22, section: 'comida', icon: 'estrella', name: { es: "Pa' los Morrillos", en: "Kids Menu (Comida)", fr: "Menu Enfants" }, isActive: true },
-  { id: 'cantina-la-curandera', slug: 'cantina-la-curandera', order: 23, section: 'cantina', icon: 'maguey', name: { es: "Cantina La Curandera", en: "Cantina & Spirits", fr: "Cantina & Spiritueux" }, isActive: true }
+  // ==========================================
+  // 🍽️ SECCIÓN 2: COMIDA (1:30 PM - 7:30 PM)
+  // ==========================================
+  {
+    id: 'sabores-de-mar',
+    slug: 'sabores-de-mar',
+    order: 12,
+    section: 'comida',
+    icon: 'limon',
+    name: {
+      es: "Sabores de Mar",
+      en: "Flavors of the Sea",
+      fr: "Saveurs de la Mer"
+    },
+    isActive: true
+  },
+  {
+    id: 'pa-empezar',
+    slug: 'pa-empezar',
+    order: 13,
+    section: 'comida',
+    icon: 'tortilla',
+    name: {
+      es: "Pa' Empezar",
+      en: "Appetizers & Starters",
+      fr: "Pour Commencer"
+    },
+    isActive: true
+  },
+  {
+    id: 'pa-cuidarte',
+    slug: 'pa-cuidarte',
+    order: 14,
+    section: 'comida',
+    icon: 'hierbas',
+    name: {
+      es: "Pa' Cuidarte",
+      en: "Fresh Salads",
+      fr: "Salades Fraîches"
+    },
+    isActive: true
+  },
+  {
+    id: 'sopas-y-pastas',
+    slug: 'sopas-y-pastas',
+    order: 15,
+    section: 'comida',
+    icon: 'pocima',
+    name: {
+      es: "Sopas y Pastas",
+      en: "Soups & Pastas",
+      fr: "Soupes et Pâtes"
+    },
+    isActive: true
+  },
+  {
+    id: 'platos-fuertes',
+    slug: 'platos-fuertes',
+    order: 16,
+    section: 'comida',
+    icon: 'corazon',
+    name: {
+      es: "Platos Fuertes",
+      en: "Main Courses",
+      fr: "Plats Principaux"
+    },
+    isActive: true
+  },
+  {
+    id: 'cortes',
+    slug: 'cortes',
+    order: 17,
+    section: 'comida',
+    icon: 'sol',
+    name: {
+      es: "Cortes",
+      en: "Prime Steaks",
+      fr: "Viandes Sélectionnées"
+    },
+    note: {
+      es: "Cada corte tiene un peso aproximado en crudo de 300 a 350 gr. Pueden ir acompañados de 3 guarniciones a elegir: nopales y cebollas, piña asada, guacamole, elote amarillo, cebollitas cambray, queso asado, frijoles.",
+      en: "Each prime cut weighs approx. 300-350g raw. Choice of 3 sides: cactus pads & onions, grilled pineapple, guacamole, sweet corn, cambray onions, grilled cheese, beans.",
+      fr: "Chaque pièce pèse env. 300-350g cru. Au choix 3 garnitures : nopals & oignons, ananas rôti, guacamole, maïs doux, oignons cambray, fromage grillé, haricots."
+    },
+    isActive: true
+  },
+  {
+    id: 'taqueria-la-curandera',
+    slug: 'taqueria-la-curandera',
+    order: 18,
+    section: 'comida',
+    icon: 'tortilla',
+    name: {
+      es: "Taquería La Curandera",
+      en: "Taquería La Curandera",
+      fr: "Taquería La Curandera"
+    },
+    isActive: true
+  },
+  {
+    id: 'burritos',
+    slug: 'burritos',
+    order: 19,
+    section: 'comida',
+    icon: 'tortilla',
+    name: {
+      es: "Burritos",
+      en: "Northern Burritos",
+      fr: "Burritos Généreux"
+    },
+    isActive: true
+  },
+  {
+    id: 'snacks',
+    slug: 'snacks',
+    order: 20,
+    section: 'comida',
+    icon: 'maiz',
+    name: {
+      es: "Snacks",
+      en: "Snacks & Munchies",
+      fr: "Snacks Mexicains"
+    },
+    isActive: true
+  },
+  {
+    id: 'alitas',
+    slug: 'alitas',
+    order: 21,
+    section: 'comida',
+    icon: 'chile',
+    name: {
+      es: "Alitas",
+      en: "Chicken Wings",
+      fr: "Ailes de Poulet"
+    },
+    isActive: true
+  },
+  {
+    id: 'burgers',
+    slug: 'burgers',
+    order: 22,
+    section: 'comida',
+    icon: 'estrella',
+    name: {
+      es: "Burgers",
+      en: "Artisanal Burgers",
+      fr: "Burgers Artisanaux"
+    },
+    isActive: true
+  },
+  {
+    id: 'pa-los-morrillos',
+    slug: 'pa-los-morrillos',
+    order: 23,
+    section: 'comida',
+    icon: 'estrella',
+    name: {
+      es: "Para los Morrillos",
+      en: "Kids Menu (Comida)",
+      fr: "Menu Enfants"
+    },
+    isActive: true
+  },
+  {
+    id: 'dulce-remedio-comida',
+    slug: 'dulce-remedio-comida',
+    order: 24,
+    section: 'comida',
+    icon: 'corazon',
+    name: {
+      es: "Dulce Remedio",
+      en: "Sweet Remedies (Desserts)",
+      fr: "Douceurs & Desserts"
+    },
+    isActive: true
+  },
+
+  // ==========================================
+  // 🍸 SECCIÓN 3: CANTINA (Todo el horario)
+  // ==========================================
+  {
+    id: 'cantina-pa-curar',
+    slug: 'cantina-pa-curar',
+    order: 25,
+    section: 'cantina',
+    icon: 'maguey',
+    name: {
+      es: "Pa' Curar",
+      en: "Hangover Cures",
+      fr: "Remèdes Traditionnels"
+    },
+    isActive: true
+  },
+  {
+    id: 'cantina-refrescantes',
+    slug: 'cantina-refrescantes',
+    order: 26,
+    section: 'cantina',
+    icon: 'limon',
+    name: {
+      es: "Refrescantes",
+      en: "Refreshing Cocktails",
+      fr: "Cocktails Rafraîchissants"
+    },
+    isActive: true
+  },
+  {
+    id: 'cantina-lo-mas-pedido',
+    slug: 'cantina-lo-mas-pedido',
+    order: 27,
+    section: 'cantina',
+    icon: 'corazon',
+    name: {
+      es: "Lo Más Pedido",
+      en: "Most Popular Cocktails",
+      fr: "Les Plus Populaires"
+    },
+    isActive: true
+  },
+  {
+    id: 'cantina-de-la-casa',
+    slug: 'cantina-de-la-casa',
+    order: 28,
+    section: 'cantina',
+    icon: 'maguey',
+    name: {
+      es: "De la Casa (con mezcal)",
+      en: "House Specials (with Mezcal)",
+      fr: "Spécialités Maison (au Mezcal)"
+    },
+    isActive: true
+  },
+  {
+    id: 'cantina-cerveza',
+    slug: 'cantina-cerveza',
+    order: 29,
+    section: 'cantina',
+    icon: 'sol',
+    name: {
+      es: "Cerveza",
+      en: "Cold Beers & Tarros",
+      fr: "Bières Fraîches & Bocks"
+    },
+    isActive: true
+  },
+  {
+    id: 'cantina-vodka',
+    slug: 'cantina-vodka',
+    order: 30,
+    section: 'cantina',
+    icon: 'pocima',
+    name: {
+      es: "Vodka",
+      en: "Vodka",
+      fr: "Vodka"
+    },
+    isActive: true
+  },
+  {
+    id: 'cantina-tequila',
+    slug: 'cantina-tequila',
+    order: 31,
+    section: 'cantina',
+    icon: 'maguey',
+    name: {
+      es: "Tequila",
+      en: "Tequila Selection",
+      fr: "Sélection Tequila"
+    },
+    isActive: true
+  },
+  {
+    id: 'cantina-mezcal-artesanal',
+    slug: 'cantina-mezcal-artesanal',
+    order: 32,
+    section: 'cantina',
+    icon: 'maguey',
+    name: {
+      es: "Mezcal Artesanal",
+      en: "Artisanal Mezcal",
+      fr: "Mezcal Artisanal"
+    },
+    isActive: true
+  },
+  {
+    id: 'cantina-whisky',
+    slug: 'cantina-whisky',
+    order: 33,
+    section: 'cantina',
+    icon: 'sol',
+    name: {
+      es: "Whisky",
+      en: "Whisky",
+      fr: "Whisky"
+    },
+    isActive: true
+  },
+  {
+    id: 'cantina-cognac',
+    slug: 'cantina-cognac',
+    order: 34,
+    section: 'cantina',
+    icon: 'pocima',
+    name: {
+      es: "Cognac",
+      en: "Cognac",
+      fr: "Cognac"
+    },
+    isActive: true
+  },
+  {
+    id: 'cantina-ron',
+    slug: 'cantina-ron',
+    order: 35,
+    section: 'cantina',
+    icon: 'limon',
+    name: {
+      es: "Ron",
+      en: "Rum",
+      fr: "Rhum"
+    },
+    isActive: true
+  },
+  {
+    id: 'cantina-digestivos',
+    slug: 'cantina-digestivos',
+    order: 36,
+    section: 'cantina',
+    icon: 'corazon',
+    name: {
+      es: "Digestivos",
+      en: "Digestifs & Cordials",
+      fr: "Digestifs"
+    },
+    isActive: true
+  },
+  {
+    id: 'cantina-vinos',
+    slug: 'cantina-vinos',
+    order: 37,
+    section: 'cantina',
+    icon: 'maguey',
+    name: {
+      es: "Vinos",
+      en: "Wine & Clericot",
+      fr: "Vins & Sangria"
+    },
+    isActive: true
+  }
 ];
 
 const products = [
-  // 5.1 DESAYUNOS - Pa' curar el alma
+  // =========================================================================
+  // ☀️ SECCIÓN 1: DESAYUNO — PA' CURAR EL ALMA
+  // =========================================================================
   {
-    id: 'huevos-revueltos-mexicana',
+    id: 'huevos-revueltos',
     categoryId: 'pa-curar-el-alma',
-    name: { es: "Huevos revueltos a la mexicana", en: "Mexican Scrambled Eggs", fr: "Œufs Brouillés à la Mexicaine" },
-    description: { es: "Con jitomate, cebolla y chile serrano. Servidos con frijoles refritos y totopos crujientes.", en: "With fresh tomato, onion and serrano chile. Served with refried beans and tortilla chips.", fr: "Avec tomate, oignon et piment. Servis avec haricots et totopos." },
-    price: 180,
+    name: { es: "Huevos revueltos al gusto", en: "Scrambled Eggs to Taste", fr: "Œufs Brouillés au Choix" },
+    description: { es: "A la mexicana, con salchicha, jamón o longaniza. Servidos con frijoles refritos y totopos.", en: "Mexican style, with sausage, ham or longaniza. Served with refried beans and chips.", fr: "À la mexicaine, saucisse, jambon ou saucisse locale. Servis avec haricots et totopos." },
+    price: 185,
     tags: ["recomendado"],
-    allergens: [],
+    allergens: ["huevo"],
     order: 1,
-    isActive: true
-  },
-  {
-    id: 'huevos-revueltos-salchicha',
-    categoryId: 'pa-curar-el-alma',
-    name: { es: "Huevos revueltos con salchicha", en: "Scrambled Eggs with Sausage", fr: "Œufs Brouillés aux Saucisses" },
-    description: { es: "Huevos revueltos con salchicha, servidos con frijoles refritos y totopos.", en: "Scrambled eggs with sausage, served with refried beans and tortilla chips.", fr: "Œufs brouillés avec saucisse, servis avec haricots." },
-    price: 180,
-    tags: [],
-    allergens: [],
-    order: 2,
-    isActive: true
-  },
-  {
-    id: 'huevos-revueltos-jamon',
-    categoryId: 'pa-curar-el-alma',
-    name: { es: "Huevos revueltos con jamón", en: "Scrambled Eggs with Ham", fr: "Œufs Brouillés au Jambon" },
-    description: { es: "Con jamón seleccionado, servidos con frijoles refritos y totopos.", en: "With select ham, served with refried beans and chips.", fr: "Au jambon sélectionné, servis avec haricots." },
-    price: 180,
-    tags: [],
-    allergens: [],
-    order: 3,
-    isActive: true
-  },
-  {
-    id: 'huevos-revueltos-longaniza',
-    categoryId: 'pa-curar-el-alma',
-    name: { es: "Huevos revueltos con longaniza", en: "Scrambled Eggs with Local Longaniza", fr: "Œufs Brouillés à la Longaniza" },
-    description: { es: "Con longaniza artesanal de la región, servidos con frijoles refritos y totopos.", en: "With regional artisanal longaniza sausage, refried beans and chips.", fr: "À la saucisse artisanale régionale et haricots." },
-    price: 180,
-    tags: ["hero"],
-    allergens: [],
-    order: 4,
     isActive: true
   },
   {
     id: 'huevos-rancheros',
     categoryId: 'pa-curar-el-alma',
-    name: { es: "Huevos rancheros", en: "Huevos Rancheros (Ranch-Style Eggs)", fr: "Huevos Rancheros Traditionnels" },
-    description: { es: "2 huevos estrellados sobre tortilla de maíz, bañados en auténtica salsa de jitomate.", en: "Two sunny-side eggs on corn tortilla smothered in tomato ranch sauce.", fr: "Deux œufs sur tortilla arrosés de sauce tomate maison." },
+    name: { es: "Huevos rancheros", en: "Ranchero Eggs", fr: "Huevos Rancheros" },
+    description: { es: "2 huevos estrellados sobre tortillas bañados en salsa de jitomate. Servidos con frijoles refritos y totopos.", en: "Two fried eggs over tortillas topped with fresh tomato salsa, refried beans and chips.", fr: "Deux œufs sur tortillas arrosés de sauce tomate maison, haricots et totopos." },
     price: 185,
-    tags: ["recomendado"],
-    allergens: [],
-    order: 5,
+    tags: [],
+    allergens: ["huevo"],
+    order: 2,
     isActive: true
   },
   {
     id: 'huevos-divorciados',
     categoryId: 'pa-curar-el-alma',
-    name: { es: "Huevos divorciados", en: "Huevos Divorciados (Dual Salsa Eggs)", fr: "Huevos Divorciados" },
-    description: { es: "2 huevos estrellados montados sobre tortillas, uno en salsa verde y otro en salsa roja.", en: "Two fried eggs over tortillas, one in salsa verde and one in salsa roja.", fr: "Deux œufs sur tortillas, l'un en salsa verte et l'autre rouge." },
-    price: 210,
+    name: { es: "Huevos divorciados", en: "Divorced Eggs (Dual Salsa)", fr: "Huevos Divorciados" },
+    description: { es: "2 huevos estrellados montados sobre tortillas en salsa verde y roja. Servidos con frijoles refritos y totopos.", en: "Two fried eggs over tortillas, one in salsa verde and one in salsa roja, with beans and chips.", fr: "Deux œufs sur tortillas, l'un en sauce verte et l'autre en sauce rouge, haricots et totopos." },
+    price: 195,
     tags: ["hero"],
-    allergens: [],
-    order: 6,
+    allergens: ["huevo"],
+    order: 3,
     isActive: true
   },
   {
     id: 'huevos-nortenos',
     categoryId: 'pa-curar-el-alma',
-    name: { es: "Huevos norteños", en: "Huevos Norteños (Crispy Tortilla Scramble)", fr: "Huevos Norteños" },
-    description: { es: "Revueltos con trozos de tortilla frita dorada, chile, cebolla y salsa de jitomate.", en: "Scrambled with fried corn tortilla crisps, chile, onion and tomato sauce.", fr: "Œufs brouillés aux morceaux de tortillas croustillantes." },
+    name: { es: "Huevos norteños", en: "Northern Style Scrambled Eggs", fr: "Œufs Brouillés du Nord" },
+    description: { es: "Huevos revueltos con trozos de tortilla frita, chile y cebolla, servidos con salsa de jitomate, frijoles y totopos.", en: "Scrambled eggs with crispy tortilla crisps, chili and onion, served with tomato salsa, beans and chips.", fr: "Œufs brouillés avec éclats de tortilla frite, piment et oignon, sauce tomate et haricots." },
     price: 195,
-    tags: ["picante"],
-    allergens: [],
-    order: 7,
+    tags: [],
+    allergens: ["huevo"],
+    order: 4,
     isActive: true
   },
   {
-    id: 'omelette-rajas-elote',
+    id: 'huevos-caldo-de-oso',
     categoryId: 'pa-curar-el-alma',
-    name: { es: "Omelette de rajas poblanas con elote", en: "Poblano Pepper & Sweet Corn Omelette", fr: "Omelette aux Lamelles de Poblano et Maïs" },
-    description: { es: "Servido con frijoles refritos y totopos.", en: "Filled with roasted poblano strips and corn, served with refried beans.", fr: "Garni de poivrons poblano et maïs doux." },
-    price: 205,
-    tags: ["vegetariano"],
-    allergens: ["lacteos"],
-    order: 8,
+    name: { es: "Caldo de oso", en: "Bear Broth Eggs (Caldo de Oso)", fr: "Caldo de Oso aux Œufs" },
+    description: { es: "Huevo revuelto con frijoles de olla y chile serrano. Servido con totopos crujientes.", en: "Scrambled egg gently blended into pot beans with serrano chili and crispy chips.", fr: "Œuf brouillé mijoté dans des haricots en pot avec piment serrano et totopos." },
+    price: 185,
+    tags: [],
+    allergens: ["huevo"],
+    order: 5,
+    isActive: true
+  },
+  {
+    id: 'omelette-rajas-poblanas',
+    categoryId: 'pa-curar-el-alma',
+    name: { es: "Omelette de rajas poblanas con elote", en: "Poblano Pepper & Corn Omelette", fr: "Omelette aux Piments Poblano et Maïs" },
+    description: { es: "Servido con frijoles refritos y totopos crujientes.", en: "Fluffy omelette with roasted poblano strips and corn, served with refried beans and chips.", fr: "Omelette moelleuse aux lanières de poblano et maïs, avec haricots et totopos." },
+    price: 195,
+    tags: ["recomendado"],
+    allergens: ["huevo", "lacteos"],
+    order: 6,
     isActive: true
   },
   {
     id: 'omelette-jamon-queso',
     categoryId: 'pa-curar-el-alma',
-    name: { es: "Omelette de jamón y queso", en: "Ham & Cheese Omelette", fr: "Omelette Jambon & Fromage" },
-    description: { es: "Con queso fundido y jamón de pavo. Servido con frijoles refritos y totopos.", en: "With melted artisanal cheese and turkey ham, served with refried beans.", fr: "Au fromage fondu et jambon, servi avec haricots." },
-    price: 210,
+    name: { es: "Omelette de jamón y queso", en: "Ham & Melted Cheese Omelette", fr: "Omelette Jambon & Fromage Fondu" },
+    description: { es: "Servido con frijoles refritos y totopos crujientes.", en: "Classic ham and melted cheese omelette, served with refried beans and chips.", fr: "Omelette au jambon sélectionné et fromage fondu, avec haricots et chips." },
+    price: 195,
     tags: [],
-    allergens: ["lacteos"],
-    order: 9,
+    allergens: ["huevo", "lacteos"],
+    order: 7,
     isActive: true
   },
   {
     id: 'omelette-champinon-queso',
     categoryId: 'pa-curar-el-alma',
-    name: { es: "Omelette de champiñón con queso", en: "Mushroom & Melted Cheese Omelette", fr: "Omelette aux Champignons et Fromage" },
-    description: { es: "Champiñones salteados y queso fundido. Con frijoles refritos y totopos.", en: "Sautéed fresh mushrooms and melted cheese with refried beans.", fr: "Champignons frais sautés et fromage fondant." },
-    price: 185,
+    name: { es: "Omelette de champiñón con queso", en: "Mushroom & Cheese Omelette", fr: "Omelette Champignons & Fromage" },
+    description: { es: "Servido con frijoles refritos y totopos crujientes.", en: "Fresh sautéed mushrooms with melted cheese, served with refried beans and chips.", fr: "Champignons sautés frais et fromage fondu, accompagnés de haricots et totopos." },
+    price: 195,
     tags: ["vegetariano"],
-    allergens: ["lacteos"],
-    order: 10,
+    allergens: ["huevo", "lacteos"],
+    order: 8,
     isActive: true
   },
   {
     id: 'molletes-clasicos',
     categoryId: 'pa-curar-el-alma',
-    name: { es: "Molletes clásicos", en: "Classic Molletes (Open-Faced Sourdough)", fr: "Molletes Classiques" },
-    description: { es: "Bolillo tostado con frijoles refritos, queso manchego fundido y pico de gallo fresco.", en: "Toasted bolillo bread spread with refried beans, melted cheese, and fresh pico de gallo.", fr: "Pain bolillo avec purée de haricots, fromage gratiné et pico de gallo." },
-    price: 185,
+    name: { es: "Molletes clásicos", en: "Classic Molletes", fr: "Molletes Classiques" },
+    description: { es: "Bolillos en mitades con frijoles refritos, queso fundido y pico de gallo.", en: "Crusty Mexican bolillo rolls topped with refried beans, melted cheese and fresh pico de gallo.", fr: "Demi-baguettes mexicaines garnies de haricots, fromage gratiné et pico de gallo." },
+    price: 145,
     tags: ["vegetariano"],
     allergens: ["gluten", "lacteos"],
-    order: 11,
+    order: 9,
     isActive: true
   },
   {
     id: 'molletes-longaniza',
     categoryId: 'pa-curar-el-alma',
-    name: { es: "Molletes con longaniza", en: "Molletes with Artisanal Longaniza", fr: "Molletes à la Longaniza" },
-    description: { es: "Bolillo con frijoles, queso fundido, longaniza bien doradita y pico de gallo.", en: "Molletes topped with crispy regional longaniza sausage.", fr: "Molletes garnis de savoureuse saucisse longaniza." },
-    price: 210,
-    tags: ["recomendado"],
+    name: { es: "Molletes con longaniza", en: "Molletes with Artisanal Longaniza", fr: "Molletes à la Longaniza Artisanale" },
+    description: { es: "Bolillos en mitades con frijoles refritos, queso fundido, longaniza artesanal y pico de gallo.", en: "Bolillo bread with refried beans, melted cheese, local artisanal longaniza sausage and pico de gallo.", fr: "Pain bolillo avec haricots, fromage fondu, saucisse artisanale et pico de gallo." },
+    price: 155,
+    tags: ["hero"],
     allergens: ["gluten", "lacteos"],
-    order: 12,
+    order: 10,
     isActive: true
   },
   {
     id: 'mollepizza',
     categoryId: 'pa-curar-el-alma',
-    name: { es: "Mollepizza", en: "Mollepizza (Pizza-Style Mollete)", fr: "Mollepizza" },
-    description: { es: "Base de salsa de tomate especiada con pepperoni y queso fundido sobre bolillo.", en: "Spiced tomato base with pepperoni and melted cheese on crusty sourdough bread.", fr: "Sauce tomate, pepperoni et fromage fondu sur pain toasté." },
-    price: 210,
+    name: { es: "Mollepizza", en: "Mollepizza (Pepperoni Pizza Molletes)", fr: "Mollepizza" },
+    description: { es: "Base de salsa de tomate con pepperoni y queso fundido sobre bolillos crujientes.", en: "Crispy bolillo bread with Italian tomato sauce, melted cheese and savory pepperoni.", fr: "Pain bolillo croustillant, sauce tomate, fromage gratiné et pepperoni." },
+    price: 165,
     tags: [],
     allergens: ["gluten", "lacteos"],
-    order: 13,
+    order: 11,
     isActive: true
   },
 
-  // 5.2 LO ENCHI-LOSO
+  // =========================================================================
+  // ☀️ SECCIÓN 1: DESAYUNO — LO ENCHI-LOSO
+  // =========================================================================
   {
     id: 'enchiladas-tradicionales',
     categoryId: 'lo-enchi-loso',
-    name: { es: "Enchiladas tradicionales", en: "Traditional Enchiladas Verdes (3 pcs)", fr: "Enchiladas Traditionnelles Vertes (3 pcs)" },
-    description: { es: "3 piezas bañadas en auténtica salsa verde de la casa, rellenas de pollo, longaniza o bistec.", en: "Three corn tortillas bathed in green salsa, filled with chicken, longaniza, or beef steak.", fr: "Trois tortillas nappées de salsa verte, garnies de poulet ou bœuf." },
-    price: 180,
+    name: { es: "Enchiladas tradicionales", en: "Traditional Green Enchiladas", fr: "Enchiladas Vertes Traditionnelles" },
+    description: { es: "3 piezas bañadas en nuestra auténtica salsa verde. Pollo, longaniza o bistec.", en: "3 corn tortillas smothered in authentic salsa verde. Choice of chicken, longaniza or steak.", fr: "3 pièces enrobées de sauce verte authentique. Au choix : poulet, longaniza ou steak." },
+    price: 195,
     imageUrl: "assets/dishes/enchiladas-tradicionales.webp",
     imageFallback: "assets/dishes/enchiladas-tradicionales.png",
     tags: ["picante", "recomendado"],
     allergens: ["lacteos"],
-    order: 14,
+    order: 12,
     isActive: true
   },
   {
     id: 'enchiladas-la-curandera',
     categoryId: 'lo-enchi-loso',
-    name: { es: "Enchiladas La Curandera", en: "Enchiladas La Curandera (Arrachera)", fr: "Enchiladas La Curandera (Bavette Arrachera)" },
-    description: { es: "3 piezas bañadas en nuestra salsa especial roja secreta, rellenas de arrachera tierna.", en: "Three tortillas in our signature secret red sauce, stuffed with tender grilled arrachera steak.", fr: "Trois pièces en sauce rouge spéciale, garnies de savoureuse arrachera." },
-    price: 210,
-    tags: ["hero", "recomendado", "picante"],
+    name: { es: "Enchiladas La Curandera", en: "La Curandera Red Salsa Enchiladas", fr: "Enchiladas Signature La Curandera" },
+    description: { es: "3 piezas bañadas en nuestra salsa especial roja con arrachera.", en: "3 enchiladas rolled and drenched in our secret signature red sauce with tender arrachera steak.", fr: "3 enchiladas généreuses dans notre sauce rouge spéciale avec steak d'arrachera." },
+    price: 220,
+    tags: ["hero", "picante"],
     allergens: ["lacteos"],
-    order: 15,
+    order: 13,
     isActive: true
   },
   {
     id: 'enchiladas-suizas',
     categoryId: 'lo-enchi-loso',
-    name: { es: "Enchiladas suizas", en: "Enchiladas Suizas (Gratin Creamy Salsa)", fr: "Enchiladas Suisses Gratinées" },
-    description: { es: "3 piezas en salsa auténtica suiza cremosa, gratinadas con queso manchego, con pollo, longaniza o bistec.", en: "Three tortillas in creamy tomatillo sauce, baked with melted cheese, filled with chicken, longaniza, or steak.", fr: "En sauce tomatillo crémeuse, gratinées au fromage suisse." },
-    price: 195,
+    name: { es: "Enchiladas suizas", en: "Swiss Enchiladas (Gratin)", fr: "Enchiladas Suisses Gratinées" },
+    description: { es: "3 piezas bañadas en nuestra auténtica salsa verde, gratinadas. Pollo, longaniza o bistec.", en: "3 tortillas bathed in salsa verde and melted cheese crust. Chicken, longaniza or steak.", fr: "3 tortillas nappées de sauce verte et gratinées au fromage. Poulet, saucisse ou steak." },
+    price: 200,
     tags: ["recomendado"],
     allergens: ["lacteos"],
-    order: 16,
+    order: 14,
     isActive: true
   },
   {
     id: 'enchiladas-yucas',
     categoryId: 'lo-enchi-loso',
-    name: { es: "Enchiladas Yucas", en: "Enchiladas Yucas (Cochinita Pibil)", fr: "Enchiladas Yucas (Cochinita Pibil)" },
-    description: { es: "3 piezas en salsa verde auténtica rellenas de cochinita pibil, cebolla morada encurtida, queso y crema.", en: "Three tortillas stuffed with slow-cooked cochinita pibil pork, salsa verde, pickled red onions and crema.", fr: "Farcies de porc cochinita pibil, oignons rouges marinés et crème." },
-    price: 205,
+    name: { es: "Enchiladas yucas", en: "Yucatecan Cochinita Enchiladas", fr: "Enchiladas Yucas à la Cochinita" },
+    description: { es: "3 piezas bañadas en nuestra auténtica salsa verde, rellenas de cochinita pibil, cebollitas moradas encurtidas, queso y crema.", en: "3 enchiladas filled with tender cochinita pibil pork, pickled red onions, cotija cheese and cream.", fr: "3 pièces farcies de cochinita pibil fondante, oignons rouges marinés, fromage et crème." },
+    price: 215,
     imageUrl: "assets/dishes/enchiladas-yucas.webp",
     imageFallback: "assets/dishes/enchiladas-yucas.png",
-    tags: ["hero", "recomendado"],
+    tags: ["hero"],
     allergens: ["lacteos"],
-    order: 17,
+    order: 15,
     isActive: true
   },
   {
     id: 'enchiladas-del-patron',
     categoryId: 'lo-enchi-loso',
-    name: { es: "Enchiladas del Patrón", en: "Enchiladas del Patrón (Prime Arrachera)", fr: "Enchiladas del Patrón" },
-    description: { es: "3 piezas bañadas en nuestra auténtica salsa verde rellenas de jugosa arrachera.", en: "Three tortillas in vibrant salsa verde stuffed with premium arrachera steak.", fr: "Baignées de salsa verte et garnies de bavette arrachera." },
-    price: 210,
-    tags: ["hero", "picante"],
+    name: { es: "Enchiladas del Patrón", en: "El Patrón Arrachera Enchiladas", fr: "Enchiladas del Patrón à l'Arrachera" },
+    description: { es: "3 piezas bañadas en nuestra auténtica salsa verde con arrachera.", en: "3 enchiladas in our authentic salsa verde topped with juicy grilled arrachera steak.", fr: "3 enchiladas à la sauce verte garnies de savoureuse arrachera grillée." },
+    price: 220,
+    tags: ["hero"],
     allergens: ["lacteos"],
-    order: 18,
+    order: 16,
     isActive: true
   },
   {
     id: 'chilaquiles-tradicionales',
     categoryId: 'lo-enchi-loso',
-    name: { es: "Chilaquiles tradicionales", en: "Traditional Chilaquiles Verdes", fr: "Chilaquiles Traditionnels Verts" },
-    description: { es: "Totopos crocantes bañados en salsa verde con crema, queso fresco, y pollo, longaniza o bistec.", en: "Crispy tortilla chips simmered in tangy salsa verde with crema, cheese, and chicken, longaniza, or steak.", fr: "Totopos croustillants en salsa verte, crème et fromage." },
-    price: 185,
+    name: { es: "Chilaquiles tradicionales", en: "Traditional Salsa Verde Chilaquiles", fr: "Chilaquiles Traditionnels Salsa Verde" },
+    description: { es: "Totopos bañados en nuestra auténtica salsa verde. Pollo, longaniza o bistec.", en: "Crispy tortilla chips simmered in authentic salsa verde with chicken, longaniza or steak.", fr: "Totopos dorés mijotés dans notre sauce verte authentique. Poulet, longaniza ou steak." },
+    price: 195,
     tags: ["picante"],
     allergens: ["lacteos"],
-    order: 19,
+    order: 17,
     isActive: true
   },
   {
     id: 'chilaquiles-la-curandera',
     categoryId: 'lo-enchi-loso',
-    name: { es: "Chilaquiles La Curandera", en: "Chilaquiles La Curandera (Signature Red)", fr: "Chilaquiles La Curandera (Sauce Rouge)" },
-    description: { es: "Totopos bañados en nuestra salsa roja auténtica acompañados de arrachera.", en: "Totopos in house secret red salsa crowned with tender grilled arrachera steak.", fr: "Totopos en sauce rouge signature accompagnés de bavette arrachera." },
-    price: 210,
-    tags: ["hero", "recomendado", "picante"],
+    name: { es: "Chilaquiles La Curandera", en: "La Curandera Red Salsa Chilaquiles", fr: "Chilaquiles Signature La Curandera" },
+    description: { es: "Totopos bañados en nuestra salsa roja especial con arrachera.", en: "Totopos simmered in house specialty red salsa topped with premium arrachera steak.", fr: "Totopos nappés de sauce rouge spéciale avec arrachera tendre et crème." },
+    price: 220,
+    tags: ["hero"],
     allergens: ["lacteos"],
-    order: 20,
+    order: 18,
     isActive: true
   },
   {
     id: 'chilaquiles-del-patron',
     categoryId: 'lo-enchi-loso',
-    name: { es: "Chilaquiles del Patrón", en: "Chilaquiles del Patrón (Green Salsa & Arrachera)", fr: "Chilaquiles del Patrón (Sauce Verte & Arrachera)" },
-    description: { es: "Totopos bañados en auténtica salsa verde acompañados de arrachera.", en: "Totopos in salsa verde topped with grilled arrachera steak, cream and cheese.", fr: "Totopos en sauce verte garnis de tendre arrachera." },
-    price: 210,
-    tags: ["hero", "picante"],
+    name: { es: "Chilaquiles del Patrón", en: "El Patrón Arrachera Chilaquiles", fr: "Chilaquiles del Patrón à l'Arrachera" },
+    description: { es: "Totopos bañados en nuestra auténtica salsa verde con arrachera.", en: "Authentic salsa verde totopos topped with grilled arrachera skirt steak, cream and cheese.", fr: "Totopos croustillants en sauce verte surmontés d'arrachera grillée, crème et fromage." },
+    price: 220,
+    tags: ["hero"],
+    allergens: ["lacteos"],
+    order: 19,
+    isActive: true
+  },
+  {
+    id: 'enfrijoladas-de-pollo',
+    categoryId: 'lo-enchi-loso',
+    name: { es: "Enfrijoladas de pollo", en: "Chicken Enfrijoladas in Bean Sauce", fr: "Enfrijoladas au Poulet et Sauce Haricots" },
+    description: { es: "3 piezas bañadas en salsa de frijol, rellenas de pollo y cubiertas con crema y queso.", en: "3 tortillas rolled with shredded chicken, smothered in rich black bean sauce, cream and cheese.", fr: "3 tortillas au poulet effiloché nappées d'une onctueuse sauce aux haricots noirs et fromage." },
+    price: 195,
+    tags: ["recomendado"],
+    allergens: ["lacteos"],
+    order: 20,
+    isActive: true
+  },
+
+  // =========================================================================
+  // ☀️ SECCIÓN 1: DESAYUNO — TACOS DORADOS
+  // =========================================================================
+  {
+    id: 'tacos-dorados-pollo',
+    categoryId: 'tacos-dorados',
+    name: { es: "Tacos dorados de pollo", en: "Crispy Chicken Golden Tacos", fr: "Tacos Croustillants au Poulet" },
+    description: { es: "3 piezas acompañados de lechuga fresca, queso y crema.", en: "3 rolled crispy corn tacos filled with chicken, shredded lettuce, cotija cheese and crema.", fr: "3 tacos croustillants farcis au poulet, laitue fraîche, fromage et crème." },
+    price: 120,
+    tags: ["recomendado"],
     allergens: ["lacteos"],
     order: 21,
     isActive: true
   },
   {
-    id: 'enfrijoladas-pollo',
-    categoryId: 'lo-enchi-loso',
-    name: { es: "Enfrijoladas de pollo", en: "Enfrijoladas de Pollo (Black Bean Tortillas)", fr: "Enfrijoladas au Poulet" },
-    description: { es: "3 tortillas bañadas en suave salsa de frijol negro, rellenas de pollo y cubiertas con crema y queso.", en: "Three tortillas bathed in velvet black bean sauce, filled with shredded chicken, crema, and cheese.", fr: "Trois tortillas nappées d'une douce sauce aux haricots noirs et poulet." },
-    price: 185,
-    tags: ["recomendado"],
-    allergens: ["lacteos"],
-    order: 22,
-    isActive: true
-  },
-
-  // 5.3 TACOS DORADOS
-  {
-    id: 'tacos-dorados-pollo',
-    categoryId: 'tacos-dorados',
-    name: { es: "Tacos dorados de pollo", en: "Crispy Rolled Chicken Tacos (3 pcs)", fr: "Tacos Dorés au Poulet (3 pcs)" },
-    description: { es: "3 piezas crujientes acompañadas de lechuga fresca, queso de rancho y crema.", en: "Three crispy rolled tacos filled with chicken, topped with lettuce, fresh cheese, and cream.", fr: "Trois tacos croustillants garnis de poulet, laitue, fromage et crème." },
-    price: 140,
-    tags: [],
-    allergens: ["lacteos"],
-    order: 23,
-    isActive: true
-  },
-  {
     id: 'tacos-dorados-frijol-pollo',
     categoryId: 'tacos-dorados',
-    name: { es: "Tacos dorados de frijol con pollo", en: "Crispy Tacos: Bean & Chicken (3 pcs)", fr: "Tacos Dorés Haricots & Poulet (3 pcs)" },
-    description: { es: "3 piezas doraditas rellenas de frijol y pollo, con lechuga, queso y crema.", en: "Three crispy tacos stuffed with savory beans and chicken.", fr: "Trois tacos dorés aux haricots et poulet." },
-    price: 150,
+    name: { es: "Tacos dorados de frijol con pollo", en: "Crispy Bean & Chicken Tacos", fr: "Tacos Croustillants Haricot & Poulet" },
+    description: { es: "3 piezas acompañados de lechuga fresca, queso y crema.", en: "3 crispy rolled tacos stuffed with seasoned beans and chicken, lettuce, cotija and crema.", fr: "3 tacos croustillants aux haricots et poulet, servis avec laitue et crème." },
+    price: 120,
     tags: [],
     allergens: ["lacteos"],
-    order: 24,
+    order: 22,
     isActive: true
   },
   {
     id: 'tacos-dorados-frijol-queso',
     categoryId: 'tacos-dorados',
-    name: { es: "Tacos dorados de frijol con queso manchego", en: "Crispy Tacos: Bean & Manchego Cheese", fr: "Tacos Dorés Haricots & Fromage Manchego" },
-    description: { es: "3 piezas con frijol y queso manchego derretido, lechuga, queso y crema.", en: "Three crispy tacos with refried beans and melted manchego cheese.", fr: "Trois tacos dorés végétariens aux haricots et fromage fondant." },
-    price: 150,
+    name: { es: "Tacos dorados de frijol con queso manchego", en: "Crispy Bean & Manchego Cheese Tacos", fr: "Tacos Croustillants Haricot & Manchego" },
+    description: { es: "3 piezas acompañados de lechuga fresca, queso manchego y crema.", en: "3 crispy tacos filled with savory refried beans and melted manchego cheese.", fr: "3 tacos dorés farcis de haricots et fromage manchego fondant, crème et laitue." },
+    price: 120,
     tags: ["vegetariano"],
     allergens: ["lacteos"],
+    order: 23,
+    isActive: true
+  },
+
+  // =========================================================================
+  // ☀️ SECCIÓN 1: DESAYUNO — SÁNDWICH Y ALGO MÁS
+  // =========================================================================
+  {
+    id: 'club-sandwich',
+    categoryId: 'sandwich-y-algo-mas',
+    name: { es: "Club Sándwich", en: "Classic Club Sandwich", fr: "Club Sandwich Classique" },
+    description: { es: "Pan con jamón, queso, aderezo chipotle cremoso y verduras, acompañados de papas a la francesa.", en: "Layered toasted sandwich with ham, cheese, creamy chipotle dressing and greens, served with fries.", fr: "Sandwich toasté au jambon, fromage, sauce chipotle crémeuse et légumes, servi avec frites." },
+    price: 135,
+    tags: [],
+    allergens: ["gluten", "lacteos"],
+    order: 24,
+    isActive: true
+  },
+  {
+    id: 'club-sandwich-pollo',
+    categoryId: 'sandwich-y-algo-mas',
+    name: { es: "Club Sándwich de pollo", en: "Chicken Club Sandwich", fr: "Club Sandwich au Poulet" },
+    description: { es: "Pan con pollo, queso, aderezo chipotle cremoso y verduras, acompañado de papas a la francesa.", en: "Layered toasted bread with grilled chicken, cheese, chipotle crema, lettuce and tomato, with fries.", fr: "Pain toasté garni de poulet tendre, fromage, sauce chipotle et légumes frais, avec frites." },
+    price: 155,
+    imageUrl: "assets/dishes/club-sandwich-pollo.webp",
+    imageFallback: "assets/dishes/club-sandwich-pollo.png",
+    tags: ["recomendado"],
+    allergens: ["gluten", "lacteos"],
     order: 25,
     isActive: true
   },
   {
-    id: 'tacos-dorados-obispo',
-    categoryId: 'tacos-dorados',
-    name: { es: "Tacos dorados Obispo", en: "Tacos Dorados Obispo (Regional Delicacy)", fr: "Tacos Dorés Obispo (Spécialité Régionale)" },
-    description: { es: "3 piezas rellenas del auténtico y tradicional obispo de Tenancingo.", en: "Three crispy tacos filled with traditional seasoned Obispo meat from Tenancingo.", fr: "Trois tacos dorés farcis de la viande traditionnelle Obispo de Tenancingo." },
-    price: 160,
-    tags: ["hero", "recomendado"],
-    allergens: ["lacteos"],
+    id: 'tostado-aguacate-huevo',
+    categoryId: 'sandwich-y-algo-mas',
+    name: { es: "Tostado de aguacate con huevo", en: "Avocado Toast with Poached Eggs", fr: "Toast à l'Avocat et Œufs Pochés" },
+    description: { es: "2 pan tostado con aguacate con huevos pochados, acompañado con salsa macha.", en: "2 slices of artisanal toast with fresh avocado mash, poached eggs and spicy salsa macha drizzle.", fr: "2 tranches de pain grillé à l'avocat crémeux, œufs pochés et filet de salsa macha épicée." },
+    price: 155,
+    tags: ["recomendado"],
+    allergens: ["gluten", "huevo"],
     order: 26,
     isActive: true
   },
 
-  // 5.4 PA' CALDEAR
+  // =========================================================================
+  // ☀️ SECCIÓN 1: DESAYUNO — PA' CALDEAR
+  // =========================================================================
   {
-    id: 'caldo-rojo',
+    id: 'pancita-o-menudo',
     categoryId: 'pa-caldear',
-    name: { es: "Caldo rojo", en: "Caldo Rojo (Spiced Chicken & Menudencia Broth)", fr: "Caldo Rojo Traditionnel" },
-    description: { es: "Caldo tradicional de chiles secos con verdura, menudencia y pollo tierno.", en: "Comforting dried chili broth with garden vegetables, giblets and chicken.", fr: "Bouillon réconfortant aux piments séchés, légumes et poulet." },
-    price: 85,
-    tags: ["picante"],
-    allergens: [],
+    name: { es: "Pancita o menudo", en: "Pancita / Menudo Guajillo Broth", fr: "Pancita Traditionnelle au Guajillo" },
+    description: { es: "Caldo de guajillo acompañada de aguacate y bolillo.", en: "Traditional beef tripe simmered in guajillo chili broth, served with fresh avocado and warm bolillo bread.", fr: "Bouillon réconfortant au piment guajillo, servi avec avocat frais et pain bolillo chaud." },
+    price: 125,
+    tags: ["hero"],
+    allergens: ["gluten"],
     order: 27,
     isActive: true
   },
+
+  // =========================================================================
+  // ☀️ SECCIÓN 1: DESAYUNO — PA' LOS PEQUES
+  // =========================================================================
   {
-    id: 'pancita-menudo',
-    categoryId: 'pa-caldear',
-    name: { es: "Pancita o Menudo", en: "Pancita / Menudo (Weekend Tripe Broth)", fr: "Pancita / Menudo Traditionnel" },
-    description: { es: "(Sábado, domingo y lunes) Caldo de guajillo especiado con aguacate y bolillito crujiente.", en: "(Sat, Sun & Mon only) Rich guajillo tripe broth served with avocado and warm crusty roll.", fr: "(Sam, Dim et Lun) Bouillon traditionnel de tripes au guajillo, avocat et pain." },
+    id: 'calate',
+    categoryId: 'pa-los-peques',
+    name: { es: "Cálate", en: "Cálate Kids Breakfast", fr: "Petit Déjeuner Enfant Cálate" },
+    description: { es: "2 mini hot-cakes, 1 lechita y 1 huevito revuelto.", en: "2 mini hot-cakes, milk carton, and 1 scrambled egg.", fr: "2 mini pancakes moelleux, petite brique de lait et 1 œuf brouillé." },
     price: 130,
-    tags: ["hero", "picante"],
-    allergens: ["gluten"],
+    tags: [],
+    allergens: ["gluten", "lacteos", "huevo"],
     order: 28,
     isActive: true
   },
-
-  // 5.5 SANDWICH Y ALGO MAS
   {
-    id: 'club-sandwich',
-    categoryId: 'sandwich-y-algo-mas',
-    name: { es: "Club sándwich", en: "Club Sandwich with French Fries", fr: "Club Sandwich & Frites" },
-    description: { es: "Pan tostado con jamón de pavo, queso, aderezo chipotle cremoso y verduras, acompañado de papas a la francesa.", en: "Toasted sandwich with turkey ham, cheese, chipotle dressing, vegetables and french fries.", fr: "Pain grillé, jambon de dinde, fromage, sauce chipotle et frites." },
+    id: 'chilpayate',
+    categoryId: 'pa-los-peques',
+    name: { es: "Chilpayate", en: "Chilpayate Kids Breakfast", fr: "Petit Déjeuner Enfant Chilpayate" },
+    description: { es: "½ mollete sencillo con pico de gallo, 1 lechita y fruta de temporada.", en: "½ classic bean & cheese mollete with mild pico de gallo, milk and fresh seasonal fruit.", fr: "½ mollete aux haricots et fromage, petite brique de lait et fruits frais de saison." },
     price: 130,
     tags: [],
     allergens: ["gluten", "lacteos"],
     order: 29,
     isActive: true
   },
+
+  // =========================================================================
+  // ☀️ SECCIÓN 1: DESAYUNO — DULCE REMEDIO
+  // =========================================================================
   {
-    id: 'club-sandwich-pollo',
-    categoryId: 'sandwich-y-algo-mas',
-    name: { es: "Club sándwich de pollo", en: "Chicken Club Sandwich with French Fries", fr: "Club Sandwich au Poulet & Frites" },
-    description: { es: "Pan tostado con pechuga de pollo, queso, aderezo chipotle cremoso y verduras, con papas a la francesa.", en: "Club sandwich with grilled chicken breast, cheese, chipotle cream, and crispy fries.", fr: "Club sandwich au blanc de poulet, fromage et frites maison." },
-    price: 150,
-    imageUrl: "assets/dishes/club-sandwich-pollo.webp",
-    imageFallback: "assets/dishes/club-sandwich-pollo.png",
+    id: 'strudel-de-manzana-des',
+    categoryId: 'dulce-remedio-desayuno',
+    name: { es: "Strudel de manzana", en: "Warm Apple Strudel", fr: "Strudel aux Pommes Maison" },
+    description: { es: "Pasta hojaldre y manzana.", en: "Crisp puff pastry layered with tender cinnamon apples.", fr: "Pâte feuilletée croustillante garnie de pommes fondantes à la cannelle." },
+    price: 65,
+    imageUrl: "assets/dishes/strudel-manzana.webp",
+    imageFallback: "assets/dishes/strudel-manzana.png",
+    videoUrl: "assets/videos/strudel-manzana.mp4",
     tags: ["recomendado"],
-    allergens: ["gluten", "lacteos"],
+    allergens: ["gluten"],
     order: 30,
     isActive: true
   },
   {
-    id: 'toast-aguacate-huevo',
-    categoryId: 'sandwich-y-algo-mas',
-    name: { es: "Toast de aguacate con huevo", en: "Artisanal Sourdough Avocado Toast with Poached Eggs", fr: "Toast Avocat & Œufs Pochés au Levain" },
-    description: { es: "2 piezas de pan masa madre tostado con aguacate fresco, huevos pochados y un toque de salsa macha.", en: "Two thick slices of toasted sourdough with fresh mashed avocado, poached eggs, and salsa macha.", fr: "Deux tranches de pain au levain, avocat frais, œufs pochés et salsa macha." },
-    price: 150,
-    tags: ["hero", "vegetariano", "picante"],
-    allergens: ["gluten"],
+    id: 'cheesecake-des',
+    categoryId: 'dulce-remedio-desayuno',
+    name: { es: "Cheesecake", en: "Artisanal Cheesecake", fr: "Cheesecake Artisanal" },
+    description: { es: "Frambuesa, chispas de chocolate o guayaba.", en: "Silky cream cheesecake. Choice of raspberry, chocolate chips or sweet guava compote.", fr: "Cheesecake onctueux au coulis de framboise, pépites de chocolat ou goyave." },
+    price: 75,
+    imageUrl: "assets/dishes/cheesecake.webp",
+    imageFallback: "assets/dishes/cheesecake.png",
+    tags: [],
+    allergens: ["lacteos", "gluten"],
     order: 31,
     isActive: true
   },
-
-  // 5.6 PA' LOS PEQUES
   {
-    id: 'peques-calate',
-    categoryId: 'pa-los-peques',
-    name: { es: "Calate", en: "Calate Kids Combo", fr: "Menu Calate pour Enfants" },
-    description: { es: "2 mini hotcakes esponjosos + 1 lechita (chocolate, fresa o vainilla) + 1 huevito revuelto.", en: "Two fluffy mini pancakes + one flavored milk (chocolate/strawberry/vanilla) + one scrambled egg.", fr: "Deux mini pancakes + une brique de lait aromatisé + un œuf brouillé." },
-    price: 130,
+    id: 'helado-des',
+    categoryId: 'dulce-remedio-desayuno',
+    name: { es: "Helado", en: "Artisan Ice Cream", fr: "Glace Artisanale" },
+    description: { es: "Vainilla, chocolate, fresa o cookies and cream.", en: "Two scoops: vanilla, chocolate, strawberry or cookies and cream.", fr: "Deux boules : vanille, chocolat, fraise ou cookies and cream." },
+    price: 65,
     tags: [],
-    allergens: ["gluten", "lacteos"],
+    allergens: ["lacteos"],
     order: 32,
     isActive: true
   },
   {
-    id: 'peques-chilpayate',
-    categoryId: 'pa-los-peques',
-    name: { es: "Chilpayate", en: "Chilpayate Kids Combo", fr: "Menu Chilpayate" },
-    description: { es: "½ mollete sencillo con pico de gallo + 1 lechita (chocolate, fresa o vainilla).", en: "Half mollete with melted cheese and mild pico de gallo + one flavored milk.", fr: "Demi-mollete au fromage et pico de gallo doux + un lait aromatisé." },
-    price: 85,
-    tags: [],
-    allergens: ["gluten", "lacteos"],
+    id: 'malteadas-des',
+    categoryId: 'dulce-remedio-desayuno',
+    name: { es: "Malteadas", en: "Classic Milkshakes", fr: "Milkshake Gourmand" },
+    description: { es: "Vainilla, chocolate o fresa.", en: "Thick creamy shake in vanilla, rich chocolate or fresh strawberry.", fr: "Milkshake onctueux à la vanille, chocolat fondant ou fraise." },
+    price: 60,
+    imageUrl: "assets/dishes/malteadas.webp",
+    imageFallback: "assets/dishes/malteadas.png",
+    videoUrl: "assets/videos/malteadas.mp4",
+    tags: ["recomendado"],
+    allergens: ["lacteos"],
     order: 33,
     isActive: true
   },
-
-  // 5.7 DULCE REMEDIO
   {
-    id: 'strudel-manzana',
-    categoryId: 'dulce-remedio',
-    name: { es: "Strudel de manzana", en: "Warm Apple Strudel", fr: "Strudel aux Pommes Chaud" },
-    description: { es: "Hojaldre dorado crujiente relleno de manzana especiada con canela.", en: "Crisp flaky puff pastry stuffed with spiced cinnamon apples.", fr: "Feuilletage croustillant garni de pommes fondantes à la cannelle." },
-    price: 60,
-    imageUrl: "assets/dishes/strudel-manzana.webp",
-    imageFallback: "assets/dishes/strudel-manzana.png",
-    videoUrl: "assets/videos/strudel-manzana.mp4",
-    tags: ["hero", "recomendado"],
-    allergens: ["gluten"],
+    id: 'panque-de-elote-des',
+    categoryId: 'dulce-remedio-desayuno',
+    name: { es: "Panqué de elote", en: "Sweet Corn Pound Cake", fr: "Gâteau Moelleux au Maïs Doux" },
+    description: { es: "Pan de elote bañado de lechera.", en: "Traditional Mexican sweet corn cake drizzled with condensed milk.", fr: "Gâteau traditionnel au maïs doux nappé de lait concentré sucré." },
+    price: 65,
+    tags: ["recomendado"],
+    allergens: ["gluten", "lacteos"],
     order: 34,
     isActive: true
   },
   {
-    id: 'cheesecake',
-    categoryId: 'dulce-remedio',
-    name: { es: "Cheesecake", en: "Artisanal Cheesecake", fr: "Cheesecake Maison" },
-    description: { es: "Cremoso pastel de queso. Elige tu topping: fresa, zarzamora, frambuesa o guayaba.", en: "Creamy cheesecake with your choice of topping: strawberry, blackberry, raspberry, or guava.", fr: "Gâteau au fromage crémeux: fraise, mûre, framboise ou goyave." },
-    price: 60,
-    imageUrl: "assets/dishes/cheesecake.webp",
-    imageFallback: "assets/dishes/cheesecake.png",
-    tags: ["recomendado"],
-    allergens: ["gluten", "lacteos"],
+    id: 'tarta-de-nata-des',
+    categoryId: 'dulce-remedio-desayuno',
+    name: { es: "Tarta de nata", en: "Sweet Cream Tartlet (Tarta de Nata)", fr: "Tartelette à la Crème de Lait" },
+    description: { es: "Ideal para postre individual.", en: "Delicate individual sweet cream tartlet, golden baked.", fr: "Tartelette individuelle délicate à la crème de lait dorée au four." },
+    price: 30,
+    tags: [],
+    allergens: ["gluten", "lacteos", "huevo"],
     order: 35,
     isActive: true
   },
   {
-    id: 'helado',
-    categoryId: 'dulce-remedio',
-    name: { es: "Helado artesanal", en: "Artisanal Ice Cream", fr: "Glace Artisanale" },
-    description: { es: "Vainilla, chocolate o fresa natural.", en: "Vanilla, rich chocolate or fresh strawberry.", fr: "Vanille, chocolat ou fraise naturelle." },
-    price: 55,
-    tags: [],
-    allergens: ["lacteos"],
+    id: 'hot-cakes',
+    categoryId: 'dulce-remedio-desayuno',
+    name: { es: "Hot-cakes", en: "Buttermilk Hot-Cakes (3 pcs)", fr: "Hot-Cakes Moelleux (3 pcs)" },
+    description: { es: "3 piezas de hot-cakes acompañados de fresas y topping a elegir: lechera ($95), nutella ($95), mermelada de la casa de guayaba ($95), fresas con lechera ($100) o miel ($100).", en: "3 fluffy hot-cakes with fresh strawberries and choice of topping: condensed milk ($95), nutella ($95), house guava jam ($95), strawberries with cream ($100) or honey ($100).", fr: "3 pancakes servis avec fraises fraîches et garniture au choix : lait concentré, nutella, confiture de goyave ou miel." },
+    price: 95,
+    tags: ["recomendado"],
+    allergens: ["gluten", "lacteos", "huevo"],
     order: 36,
     isActive: true
   },
   {
-    id: 'malteadas',
-    categoryId: 'dulce-remedio',
-    name: { es: "Malteadas cremosas", en: "Classic Milkshakes", fr: "Milkshakes Crémeux" },
-    description: { es: "Preparadas al momento: Vainilla, chocolate, fresa o café.", en: "Freshly blended: Vanilla, chocolate, strawberry, or coffee.", fr: "Préparés à la minute: Vanille, chocolat, fraise ou café." },
-    price: 70,
-    imageUrl: "assets/dishes/malteadas.webp",
-    imageFallback: "assets/dishes/malteadas.png",
-    videoUrl: "assets/videos/malteadas.mp4",
-    tags: ["hero", "recomendado"],
-    allergens: ["lacteos"],
+    id: 'pan-frances',
+    categoryId: 'dulce-remedio-desayuno',
+    name: { es: "Pan francés", en: "Stuffed French Toast", fr: "Pain Perdu Gourmand" },
+    description: { es: "2 piezas de pan con un toque de azúcar y canela, coronados con fresa. Relleno de frutos rojos y queso crema.", en: "2 thick golden french toasts dusted with cinnamon sugar, topped with strawberries and filled with cream cheese and berries.", fr: "2 tranches de pain perdu cannelle, couronnées de fraises et farcies de fruits rouges et fromage frais." },
+    price: 95,
+    tags: ["hero"],
+    allergens: ["gluten", "lacteos", "huevo"],
     order: 37,
     isActive: true
   },
+
+  // =========================================================================
+  // ☀️/🍽️ COMPARTIDO: PA' CALENTAR EL ESPÍRITU
+  // =========================================================================
   {
-    id: 'hotcakes-tres-piezas',
-    categoryId: 'dulce-remedio',
-    name: { es: "Hotcakes La Curandera (3 pzas)", en: "Signature Pancakes (3 pcs)", fr: "Pancakes La Curandera (3 pcs)" },
-    description: { es: "3 piezas con fresas frescas y topping: lechera, nutella, mermelada de guayaba de la casa o miel de agave. (Clásico $90 / Relleno $99).", en: "Three fluffy pancakes with fresh strawberries and choice of house guava jam, agave nectar, or Nutella.", fr: "Trois pancakes avec fraises et confiture de goyave maison." },
-    price: 120,
-    tags: ["hero", "recomendado"],
-    allergens: ["gluten", "lacteos"],
+    id: 'chocolate-tradicional',
+    categoryId: 'pa-calentar-el-espiritu',
+    name: { es: "Chocolate tradicional", en: "Traditional Mexican Hot Chocolate", fr: "Chocolat Chaud Mexicain Traditionnel" },
+    description: { es: "Delicioso chocolate artesanal caliente.", en: "Rich artisanal Mexican hot chocolate frothed with cinnamon.", fr: "Délicieux chocolat chaud artisanal préparé au mousseur traditionnel." },
+    price: 50,
+    tags: ["recomendado"],
+    allergens: ["lacteos"],
     order: 38,
     isActive: true
   },
   {
-    id: 'pan-frances',
-    categoryId: 'dulce-remedio',
-    name: { es: "Pan francés (2 pzas)", en: "Brioche French Toast (2 pcs)", fr: "Pain Perdu Brioché (2 pcs)" },
-    description: { es: "Pan remojado en leche y huevo con azúcar, canela y fresas. Clásico $80 / Relleno de frutos rojos y queso crema $99.", en: "Custard-dipped toast with cinnamon sugar and fresh strawberries.", fr: "Pain perdu doré à la cannelle et fraises fraîches." },
-    price: 99,
-    tags: ["recomendado"],
-    allergens: ["gluten", "lacteos"],
+    id: 'lechero',
+    categoryId: 'pa-calentar-el-espiritu',
+    name: { es: "Lechero (café con leche)", en: "Lechero (Veracruz-Style Café au Lait)", fr: "Lechero (Café au Lait Traditionnel)" },
+    description: { es: "Café con leche servido al estilo tradicional. Entera o deslactosada.", en: "Espresso with steamed milk poured tableside. Whole or lactose-free.", fr: "Café espresso et lait chaud monté. Lait entier ou sans lactose." },
+    price: 48,
+    tags: [],
+    allergens: ["lacteos"],
     order: 39,
     isActive: true
   },
-
-  // 5.8 BEBIDAS CALIENTES
   {
-    id: 'chocolate-tradicional',
+    id: 'capuchino',
     categoryId: 'pa-calentar-el-espiritu',
-    name: { es: "Chocolate tradicional lechero", en: "Traditional Mexican Hot Chocolate", fr: "Chocolat Chaud Mexicain Traditionnel" },
-    description: { es: "Batido a mano con molinillo tradicional de madera.", en: "Hand-frothed with traditional wooden molinillo.", fr: "Fouetté à la main au molinillo en bois." },
-    price: 45,
-    tags: ["hero"],
+    name: { es: "Capuchino", en: "Cappuccino", fr: "Cappuccino Artisanal" },
+    description: { es: "Clásico, vainilla o moka.", en: "Rich espresso with velvety foam. Choice of classic, vanilla or mocha.", fr: "Espresso intense et mousse veloutée. Au choix : classique, vanille ou moka." },
+    price: 50,
+    tags: [],
     allergens: ["lacteos"],
     order: 40,
     isActive: true
   },
   {
-    id: 'cafe-con-leche',
-    categoryId: 'pa-calentar-el-espiritu',
-    name: { es: "Café con leche (Lechero)", en: "Café con Leche (Lechero)", fr: "Café au Lait Traditionnel" },
-    description: { es: "Café aromático vertido con leche caliente espumosa.", en: "Rich aromatic coffee poured with steamed milk.", fr: "Café aromatique et lait mousseux chaud." },
-    price: 55,
-    tags: [],
-    allergens: ["lacteos"],
-    order: 41,
-    isActive: true
-  },
-  {
-    id: 'capuchino-clasico',
-    categoryId: 'pa-calentar-el-espiritu',
-    name: { es: "Capuchino clásico", en: "Classic Cappuccino", fr: "Cappuccino Classique" },
-    description: { es: "Espresso italiano con abundante crema de leche.", en: "Espresso topped with velvet steamed milk froth.", fr: "Espresso et mousse de lait onctueuse." },
-    price: 50,
-    tags: [],
-    allergens: ["lacteos"],
-    order: 42,
-    isActive: true
-  },
-  {
     id: 'cafe-de-olla',
     categoryId: 'pa-calentar-el-espiritu',
-    name: { es: "Café de olla", en: "Café de Olla (Clay Pot Spiced Coffee)", fr: "Café de Olla Mexicain" },
-    description: { es: "Hervido en barro con piloncillo, canela en raja y especias de la curandera.", en: "Simmered in clay with raw cane sugar, cinnamon bark and curative spices.", fr: "Infusé en pot de terre avec cannelle et piloncillo." },
-    price: 45,
-    tags: ["hero", "recomendado"],
+    name: { es: "Café de olla", en: "Café de Olla (Clay Pot Spiced Coffee)", fr: "Café de Olla Épicé" },
+    description: { es: "Tradicional de olla con canela y piloncillo.", en: "Slow-brewed Mexican coffee with Ceylon cinnamon and raw piloncillo sugar.", fr: "Café mexicain mijoté en pot de terre avec cannelle et piloncillo pur." },
+    price: 48,
+    tags: ["hero"],
     allergens: [],
-    order: 43,
+    order: 41,
     isActive: true
   },
   {
     id: 'cafe-americano',
     categoryId: 'pa-calentar-el-espiritu',
-    name: { es: "Café americano", en: "Americano Coffee", fr: "Café Americano" },
-    description: { es: "Grano seleccionado 100% mexicano tostado medio.", en: "Select 100% Mexican medium roast beans.", fr: "Grains mexicains torréfaction moyenne." },
-    price: 45,
+    name: { es: "Café americano", en: "Americano Coffee", fr: "Café Américain" },
+    description: { es: "Café americano de grano selecto recién tostado.", en: "Smooth hot coffee brewed from freshly ground specialty Mexican beans.", fr: "Café allongé de grains mexicains sélectionnés fraîchement moulus." },
+    price: 48,
+    tags: [],
+    allergens: [],
+    order: 42,
+    isActive: true
+  },
+  {
+    id: 'te',
+    categoryId: 'pa-calentar-el-espiritu',
+    name: { es: "Té", en: "Herbal & Black Tea", fr: "Infusions & Thé" },
+    description: { es: "Agua para té, variedad de sabores a elegir.", en: "Steeped hot tea with choice of herbal, green, chamomile or black tea.", fr: "Eau chaude et sélection de thés fins et infusions aux herbes." },
+    price: 30,
+    tags: [],
+    allergens: [],
+    order: 43,
+    isActive: true
+  },
+
+  // =========================================================================
+  // ☀️ SECCIÓN 1: DESAYUNO — JUGUERÍA LA CURANDERA
+  // =========================================================================
+  {
+    id: 'jugo-clasico',
+    categoryId: 'jugueria-la-curandera',
+    name: { es: "Clásico (naranja)", en: "Fresh Squeezed Orange Juice", fr: "Jus d'Orange Pressé Classique" },
+    description: { es: "100% jugo de naranja natural recién exprimido.", en: "100% natural, freshly squeezed orange juice.", fr: "100% jus d'orange naturel fraîchement pressé." },
+    price: 42,
     tags: [],
     allergens: [],
     order: 44,
     isActive: true
   },
-
-  // 5.9 JUGUERIA LA CURANDERA
   {
-    id: 'jugo-naranja-clasico',
+    id: 'jugo-rojo-amor',
     categoryId: 'jugueria-la-curandera',
-    name: { es: "Jugo de naranja clásico", en: "Freshly Squeezed Orange Juice", fr: "Jus d'Orange Pressé Minute" },
-    description: { es: "100% natural, recién exprimido al momento.", en: "100% fresh, pressed to order.", fr: "100% pur jus fraîchement pressé." },
-    price: 40,
+    name: { es: "Rojo Amor", en: "Rojo Amor (Orange & Red Berries)", fr: "Rojo Amor (Orange & Fruits Rouges)" },
+    description: { es: "Naranja con frutos rojos frescos.", en: "Fresh orange juice blended with strawberries, blackberries and berries.", fr: "Jus d'orange frais mixé aux fruits rouges." },
+    price: 45,
     tags: [],
     allergens: [],
     order: 45,
     isActive: true
   },
   {
-    id: 'jugo-rojo-amor',
+    id: 'jugo-pura-vitamina-c',
     categoryId: 'jugueria-la-curandera',
-    name: { es: "Jugo Rojo Amor", en: "Rojo Amor (Orange & Red Berries)", fr: "Jus Rojo Amor (Orange & Fruits Rouges)" },
-    description: { es: "Naranja natural combinada con frutos rojos frescos.", en: "Fresh orange blended with antioxidant berries.", fr: "Orange fraîche et baies rouges régionales." },
+    name: { es: "Pura Vitamina C", en: "Pure Vitamin C Citrus Blend", fr: "Pure Vitamine C" },
+    description: { es: "Naranja, piña, guayaba y miel.", en: "Fresh orange, pineapple, guava and raw bee honey for an energizing boost.", fr: "Orange, ananas, goyave et miel d'abeille pur." },
     price: 45,
     tags: ["recomendado"],
     allergens: [],
@@ -573,567 +1067,1614 @@ const products = [
     isActive: true
   },
   {
-    id: 'jugo-pura-vitamina-c',
+    id: 'jugo-verde',
     categoryId: 'jugueria-la-curandera',
-    name: { es: "Jugo Pura Vitamina C", en: "Pure Vitamin C Elixir", fr: "Élixir Pure Vitamine C" },
-    description: { es: "Naranja, piña, guayaba fresca y miel de abeja pura.", en: "Orange, pineapple, fresh guava, and pure local honey.", fr: "Orange, ananas, goyave fraîche et miel pur." },
+    name: { es: "Verde", en: "Detox Green Juice (Jugo Verde)", fr: "Jus Vert Détox Traditionnel" },
+    description: { es: "Naranja, nopal, apio, perejil, guayaba y piña. Sujeto a disponibilidad.", en: "Cleansing juice with fresh orange, cactus nopal, celery, parsley, guava and pineapple.", fr: "Orange, nopal, céleri, persil, goyave et ananas. Selon disponibilité." },
     price: 45,
-    tags: ["hero"],
+    tags: [],
     allergens: [],
     order: 47,
     isActive: true
   },
   {
-    id: 'jugo-verde-nopal',
-    categoryId: 'jugueria-la-curandera',
-    name: { es: "Jugo Verde Nopal", en: "Green Nopal Detox Juice", fr: "Jus Vert Détox au Nopal" },
-    description: { es: "Naranja, nopal tierno, apio, perejil, guayaba y piña.", en: "Tender nopal cactus, orange, celery, parsley, guava and pineapple.", fr: "Cactus nopal tendre, orange, céleri, persil et ananas." },
-    price: 45,
-    tags: ["hero", "recomendado"],
-    allergens: [],
-    order: 48,
-    isActive: true
-  },
-  {
     id: 'jugo-curandero',
     categoryId: 'jugueria-la-curandera',
-    name: { es: "Jugo Curandero", en: "Curandero Healing Smoothie", fr: "Smoothie Curandero" },
-    description: { es: "Naranja, fresa, plátano y toque refrescante de coco.", en: "Orange, strawberry, banana, and a tropical touch of coconut.", fr: "Orange, fraise, banane et touche de noix de coco." },
+    name: { es: "Curandero", en: "El Curandero Signature Juice", fr: "Jus Signature Curandero" },
+    description: { es: "Naranja, fresa, mango y coco.", en: "Tropical signature blend of fresh orange juice, ripe strawberry, mango and coconut water.", fr: "Mélange signature d'orange, fraises fraîches, mangue et noix de coco." },
     price: 45,
     imageUrl: "assets/dishes/jugo-curandero.webp",
     imageFallback: "assets/dishes/jugo-curandero.png",
     tags: ["hero", "recomendado"],
     allergens: [],
+    order: 48,
+    isActive: true
+  },
+
+  // =========================================================================
+  // ☀️/🍽️ COMPARTIDO: BEBIDAS SIN ALCOHOL
+  // =========================================================================
+  {
+    id: 'agua-natural-embotellada',
+    categoryId: 'bebidas-sin-alcohol',
+    name: { es: "Agua natural embotellada", en: "Bottled Natural Water", fr: "Eau Minérale Naturelle en Bouteille" },
+    description: { es: "Agua purificada embotellada.", en: "Pure bottled drinking water.", fr: "Bouteille d'eau pure fraîche." },
+    price: 22,
+    tags: [],
+    allergens: [],
     order: 49,
     isActive: true
   },
   {
-    id: 'mix-fruta-temporada',
-    categoryId: 'jugueria-la-curandera',
-    name: { es: "Mix fruta de temporada", en: "Seasonal Fruit Bowl with Yogurt & Granola", fr: "Assiette de Fruits de Saison & Granola" },
-    description: { es: "Frutas frescas de la región servidas con yogurt natural, miel de abeja y granola artesanal.", en: "Fresh regional fruits served with natural yogurt, honey, and granola.", fr: "Fruits frais régionaux, yaourt nature, miel et granola." },
-    price: 65,
-    tags: ["vegetariano"],
-    allergens: ["lacteos"],
+    id: 'agua-mineral-directa',
+    categoryId: 'bebidas-sin-alcohol',
+    name: { es: "Agua mineral directa", en: "Chilled Sparkling Mineral Water", fr: "Eau Pétillante Directe" },
+    description: { es: "Agua mineral fría servida directa.", en: "Chilled sparkling mineral water.", fr: "Eau minérale pétillante très fraîche." },
+    price: 35,
+    tags: [],
+    allergens: [],
     order: 50,
     isActive: true
   },
-
-  // 5.10 BEBIDAS SIN ALCOHOL
   {
-    id: 'agua-topochico-preparada',
+    id: 'agua-mineral-preparada',
     categoryId: 'bebidas-sin-alcohol',
-    name: { es: "Agua mineral Topo Chico preparada", en: "Topo Chico Preparada (Lime & Salt)", fr: "Topo Chico Préparée (Citron & Sel)" },
-    description: { es: "Agua mineral con jugo de limón fresco y escarchado de sal de grano.", en: "Sparkling mineral water with fresh lime juice and salted rim.", fr: "Eau minérale gazeuse, jus de citron vert et sel marin." },
-    price: 35,
+    name: { es: "Agua mineral preparada", en: "Prepared Mineral Water (Lime & Salt)", fr: "Eau Minérale Préparée Citron & Sel" },
+    description: { es: "Agua mineral servida con sal y limón fresco.", en: "Sparkling water served with fresh lime juice and salted rim.", fr: "Eau pétillante avec jus de citron vert frais et sel." },
+    price: 38,
     tags: [],
     allergens: [],
     order: 51,
     isActive: true
   },
   {
-    id: 'jarra-agua-curandera-2l',
+    id: 'juguito-infantil',
     categoryId: 'bebidas-sin-alcohol',
-    name: { es: "Jarra de agua La Curandera (2 L)", en: "La Curandera House Infused Pitcher (2 L)", fr: "Carafe Signature La Curandera (2 L)" },
-    description: { es: "Infusión fría artesanal de guayaba, pera y manzana fresca.", en: "Chilled natural infusion of guava, crisp pear and apple.", fr: "Infusion fraîche de goyave, poire et pomme." },
-    price: 90,
-    tags: ["hero", "recomendado"],
+    name: { es: "Juguito", en: "Kids Juice Box", fr: "Jus pour Enfant" },
+    description: { es: "Porción individual infantil.", en: "Individual juice carton for kids.", fr: "Brique de jus de fruits pour enfants." },
+    price: 22,
+    tags: [],
     allergens: [],
     order: 52,
     isActive: true
   },
   {
-    id: 'jarra-agua-sabor-2l',
+    id: 'refresco-de-vidrio',
     categoryId: 'bebidas-sin-alcohol',
-    name: { es: "Jarra de agua fresca tradicional (2 L)", en: "Traditional Mexican Agua Fresca (2 L)", fr: "Carafe d'Agua Fresca Traditionnelle (2 L)" },
-    description: { es: "Horchata con canela, flor de jamaica o tamarindo natural.", en: "Horchata with cinnamon, hibiscus flower (jamaica) or sweet tamarind.", fr: "Horchata à la cannelle, hibiscus ou tamarin naturel." },
-    price: 85,
+    name: { es: "Refresco de vidrio", en: "Glass Bottle Soda (Mexican Coke & Flavors)", fr: "Soda Mexicain en Bouteille de Verre" },
+    description: { es: "Coca-Cola, Sprite, Manzanita o Fresca.", en: "Classic glass bottle sodas: Mexican Coke, Sprite, Manzanita Lift or Fresca.", fr: "Bouteille en verre : Coca-Cola, Sprite, Manzanita ou Fresca." },
+    price: 35,
     tags: [],
     allergens: [],
     order: 53,
     isActive: true
   },
-
-  // 5.11 MOCKTELERIA
   {
-    id: 'mocktail-limonada-pepino',
-    categoryId: 'mockteleria',
-    name: { es: "Limonada con pepino y hierbabuena", en: "Cucumber & Mint Craft Lemonade", fr: "Limonade Concombre & Menthe Fraîche" },
-    description: { es: "Pepino macerado, hierbabuena fresca del huerto y limón con agua mineral.", en: "Muddled crisp cucumber, garden mint, and fresh lime with mineral water.", fr: "Concombre écrasé, menthe du jardin et citron vert." },
-    price: 48,
-    tags: ["hero", "recomendado"],
+    id: 'jarra-de-agua-2l',
+    categoryId: 'bebidas-sin-alcohol',
+    name: { es: "Jarra de agua 2L", en: "Aguas Frescas Pitcher (2 Liters)", fr: "Pichet d'Eau Fraîche Maison (2 Litres)" },
+    description: { es: "Horchata, jamaica, tamarindo o limón.", en: "Traditional Mexican agua fresca: creamy Horchata, tart Jamaica hibiscus, Tamarind or fresh Lime.", fr: "Pichet de 2L : Horchata de riz, hibiscus Jamaica, tamarin ou citron vert." },
+    price: 90,
+    tags: ["recomendado"],
     allergens: [],
     order: 54,
     isActive: true
   },
   {
-    id: 'mocktail-pinada',
-    categoryId: 'mockteleria',
-    name: { es: "Piñada cremosa", en: "Virgin Piñada (Piña Colada Mocktail)", fr: "Piñada Crémeuse sans Alcool" },
-    description: { es: "Piña natural, crema de coco, leche evaporada y canela espolvoreada.", en: "Fresh pineapple, rich coconut cream, evaporated milk, and cinnamon.", fr: "Ananas, crème de coco onctueuse et touche de cannelle." },
-    price: 58,
-    tags: ["recomendado"],
-    allergens: ["lacteos"],
+    id: 'jarra-de-agua-curandera-2l',
+    categoryId: 'bebidas-sin-alcohol',
+    name: { es: "Jarra de agua La Curandera 2L", en: "La Curandera Specialty Pitcher (2 Liters)", fr: "Pichet Signature La Curandera (2L)" },
+    description: { es: "Frutos rojos o guayaba con hierbabuena.", en: "Signature house pitcher: wild red berries or fragrant pink guava with fresh mint.", fr: "Pichet spécial 2L : fruits rouges sauvages ou goyave à la menthe fraîche." },
+    price: 98,
+    tags: ["hero"],
+    allergens: [],
     order: 55,
     isActive: true
   },
 
-  // 5.12 COMIDA - Sabores de Cuaresma (del mar)
+  // =========================================================================
+  // ☀️/🍽️ COMPARTIDO: MOCKTELERÍA
+  // =========================================================================
   {
-    id: 'aguachile-rojo',
-    categoryId: 'sabores-de-cuaresma',
-    name: { es: "Aguachile rojo", en: "Aguachile Rojo (Red Chiltepín Prawns)", fr: "Aguachile Rouge au Chiltepín" },
-    description: { es: "Camarones frescos marinados en limón, chiltepín, pepino en medias lunas, cebolla morada y especias.", en: "Fresh prawns cured in lime, fiery chiltepín pepper, cucumber, and red onions.", fr: "Crevettes marinées au citron vert, piment chiltepín et oignons rouges." },
-    price: 260,
-    tags: ["hero", "picante"],
+    id: 'limonada',
+    categoryId: 'mockteleria',
+    name: { es: "Limonada", en: "Craft Lemonade", fr: "Limonade Artisanale" },
+    description: { es: "Natural o mineral.", en: "Freshly squeezed limeade, still or sparkling.", fr: "Citronnade fraîche, plate ou pétillante." },
+    price: 48,
+    tags: [],
     allergens: [],
     order: 56,
     isActive: true
   },
   {
-    id: 'aguachile-jade',
-    categoryId: 'sabores-de-cuaresma',
-    name: { es: "Aguachile Jade", en: "Aguachile Jade (Green Serrano & Herbs)", fr: "Aguachile Jade aux Herbes Fraîches" },
-    description: { es: "Camarones en salsa verde de chile serrano, cilantro, cebolla, pepino y toque cítrico.", en: "Succulent shrimp cured in serrano chili, fresh cilantro, lime, and cucumber.", fr: "Crevettes marinées au serrano, coriandre et citron." },
-    price: 240,
-    imageUrl: "assets/dishes/aguachile-jade.webp",
-    imageFallback: "assets/dishes/aguachile-jade.png",
-    tags: ["picante", "recomendado", "hero"],
+    id: 'naranjada',
+    categoryId: 'mockteleria',
+    name: { es: "Naranjada", en: "Craft Orangeade", fr: "Orangeade Artisanale" },
+    description: { es: "Natural o mineral.", en: "Freshly squeezed orangeade, still or sparkling.", fr: "Orangeade fraîche, plate ou pétillante." },
+    price: 48,
+    tags: [],
     allergens: [],
     order: 57,
     isActive: true
   },
   {
-    id: 'aguachile-la-curandera',
-    categoryId: 'sabores-de-cuaresma',
-    name: { es: "Aguachile La Curandera", en: "Aguachile La Curandera (Hibiscus & Chiltepín)", fr: "Aguachile La Curandera (Hibiscus & Chiltepín)" },
-    description: { es: "Camarones con infusión reducida de flor de jamaica, chiltepín, cebolla morada, pepino y especias secretas.", en: "Prawns in a signature hibiscus flower reduction, chiltepín, lime, and cucumber.", fr: "Crevettes en réduction d'hibiscus, piment chiltepín et épices." },
-    price: 270,
-    imageUrl: "assets/dishes/aguachile-la-curandera.webp",
-    imageFallback: "assets/dishes/aguachile-la-curandera.png",
-    videoUrl: "assets/videos/aguachile-la-curandera.mp4",
-    tags: ["hero", "recomendado", "picante"],
-    allergens: [],
+    id: 'pinada',
+    categoryId: 'mockteleria',
+    name: { es: "Piñada", en: "Virgin Piñada Mocktail", fr: "Piñada Sans Alcool" },
+    description: { es: "Piña, coco, leche evaporada y canela.", en: "Tropical blend of sweet pineapple juice, coconut cream, evaporated milk and cinnamon.", fr: "Jus d'ananas, crème de coco onctueuse, lait évaporé et touche de cannelle." },
+    price: 60,
+    tags: ["recomendado"],
+    allergens: ["lacteos"],
     order: 58,
     isActive: true
   },
   {
-    id: 'ceviche-tropical',
-    categoryId: 'sabores-de-cuaresma',
-    name: { es: "Ceviche tropical", en: "Tropical Fish Ceviche with Mango", fr: "Ceviche Tropical au Mangue" },
-    description: { es: "Pescado fresco con jitomate, cilantro, chile serrano, mango dulce picado, pepino, apio y limón.", en: "Fresh fish cured in lime with sweet mango, tomato, cilantro, and serrano chili.", fr: "Poisson frais mariné au citron vert, mangue fraîche et coriandre." },
-    price: 180,
-    tags: ["recomendado"],
+    id: 'pitufo-mocktail',
+    categoryId: 'mockteleria',
+    name: { es: "Pitufo (mocktail)", en: "Blue Pitufo Mocktail", fr: "Mocktail Schtroumpf (Pitufo)" },
+    description: { es: "Powerade azul y refresco de limón.", en: "Vibrant blue Powerade blended with crisp sparkling lemon soda.", fr: "Powerade bleu vif rafraîchi au soda citron vert pétillant." },
+    price: 55,
+    tags: [],
     allergens: [],
     order: 59,
     isActive: true
   },
+
+  // =========================================================================
+  // 🍽️ SECCIÓN 2: COMIDA — SABORES DE MAR
+  // =========================================================================
   {
-    id: 'caldo-de-camaron',
-    categoryId: 'sabores-de-cuaresma',
-    name: { es: "Caldo de camarón", en: "Traditional Mexican Shrimp Broth", fr: "Bouillon Rouge de Crevettes" },
-    description: { es: "Tradicional caldito rojo aromático con camarones enteros y verduras de la estación.", en: "Savory red chili shrimp soup loaded with seasonal root vegetables.", fr: "Bouillon épicé aux crevettes entières et légumes." },
-    price: 160,
-    tags: ["picante"],
-    allergens: [],
+    id: 'aguachile-rojo',
+    categoryId: 'sabores-de-mar',
+    name: { es: "Aguachile rojo", en: "Red Chiltepín Aguachile", fr: "Aguachile Rouge au Chiltepín" },
+    description: { es: "Camarones, chiltepín, pepino, cebolla y especias con un toque de limón.", en: "Fresh shrimp cured in spicy crushed chiltepín pepper, lime, cucumber and red onion.", fr: "Crevettes fraîches marinées au piment chiltepín rouge, citron vert, concombre et oignon." },
+    price: 270,
+    tags: ["picante", "recomendado"],
+    allergens: ["mariscos"],
     order: 60,
     isActive: true
   },
+  {
+    id: 'aguachile-jade',
+    categoryId: 'sabores-de-mar',
+    name: { es: "Aguachile jade", en: "Aguachile Jade (Serrano & Fresh Herbs)", fr: "Aguachile Jade aux Herbes Fraîches" },
+    description: { es: "Camarones, chile verde, cebolla, pepino y especias con un toque de limón.", en: "Shrimp cured in vibrant green serrano chili salsa, cucumber, cilantro and lime.", fr: "Crevettes marinées au piment vert serrano, concombre, coriandre et citron." },
+    price: 250,
+    imageUrl: "assets/dishes/aguachile-jade.webp",
+    imageFallback: "assets/dishes/aguachile-jade.png",
+    tags: ["picante", "hero"],
+    allergens: ["mariscos"],
+    order: 61,
+    isActive: true
+  },
+  {
+    id: 'aguachile-la-curandera',
+    categoryId: 'sabores-de-mar',
+    name: { es: "Aguachile La Curandera", en: "Aguachile La Curandera (Hibiscus & Chiltepín)", fr: "Aguachile Signature La Curandera" },
+    description: { es: "Camarones, chiltepín, cebolla, pepino, jamaica, especias y un toque de limón.", en: "Jumbo prawns cured in an infusion of jamaica hibiscus, crushed chiltepín, lime and cucumber.", fr: "Crevettes géantes en réduction d'hibiscus jamaica, piment chiltepín et épices." },
+    price: 275,
+    imageUrl: "assets/dishes/aguachile-la-curandera.webp",
+    imageFallback: "assets/dishes/aguachile-la-curandera.png",
+    videoUrl: "assets/videos/aguachile-la-curandera.mp4",
+    tags: ["hero", "recomendado", "picante"],
+    allergens: ["mariscos"],
+    order: 62,
+    isActive: true
+  },
+  {
+    id: 'ceviche-tropical',
+    categoryId: 'sabores-de-mar',
+    name: { es: "Ceviche tropical", en: "Tropical Fish Ceviche with Mango", fr: "Ceviche Tropical au Poisson & Mangue" },
+    description: { es: "Pescado con jitomate, cilantro, chile serrano, cebolla, mango, pepino, apio con limón y un toque de especias.", en: "Fresh fish cured in lime juice with sweet mango, cucumber, celery, tomato and serrano chili.", fr: "Poisson frais mariné au citron vert avec dés de mangue douce, concombre, céleri et coriandre." },
+    price: 185,
+    tags: ["recomendado"],
+    allergens: ["mariscos"],
+    order: 63,
+    isActive: true
+  },
+  {
+    id: 'ceviche-clasico',
+    categoryId: 'sabores-de-mar',
+    name: { es: "Ceviche clásico", en: "Classic Lime Fish Ceviche", fr: "Ceviche de Poisson Classique" },
+    description: { es: "Pescado con jitomate, cilantro, chile serrano, cebolla, pepino, apio con limón y un toque de especias.", en: "Traditional Mexican fish ceviche cured in fresh lime with tomato, onion, celery and cilantro.", fr: "Ceviche de poisson blanc mariné au citron vert, tomate, oignon et coriandre fraîche." },
+    price: 175,
+    tags: [],
+    allergens: ["mariscos"],
+    order: 64,
+    isActive: true
+  },
+  {
+    id: 'camarones-bravos',
+    categoryId: 'sabores-de-mar',
+    name: { es: "Camarones bravos", en: "Camarones Bravos (Spicy Sautéed Shrimp)", fr: "Crevettes Bravas Épicées" },
+    description: { es: "Camarones al fuego con salsa picante, acompañada de arroz y ensalada verde.", en: "Plump shrimp flamed in spicy artisan chile sauce, served with seasoned rice and green salad.", fr: "Crevettes flambées dans une sauce piquante relevée, servies avec riz et salade verte." },
+    price: 245,
+    tags: ["picante"],
+    allergens: ["mariscos"],
+    order: 65,
+    isActive: true
+  },
+  {
+    id: 'filete-de-pescado',
+    categoryId: 'sabores-de-mar',
+    name: { es: "Filete de pescado", en: "Fish Fillet (Grilled or Breaded)", fr: "Filet de Poisson (Grillé ou Pané)" },
+    description: { es: "Filete a la plancha o empanizado, acompañado de ensalada verde con arroz.", en: "Tender fish fillet grilled or crisp breaded, served with garden salad and Mexican rice.", fr: "Filet de poisson tendre à la plancha ou pané doré, servi avec salade et riz." },
+    price: 165,
+    tags: [],
+    allergens: ["mariscos", "gluten"],
+    order: 66,
+    isActive: true
+  },
 
-  // 5.13 PA' EMPEZAR
+  // =========================================================================
+  // 🍽️ SECCIÓN 2: COMIDA — PA' EMPEZAR (ENTRADAS)
+  // =========================================================================
   {
     id: 'cazuela-queso-fundido',
     categoryId: 'pa-empezar',
-    name: { es: "Cazuela de queso fundido", en: "Melted Asadero Cheese Casserole with Chistorra", fr: "Cassolette de Fromage Fondu & Chistorra" },
-    description: { es: "Queso asadero fundido burbujeante con chistorra doradita y 5 tortillas de harina recién hechas.", en: "Bubbly melted Mexican Asadero cheese with Spanish chistorra, served with 5 warm flour tortillas.", fr: "Fromage asadero fondu gratiné à la saucisse chistorra et tortillas de blé." },
-    price: 135,
-    tags: ["hero", "recomendado"],
-    allergens: ["gluten", "lacteos"],
-    order: 61,
+    name: { es: "Cazuela de queso fundido", en: "Melted Asadero Cheese with Chistorra", fr: "Cassolette de Fromage Fondu & Chistorra" },
+    description: { es: "Queso asadero con chistorra y acompañado de tortillas de harina.", en: "Bubbling Mexican asadero cheese with savory chistorra sausage, served with flour tortillas.", fr: "Fromage asadero gratiné et chistorra savoureuse, servi avec tortillas de farine." },
+    price: 145,
+    tags: ["recomendado"],
+    allergens: ["lacteos", "gluten"],
+    order: 67,
+    isActive: true
+  },
+  {
+    id: 'cazuela-frijoles',
+    categoryId: 'pa-empezar',
+    name: { es: "Cazuela de frijoles", en: "Refried Beans Skillet with Cotija", fr: "Cassolette de Haricots & Fromage" },
+    description: { es: "Con totopos de maíz y queso en polvo.", en: "Warm seasoned bean skillet sprinkled with aged cotija cheese and crisp tortilla chips.", fr: "Haricots mijotés saupoudrés de fromage cotija râpé et totopos croustillants." },
+    price: 98,
+    tags: ["vegetariano"],
+    allergens: ["lacteos"],
+    order: 68,
     isActive: true
   },
   {
     id: 'guacamole-tradicional',
     categoryId: 'pa-empezar',
-    name: { es: "Guacamole tradicional", en: "Traditional Molcajete Guacamole", fr: "Guacamole Traditionnel au Molcajete" },
-    description: { es: "Aguacate Hass fresco machacado con jitomate, cebolla, cilantro, limón y totopos de maíz.", en: "Mashed Hass avocado with tomato, onion, cilantro, fresh lime, and crisp tortilla chips.", fr: "Avocat Hass écrasé, tomate, coriandre et totopos croustillants." },
-    price: 90,
+    name: { es: "Guacamole tradicional", en: "Traditional Fresh Guacamole", fr: "Guacamole Frais Traditionnel" },
+    description: { es: "Guacamole fresco con totopos de maíz.", en: "Freshly mashed Haas avocado with lime, tomato, onion and cilantro, served with corn totopos.", fr: "Avocat Haas écrasé avec citron vert, coriandre et oignon, servi avec totopos de maïs." },
+    price: 98,
     tags: ["vegetariano"],
     allergens: [],
-    order: 62,
+    order: 69,
     isActive: true
   },
   {
     id: 'guacamole-chicharron-norteno',
     categoryId: 'pa-empezar',
     name: { es: "Guacamole con chicharrón norteño", en: "Guacamole with Northern Pork Belly Chicharrón", fr: "Guacamole au Chicharrón Croustillant" },
-    description: { es: "Nuestra receta de guacamole copada con trozos crujientes de chicharrón de cerdo norteño carnoso.", en: "Fresh guacamole topped with crispy, savory Northern Mexican pork belly cracklings.", fr: "Guacamole garni de morceaux de chicharrón de porc croustillant." },
+    description: { es: "Guacamole fresco con chicharrón norteño crujiente.", en: "Creamy guacamole crowned with chunky crispy northern-style pork cracklings (chicharrón).", fr: "Guacamole frais surmonté de chicharrón de porc croustillant du Nord." },
     price: 195,
-    tags: ["hero", "recomendado"],
+    tags: ["hero"],
     allergens: [],
-    order: 63,
-    isActive: true
-  },
-
-  // 5.14 PA' CUIDARTE
-  {
-    id: 'ensalada-la-curandera',
-    categoryId: 'pa-cuidarte',
-    name: { es: "Ensalada La Curandera", en: "Signature La Curandera Salad with Arrachera", fr: "Salade Gourmande La Curandera" },
-    description: { es: "Mix de lechuga fresca, manzana, durazno, arándano, nuez, ajonjolí garapiñado, arrachera y aderezo miel mostaza.", en: "Crisp greens, apple, peach, cranberries, walnuts, candied sesame seeds, grilled arrachera, and honey mustard.", fr: "Mesclun, pomme, pêche, noix, sésame caramélisé, bavette arrachera et vinaigrette miel-moutarde." },
-    price: 145,
-    tags: ["hero", "recomendado"],
-    allergens: ["frutos_secos"],
-    order: 64,
-    isActive: true
-  },
-  {
-    id: 'ensalada-campesina',
-    categoryId: 'pa-cuidarte',
-    name: { es: "Ensalada campesina", en: "Campesina Garden Salad", fr: "Salade Paysanne" },
-    description: { es: "Mix de lechugas, pepino, jitomate, cebolla morada, aguacate y cubitos de queso manchego. (Extra pollo +$20).", en: "Mixed lettuces, cucumber, tomato, red onion, avocado, and manchego cubes. (Extra chicken +$20).", fr: "Salade composée, avocat, concombre et dés de fromage manchego." },
-    price: 110,
-    tags: ["vegetariano"],
-    allergens: ["lacteos"],
-    order: 65,
-    isActive: true
-  },
-
-  // 5.15 SOPAS Y PASTAS
-  {
-    id: 'sopa-azteca-tortilla',
-    categoryId: 'sopas-y-pastas',
-    name: { es: "Sopa azteca o de tortilla", en: "Traditional Sopa Azteca (Tortilla Soup)", fr: "Soupe Aztèque à la Tortilla" },
-    description: { es: "Tiras crujientes de tortilla en caldillo de jitomate con chicharrón, aguacate, crema y queso Oaxaca.", en: "Crispy tortilla strips in rich tomato broth with pork crackling, avocado, crema, and Oaxaca cheese.", fr: "Lanières de tortillas croustillantes en bouillon de tomate, avocat et fromage Oaxaca." },
-    price: 90,
-    tags: ["hero", "recomendado"],
-    allergens: ["lacteos"],
-    order: 66,
-    isActive: true
-  },
-  {
-    id: 'fusilli-al-chipotle',
-    categoryId: 'sopas-y-pastas',
-    name: { es: "Fusilli al chipotle", en: "Chipotle Cream Fusilli with Arrachera", fr: "Fusilli Crémeux au Chipotle et Arrachera" },
-    description: { es: "Pasta fusilli al dente en salsa cremosa de chipotle acompañada de trocitos de arrachera.", en: "Fusilli pasta tossed in a creamy chipotle reduction with tender arrachera steak bites.", fr: "Pâtes fusilli en crème de chipotle et morceaux d'arrachera grillée." },
-    price: 95,
-    tags: ["picante", "recomendado"],
-    allergens: ["gluten", "lacteos"],
-    order: 67,
-    isActive: true
-  },
-
-  // 5.16 SNACKS
-  {
-    id: 'nachos-nortenos',
-    categoryId: 'snacks',
-    name: { es: "Nachos norteños", en: "Loaded Northern Nachos", fr: "Nachos Gourmands du Nord" },
-    description: { es: "Totopos con queso cheddar fundido, frijoles, queso manchego, pico de gallo, longaniza y rodajas de jalapeño.", en: "Tortilla chips with melted cheddar and manchego cheese, refried beans, pico de gallo, longaniza and jalapeños.", fr: "Totopos nappés de cheddar, haricots, longaniza dorée et jalapeños." },
-    price: 120,
-    imageUrl: "assets/dishes/nachos-nortenos.webp",
-    imageFallback: "assets/dishes/nachos-nortenos.png",
-    tags: ["hero", "picante", "recomendado"],
-    allergens: ["lacteos"],
-    order: 68,
-    isActive: true
-  },
-  {
-    id: 'alitas-autenticas-7pzas',
-    categoryId: 'snacks',
-    name: { es: "Alitas auténticas (7 pzas)", en: "Artisanal Chicken Wings (7 pcs)", fr: "Ailes de Poulet Dorées (7 pcs)" },
-    description: { es: "Sabores: Naturales, Mango habanero, BBQ, Búfalo, Habanero cremoso, Mango mezcal o Tamarindo mezcal.", en: "Crispy wings: Natural, Mango Habanero, BBQ, Buffalo, Creamy Habanero, Mango Mezcal, or Tamarind Mezcal.", fr: "Ailes au choix: Mangue Habanero, BBQ, Mangue Mezcal ou Tamarin Mezcal." },
-    price: 180,
-    imageUrl: "assets/dishes/alitas.webp",
-    imageFallback: "assets/dishes/alitas.png",
-    tags: ["hero", "picante", "recomendado"],
-    allergens: [],
-    order: 69,
-    isActive: true
-  },
-  {
-    id: 'costillas-de-elote',
-    categoryId: 'snacks',
-    name: { es: "Costillas de elote dulce", en: "Sweet Corn Ribs with Special Dip", fr: "Travers de Maïs Doux & Sauce Spéciale" },
-    description: { es: "Costillitas de elote dulce doradas a las brasas con aderezo especial de la casa.", en: "Chargrilled sweet corn ribs served with house special spicy aioli.", fr: "Croustillants de maïs doux grillés et sauce maison." },
-    price: 120,
-    tags: ["recomendado", "vegetariano"],
-    allergens: ["lacteos"],
     order: 70,
     isActive: true
   },
-
-  // 5.17 PLATOS FUERTES
   {
-    id: 'tampiquena-la-curandera',
-    categoryId: 'platos-fuertes',
-    name: { es: "Tampiqueña La Curandera", en: "Carne a la Tampiqueña La Curandera", fr: "Tampiqueña Traditionnelle La Curandera" },
-    description: { es: "Cecina o bistec suave acompañado de enchiladas rojas, arroz mexicano y rajas poblanas con crema.", en: "Tender cured cecina or beef steak served with red enchiladas, Mexican rice, and poblano pepper rajas.", fr: "Bifteck ou cecina accompagné d'enchiladas rouges, riz et lamelles de poblano." },
-    price: 245,
-    tags: ["hero", "recomendado"],
-    allergens: ["lacteos"],
+    id: 'huevitos-de-codorniz',
+    categoryId: 'pa-empezar',
+    name: { es: "Huevitos de codorniz", en: "Quail Eggs (10 pcs)", fr: "Œufs de Caille (10 pcs)" },
+    description: { es: "10 piezas de huevitos de codorniz. Naturales ($80), al mojo de ajo ($95) o mojo picoso ($95).", en: "10 quail eggs. Natural ($80), garlic mojo sautéed ($95) or spicy chili mojo ($95).", fr: "10 œufs de caille. Au naturel ($80), à l'ail sauté ($95) ou sauce mojo épicée ($95)." },
+    price: 80,
+    tags: [],
+    allergens: ["huevo"],
     order: 71,
     isActive: true
   },
   {
-    id: 'tampiquena-arrachera',
-    categoryId: 'platos-fuertes',
-    name: { es: "Tampiqueña de arrachera", en: "Prime Arrachera Tampiqueña", fr: "Tampiqueña de Bavette Arrachera" },
-    description: { es: "Arrachera marinada a las brasas con enchiladas rojas o verdes, arroz y rajas poblanas.", en: "Grilled prime arrachera steak served with green or red enchiladas, rice, and poblano strips.", fr: "Bavette arrachera grillée, enchiladas, riz mexicain et poblano." },
-    price: 275,
-    imageUrl: "assets/dishes/tampiquena-arrachera.webp",
-    imageFallback: "assets/dishes/tampiquena-arrachera.png",
-    tags: ["hero", "recomendado"],
+    id: 'orden-sopecitos',
+    categoryId: 'pa-empezar',
+    name: { es: "Orden de sopecitos", en: "Handmade Sopes (3 pcs)", fr: "Sopes Artisanaux (3 pcs)" },
+    description: { es: "3 piezas de base gruesa de maíz con frijoles, queso, crema y lechuga. Pollo o longaniza.", en: "3 thick handmade corn cakes with beans, shredded chicken or longaniza, cotija cheese and crema.", fr: "3 galettes épaisses de maïs garnies de haricots, poulet ou saucisse, fromage et crème." },
+    price: 90,
+    tags: ["recomendado"],
     allergens: ["lacteos"],
     order: 72,
     isActive: true
   },
   {
-    id: 'cecina-puerca',
-    categoryId: 'platos-fuertes',
-    name: { es: "Cecina puerca enchilada", en: "Cecina Puerca Enchilada", fr: "Cecina de Porc Marinée aux Piments" },
-    description: { es: "Cecina de cerdo enchilada artesanal con guacamole fresco, frijoles refritos y rebanada de queso de rancho.", en: "Spiced cured pork cecina served with guacamole, refried beans, and fresh ranch cheese.", fr: "Viande de porc marinée aux épices, guacamole et fromage frais." },
-    price: 210,
-    tags: ["recomendado", "picante"],
+    id: 'costillas-de-elote',
+    categoryId: 'pa-empezar',
+    name: { es: "Costillas de elote", en: "Sweet Corn Ribs", fr: "Ribs de Maïs Doux Rôti" },
+    description: { es: "Pedazos de elote dulce con aderezo especial de la casa.", en: "Charred sweet corn ribs brushed with secret house dressing, lime and spices.", fr: "Morceaux de maïs doux grillés nappés de sauce spéciale de la maison." },
+    price: 90,
+    tags: ["vegetariano"],
     allergens: ["lacteos"],
     order: 73,
     isActive: true
   },
-  {
-    id: 'enchiladas-yucas-comida',
-    categoryId: 'platos-fuertes',
-    name: { es: "Enchiladas Yucas", en: "Enchiladas Yucas (Cochinita Pibil)", fr: "Enchiladas Yucas (Cochinita Pibil)" },
-    description: { es: "3 tortillas bañadas en salsa verde auténtica rellenas de cochinita pibil, cebollita morada encurtida, queso y crema.", en: "Three tortillas stuffed with slow-cooked cochinita pibil pork, salsa verde, pickled red onions and crema.", fr: "Farcies de porc cochinita pibil, oignons rouges marinés et crème." },
-    price: 160,
-    imageUrl: "assets/dishes/enchiladas-yucas.webp",
-    imageFallback: "assets/dishes/enchiladas-yucas.png",
-    tags: ["hero", "recomendado"],
-    allergens: ["lacteos"],
-    order: 74,
-    isActive: true
-  },
 
-  // 5.18 TAQUERIA LA CURANDERA
+  // =========================================================================
+  // 🍽️ SECCIÓN 2: COMIDA — PA' CUIDARTE
+  // =========================================================================
   {
-    id: 'tacos-arrachera',
-    categoryId: 'taqueria-la-curandera',
-    name: { es: "Orden de tacos de arrachera (3 pzas)", en: "Arrachera Steak Tacos (3 pcs)", fr: "Tacos de Bavette Arrachera (3 pcs)" },
-    description: { es: "3 piezas en tortilla de maíz o harina con nopales asados, cebollitas y frijoles de la olla.", en: "Three tacos on corn or flour tortillas served with grilled cactus, sweet onions, and beans.", fr: "Trois tacos sur tortillas de maïs ou blé avec nopales et haricots." },
-    price: 130,
+    id: 'ensalada-la-curandera',
+    categoryId: 'pa-cuidarte',
+    name: { es: "Ensalada La Curandera", en: "La Curandera Signature Salad", fr: "Salade Signature La Curandera" },
+    description: { es: "Mix de lechugas, manzana, durazno, arándano, nuez, ajonjolí garapiñado y aderezo miel mostaza, coronada con trozos de arrachera.", en: "Greens, apple, peach, cranberries, candied walnuts and sesame, honey mustard, crowned with arrachera steak.", fr: "Mélange de salades, pomme, pêche, canneberges, noix et sésame caramélisé, vinaigrette miel-moutarde et arrachera." },
+    price: 155,
     tags: ["hero"],
-    allergens: [],
+    allergens: ["frutos_secos"],
     order: 74,
     isActive: true
   },
   {
-    id: 'tacos-villamelon',
-    categoryId: 'taqueria-la-curandera',
-    name: { es: "Tacos Villamelón (3 pzas)", en: "Famous Villamelón Tacos (3 pcs)", fr: "Tacos Villamelón Célèbres (3 pcs)" },
-    description: { es: "Cecina con longaniza y trocitos de chicharrón con salsa especial de chile guajillo, cilantro y cebollita.", en: "Cecina beef, longaniza sausage, and crunchy pork crackling in a secret guajillo reduction.", fr: "Bœuf séché, saucisse longaniza et chicharrón croustillant en sauce guajillo." },
-    price: 130,
-    tags: ["hero", "recomendado", "picante"],
-    allergens: [],
+    id: 'ensalada-campesina',
+    categoryId: 'pa-cuidarte',
+    name: { es: "Ensalada campesina", en: "Campesina Country Salad", fr: "Salade Paysanne Mexicaine" },
+    description: { es: "Mix de lechugas, pepino, jitomate, cebolla morada, aguacate y trocitos de queso manchego. (Pollo asado +$30).", en: "Lettuce blend, cucumber, tomato, red onion, avocado and manchego cheese cubes. (Grilled chicken +$30).", fr: "Salade mixte, concombre, tomate, oignon rouge, avocat et dés de fromage manchego. (Poulet grillé +30$)." },
+    price: 115,
+    tags: ["vegetariano"],
+    allergens: ["lacteos"],
     order: 75,
     isActive: true
   },
+
+  // =========================================================================
+  // 🍽️ SECCIÓN 2: COMIDA — SOPAS Y PASTAS
+  // =========================================================================
   {
-    id: 'tacos-cochinita-pibil',
-    categoryId: 'taqueria-la-curandera',
-    name: { es: "Tacos de cochinita pibil (3 pzas)", en: "Cochinita Pibil Tacos (3 pcs)", fr: "Tacos de Cochinita Pibil (3 pcs)" },
-    description: { es: "Cerdo marinado en achiote horneado lento, servidos con cebolla morada encurtida y salsa de habanero.", en: "Slow-roasted Yucatan pork in citrus and achiote with pickled onions and habanero salsa.", fr: "Porc rôti à l'achiote, oignons rouges marinés et sauce habanero." },
-    price: 130,
-    tags: ["hero"],
-    allergens: [],
+    id: 'sopa-azteca',
+    categoryId: 'sopas-y-pastas',
+    name: { es: "Sopa Azteca", en: "Aztec Tortilla Soup", fr: "Soupe Aztèque Traditionnelle" },
+    description: { es: "Tiras de tortilla servidas en caldillo de jitomate con crema y queso en polvo, acompañada de chicharrón con aguacate y queso Oaxaca.", en: "Crispy tortilla strips in rich tomato broth, crema, cotija, pork crackling, avocado and melted Oaxaca cheese.", fr: "Lanières de tortilla dorée dans un bouillon de tomate épicé, crème, avocat et fromage Oaxaca fondant." },
+    price: 95,
+    tags: ["recomendado"],
+    allergens: ["lacteos"],
     order: 76,
     isActive: true
   },
-
-  // 5.19 CORTES SELECTOS
   {
-    id: 'corte-rib-eye',
-    categoryId: 'cortes',
-    name: { es: "Rib Eye a las brasas (350g)", en: "Grilled Rib Eye Steak (350g)", fr: "Rib Eye Grillé au Feu de Bois (350g)" },
-    description: { es: "Corte selecto jugoso con marmoleo superior a las brasas. Incluye 3 guarniciones a elegir: guacamole, nopales, elote, frijoles o cebollitas.", en: "Juicy prime marbled steak grilled to your preferred temperature. Includes 3 sides of your choice.", fr: "Viande persillée et juteuse. Comprend 3 garnitures au choix." },
-    price: 280,
-    imageUrl: "assets/dishes/rib-eye-guarniciones.webp",
-    imageFallback: "assets/dishes/rib-eye-guarniciones.png",
-    videoUrl: "assets/videos/rib-eye-guarniciones.mp4",
-    tags: ["hero", "recomendado"],
+    id: 'sopa-de-medula',
+    categoryId: 'sopas-y-pastas',
+    name: { es: "Sopa de médula", en: "Bone Marrow Soup (Sopa de Médula)", fr: "Soupe de Moelle Épicée" },
+    description: { es: "Caldo rojo con médula en un toque picosito.", en: "Traditional Mexican beef marrow stewed in spiced red broth.", fr: "Bouillon rouge traditionnel à la moelle de bœuf savoureuse et pimentée." },
+    price: 99,
+    tags: ["picante"],
     allergens: [],
     order: 77,
     isActive: true
   },
   {
-    id: 'corte-new-york',
-    categoryId: 'cortes',
-    name: { es: "New York Strip (350g)", en: "New York Strip Steak (350g)", fr: "New York Strip (350g)" },
-    description: { es: "Corte magro y tierno con gran sabor. Incluye 3 guarniciones a elegir.", en: "Tender and flavorful prime beef cut. Served with 3 sides of your choice.", fr: "Coupure tendre et savoureuse. Servie avec 3 garnitures au choix." },
-    price: 290,
-    tags: [],
-    allergens: [],
+    id: 'fusilli-al-chipotle',
+    categoryId: 'sopas-y-pastas',
+    name: { es: "Fusilli al chipotle", en: "Chipotle Cream Fusilli with Arrachera", fr: "Fusilli Crémeux au Chipotle & Arrachera" },
+    description: { es: "Fusilli con un toque de chipotle acompañado de trocitos de arrachera.", en: "Al dente fusilli pasta tossed in creamy chipotle sauce topped with seared arrachera steak.", fr: "Pâtes fusilli enrobées d'une crème douce au chipotle avec dés d'arrachera grillée." },
+    price: 99,
+    tags: ["recomendado"],
+    allergens: ["gluten", "lacteos"],
     order: 78,
     isActive: true
   },
   {
-    id: 'corte-t-bone',
-    categoryId: 'cortes',
-    name: { es: "T-Bone clásico (350g)", en: "Classic T-Bone Steak (350g)", fr: "T-Bone Classique (350g)" },
-    description: { es: "Lo mejor del filete y el New York en un solo corte con hueso. Incluye 3 guarniciones a elegir.", en: "The best of tenderloin and strip on the bone. Includes 3 choice sides.", fr: "Filet et faux-filet sur l'os. Comprend 3 accompagnements." },
-    price: 290,
-    imageUrl: "assets/dishes/t-bone-guarniciones.webp",
-    imageFallback: "assets/dishes/t-bone-guarniciones.png",
-    tags: ["hero", "recomendado"],
+    id: 'carne-en-su-jugo',
+    categoryId: 'sopas-y-pastas',
+    name: { es: "Carne en su jugo", en: "Carne en su Jugo (Guadalajara Beef Stew)", fr: "Carne en su Jugo Mexicaine" },
+    description: { es: "Carne de res preparada estilo La Curandera, acompañada de frijoles.", en: "Finely sliced beef simmered in its own seasoned broth with bacon and beans.", fr: "Bœuf mijoté dans son propre jus avec haricots et lardons façon Jalisco." },
+    price: 0,
+    tags: [],
     allergens: [],
     order: 79,
-    isActive: true
+    isActive: false
   },
-
-  // 5.20 BURRITOS
   {
-    id: 'burrito-arrachera',
-    categoryId: 'burritos',
-    name: { es: "Burrito de arrachera", en: "Grilled Arrachera Giant Burrito", fr: "Burrito Généreux d'Arrachera" },
-    description: { es: "Gran tortilla de harina con arrachera, pico de gallo, guacamole, queso manchego, frijoles y aderezo chipotle.", en: "Large flour tortilla with grilled arrachera, guacamole, manchego cheese, refried beans, and chipotle.", fr: "Grande tortilla de blé, bavette arrachera, guacamole, fromage fondu et haricots." },
-    price: 160,
-    tags: ["hero"],
-    allergens: ["gluten", "lacteos"],
+    id: 'consome-de-pollo',
+    categoryId: 'sopas-y-pastas',
+    name: { es: "Consomé de pollo", en: "Large Chicken Consommé", fr: "Consommé de Poulet Réconfortant" },
+    description: { es: "Acompañado de arroz, verduras y pollo desmenuzado (porción grande).", en: "Rich chicken broth with rice, garden vegetables and shredded chicken (large bowl).", fr: "Grand bol de bouillon de poulet généreux avec riz, légumes et poulet effiloché." },
+    price: 80,
+    tags: [],
+    allergens: [],
     order: 80,
     isActive: true
   },
-
-  // 5.21 BURGUERS Y JOCHO
   {
-    id: 'hamburguesa-de-la-casa',
-    categoryId: 'burguers-y-jocho',
-    name: { es: "Hamburguesa de la casa", en: "House Signature Double Burger", fr: "Burger Double Signature de la Maison" },
-    description: { es: "Doble carne selecta, queso amarillo y manchego, doble tocino ahumado, piña asada, lechuga, tomate y cebolla.", en: "Double select beef patties, yellow & manchego cheese, double smoked bacon, grilled pineapple, lettuce, tomato.", fr: "Double steak de bœuf, double fromage, bacon fumé, ananas rôti et légumes." },
-    price: 185,
-    imageUrl: "assets/dishes/hamburguesa-de-la-casa.webp",
-    imageFallback: "assets/dishes/hamburguesa-de-la-casa.png",
-    videoUrl: "assets/videos/hamburguesa-de-la-casa.mp4",
-    tags: ["hero", "recomendado"],
-    allergens: ["gluten", "lacteos"],
+    id: 'pancita-comida',
+    categoryId: 'sopas-y-pastas',
+    name: { es: "Pancita", en: "Pancita Menudo Broth (Comida)", fr: "Pancita Traditionnelle (Comida)" },
+    description: { es: "Caldo de guajillo acompañada de aguacate y bolillo. Pregunta por disponibilidad.", en: "Authentic guajillo broth with tripe, avocado and crusty bread. Ask server for availability.", fr: "Soupe de tripes en bouillon guajillo parfumé, avocat et pain bolillo. Selon arrivage." },
+    price: 125,
+    tags: ["hero"],
+    allergens: ["gluten"],
     order: 81,
     isActive: true
   },
+
+  // =========================================================================
+  // 🍽️ SECCIÓN 2: COMIDA — PLATOS FUERTES
+  // =========================================================================
   {
-    id: 'jocho-especial',
-    categoryId: 'burguers-y-jocho',
-    name: { es: "Jocho La Curandera", en: "Mexican Bacon-Wrapped Jocho (Hot Dog)", fr: "Jocho Mexicain au Bacon" },
-    description: { es: "Salchicha envuelta en tocino crujiente en pan brioche con papas a la francesa y pico de gallo.", en: "Jumbo sausage wrapped in crispy bacon with french fries and fresh pico de gallo.", fr: "Saucisse enroulée de bacon croustillant, frites et pico de gallo." },
-    price: 85,
-    tags: [],
-    allergens: ["gluten", "lacteos"],
+    id: 'tampiquena-la-curandera',
+    categoryId: 'platos-fuertes',
+    name: { es: "Tampiqueña La Curandera", en: "Tampiqueña Steak La Curandera", fr: "Tampiqueña Signature La Curandera" },
+    description: { es: "Cecina o bistec acompañada de enchiladas rojas, arroz y rajas poblanas.", en: "Cured cecina beef or grilled steak with red enchiladas, Mexican rice and poblano strips.", fr: "Viande séchée cecina ou steak tendre, servi avec enchiladas rouges, riz et rajas poblanas." },
+    price: 255,
+    tags: ["recomendado"],
+    allergens: ["lacteos"],
     order: 82,
     isActive: true
   },
-
-  // 5.22 PA' LOS MORRILLOS
   {
-    id: 'morrito',
-    categoryId: 'pa-los-morrillos',
-    name: { es: "Morrito", en: "Morrito Kids Combo", fr: "Menu Enfant Morrito" },
-    description: { es: "Espagueti a la mantequilla + papas a la francesa + 6 nuggets de pollo dorados + 1 juguito pequeño.", en: "Butter spaghetti + crispy french fries + 6 golden chicken nuggets + juice box.", fr: "Spaghetti au beurre + frites croustillantes + 6 nuggets de poulet + petit jus." },
-    price: 55,
-    imageUrl: "assets/dishes/morrito.webp",
-    imageFallback: "assets/dishes/morrito.png",
-    tags: [],
-    allergens: ["gluten"],
-    order: 82.5,
-    isActive: true
-  },
-
-  // 5.23 - 5.28 CANTINA LA CURANDERA
-  {
-    id: 'coctel-la-curandera',
-    categoryId: 'cantina-la-curandera',
-    name: { es: "Cóctel insignia La Curandera", en: "Signature Cocktail La Curandera", fr: "Cocktail Signature La Curandera" },
-    description: { es: "Mezcal artesanal, jugo de piña fresca, tomate, toque de Tajín, limón y aromatizado con rama de romero.", en: "Artisanal mezcal, fresh pineapple juice, tomato essence, Tajin chile rim, lime and burnt rosemary.", fr: "Mezcal artisanal, jus d'ananas frais, essence de tomate, Tajín et romarin." },
-    price: 98,
-    imageUrl: "assets/dishes/mezcal-curandera.webp",
-    imageFallback: "assets/dishes/mezcal-curandera.png",
-    videoUrl: "assets/videos/mezcal-curandera.mp4",
+    id: 'tampiquena-de-arrachera',
+    categoryId: 'platos-fuertes',
+    name: { es: "Tampiqueña de arrachera", en: "Premium Arrachera Tampiqueña", fr: "Tampiqueña d'Arrachera Grillée" },
+    description: { es: "Acompañada de enchiladas rojas, arroz y rajas poblanas.", en: "Grilled tender arrachera steak flanked by red enchiladas, Mexican rice and creamy poblano strips.", fr: "Arrachera marinée grillée accompagnée d'enchiladas rouges, riz parfumé et rajas crémeuses." },
+    price: 280,
+    imageUrl: "assets/dishes/tampiquena-arrachera.webp",
+    imageFallback: "assets/dishes/tampiquena-arrachera.png",
     tags: ["hero", "recomendado"],
-    allergens: [],
+    allergens: ["lacteos"],
     order: 83,
     isActive: true
   },
   {
-    id: 'mojito-frutos-rojos',
-    categoryId: 'cantina-la-curandera',
-    name: { es: "Mojito de frutos rojos", en: "Red Berries Mezcal Mojito", fr: "Mojito aux Fruits Rouges et Mezcal" },
-    description: { es: "Mezcal de la casa, infusión de frutos rojos macerados, hierbabuena fresca del huerto, limón y escarchado con chilito artesanal.", en: "House mezcal, muddled fresh red berries, garden mint, lime, and chili-salted rim.", fr: "Mezcal de la maison, fruits rouges frais pilés, menthe du jardin, citron vert et piment doux." },
-    price: 98,
-    imageUrl: "assets/dishes/mojito-frutos-rojos.webp",
-    imageFallback: "assets/dishes/mojito-frutos-rojos.png",
-    tags: ["hero", "recomendado"],
-    allergens: [],
-    order: 84,
-    isActive: true
-  },
-  {
-    id: 'mezcalita-artesanal',
-    categoryId: 'cantina-la-curandera',
-    name: { es: "Mezcalita de jamaica o tamarindo", en: "Craft Mezcalita (Hibiscus or Tamarind)", fr: "Mezcalita Artisanale (Hibiscus ou Tamarin)" },
-    description: { es: "Mezcal de la casa macerado con infusión de jamaica o tamarindo y toque de sal de gusano.", en: "House artisanal mezcal with hibiscus or tamarind infusion and agave worm salt rim.", fr: "Mezcal de la maison infusé à l'hibiscus ou tamarin avec sel d'agave." },
-    price: 85,
+    id: 'cecina-roja',
+    categoryId: 'platos-fuertes',
+    name: { es: "Cecina roja", en: "Spiced Red Cecina", fr: "Cecina Rouge Épicée" },
+    description: { es: "Cecina enchilada acompañada de guacamole, frijoles refritos y rebanada de queso de rancho.", en: "Chili-rubbed cured beef with fresh guacamole, refried beans and artisanal rancho cheese.", fr: "Viande de bœuf épicée séchée au piment, avec guacamole frais, haricots et fromage de pays." },
+    price: 220,
     tags: ["hero"],
-    allergens: [],
+    allergens: ["lacteos"],
     order: 84,
     isActive: true
   },
   {
-    id: 'cantarito-mezcal',
-    categoryId: 'cantina-la-curandera',
-    name: { es: "Cantarito de mezcal o tequila", en: "Traditional Clay Cantarito", fr: "Cantarito Traditionnel en Terre Cuite" },
-    description: { es: "Servido en cantarito de barro con cítricos frescos (toronja, naranja, limón), refresco de toronja y sal.", en: "Served in an authentic clay cup with fresh citrus juices, grapefruit soda, and sea salt.", fr: "Servi dans une tasse en terre cuite avec agrumes frais et soda pamplemousse." },
-    price: 99,
-    tags: ["hero", "recomendado"],
-    allergens: [],
+    id: 'milanesa-cordon-bleu',
+    categoryId: 'platos-fuertes',
+    name: { es: "Milanesa Cordon Bleu", en: "Chicken Cordon Bleu Milanesa", fr: "Milanaise Cordon Bleu au Poulet" },
+    description: { es: "Pechuga rellena de dos quesos y jamón, acompañada de ensalada con aderezo miel mostaza y arroz.", en: "Breaded chicken breast rolled with two melted cheeses and ham, salad with honey mustard, and rice.", fr: "Escalope de poulet panée farcie de deux fromages et jambon, salade miel-moutarde et riz." },
+    price: 185,
+    tags: ["recomendado"],
+    allergens: ["gluten", "lacteos", "huevo"],
     order: 85,
     isActive: true
   },
   {
-    id: 'la-piedra-anti-cruda',
-    categoryId: 'cantina-la-curandera',
-    name: { es: "La Piedra (El antídoto pa' la cruda)", en: "La Piedra (Hangover Cure Elixir)", fr: "La Piedra (Remède Anti-Gueule de Bois)" },
-    description: { es: "El mejor remedio tradicional: derecho o con agua mineral, anís, tequila reposado y licor de hierbas curativas.", en: "The ultimate Mexican cure: neat or on mineral water, with anise, tequila, and curative herbal liqueur.", fr: "Le célèbre remède mexicain: anis, tequila reposado et liqueur d'herbes." },
-    price: 100,
-    tags: ["hero"],
+    id: 'pechuga-a-la-plancha',
+    categoryId: 'platos-fuertes',
+    name: { es: "Pechuga a la plancha", en: "Grilled Chicken Breast", fr: "Blanc de Poulet Grillé à la Plancha" },
+    description: { es: "Pechuga asada con ensalada verde y aderezo italiano.", en: "Juicy seared chicken breast accompanied by crisp green salad and Italian vinaigrette.", fr: "Blanc de poulet tendre mariné et grillé, accompagné de salade verte et vinaigrette italienne." },
+    price: 165,
+    tags: [],
     allergens: [],
     order: 86,
     isActive: true
   },
   {
-    id: 'cerveza-tarro-litro-clamato',
-    categoryId: 'cantina-la-curandera',
-    name: { es: "Tarro de litro clamatado", en: "1-Liter Clamato Beer Mug", fr: "Chope d'un Litre Bière & Clamato" },
-    description: { es: "Cerveza fría a elección, jugo de limón, sal, mezcla de salsas negras y Clamato original.", en: "Ice cold beer of choice with fresh lime juice, Mexican black sauces, and seasoned Clamato.", fr: "Bière bien fraîche, citron vert, sauces noires et jus Clamato assaisonné." },
-    price: 90,
-    tags: ["recomendado"],
-    allergens: [],
+    id: 'pechuga-empanizada',
+    categoryId: 'platos-fuertes',
+    name: { es: "Pechuga empanizada", en: "Golden Breaded Chicken Breast", fr: "Escalope de Poulet Panée Croustillante" },
+    description: { es: "Pechuga empanizada con ensalada de lechuga con manzana y durazno, acompañada de ajonjolí garapiñado y aderezo miel mostaza.", en: "Crispy breaded chicken cutlet served with apple-peach green salad, candied sesame and honey mustard.", fr: "Escalope de poulet croustillante, salade de fruits frais, sésame caramélisé et sauce miel-moutarde." },
+    price: 175,
+    tags: [],
+    allergens: ["gluten", "huevo"],
     order: 87,
     isActive: true
   },
   {
-    id: 'mezcal-cannabis-sta-ana',
-    categoryId: 'cantina-la-curandera',
-    name: { es: "Mezcal Cannabis Sta. Ana Despoblado", en: "Cannabis Mezcal Sta. Ana Despoblado", fr: "Mezcal Cannabis Sta. Ana Despoblado" },
-    description: { es: "Destilado en Zumpahuacán con infusión herbal única. Caballito $80 · Botella $800.", en: "Distilled in Zumpahuacán with a rare herbal infusion. Shot $80 · Bottle $800.", fr: "Distillé à Zumpahuacán. Shot $80 · Bouteille $800." },
-    price: 80,
-    tags: ["hero", "recomendado"],
-    allergens: [],
+    id: 'enchiladas-yucas-comida',
+    categoryId: 'platos-fuertes',
+    name: { es: "Enchiladas yucas", en: "Yucatecan Cochinita Enchiladas (Comida)", fr: "Enchiladas Yucas à la Cochinita" },
+    description: { es: "3 piezas bañadas en nuestra auténtica salsa verde, rellenas de cochinita pibil, cebollitas moradas encurtidas, queso y crema.", en: "3 corn tortillas filled with citrus cochinita pibil pork, salsa verde, pickled red onions and crema.", fr: "3 enchiladas en sauce verte garnies de cochinita pibil parfumée, oignons rouges et crème." },
+    price: 160,
+    imageUrl: "assets/dishes/enchiladas-yucas.webp",
+    imageFallback: "assets/dishes/enchiladas-yucas.png",
+    tags: ["hero"],
+    allergens: ["lacteos"],
     order: 88,
     isActive: true
   },
   {
-    id: 'mezcal-ojo-de-tigre',
-    categoryId: 'cantina-la-curandera',
-    name: { es: "Mezcal Ojo de Tigre, Oaxaca", en: "Ojo de Tigre Artisanal Mezcal, Oaxaca", fr: "Mezcal Artisanal Ojo de Tigre, Oaxaca" },
-    description: { es: "Ensamble de maguey Espadín y Tobalá. Notas ahumadas y cítricas. Caballito $90 · Botella $1,200.", en: "Espadín and Tobalá agave blend with smooth herbal smoke. Shot $90 · Bottle $1,200.", fr: "Assemblage Espadín et Tobalá. Shot $90 · Bouteille $1,200." },
+    id: 'enchiladas-del-patron-comida',
+    categoryId: 'platos-fuertes',
+    name: { es: "Enchiladas del Patrón", en: "El Patrón Arrachera Enchiladas (Comida)", fr: "Enchiladas del Patrón à l'Arrachera" },
+    description: { es: "3 piezas bañadas en nuestra auténtica salsa verde, rellenas de arrachera.", en: "3 tortillas in house salsa verde filled with grilled arrachera steak.", fr: "3 enchiladas nappées de sauce verte maison et farcies de steak d'arrachera." },
+    price: 170,
+    tags: ["hero"],
+    allergens: ["lacteos"],
+    order: 89,
+    isActive: true
+  },
+  {
+    id: 'enfrijoladas-de-pollo-comida',
+    categoryId: 'platos-fuertes',
+    name: { es: "Enfrijoladas de pollo", en: "Chicken Enfrijoladas in Bean Sauce (Comida)", fr: "Enfrijoladas au Poulet et Haricots" },
+    description: { es: "3 piezas bañadas en salsa de frijol, rellenas de pollo y cubiertas con crema y queso.", en: "3 chicken enfrijoladas bathed in silky black bean puree with Mexican cream and cheese.", fr: "3 enfrijoladas garnies de poulet effiloché, sauce haricots noirs, crème et fromage." },
+    price: 150,
+    tags: [],
+    allergens: ["lacteos"],
+    order: 90,
+    isActive: true
+  },
+
+  // =========================================================================
+  // 🍽️ SECCIÓN 2: COMIDA — CORTES
+  // =========================================================================
+  {
+    id: 't-bone',
+    categoryId: 'cortes',
+    name: { es: "T-Bone", en: "T-Bone Steak (300-350g)", fr: "T-Bone Steak Select (300-350g)" },
+    description: { es: "300 a 350 gr. Acompañado de 3 guarniciones a elegir: nopales y cebollas, piña asada, guacamole, elote amarillo, cebollitas cambray, queso asado, frijoles.", en: "300-350g raw prime cut. Choice of 3 sides: nopales & onions, grilled pineapple, guacamole, sweet corn, cambray onions, grilled cheese, beans.", fr: "300-350g cru. Au choix 3 garnitures : nopals & oignons, ananas grillé, guacamole, maïs, oignons cambray, fromage grillé, haricots." },
+    price: 315,
+    imageUrl: "assets/dishes/t-bone-guarniciones.webp",
+    imageFallback: "assets/dishes/t-bone-guarniciones.png",
+    tags: ["hero", "recomendado"],
+    allergens: [],
+    order: 91,
+    isActive: true
+  },
+  {
+    id: 'new-york',
+    categoryId: 'cortes',
+    name: { es: "New York", en: "New York Strip Steak (300-350g)", fr: "Faux-Filet New York (300-350g)" },
+    description: { es: "300 a 350 gr. Acompañado de 3 guarniciones a elegir: nopales y cebollas, piña asada, guacamole, elote amarillo, cebollitas cambray, queso asado, frijoles.", en: "300-350g tender New York strip. Choice of 3 sides: nopales & onions, grilled pineapple, guacamole, sweet corn, cambray onions, grilled cheese, beans.", fr: "300-350g. Accompagné de 3 garnitures au choix : nopals & oignons, ananas rôti, guacamole, maïs doux, oignons cambray, fromage grillé, haricots." },
+    price: 315,
+    tags: ["recomendado"],
+    allergens: [],
+    order: 92,
+    isActive: true
+  },
+  {
+    id: 'rib-eye',
+    categoryId: 'cortes',
+    name: { es: "Rib Eye", en: "Prime Rib Eye Steak (300-350g)", fr: "Rib Eye Steak Entrecôte (300-350g)" },
+    description: { es: "300 a 350 gr. Acompañado de 3 guarniciones a elegir: nopales y cebollas, piña asada, guacamole, elote amarillo, cebollitas cambray, queso asado, frijoles.", en: "300-350g marbled prime rib eye. Choice of 3 sides: nopales & onions, grilled pineapple, guacamole, sweet corn, cambray onions, grilled cheese, beans.", fr: "300-350g persillé et tendre. Accompagné de 3 garnitures au choix." },
+    price: 315,
+    imageUrl: "assets/dishes/rib-eye-guarniciones.webp",
+    imageFallback: "assets/dishes/rib-eye-guarniciones.png",
+    videoUrl: "assets/videos/rib-eye-guarniciones.mp4",
+    tags: ["hero", "recomendado"],
+    allergens: [],
+    order: 93,
+    isActive: true
+  },
+  {
+    id: 'picana',
+    categoryId: 'cortes',
+    name: { es: "Picaña", en: "Picaña Steak (300-350g)", fr: "Picanha Gratinée au Grill (300-350g)" },
+    description: { es: "300 a 350 gr. Acompañado de 3 guarniciones a elegir: nopales y cebollas, piña asada, guacamole, elote amarillo, cebollitas cambray, queso asado, frijoles.", en: "300-350g juicy picanha with golden fat cap. Choice of 3 sides: nopales & onions, grilled pineapple, guacamole, sweet corn, cambray onions, grilled cheese, beans.", fr: "300-350g de picanha brésilienne grillée. Accompagnée de 3 garnitures au choix." },
+    price: 315,
+    tags: ["hero"],
+    allergens: [],
+    order: 94,
+    isActive: true
+  },
+
+  // =========================================================================
+  // 🍽️ SECCIÓN 2: COMIDA — TAQUERÍA LA CURANDERA
+  // =========================================================================
+  {
+    id: 'orden-tacos-estandar',
+    categoryId: 'taqueria-la-curandera',
+    name: { es: "Orden de tacos clásicos", en: "Classic Tacos Order (3 pcs)", fr: "Assiette de Tacos Classiques (3 pcs)" },
+    description: { es: "3 piezas con tortilla de maíz o de harina, acompañados de nopales, cebolla y frijoles. Opciones: Chistorra, Chorizo rojo, Chorizo verde, Chorizo argentino, Cecina, Cecina enchilada o Bistec.", en: "3 tacos with corn or flour tortillas, nopales, onions and beans. Options: Chistorra, Red Chorizo, Green Toluca Chorizo, Argentine Chorizo, Cecina, Spiced Cecina, or Steak.", fr: "3 tacos sur tortilla maïs ou farine, nopals, oignons et haricots. Au choix : Chistorra, Chorizo rouge, Chorizo vert, Chorizo argentin, Cecina ou Steak." },
+    price: 100,
+    tags: ["recomendado"],
+    allergens: [],
+    order: 95,
+    isActive: true
+  },
+  {
+    id: 'orden-tacos-premium',
+    categoryId: 'taqueria-la-curandera',
+    name: { es: "Orden de tacos premium", en: "Premium Tacos Order (3 pcs)", fr: "Assiette de Tacos Premium (3 pcs)" },
+    description: { es: "3 piezas con tortilla de maíz o de harina, acompañados de nopales, cebolla y frijoles. Opciones: Arrachera, Surtidos o Cochinita pibil.", en: "3 premium tacos with nopales, onions and beans. Choices: Arrachera steak, Mixed meats, or Cochinita Pibil.", fr: "3 tacos de choix accompagnés de nopals, oignons et haricots. Options : Arrachera, Assortis ou Cochinita pibil." },
+    price: 130,
+    tags: ["hero"],
+    allergens: [],
+    order: 96,
+    isActive: true
+  },
+
+  // =========================================================================
+  // 🍽️ SECCIÓN 2: COMIDA — BURRITOS
+  // =========================================================================
+  {
+    id: 'burrito-bistec',
+    categoryId: 'burritos',
+    name: { es: "Burrito de bistec", en: "Steak Burrito", fr: "Burrito au Steak Grillé" },
+    description: { es: "Tortilla de harina con bistec, pico de gallo, guacamole, queso manchego, frijoles y aderezo de chipotle cremoso.", en: "Large flour tortilla filled with steak, pico de gallo, guacamole, manchego cheese, beans and chipotle crema.", fr: "Grande tortilla de farine garnie de steak, pico de gallo, guacamole, fromage manchego, haricots et sauce chipotle." },
+    price: 160,
+    tags: [],
+    allergens: ["gluten", "lacteos"],
+    order: 97,
+    isActive: true
+  },
+  {
+    id: 'burrito-arrachera',
+    categoryId: 'burritos',
+    name: { es: "Burrito de arrachera", en: "Prime Arrachera Burrito", fr: "Burrito à l'Arrachera Tendre" },
+    description: { es: "Tortilla de harina con arrachera, pico de gallo, guacamole, queso manchego, frijoles y aderezo de chipotle cremoso.", en: "Flour tortilla rolled with tender arrachera steak, guacamole, pico de gallo, manchego cheese, beans and chipotle dressing.", fr: "Tortilla de farine avec arrachera marinée, guacamole onctueux, manchego, haricots et crème chipotle." },
+    price: 180,
+    tags: ["hero", "recomendado"],
+    allergens: ["gluten", "lacteos"],
+    order: 98,
+    isActive: true
+  },
+  {
+    id: 'burrito-campechano',
+    categoryId: 'burritos',
+    name: { es: "Burrito campechano", en: "Campechano Burrito (Steak & Longaniza)", fr: "Burrito Campechano (Steak & Longaniza)" },
+    description: { es: "Tortilla de harina con bistec y longaniza, pico de gallo, guacamole, queso manchego, frijoles y aderezo de chipotle cremoso.", en: "Flour tortilla packed with grilled steak and artisanal longaniza, guacamole, cheese, beans and chipotle crema.", fr: "Tortilla de farine au steak et longaniza artisanale, pico de gallo, guacamole, fromage et haricots." },
+    price: 170,
+    tags: ["recomendado"],
+    allergens: ["gluten", "lacteos"],
+    order: 99,
+    isActive: true
+  },
+  {
+    id: 'burrito-cochinita-pibil',
+    categoryId: 'burritos',
+    name: { es: "Burrito de cochinita pibil", en: "Cochinita Pibil Burrito", fr: "Burrito à la Cochinita Pibil" },
+    description: { es: "Tortilla de harina con cochinita pibil, queso manchego, frijoles, cebollitas encurtidas y salsa habanera.", en: "Flour tortilla with slow-roasted cochinita pibil, melted manchego, beans, pickled red onions and habanero salsa.", fr: "Tortilla de farine garnie de cochinita pibil, fromage manchego fondu, haricots, oignons marinés et habanero." },
+    price: 170,
+    tags: ["hero"],
+    allergens: ["gluten", "lacteos"],
+    order: 100,
+    isActive: true
+  },
+
+  // =========================================================================
+  // 🍽️ SECCIÓN 2: COMIDA — SNACKS
+  // =========================================================================
+  {
+    id: 'papas-gajo',
+    categoryId: 'snacks',
+    name: { es: "Papas gajo", en: "Seasoned Potato Wedges (200g)", fr: "Potatoes Assaisonnées (200g)" },
+    description: { es: "200g de papas gajo con especias y aderezo de chipotle cremoso.", en: "200g crispy potato wedges seasoned with house spices and creamy chipotle dip.", fr: "200g de quartiers de pommes de terre aux épices et sauce chipotle crémeuse." },
+    price: 65,
+    tags: ["vegetariano"],
+    allergens: ["gluten", "lacteos"],
+    order: 101,
+    isActive: true
+  },
+  {
+    id: 'papas-a-la-francesa',
+    categoryId: 'snacks',
+    name: { es: "Papas a la francesa", en: "Crispy French Fries (200g)", fr: "Frites Dorées (200g)" },
+    description: { es: "200g de papas a la francesa con especias y aderezo de chipotle cremoso.", en: "200g classic golden fries seasoned with sea salt and spices, served with chipotle dip.", fr: "200g de frites dorées croustillantes assaisonnées et sauce chipotle." },
+    price: 60,
+    tags: ["vegetariano"],
+    allergens: ["gluten", "lacteos"],
+    order: 102,
+    isActive: true
+  },
+  {
+    id: 'nachos-nortenos',
+    categoryId: 'snacks',
+    name: { es: "Nachos norteños", en: "Northern Style Loaded Nachos", fr: "Nachos du Nord Garnis" },
+    description: { es: "Totopos con queso cheddar, frijoles, queso manchego, acompañados de pico de gallo, longaniza y chiles jalapeños.", en: "Corn tortilla chips layered with cheddar, refried beans, manchego, savory longaniza, jalapeños and pico de gallo.", fr: "Totopos gratinés au cheddar et manchego, haricots, saucisse longaniza, piments jalapeños et pico de gallo." },
+    price: 130,
+    imageUrl: "assets/dishes/nachos-nortenos.webp",
+    imageFallback: "assets/dishes/nachos-nortenos.png",
+    tags: ["recomendado"],
+    allergens: ["lacteos"],
+    order: 103,
+    isActive: true
+  },
+  {
+    id: 'nachos-con-arrachera',
+    categoryId: 'snacks',
+    name: { es: "Nachos con arrachera", en: "Prime Arrachera Steak Nachos", fr: "Nachos à l'Arrachera Grillée" },
+    description: { es: "Totopos con queso cheddar, frijoles, queso manchego, acompañados de pico de gallo, arrachera y chiles jalapeños.", en: "Crispy totopos drenched in cheddar, refried beans, melted manchego, seared arrachera steak and jalapeños.", fr: "Totopos croustillants nappés de cheddar, haricots, manchego fondu, morceaux d'arrachera et jalapeños." },
+    price: 140,
+    tags: ["hero"],
+    allergens: ["lacteos"],
+    order: 104,
+    isActive: true
+  },
+
+  // =========================================================================
+  // 🍽️ SECCIÓN 2: COMIDA — ALITAS
+  // =========================================================================
+  {
+    id: 'orden-alitas',
+    categoryId: 'alitas',
+    name: { es: "Orden de alitas", en: "Chicken Wings (7 pcs)", fr: "Assiette d'Ailes de Poulet (7 pcs)" },
+    description: { es: "7 piezas acompañadas de pepino y zanahoria. Opciones: Naturales ($90), Mango habanero ($100), BBQ ($100), Búfalo ($100), Habanero cremoso ($100), Mango mezcal ($120) o Tamarindo mezcal ($120).", en: "7 crispy wings with cucumber and carrot sticks. Sauces: Plain ($90), Mango Habanero ($100), BBQ ($100), Buffalo ($100), Creamy Habanero ($100), Mango Mezcal ($120) or Tamarind Mezcal ($120).", fr: "7 ailes croustillantes avec concombres et carottes. Sauces au choix : Nature ($90), Mangue Habanero ($100), BBQ ($100), Buffalo ($100), Habanero Crémeux ($100), Mangue Mezcal ($120) ou Tamarin Mezcal ($120)." },
+    price: 90,
+    imageUrl: "assets/dishes/alitas.webp",
+    imageFallback: "assets/dishes/alitas.png",
+    tags: ["recomendado"],
+    allergens: [],
+    order: 105,
+    isActive: true
+  },
+
+  // =========================================================================
+  // 🍽️ SECCIÓN 2: COMIDA — BURGERS
+  // =========================================================================
+  {
+    id: 'hamburguesa-tradicional',
+    categoryId: 'burgers',
+    name: { es: "Hamburguesa tradicional", en: "Traditional Beef Burger", fr: "Burger Traditionnel Pur Bœuf" },
+    description: { es: "Carne de res selecta con queso amarillo y queso manchego, lechuga, tomate y cebolla.", en: "Select beef patty with American cheddar and melted manchego, crisp lettuce, tomato and onion.", fr: "Steak pur bœuf sélectionné, cheddar, fromage manchego fondu, salade, tomate et oignon." },
+    price: 135,
+    tags: [],
+    allergens: ["gluten", "lacteos"],
+    order: 106,
+    isActive: true
+  },
+  {
+    id: 'hamburguesa-hawaiana',
+    categoryId: 'burgers',
+    name: { es: "Hamburguesa hawaiana", en: "Hawaiian Bacon & Pineapple Burger", fr: "Burger Hawaïen Ananas & Bacon" },
+    description: { es: "Carne de res selecta con queso amarillo, queso manchego, tocino, piña asada, lechuga, tomate y cebolla.", en: "Beef patty with cheddar, melted manchego, crispy bacon, grilled sweet pineapple, lettuce, tomato and onion.", fr: "Steak de bœuf, cheddar et manchego, bacon croustillant, ananas grillé au feu et légumes frais." },
+    price: 145,
+    tags: ["recomendado"],
+    allergens: ["gluten", "lacteos"],
+    order: 107,
+    isActive: true
+  },
+  {
+    id: 'hamburguesa-bbq',
+    categoryId: 'burgers',
+    name: { es: "Hamburguesa BBQ", en: "Smoky BBQ Burger", fr: "Burger Sauce BBQ Fumée" },
+    description: { es: "Carne de res selecta con queso amarillo y queso manchego con un toque de salsa BBQ, lechuga, tomate y cebolla.", en: "Select beef patty glazed with smoky BBQ sauce, American cheese, melted manchego and greens.", fr: "Steak de bœuf nappé de sauce BBQ fumée, cheddar, fromage manchego et légumes croquants." },
+    price: 135,
+    tags: [],
+    allergens: ["gluten", "lacteos"],
+    order: 108,
+    isActive: true
+  },
+  {
+    id: 'hamburguesa-de-la-casa',
+    categoryId: 'burgers',
+    name: { es: "Hamburguesa de la casa", en: "La Curandera Double House Burger", fr: "Burger Maison Double Steak La Curandera" },
+    description: { es: "Doble carne de res selecta con queso amarillo y queso manchego, doble tocino, piña asada, lechuga, tomate y cebolla.", en: "Double select beef patties, double bacon, cheddar, melted manchego, grilled pineapple and fresh veggies.", fr: "Double steak de bœuf, double bacon croustillant, cheddar, manchego et ananas caramélisé." },
+    price: 190,
+    imageUrl: "assets/dishes/hamburguesa-de-la-casa.webp",
+    imageFallback: "assets/dishes/hamburguesa-de-la-casa.png",
+    videoUrl: "assets/videos/hamburguesa-de-la-casa.mp4",
+    tags: ["hero", "recomendado"],
+    allergens: ["gluten", "lacteos"],
+    order: 109,
+    isActive: true
+  },
+  {
+    id: 'hamburguesa-de-arrachera',
+    categoryId: 'burgers',
+    name: { es: "Hamburguesa de arrachera", en: "Prime Arrachera Steak Burger (180g)", fr: "Burger à l'Arrachera Steak (180g)" },
+    description: { es: "180g de arrachera en corte con queso amarillo y queso manchego con lechuga, jitomate y cebolla.", en: "180g grilled arrachera skirt steak in burger bun with cheddar, melted manchego, lettuce, tomato and onion.", fr: "180g d'arrachera marinée en tranche généreuse, cheddar, manchego fondu, salade et tomate." },
+    price: 195,
+    tags: ["hero"],
+    allergens: ["gluten", "lacteos"],
+    order: 110,
+    isActive: true
+  },
+  {
+    id: 'hamburguesa-monchosa',
+    categoryId: 'burgers',
+    name: { es: "Hamburguesa monchosa", en: "La Monchosa Loaded Ham & Bacon Burger", fr: "Burger Gourmand La Monchosa" },
+    description: { es: "Carne de res selecta con queso amarillo y queso manchego, tocino, jamón, lechuga, jitomate y cebolla.", en: "Beef patty loaded with crispy bacon, grilled ham, yellow cheddar, melted manchego and crisp veggies.", fr: "Steak de bœuf garni de bacon doré, jambon grillé, cheddar et manchego fondu." },
+    price: 185,
+    tags: ["recomendado"],
+    allergens: ["gluten", "lacteos"],
+    order: 111,
+    isActive: true
+  },
+
+  // =========================================================================
+  // 🍽️ SECCIÓN 2: COMIDA — PARA LOS MORRILLOS
+  // =========================================================================
+  {
+    id: 'morrito',
+    categoryId: 'pa-los-morrillos',
+    name: { es: "Morrito", en: "Morrito Kids Combo", fr: "Menu Enfant Morrito" },
+    description: { es: "Nuggets o milanesa + spaghetti + papas a la francesa + juguito.", en: "Crispy chicken nuggets or milanesa cutlet + butter spaghetti + french fries + juice box.", fr: "Nuggets dorés ou milanaise + spaghetti au beurre + frites croustillantes + jus de fruits." },
+    price: 135,
+    imageUrl: "assets/dishes/morrito.webp",
+    imageFallback: "assets/dishes/morrito.png",
+    tags: ["recomendado"],
+    allergens: ["gluten", "lacteos", "huevo"],
+    order: 112,
+    isActive: true
+  },
+  {
+    id: 'escuinclito',
+    categoryId: 'pa-los-morrillos',
+    name: { es: "Escuinclito", en: "Escuinclito Kids Combo", fr: "Menu Enfant Escuinclito" },
+    description: { es: "Consomé de pollo con arroz + taquito dorado + juguito.", en: "Comforting chicken broth with rice + crispy golden chicken taco + kids juice box.", fr: "Consommé de poulet avec riz + taquito croustillant doré + brique de jus." },
+    price: 130,
+    tags: [],
+    allergens: ["gluten"],
+    order: 113,
+    isActive: true
+  },
+
+  // =========================================================================
+  // 🍽️ SECCIÓN 2: COMIDA — DULCE REMEDIO
+  // =========================================================================
+  {
+    id: 'strudel-de-manzana-com',
+    categoryId: 'dulce-remedio-comida',
+    name: { es: "Strudel de manzana", en: "Warm Apple Strudel", fr: "Strudel aux Pommes Maison" },
+    description: { es: "Pasta hojaldre y manzana.", en: "Puff pastry filled with spiced caramelized apples.", fr: "Pâte feuilletée croustillante garnie de pommes caramélisées." },
+    price: 65,
+    imageUrl: "assets/dishes/strudel-manzana.webp",
+    imageFallback: "assets/dishes/strudel-manzana.png",
+    videoUrl: "assets/videos/strudel-manzana.mp4",
+    tags: ["recomendado"],
+    allergens: ["gluten"],
+    order: 114,
+    isActive: true
+  },
+  {
+    id: 'cheesecake-com',
+    categoryId: 'dulce-remedio-comida',
+    name: { es: "Cheesecake", en: "Artisanal Cheesecake", fr: "Cheesecake Artisanal" },
+    description: { es: "Frambuesa, guayaba o chispas de chocolate.", en: "Smooth cheesecake topped with raspberry, guava or chocolate chips.", fr: "Cheesecake crémeux nappé de framboise, goyave ou pépites de chocolat." },
+    price: 75,
+    imageUrl: "assets/dishes/cheesecake.webp",
+    imageFallback: "assets/dishes/cheesecake.png",
+    tags: [],
+    allergens: ["lacteos", "gluten"],
+    order: 115,
+    isActive: true
+  },
+  {
+    id: 'helado-com',
+    categoryId: 'dulce-remedio-comida',
+    name: { es: "Helado", en: "Artisan Ice Cream", fr: "Glace Artisanale" },
+    description: { es: "Vainilla, chocolate, fresa o cookies and cream.", en: "Two scoops of artisan ice cream.", fr: "Deux boules de glace artisanale." },
+    price: 65,
+    tags: [],
+    allergens: ["lacteos"],
+    order: 116,
+    isActive: true
+  },
+  {
+    id: 'malteadas-com',
+    categoryId: 'dulce-remedio-comida',
+    name: { es: "Malteadas", en: "Classic Milkshakes", fr: "Milkshake Gourmand" },
+    description: { es: "Vainilla, chocolate o fresa.", en: "Creamy shakes: vanilla, chocolate or fresh strawberry.", fr: "Milkshake onctueux à la vanille, chocolat ou fraise." },
+    price: 60,
+    imageUrl: "assets/dishes/malteadas.webp",
+    imageFallback: "assets/dishes/malteadas.png",
+    videoUrl: "assets/videos/malteadas.mp4",
+    tags: ["recomendado"],
+    allergens: ["lacteos"],
+    order: 117,
+    isActive: true
+  },
+  {
+    id: 'panque-de-elote-com',
+    categoryId: 'dulce-remedio-comida',
+    name: { es: "Panqué de elote", en: "Sweet Corn Pound Cake", fr: "Gâteau au Maïs Doux" },
+    description: { es: "Ideal para postre individual.", en: "Moist sweet corn cake, ideal for individual dessert.", fr: "Gâteau individuel moelleux au maïs doux." },
+    price: 65,
+    tags: ["recomendado"],
+    allergens: ["gluten", "lacteos"],
+    order: 118,
+    isActive: true
+  },
+  {
+    id: 'tarta-de-nata-com',
+    categoryId: 'dulce-remedio-comida',
+    name: { es: "Tarta de nata", en: "Sweet Cream Tartlet (Comida)", fr: "Tartelette à la Crème de Lait" },
+    description: { es: "Ideal para postre individual.", en: "Golden individual sweet cream tartlet.", fr: "Tartelette individuelle à la crème de lait dorée." },
+    price: 35,
+    tags: [],
+    allergens: ["gluten", "lacteos", "huevo"],
+    order: 119,
+    isActive: true
+  },
+  {
+    id: 'pan-arabe-de-la-region',
+    categoryId: 'dulce-remedio-comida',
+    name: { es: "Pan árabe de la región", en: "Regional Arabic Sweet Bread", fr: "Pain Arabe Doux Traditionnel" },
+    description: { es: "Coco, nuez, queso o café.", en: "Traditional regional sweet pastry bread: coconut, walnut, cheese or coffee.", fr: "Pâtisserie régionale traditionnelle : noix de coco, noix, fromage ou café." },
+    price: 35,
+    tags: ["hero"],
+    allergens: ["gluten", "frutos_secos"],
+    order: 120,
+    isActive: true
+  },
+
+  // =========================================================================
+  // 🍸 SECCIÓN 3: CANTINA LA CURANDERA (TODO EL HORARIO)
+  // =========================================================================
+  {
+    id: 'piedra',
+    categoryId: 'cantina-pa-curar',
+    name: { es: "Piedra", en: "La Piedra Hangover Elixir", fr: "La Piedra Remède Traditionnel" },
+    description: { es: "El mejor remedio; se toma derecho o con agua mineral. Anís, tequila y licor de hierbas.", en: "The ultimate Mexican cure: neat or with mineral water. Anise, tequila and secret herbal liqueur.", fr: "Le grand remède mexicain : sec ou à l'eau gazeuse. Anis, tequila et liqueur d'herbes." },
+    price: 100,
+    tags: ["hero"],
+    allergens: [],
+    order: 121,
+    isActive: true
+  },
+
+  // Cantina: REFRESCANTES
+  {
+    id: 'mojito-tradicional',
+    categoryId: 'cantina-refrescantes',
+    name: { es: "Mojito tradicional", en: "Traditional Rum Mojito", fr: "Mojito Traditionnel au Rhum" },
+    description: { es: "Ron, limón, hierbabuena, endulzante y escarchado con sal o chilito.", en: "Rum, fresh lime, muddled mint, sugar cane syrup, rimmed with salt or chili powder.", fr: "Rhum, citron vert, menthe fraîche pilée, sucre et rebord givré sel ou piment." },
+    price: 92,
+    tags: ["recomendado"],
+    allergens: [],
+    order: 122,
+    isActive: true
+  },
+  {
+    id: 'mojito-frutos-rojos',
+    categoryId: 'cantina-refrescantes',
+    name: { es: "Mojito (frutos rojos o mango)", en: "Red Berries or Mango Mojito", fr: "Mojito Fruits Rouges ou Mangue" },
+    description: { es: "Ron, hierbabuena y endulzante, escarchado con chilito. Frutos rojos o mango.", en: "Rum, fresh mint, fruit reduction and chili rim. Red berries or sweet mango.", fr: "Rhum, menthe fraîche et purée de fruits rouges ou mangue, rebord pimenté." },
+    price: 99,
+    imageUrl: "assets/dishes/mojito-frutos-rojos.webp",
+    imageFallback: "assets/dishes/mojito-frutos-rojos.png",
+    tags: ["hero"],
+    allergens: [],
+    order: 123,
+    isActive: true
+  },
+  {
+    id: 'baby-mango',
+    categoryId: 'cantina-refrescantes',
+    name: { es: "Baby Mango", en: "Baby Mango Chamoy Cocktail", fr: "Cocktail Baby Mango au Chamoy" },
+    description: { es: "Ron, mango, azúcar, chamoy y jugo de mango escarchado con chilito.", en: "Rum, mango nectar, sweet chamoy, lime and chili-rimmed glass.", fr: "Rhum, mangue fraîche, sucre de canne, chamoy acidulé et rebord de piment." },
+    price: 95,
+    tags: ["recomendado"],
+    allergens: [],
+    order: 124,
+    isActive: true
+  },
+  {
+    id: 'gin-tonic',
+    categoryId: 'cantina-refrescantes',
+    name: { es: "Gin Tonic", en: "Classic Gin & Tonic", fr: "Gin Tonic Classique" },
+    description: { es: "Ginebra, cáscara de limón y agua quina.", en: "Fine London dry gin, fresh lime zest and premium Indian tonic water.", fr: "Gin sec, zeste de citron vert frais et eau tonique pétillante." },
+    price: 95,
+    tags: [],
+    allergens: [],
+    order: 125,
+    isActive: true
+  },
+  {
+    id: 'gin-frutos-rojos',
+    categoryId: 'cantina-refrescantes',
+    name: { es: "Gin Frutos Rojos", en: "Red Berry Gin & Tonic", fr: "Gin Tonic aux Fruits Rouges" },
+    description: { es: "Ginebra, agua quina y frutos rojos.", en: "Aromatic gin, premium tonic and macerated forest red berries.", fr: "Gin aromatique, tonique pétillant et fruits rouges des bois marinés." },
+    price: 99,
+    tags: ["hero"],
+    allergens: [],
+    order: 126,
+    isActive: true
+  },
+  {
+    id: 'cosmopolitan',
+    categoryId: 'cantina-refrescantes',
+    name: { es: "Cosmopolitan", en: "Cosmopolitan", fr: "Cosmopolitan Classique" },
+    description: { es: "Vodka, limón, azúcar, jugo de arándano.", en: "Premium vodka, triple sec, tart cranberry juice and fresh lime.", fr: "Vodka, jus de canneberge, citron vert et touche d'agrumes." },
+    price: 95,
+    tags: [],
+    allergens: [],
+    order: 127,
+    isActive: true
+  },
+  {
+    id: 'paloma',
+    categoryId: 'cantina-refrescantes',
+    name: { es: "Paloma", en: "Paloma Tequila & Grapefruit", fr: "Paloma au Tequila & Pamplemousse" },
+    description: { es: "Tequila, limón, jugo de toronja.", en: "Tequila, fresh squeezed lime, sparkling grapefruit soda and salted rim.", fr: "Tequila, jus de citron vert, soda pamplemousse pétillant et sel de mer." },
+    price: 92,
+    tags: ["recomendado"],
+    allergens: [],
+    order: 128,
+    isActive: true
+  },
+  {
+    id: 'quemadita',
+    categoryId: 'cantina-refrescantes',
+    name: { es: "Quemadita", en: "La Quemadita Rum & Cola", fr: "La Quemadita Rhum & Cola" },
+    description: { es: "Ron, limón, refresco de cola.", en: "Dark rum, freshly squeezed lime and Mexican Coca-Cola.", fr: "Rhum ambré, citron vert pressé et cola pétillant." },
+    price: 90,
+    tags: [],
+    allergens: [],
+    order: 129,
+    isActive: true
+  },
+
+  // Cantina: LO MÁS PEDIDO
+  {
+    id: 'pina-colada',
+    categoryId: 'cantina-lo-mas-pedido',
+    name: { es: "Piña Colada", en: "Piña Colada", fr: "Piña Colada Traditionnelle" },
+    description: { es: "Jugo de piña, crema de coco, leche evaporada y canela.", en: "Rum, fresh pineapple juice, rich coconut cream, milk and a dusting of cinnamon.", fr: "Rhum blanc, jus d'ananas frais, crème de coco onctueuse et cannelle." },
+    price: 92,
+    tags: ["recomendado"],
+    allergens: ["lacteos"],
+    order: 130,
+    isActive: true
+  },
+  {
+    id: 'tom-collins',
+    categoryId: 'cantina-lo-mas-pedido',
+    name: { es: "Tom Collins", en: "Tom Collins", fr: "Tom Collins" },
+    description: { es: "Ron, agua mineral, limón y endulzante.", en: "Rum, sparkling mineral water, fresh lime and cane sugar.", fr: "Rhum, eau gazeuse, jus de citron et sucre de canne." },
+    price: 85,
+    tags: [],
+    allergens: [],
+    order: 131,
+    isActive: true
+  },
+  {
+    id: 'tequila-sunrise',
+    categoryId: 'cantina-lo-mas-pedido',
+    name: { es: "Tequila Sunrise", en: "Tequila Sunrise", fr: "Tequila Sunrise" },
+    description: { es: "Tequila, jugo de naranja y granadina.", en: "Tequila, fresh orange juice and ruby grenadine syrup.", fr: "Tequila, jus d'orange pressé et filet de grenadine rubis." },
+    price: 85,
+    tags: [],
+    allergens: [],
+    order: 132,
+    isActive: true
+  },
+  {
+    id: 'bloody-mary',
+    categoryId: 'cantina-lo-mas-pedido',
+    name: { es: "Bloody Mary", en: "Bloody Mary", fr: "Bloody Mary Épicé" },
+    description: { es: "Vodka, jugo de tomate preparado, apio.", en: "Vodka, seasoned tomato clamato juice, lime, spices and celery stalk.", fr: "Vodka, jus de tomate épicé préparé, citron et branche de céleri." },
+    price: 90,
+    tags: [],
+    allergens: [],
+    order: 133,
+    isActive: true
+  },
+  {
+    id: 'mezcalita-lo-mas-pedido',
+    categoryId: 'cantina-lo-mas-pedido',
+    name: { es: "Mezcalita", en: "Artisan Mezcalita", fr: "Mezcalita Artisanale" },
+    description: { es: "Mezcal de la casa, limón, un toque de sal. Maracuyá, tamarindo, frutos rojos o jamaica.", en: "House artisanal mezcal, lime, sea salt. Passion fruit, tamarind, red berries or hibiscus.", fr: "Mezcal maison, citron, sel. Fruits de la passion, tamarin, fruits rouges ou hibiscus." },
+    price: 92,
+    tags: ["hero", "recomendado"],
+    allergens: [],
+    order: 134,
+    isActive: true
+  },
+  {
+    id: 'cantarito-lo-mas-pedido',
+    categoryId: 'cantina-lo-mas-pedido',
+    name: { es: "Cantarito", en: "Traditional Clay Jar Cantarito", fr: "Cantarito Traditionnel en Terre Cuite" },
+    description: { es: "Tequila con jugo de naranja, refresco de toronja y un toque de sal.", en: "Tequila served in a chilled clay pot with orange juice, grapefruit soda and sea salt.", fr: "Tequila servi en pot de terre, jus d'orange, soda pamplemousse et sel." },
     price: 90,
     tags: ["recomendado"],
     allergens: [],
-    order: 89,
+    order: 135,
+    isActive: true
+  },
+  {
+    id: 'margarita',
+    categoryId: 'cantina-lo-mas-pedido',
+    name: { es: "Margarita", en: "Classic Margarita", fr: "Margarita Mexicaine" },
+    description: { es: "Tequila, Controy y limón con escarchado. Clásica, mango o fresa.", en: "Tequila, Controy orange liqueur, fresh lime. Classic, sweet mango or strawberry.", fr: "Tequila, liqueur Controy, citron vert. Classique, mangue ou fraise." },
+    price: 92,
+    tags: ["recomendado"],
+    allergens: [],
+    order: 136,
+    isActive: true
+  },
+  {
+    id: 'pitufo-cantina',
+    categoryId: 'cantina-lo-mas-pedido',
+    name: { es: "Pitufo", en: "Pitufo Cocktail", fr: "Cocktail Pitufo Bleu" },
+    description: { es: "Vodka, curazao, refresco de limón y endulzante.", en: "Vodka, Blue Curaçao liqueur, sparkling lime soda and cane syrup.", fr: "Vodka, curaçao bleu, soda citron vert pétillant et sucre." },
+    price: 90,
+    tags: [],
+    allergens: [],
+    order: 137,
+    isActive: true
+  },
+  {
+    id: 'ruso-blanco',
+    categoryId: 'cantina-lo-mas-pedido',
+    name: { es: "Ruso Blanco", en: "White Russian", fr: "Russe Blanc (White Russian)" },
+    description: { es: "Vodka, leche evaporada y licor de café.", en: "Vodka, coffee liqueur Kahlúa and velvety evaporated milk over ice.", fr: "Vodka, liqueur de café riche et lait évaporé velouté sur glace." },
+    price: 95,
+    tags: [],
+    allergens: ["lacteos"],
+    order: 138,
+    isActive: true
+  },
+  {
+    id: 'aperol-sunrise',
+    categoryId: 'cantina-lo-mas-pedido',
+    name: { es: "Aperol Sunrise", en: "Aperol Sunrise", fr: "Aperol Sunrise Cocktail" },
+    description: { es: "Jugo de naranja, jugo de piña, Aperol y tequila.", en: "Fresh orange juice, pineapple juice, bitter Italian Aperol and Mexican tequila.", fr: "Jus d'orange, jus d'ananas, Aperol et tequila mexicaine." },
+    price: 90,
+    tags: [],
+    allergens: [],
+    order: 139,
+    isActive: true
+  },
+  {
+    id: 'aperol-spritz',
+    categoryId: 'cantina-lo-mas-pedido',
+    name: { es: "Aperol Spritz", en: "Aperol Spritz", fr: "Aperol Spritz Pétillant" },
+    description: { es: "Licor de naranja, Aperol, prosecco y agua mineral.", en: "Aperol, orange liqueur, sparkling Italian prosecco and club soda.", fr: "Aperol, liqueur d'orange, prosecco italien et eau gazeuse." },
+    price: 95,
+    tags: ["hero"],
+    allergens: [],
+    order: 140,
+    isActive: true
+  },
+
+  // Cantina: DE LA CASA (con mezcal)
+  {
+    id: 'la-curandera-cocktail',
+    categoryId: 'cantina-de-la-casa',
+    name: { es: "La Curandera", en: "La Curandera Signature Mezcal Cocktail", fr: "Cocktail Signature La Curandera" },
+    description: { es: "Mezcal de la casa, jugo de piña, tomate, tajín, limón y aromatizado con romero.", en: "House mezcal, charred pineapple juice, tomato essence, Tajín chili, lime, fresh smoked rosemary sprig.", fr: "Mezcal artisanal, jus d'ananas, tomate, Tajín, citron et brin de romarin flambé." },
+    price: 95,
+    imageUrl: "assets/dishes/mezcal-curandera.webp",
+    imageFallback: "assets/dishes/mezcal-curandera.png",
+    videoUrl: "assets/videos/mezcal-curandera.mp4",
+    tags: ["hero", "recomendado"],
+    allergens: [],
+    order: 141,
+    isActive: true
+  },
+  {
+    id: 'mezcalita-casa',
+    categoryId: 'cantina-de-la-casa',
+    name: { es: "Mezcalita de la casa", en: "House Mezcalita (Tropical Flavors)", fr: "Mezcalita Signature Maison" },
+    description: { es: "Mezcal de la casa, limón, un toque de sal. Maracuyá, tamarindo, frutos rojos o jamaica.", en: "Artisanal house mezcal, lime, sea salt. Passion fruit, tamarind, berries or hibiscus.", fr: "Mezcal de la maison, citron vert, sel. Fruit de la passion, tamarin, fruits rouges ou hibiscus." },
+    price: 92,
+    tags: ["hero", "recomendado"],
+    allergens: [],
+    order: 142,
+    isActive: true
+  },
+  {
+    id: 'cantarito-casa',
+    categoryId: 'cantina-de-la-casa',
+    name: { es: "Cantarito de la casa", en: "House Mezcal Cantarito in Clay Pot", fr: "Cantarito Signature au Mezcal" },
+    description: { es: "Mezcal de la casa con jugo de naranja, refresco de toronja y un toque de sal.", en: "Clay pot filled with house artisanal mezcal, fresh orange juice, grapefruit soda and sea salt.", fr: "Mezcal artisanal servi en pot d'argile avec jus d'orange pressé, soda pamplemousse et sel." },
+    price: 92,
+    tags: ["recomendado"],
+    allergens: [],
+    order: 143,
+    isActive: true
+  },
+  {
+    id: 'mojito-con-mezcal',
+    categoryId: 'cantina-de-la-casa',
+    name: { es: "Mojito (con mezcal)", en: "Smoky Mezcal Mojito", fr: "Mojito Fumé au Mezcal" },
+    description: { es: "Mezcal de la casa, limón, hierbabuena, endulzante y escarchado con sal o chilito. Tradicional, frutos rojos o mango.", en: "House mezcal, fresh lime, crushed mint, cane sugar with salt/chili rim. Traditional, berries or mango.", fr: "Mezcal artisanal, menthe fraîche, citron vert et sucre. Traditionnel, fruits rouges ou mangue." },
+    price: 92,
+    tags: ["hero"],
+    allergens: [],
+    order: 144,
+    isActive: true
+  },
+  {
+    id: 'baby-mango-con-mezcal',
+    categoryId: 'cantina-de-la-casa',
+    name: { es: "Baby Mango (con mezcal)", en: "Baby Mango Mezcalita", fr: "Baby Mango au Mezcal" },
+    description: { es: "Mezcal de la casa, mango, azúcar, chamoy y jugo de mango escarchado con chilito.", en: "House mezcal, mango nectar, chamoy swirl and chili rim.", fr: "Mezcal artisanal, pulpe de mangue, chamoy doux et rebord de piment épicé." },
+    price: 92,
+    tags: ["recomendado"],
+    allergens: [],
+    order: 145,
+    isActive: true
+  },
+
+  // Cantina: CERVEZA
+  {
+    id: 'victoria',
+    categoryId: 'cantina-cerveza',
+    name: { es: "Victoria", en: "Victoria Beer", fr: "Bière Victoria" },
+    description: { es: "Cerveza ámbar mexicana fría.", en: "Classic Mexican Vienna-style lager.", fr: "Bière ambrée mexicaine bien fraîche." },
+    price: 43,
+    tags: [],
+    allergens: ["gluten"],
+    order: 146,
+    isActive: true
+  },
+  {
+    id: 'corona-clara',
+    categoryId: 'cantina-cerveza',
+    name: { es: "Corona Clara", en: "Corona Extra Beer", fr: "Bière Corona Extra" },
+    description: { es: "Cerveza clara mexicana bien fría.", en: "World-famous crisp Mexican pale lager.", fr: "Bière blonde mexicaine rafraîchissante." },
+    price: 43,
+    tags: [],
+    allergens: ["gluten"],
+    order: 147,
+    isActive: true
+  },
+  {
+    id: 'corona-oscura',
+    categoryId: 'cantina-cerveza',
+    name: { es: "Corona Oscura", en: "Corona Dark Beer", fr: "Bière Corona Brune" },
+    description: { es: "Cerveza oscura tradicional mexicana fría.", en: "Smooth Mexican dark lager with roasted malt notes.", fr: "Bière brune traditionnelle aux notes maltées." },
+    price: 43,
+    tags: [],
+    allergens: ["gluten"],
+    order: 148,
+    isActive: true
+  },
+  {
+    id: 'modelo-especial',
+    categoryId: 'cantina-cerveza',
+    name: { es: "Modelo Especial", en: "Modelo Especial Beer", fr: "Bière Modelo Especial" },
+    description: { es: "Cerveza premium tipo pilsner fría.", en: "Crisp, full-flavored pilsner beer.", fr: "Bière pilsner mexicaine de qualité supérieure." },
+    price: 45,
+    tags: ["recomendado"],
+    allergens: ["gluten"],
+    order: 149,
+    isActive: true
+  },
+  {
+    id: 'negra-modelo',
+    categoryId: 'cantina-cerveza',
+    name: { es: "Negra Modelo", en: "Negra Modelo Dark Munich Dunkel", fr: "Bière Negra Modelo" },
+    description: { es: "Cerveza oscura tipo Munich bien fría.", en: "Rich Munich dunkel-style craft Mexican beer.", fr: "Bière noire mexicaine style Munich Dunkel veloutée." },
+    price: 45,
+    tags: ["hero"],
+    allergens: ["gluten"],
+    order: 150,
+    isActive: true
+  },
+  {
+    id: 'modelo-especial-0',
+    categoryId: 'cantina-cerveza',
+    name: { es: "Modelo Especial 0 (sin alcohol)", en: "Modelo Especial 0 (Non-Alcoholic)", fr: "Bière Modelo Especial 0 (Sans Alcool)" },
+    description: { es: "Cerveza sin alcohol fría con todo el sabor tradicional.", en: "Non-alcoholic beer with all the malt flavor, zero alcohol.", fr: "Bière sans alcool rafraîchissante avec toute la saveur du malt." },
+    price: 40,
+    tags: [],
+    allergens: ["gluten"],
+    order: 151,
+    isActive: true
+  },
+  {
+    id: 'pa-tu-cerveza-escarchado',
+    categoryId: 'cantina-cerveza',
+    name: { es: "Tarro escarchado (preparación)", en: "Salt & Lime Rimmed Mug Prep", fr: "Préparation Bock Givré Sel & Citron" },
+    description: { es: "Limón fresco y sal de grano para tu cerveza.", en: "Salt rim and fresh lime juice preparation for your beer.", fr: "Préparation sel marin et jus de citron vert pour votre bière." },
+    price: 20,
+    tags: [],
+    allergens: [],
+    order: 152,
+    isActive: true
+  },
+  {
+    id: 'pa-tu-cerveza-clamatado',
+    categoryId: 'cantina-cerveza',
+    name: { es: "Tarro clamatado (preparación)", en: "Clamato Michelada Mug Prep", fr: "Préparation Michelada au Clamato" },
+    description: { es: "Limón, sal, mix de salsas negras y Clamato.", en: "Clamato tomato juice, Mexican dark sauces mix, lime and chili-salt rim.", fr: "Jus Clamato épicé, mélange de sauces noires, citron vert et sel pimenté." },
+    price: 32,
+    tags: ["recomendado"],
+    allergens: [],
+    order: 153,
+    isActive: true
+  },
+  {
+    id: 'pa-tu-cerveza-cubano',
+    categoryId: 'cantina-cerveza',
+    name: { es: "Tarro cubano (preparación)", en: "Cubana Michelada Mug Prep", fr: "Préparation Michelada Cubana" },
+    description: { es: "Limón, sal y mix de salsas negras.", en: "Tangy Mexican dark sauces mix, lime juice and chili salt rim.", fr: "Sauces noires mexicaines, jus de citron vert et sel de mer." },
+    price: 28,
+    tags: [],
+    allergens: [],
+    order: 154,
+    isActive: true
+  },
+  {
+    id: 'tarro-litro-directo',
+    categoryId: 'cantina-cerveza',
+    name: { es: "Tarro de 1 litro directo", en: "1 Liter Draft Beer Mug (Direct)", fr: "Bock de Bière 1 Litre Direct" },
+    description: { es: "Tarro de 1 litro de cerveza bien fría directo.", en: "Giant 1-liter chilled beer mug.", fr: "Grand bock de 1 litre de bière fraîche sans préparation." },
+    price: 85,
+    tags: [],
+    allergens: ["gluten"],
+    order: 155,
+    isActive: true
+  },
+  {
+    id: 'tarro-litro-escarchado',
+    categoryId: 'cantina-cerveza',
+    name: { es: "Tarro de 1 litro escarchado", en: "1 Liter Beer Mug (Salt & Lime)", fr: "Bock de 1 Litre Givré Citron & Sel" },
+    description: { es: "Tarro de 1 litro con limón y sal.", en: "1-liter beer mug served with fresh lime and salted rim.", fr: "Bock d'1 litre préparé avec citron vert et sel marin." },
+    price: 95,
+    tags: [],
+    allergens: ["gluten"],
+    order: 156,
+    isActive: true
+  },
+  {
+    id: 'tarro-litro-clamatado',
+    categoryId: 'cantina-cerveza',
+    name: { es: "Tarro de 1 litro clamatado", en: "1 Liter Clamato Michelada Mug", fr: "Bock de 1 Litre Michelada Clamato" },
+    description: { es: "Limón, sal, mix de salsas negras y Clamato.", en: "1-liter beer mug with Clamato tomato juice, sauces mix, lime and chili salt.", fr: "Grand bock d'1L au Clamato, sauces noires et épices mexicaines." },
+    price: 105,
+    tags: ["hero"],
+    allergens: ["gluten"],
+    order: 157,
+    isActive: true
+  },
+  {
+    id: 'tarro-litro-cubano',
+    categoryId: 'cantina-cerveza',
+    name: { es: "Tarro de 1 litro cubano", en: "1 Liter Cubano Michelada Mug", fr: "Bock de 1 Litre Michelada Cubano" },
+    description: { es: "Limón, sal y mix de salsas negras.", en: "1-liter beer mug loaded with dark savory sauces, fresh lime and salted rim.", fr: "Bock d'1L avec sauces noires, citron vert et sel épicé." },
+    price: 100,
+    tags: ["recomendado"],
+    allergens: ["gluten"],
+    order: 158,
+    isActive: true
+  },
+
+  // Cantina: VODKA (Copa / Botella)
+  {
+    id: 'vodka-smirnoff',
+    categoryId: 'cantina-vodka',
+    name: { es: "Smirnoff", en: "Smirnoff Vodka", fr: "Vodka Smirnoff" },
+    description: { es: "Copa $75 · Botella $750 (Toda botella incluye servicio de mezcladores).", en: "Glass $75 · Bottle $750 (All bottles include mixer service).", fr: "Verre 75$ · Bouteille 750$ (Toute bouteille comprend le service de softs)." },
+    price: 75,
+    tags: [],
+    allergens: [],
+    order: 159,
+    isActive: true
+  },
+  {
+    id: 'vodka-absolut',
+    categoryId: 'cantina-vodka',
+    name: { es: "Absolut", en: "Absolut Vodka", fr: "Vodka Absolut" },
+    description: { es: "Copa $75 · Botella $750 (Toda botella incluye servicio de mezcladores).", en: "Glass $75 · Bottle $750 (All bottles include mixer service).", fr: "Verre 75$ · Bouteille 750$ (Toute bouteille comprend le service de softs)." },
+    price: 75,
+    tags: ["recomendado"],
+    allergens: [],
+    order: 160,
+    isActive: true
+  },
+
+  // Cantina: TEQUILA (Copa / Botella)
+  {
+    id: 'tequila-jose-cuervo-tradicional',
+    categoryId: 'cantina-tequila',
+    name: { es: "José Cuervo Tradicional", en: "José Cuervo Tradicional Tequila", fr: "Tequila José Cuervo Tradicional" },
+    description: { es: "Copa $85 · Botella $850 (Toda botella incluye servicio de mezcladores).", en: "Glass $85 · Bottle $850 (All bottles include mixer service).", fr: "Verre 85$ · Bouteille 850$ (Toute bouteille comprend le service de softs)." },
+    price: 85,
+    tags: [],
+    allergens: [],
+    order: 161,
+    isActive: true
+  },
+  {
+    id: 'tequila-plata',
+    categoryId: 'cantina-tequila',
+    name: { es: "Tequila Plata", en: "Tequila Plata", fr: "Tequila Plata" },
+    description: { es: "Copa $85 · Botella $850 (Toda botella incluye servicio de mezcladores).", en: "Glass $85 · Bottle $850 (All bottles include mixer service).", fr: "Verre 85$ · Bouteille 850$ (Toute bouteille comprend le service de softs)." },
+    price: 85,
+    tags: [],
+    allergens: [],
+    order: 162,
+    isActive: true
+  },
+  {
+    id: 'tequila-don-julio-reposado',
+    categoryId: 'cantina-tequila',
+    name: { es: "Don Julio Reposado", en: "Don Julio Reposado Tequila", fr: "Tequila Don Julio Reposado" },
+    description: { es: "Copa $110 · Botella $1,300 (Toda botella incluye servicio de mezcladores).", en: "Glass $110 · Bottle $1,300 (All bottles include mixer service).", fr: "Verre 110$ · Bouteille 1,300$ (Toute bouteille comprend le service de softs)." },
+    price: 110,
+    tags: ["recomendado"],
+    allergens: [],
+    order: 163,
+    isActive: true
+  },
+  {
+    id: 'tequila-don-julio-blanco',
+    categoryId: 'cantina-tequila',
+    name: { es: "Don Julio Blanco", en: "Don Julio Blanco Tequila", fr: "Tequila Don Julio Blanco" },
+    description: { es: "Copa $95 · Botella $1,200 (Toda botella incluye servicio de mezcladores).", en: "Glass $95 · Bottle $1,200 (All bottles include mixer service).", fr: "Verre 95$ · Bouteille 1,200$ (Toute bouteille comprend le service de softs)." },
+    price: 95,
+    tags: [],
+    allergens: [],
+    order: 164,
+    isActive: true
+  },
+  {
+    id: 'tequila-don-julio-70',
+    categoryId: 'cantina-tequila',
+    name: { es: "Don Julio 70", en: "Don Julio 70 Añejo Cristalino", fr: "Tequila Don Julio 70 Cristalino" },
+    description: { es: "Copa $155 · Botella $2,200 (Toda botella incluye servicio de mezcladores).", en: "Glass $155 · Bottle $2,200 (All bottles include mixer service).", fr: "Verre 155$ · Bouteille 2,200$ (Toute bouteille comprend le service de softs)." },
+    price: 155,
+    tags: ["hero", "recomendado"],
+    allergens: [],
+    order: 165,
+    isActive: true
+  },
+
+  // Cantina: MEZCAL ARTESANAL (Copa / Botella)
+  {
+    id: 'mezcal-san-mateo-despoblado',
+    categoryId: 'cantina-mezcal-artesanal',
+    name: { es: "San Mateo Despoblado", en: "San Mateo Despoblado Artisanal Mezcal", fr: "Mezcal San Mateo Despoblado" },
+    description: { es: "Copa $70 · Botella $650 (Toda botella incluye servicio de mezcladores).", en: "Glass $70 · Bottle $650 (All bottles include mixer service).", fr: "Verre 70$ · Bouteille 650$ (Toute bouteille comprend le service de softs)." },
+    price: 70,
+    tags: ["hero"],
+    allergens: [],
+    order: 166,
+    isActive: true
+  },
+  {
+    id: 'mezcal-don-simitrio',
+    categoryId: 'cantina-mezcal-artesanal',
+    name: { es: "Don Simitrio", en: "Don Simitrio Artisanal Mezcal", fr: "Mezcal Don Simitrio" },
+    description: { es: "Copa $75 · Botella $700 (Toda botella incluye servicio de mezcladores).", en: "Glass $75 · Bottle $700 (All bottles include mixer service).", fr: "Verre 75$ · Bouteille 700$ (Toute bouteille comprend le service de softs)." },
+    price: 75,
+    tags: ["recomendado"],
+    allergens: [],
+    order: 167,
+    isActive: true
+  },
+  {
+    id: 'mezcal-atempa',
+    categoryId: 'cantina-mezcal-artesanal',
+    name: { es: "Atempa", en: "Atempa Artisanal Mezcal", fr: "Mezcal Atempa" },
+    description: { es: "Copa $70 · Botella $650 (Toda botella incluye servicio de mezcladores).", en: "Glass $70 · Bottle $650 (All bottles include mixer service).", fr: "Verre 70$ · Bouteille 650$ (Toute bouteille comprend le service de softs)." },
+    price: 70,
+    tags: [],
+    allergens: [],
+    order: 168,
+    isActive: true
+  },
+  {
+    id: 'mezcal-chintamalco',
+    categoryId: 'cantina-mezcal-artesanal',
+    name: { es: "Chintamalco", en: "Chintamalco Artisanal Mezcal", fr: "Mezcal Chintamalco" },
+    description: { es: "Copa $70 · Botella $650 (Toda botella incluye servicio de mezcladores).", en: "Glass $70 · Bottle $650 (All bottles include mixer service).", fr: "Verre 70$ · Bouteille 650$ (Toute bouteille comprend le service de softs)." },
+    price: 70,
+    tags: [],
+    allergens: [],
+    order: 169,
+    isActive: true
+  },
+  {
+    id: 'mezcal-cannabis-santa-ana',
+    categoryId: 'cantina-mezcal-artesanal',
+    name: { es: "Cannabis Santa Ana", en: "Cannabis Santa Ana Artisanal Mezcal", fr: "Mezcal Cannabis Santa Ana" },
+    description: { es: "Copa $75 · Botella $750 (Toda botella incluye servicio de mezcladores).", en: "Glass $75 · Bottle $750 (All bottles include mixer service).", fr: "Verre 75$ · Bouteille 750$ (Toute bouteille comprend le service de softs)." },
+    price: 75,
+    tags: ["hero", "recomendado"],
+    allergens: [],
+    order: 170,
+    isActive: true
+  },
+
+  // Cantina: WHISKY (Copa / Botella)
+  {
+    id: 'whisky-etiqueta-roja',
+    categoryId: 'cantina-whisky',
+    name: { es: "Etiqueta Roja", en: "Johnnie Walker Red Label", fr: "Johnnie Walker Red Label" },
+    description: { es: "Copa $85 · Botella $900 (Toda botella incluye servicio de mezcladores).", en: "Glass $85 · Bottle $900 (All bottles include mixer service).", fr: "Verre 85$ · Bouteille 900$ (Toute bouteille comprend le service de softs)." },
+    price: 85,
+    tags: [],
+    allergens: [],
+    order: 171,
+    isActive: true
+  },
+  {
+    id: 'whisky-etiqueta-negra',
+    categoryId: 'cantina-whisky',
+    name: { es: "Etiqueta Negra", en: "Johnnie Walker Black Label", fr: "Johnnie Walker Black Label" },
+    description: { es: "Copa $115 · Botella $1,700 (Toda botella incluye servicio de mezcladores).", en: "Glass $115 · Bottle $1,700 (All bottles include mixer service).", fr: "Verre 115$ · Bouteille 1,700$ (Toute bouteille comprend le service de softs)." },
+    price: 115,
+    tags: ["recomendado"],
+    allergens: [],
+    order: 172,
+    isActive: true
+  },
+  {
+    id: 'whisky-buchanans-12',
+    categoryId: 'cantina-whisky',
+    name: { es: "Buchanan's 12", en: "Buchanan's 12 Deluxe Whisky", fr: "Buchanan's 12 Deluxe" },
+    description: { es: "Copa $125 · Botella $1,800 (Toda botella incluye servicio de mezcladores).", en: "Glass $125 · Bottle $1,800 (All bottles include mixer service).", fr: "Verre 125$ · Bouteille 1,800$ (Toute bouteille comprend le service de softs)." },
+    price: 125,
+    tags: ["hero"],
+    allergens: [],
+    order: 173,
+    isActive: true
+  },
+  {
+    id: 'whisky-buchanans-18',
+    categoryId: 'cantina-whisky',
+    name: { es: "Buchanan's 18", en: "Buchanan's 18 Special Reserve", fr: "Buchanan's 18 Special Reserve" },
+    description: { es: "Copa $250 · Botella $3,200 (Toda botella incluye servicio de mezcladores).", en: "Glass $250 · Bottle $3,200 (All bottles include mixer service).", fr: "Verre 250$ · Bouteille 3,200$ (Toute bouteille comprend le service de softs)." },
+    price: 250,
+    tags: ["hero"],
+    allergens: [],
+    order: 174,
+    isActive: true
+  },
+
+  // Cantina: COGNAC (Copa / Botella)
+  {
+    id: 'cognac-martell-vsop',
+    categoryId: 'cantina-cognac',
+    name: { es: "Martell VSOP", en: "Martell VSOP Cognac", fr: "Cognac Martell VSOP" },
+    description: { es: "Copa $205 · Botella $2,300 (Toda botella incluye servicio de mezcladores).", en: "Glass $205 · Bottle $2,300 (All bottles include mixer service).", fr: "Verre 205$ · Bouteille 2,300$ (Toute bouteille comprend le service de softs)." },
+    price: 205,
+    tags: ["hero"],
+    allergens: [],
+    order: 175,
+    isActive: true
+  },
+
+  // Cantina: RON (Copa / Botella)
+  {
+    id: 'ron-bacardi-blanco',
+    categoryId: 'cantina-ron',
+    name: { es: "Bacardí Blanco", en: "Bacardí Carta Blanca Rum", fr: "Rhum Bacardí Carta Blanca" },
+    description: { es: "Copa $80 · Botella $800 (Toda botella incluye servicio de mezcladores).", en: "Glass $80 · Bottle $800 (All bottles include mixer service).", fr: "Verre 80$ · Bouteille 800$ (Toute bouteille comprend le service de softs)." },
+    price: 80,
+    tags: [],
+    allergens: [],
+    order: 176,
+    isActive: true
+  },
+
+  // Cantina: DIGESTIVOS
+  {
+    id: 'digestivo-baileys',
+    categoryId: 'cantina-digestivos',
+    name: { es: "Baileys", en: "Baileys Original Irish Cream", fr: "Baileys Irish Cream" },
+    description: { es: "En las rocas.", en: "Served on the rocks.", fr: "Servi sur glace." },
+    price: 90,
+    tags: [],
+    allergens: ["lacteos"],
+    order: 177,
+    isActive: true
+  },
+  {
+    id: 'digestivo-licor-43',
+    categoryId: 'cantina-digestivos',
+    name: { es: "Licor 43", en: "Licor 43", fr: "Licor 43" },
+    description: { es: "En las rocas.", en: "Served on the rocks.", fr: "Servi sur glace." },
+    price: 90,
+    tags: [],
+    allergens: [],
+    order: 178,
+    isActive: true
+  },
+  {
+    id: 'digestivo-carajillo',
+    categoryId: 'cantina-digestivos',
+    name: { es: "Carajillo", en: "Carajillo (Espresso & Licor 43)", fr: "Carajillo Espagnol" },
+    description: { es: "Café con licor de café servido sobre hielo.", en: "Fresh espresso shaken with Licor 43 over ice.", fr: "Café espresso corsé et Licor 43 frappé sur glace." },
+    price: 95,
+    tags: ["hero", "recomendado"],
+    allergens: [],
+    order: 179,
+    isActive: true
+  },
+
+  // Cantina: VINOS
+  {
+    id: 'jarra-de-clericot',
+    categoryId: 'cantina-vinos',
+    name: { es: "Jarra de Clericot", en: "Clericot Red Wine Pitcher", fr: "Pichet de Clericot au Vin Rouge" },
+    description: { es: "Vino tinto preparado con frutas frescas picadas y toque de la casa.", en: "Red wine sangria pitcher infused with diced fresh seasonal fruit.", fr: "Pichet de sangria au vin rouge fruité et agrumes frais." },
+    price: 320,
+    tags: ["hero"],
+    allergens: [],
+    order: 180,
+    isActive: true
+  },
+  {
+    id: 'botella-de-vino',
+    categoryId: 'cantina-vinos',
+    name: { es: "Botella de Vino", en: "Bottle of Wine", fr: "Bouteille de Vin" },
+    description: { es: "Sujeto a disponibilidad. Pregunta por nuestra selección del día.", en: "Subject to availability. Ask your server for our daily curated wine list.", fr: "Selon arrivage. Demandez notre sélection de vins du jour." },
+    price: 0,
+    tags: [],
+    allergens: [],
+    order: 181,
     isActive: true
   }
 ];
@@ -1143,7 +2684,7 @@ if (!fs.existsSync(publicDataDir)) fs.mkdirSync(publicDataDir, { recursive: true
 
 const catalogJson = JSON.stringify({ categories, products }, null, 2);
 fs.writeFileSync(path.join(publicDataDir, 'catalog.json'), catalogJson);
-console.log('✅ public/data/catalog.json generado exitosamente con ' + products.length + ' platillos.');
+console.log('✅ public/data/catalog.json generado exitosamente con ' + products.length + ' platillos y ' + categories.length + ' categorías.');
 
 // Generar seed.js para poblar Firestore
 const seedScript = `/**
@@ -1207,12 +2748,13 @@ async function runSeed() {
     isActive: true,
     hours: {
       desayuno: "9:00 AM - 1:30 PM",
-      comida: "1:30 PM - 7:30 PM"
+      comida: "1:30 PM - 7:30 PM",
+      cantina: "Todo el horario"
     }
   }, { merge: true });
 
   // 3. Categorías
-  console.log("Cargando categorias...");
+  console.log("Cargando categorías (" + categories.length + ")...");
   for (const cat of categories) {
     await setDoc(doc(db, \`restaurants/\${restaurantId}/categories\`, cat.id), {
       ...cat,
@@ -1221,7 +2763,7 @@ async function runSeed() {
   }
 
   // 4. Productos
-  console.log("Cargando productos...");
+  console.log("Cargando productos (" + products.length + ")...");
   for (const prod of products) {
     await setDoc(doc(db, \`restaurants/\${restaurantId}/products\`, prod.id), {
       ...prod,

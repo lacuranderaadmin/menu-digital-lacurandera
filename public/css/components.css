@@ -488,6 +488,45 @@
   transform: translateY(-1px);
 }
 
+/* Opción CANTINA Seleccionada: Terracota Ámbar Mezcalero con Alto Contraste */
+.meal-option.active.mode-cantina {
+  background: linear-gradient(135deg, #E87850, #C85E36);
+  color: #FFFFFF !important;
+  font-weight: 900;
+  border: 2px solid var(--lc-negro);
+  box-shadow: 3px 3px 0px var(--lc-negro), 0 4px 16px rgba(232, 120, 80, 0.4);
+  transform: translateY(-1px);
+}
+
+/* Banner Informativo de Cantina */
+.cantina-info-notice {
+  background: linear-gradient(135deg, rgba(232, 120, 80, 0.12), rgba(201, 78, 143, 0.08));
+  border: 2px solid var(--lc-negro);
+  border-radius: var(--radius-card, 16px);
+  padding: 0.85rem 1.25rem;
+  margin-bottom: 1.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 3px 3px 0px var(--lc-negro);
+  animation: fadeInDown 0.3s ease-out;
+}
+
+.cantina-notice-content {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  font-family: var(--font-title);
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: var(--lc-negro);
+  letter-spacing: 0.02em;
+}
+
+.cantina-notice-icon {
+  font-size: 1.35rem;
+}
+
 @media (max-width: 600px) {
   .meal-switch-wrapper {
     margin: 0.85rem 0 0.85rem;
@@ -525,7 +564,7 @@
   .meal-switch {
     display: flex;
     width: 100%;
-    max-width: min(340px, calc(100vw - 1.7rem));
+    max-width: min(440px, calc(100vw - 1.5rem));
     padding: 4px;
     gap: 4px;
     box-shadow: 3px 3px 0px var(--lc-negro);
@@ -534,9 +573,9 @@
 
   .meal-option {
     flex: 1;
-    font-size: 0.82rem;
-    padding: 0.55rem 0.5rem;
-    letter-spacing: 0.03em;
+    font-size: 0.76rem;
+    padding: 0.55rem 0.35rem;
+    letter-spacing: 0.02em;
   }
 }
 
@@ -805,6 +844,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.75rem;
   margin-bottom: 1rem;
   padding-bottom: 0.55rem;
   border-bottom: 2px solid rgba(26, 20, 18, 0.12);
@@ -814,13 +855,27 @@
 .category-header-title {
   display: flex;
   align-items: center;
-  gap: 0.7rem;
-  font-size: 1.35rem;
+  gap: 0.55rem;
+  font-size: 1.15rem;
   font-weight: 900;
   color: var(--lc-negro);
-  letter-spacing: 0.03em;
+  letter-spacing: 0.02em;
   text-transform: uppercase;
   text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.8);
+  min-width: 0;
+  flex: 0 1 auto;
+}
+
+.category-header-title span {
+  min-width: 0;
+  word-break: normal;
+}
+
+@media (min-width: 480px) {
+  .category-header-title {
+    font-size: 1.35rem;
+    gap: 0.7rem;
+  }
 }
 
 @media (min-width: 768px) {
@@ -831,9 +886,17 @@
 }
 
 .category-header-title .section-brand-icon {
-  width: 28px;
-  height: 28px;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
   filter: drop-shadow(0 2px 4px rgba(201, 78, 143, 0.3));
+}
+
+@media (min-width: 480px) {
+  .category-header-title .section-brand-icon {
+    width: 28px;
+    height: 28px;
+  }
 }
 
 @media (min-width: 768px) {
@@ -845,14 +908,46 @@
 
 .category-count {
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 800;
   color: var(--lc-turquesa);
   background: rgba(21, 159, 155, 0.12);
   border: 1.5px solid rgba(21, 159, 155, 0.4);
-  padding: 0.25rem 0.65rem;
+  padding: 0.2rem 0.55rem;
   border-radius: var(--radius-pill);
   text-shadow: none;
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin-left: auto;
+  align-self: center;
+  line-height: 1.3;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.category-count .count-label-full {
+  display: none;
+}
+
+.category-count .count-label-short {
+  display: inline;
+}
+
+@media (min-width: 520px) {
+  .category-count .count-label-full {
+    display: inline;
+  }
+  .category-count .count-label-short {
+    display: none;
+  }
+}
+
+@media (min-width: 768px) {
+  .category-count {
+    font-size: 0.76rem;
+    padding: 0.25rem 0.65rem;
+  }
 }
 
 .products-grid {

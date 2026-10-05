@@ -10,11 +10,11 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat+Brush&family=JetBrains+Mono:ital,wght@0,400;0,500;0,700;1,400&family=Kalam:wght@700&family=Montserrat:wght@400;600;700;800;900&display=swap">
 
-  <link rel="stylesheet" href="../css/tokens.css?v=35.0">
-  <link rel="stylesheet" href="../css/base.css?v=35.0">
-  <link rel="stylesheet" href="../css/components.css?v=35.0">
-  <link rel="stylesheet" href="../css/admin.css?v=35.0">
-  <link rel="stylesheet" href="../css/physical-menu.css?v=35.0">
+  <link rel="stylesheet" href="../css/tokens.css?v=37.0">
+  <link rel="stylesheet" href="../css/base.css?v=37.0">
+  <link rel="stylesheet" href="../css/components.css?v=37.0">
+  <link rel="stylesheet" href="../css/admin.css?v=37.0">
+  <link rel="stylesheet" href="../css/physical-menu.css?v=37.0">
 
   <link rel="icon" type="image/png" href="../assets/logo/logo.png">
 </head>
@@ -143,8 +143,17 @@
             <button type="button" class="shift-tab-btn shift-tab-comida" id="btn-shift-comida" data-shift="comida" role="tab" aria-selected="false">
               <span class="shift-tab-icon">🥩</span>
               <div class="shift-tab-info">
-                <span class="shift-tab-title">Menú de Comida y Cantina</span>
+                <span class="shift-tab-title">Menú de Comida</span>
                 <span class="shift-tab-desc" id="shift-comida-stats">Calculando categorías y platillos...</span>
+              </div>
+              <span class="shift-tab-badge">Activo</span>
+            </button>
+
+            <button type="button" class="shift-tab-btn shift-tab-cantina" id="btn-shift-cantina" data-shift="cantina" role="tab" aria-selected="false">
+              <span class="shift-tab-icon">🍸</span>
+              <div class="shift-tab-info">
+                <span class="shift-tab-title">Menú de Cantina</span>
+                <span class="shift-tab-desc" id="shift-cantina-stats">Calculando categorías y platillos...</span>
               </div>
               <span class="shift-tab-badge">Activo</span>
             </button>
@@ -480,13 +489,16 @@
               </div>
             </div>
 
-            <!-- Selector de Tipo de Menú: Desayunos vs Comidas -->
+            <!-- Selector de Tipo de Menú: Desayunos vs Comidas vs Cantina -->
             <div class="physical-menu-type-selector">
               <button type="button" id="btn-type-desayuno" class="physical-type-btn active" data-type="desayuno">
                 <span>🍳 Desayunos</span>
               </button>
               <button type="button" id="btn-type-comida" class="physical-type-btn" data-type="comida">
                 <span>🍽️ Comidas</span>
+              </button>
+              <button type="button" id="btn-type-cantina" class="physical-type-btn" data-type="cantina">
+                <span>🍸 Cantina</span>
               </button>
             </div>
 
@@ -504,6 +516,12 @@
             <div class="physical-top-actions">
               <button type="button" id="btn-phys-add-text" class="btn-phys-action btn-phys-add-text" title="Agregar un nuevo texto o platillo a esta hoja">
                 <span>➕ Agregar Texto</span>
+              </button>
+              <button type="button" id="btn-phys-copy" class="btn-phys-action btn-phys-copy" title="Copiar elementos seleccionados (Ctrl+C)">
+                <span>📋 Copiar</span>
+              </button>
+              <button type="button" id="btn-phys-paste" class="btn-phys-action btn-phys-paste" title="Pegar elementos copiados en esta hoja (Ctrl+V)">
+                <span>📥 Pegar</span>
               </button>
               <button type="button" id="btn-phys-sync" class="btn-phys-action btn-phys-sync" title="Sincronizar y actualizar platillos, precios e imágenes con el Menú Digital">
                 <span>🔄 ACTUALIZAR</span>
@@ -656,6 +674,27 @@
                   </button>
                   <button type="button" id="insp-btn-delete" class="btn-admin-danger" style="flex:1; padding:0.6rem; font-size:0.78rem;">
                     🗑️ Borrar
+                  </button>
+                </div>
+              </div>
+
+              <!-- Panel cuando hay MÚLTIPLES elementos seleccionados -->
+              <div id="inspector-multi-controls" style="display:none; flex-direction:column; gap:0.85rem;">
+                <div class="inspector-section-title">
+                  <span>Selección Múltiple (<span id="insp-multi-count">0</span>)</span>
+                </div>
+                <p style="font-size:0.75rem; color:var(--lc-gray-400); margin:0; line-height:1.4;">
+                  Puedes arrastrar este grupo completo en la hoja, copiarlo con <strong>Ctrl+C</strong> para pegarlo en cualquier otra hoja con <strong>Ctrl+V</strong>, o eliminarlo.
+                </p>
+                <div style="display:flex; flex-direction:column; gap:0.5rem; margin-top:0.35rem;">
+                  <button type="button" id="insp-btn-multi-copy" class="btn-phys-action btn-phys-copy" style="width:100%; justify-content:center;">
+                    <span>📋 Copiar Grupo (Ctrl+C)</span>
+                  </button>
+                  <button type="button" id="insp-btn-multi-delete" class="btn-admin-danger" style="width:100%; padding:0.6rem; font-size:0.78rem;">
+                    <span>🗑️ Borrar Seleccionados (Supr)</span>
+                  </button>
+                  <button type="button" id="insp-btn-multi-deselect" class="btn-admin-secondary" style="width:100%; padding:0.5rem; font-size:0.75rem;">
+                    <span>⬚ Deseleccionar Todo</span>
                   </button>
                 </div>
               </div>
@@ -877,6 +916,7 @@
               <button type="button" class="cat-filter-tab active" data-cat-filter="current" id="tab-cat-current">Del Menú Actual</button>
               <button type="button" class="cat-filter-tab" data-cat-filter="desayuno">🍳 Desayuno</button>
               <button type="button" class="cat-filter-tab" data-cat-filter="comida">🥩 Comida</button>
+              <button type="button" class="cat-filter-tab" data-cat-filter="cantina">🍸 Cantina</button>
               <button type="button" class="cat-filter-tab" data-cat-filter="all">Todas (<span id="cat-total-count">0</span>)</button>
             </div>
             <div class="cat-search-save-row">
@@ -967,7 +1007,7 @@
   <script src="../js/libs/jspdf.umd.min.js"></script>
 
   <script type="module">
-    import { initAdminDashboard } from '../js/admin-dashboard.js?v=36.0';
+    import { initAdminDashboard } from '../js/admin-dashboard.js?v=37.0';
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', initAdminDashboard);
     } else {

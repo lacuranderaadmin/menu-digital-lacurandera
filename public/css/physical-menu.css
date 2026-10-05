@@ -208,6 +208,36 @@
   color: var(--lc-negro);
 }
 
+.btn-phys-copy {
+  background: #0284C7;
+  color: #FFFFFF;
+}
+
+.btn-phys-copy:hover {
+  background: #0369A1;
+  color: #FFFFFF;
+}
+
+.btn-phys-paste {
+  background: #10B981;
+  color: #FFFFFF;
+}
+
+.btn-phys-paste:hover {
+  background: #059669;
+  color: #FFFFFF;
+}
+
+.btn-phys-delete-multi {
+  background: #DC2626;
+  color: #FFFFFF;
+}
+
+.btn-phys-delete-multi:hover {
+  background: #B91C1C;
+  color: #FFFFFF;
+}
+
 /* --------------------------------------------------------------------------
    Workspace Layout: Left Pages + Center Canvas + Right Inspector
    -------------------------------------------------------------------------- */
@@ -434,12 +464,19 @@
   cursor: move;
   border: 1px dashed transparent;
   padding: 2px 4px;
-  border-radius: 2px;
+  border-radius: 3px;
   box-sizing: border-box;
   transition: border-color 0.15s ease, background-color 0.15s ease;
   white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  max-width: 335px;
   z-index: 5;
-  line-height: 1.25;
+  line-height: 1.28;
+}
+
+.physical-text-item.is-wide {
+  max-width: 730px !important;
 }
 
 .physical-text-item:hover {
@@ -449,9 +486,26 @@
 
 .physical-text-item.is-selected {
   border: 2px solid var(--lc-rosa);
-  background-color: rgba(255, 255, 255, 0.25);
+  background-color: rgba(201, 78, 143, 0.12);
   box-shadow: 0 0 0 1px rgba(0,0,0,0.4);
   z-index: 20;
+}
+
+.physical-text-item.is-multi-selected,
+.physical-image-item.is-multi-selected {
+  border: 2px dashed #159F9B !important;
+  background-color: rgba(21, 159, 155, 0.18) !important;
+  box-shadow: 0 0 6px rgba(21, 159, 155, 0.5) !important;
+  z-index: 22 !important;
+}
+
+/* Marquee / Selection Rectangle Box */
+.selection-marquee {
+  position: absolute;
+  border: 1.5px dashed var(--lc-rosa, #C94E8F);
+  background-color: rgba(201, 78, 143, 0.12);
+  pointer-events: none;
+  z-index: 99;
 }
 
 /* Quick Floating Bar over selected item */

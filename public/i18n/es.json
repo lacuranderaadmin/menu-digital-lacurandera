@@ -21,12 +21,16 @@
   "mealSwitch": {
     "desayunos": "DESAYUNO",
     "comida": "COMIDA",
+    "cantina": "CANTINA",
     "serviceMorning": "Servicio de Desayuno activo",
     "serviceMorningShort": "Desayuno activo",
-    "serviceAfternoon": "Servicio de Comida y Cantina activo",
-    "serviceAfternoonShort": "Comida y Cantina",
+    "serviceAfternoon": "Servicio de Comida activo",
+    "serviceAfternoonShort": "Comida activa",
+    "serviceCantina": "Cantina La Curandera activa",
+    "serviceCantinaShort": "Cantina activa",
     "scheduleNoticeMorning": "Servicio de Desayuno activo (9:00 AM - 1:30 PM)",
-    "scheduleNoticeAfternoon": "Servicio de Comida y Cantina activo (1:30 PM - 7:30 PM)"
+    "scheduleNoticeAfternoon": "Servicio de Comida activo (1:30 PM - 7:30 PM)",
+    "scheduleNoticeCantina": "Cantina disponible todo el horario"
   },
   "sections": {
     "paCurarElAlma": "Pa' Curar el Alma",
@@ -34,24 +38,37 @@
     "tacosDorados": "Tacos Dorados",
     "paCaldear": "Pa' Caldear",
     "sandwichYMas": "Sándwich y Algo Más",
-    "paLosPeques": "Pa' los Más Peques",
+    "paLosPeques": "Pa' los Peques",
     "dulceRemedio": "Dulce Remedio",
     "paCalentarElEspiritu": "Pa' Calentar el Espíritu",
     "jugueria": "Juguería La Curandera",
     "bebidasSinAlcohol": "Bebidas sin Alcohol",
     "mockteleria": "Mocktelería",
-    "saboresDeCuaresma": "Sabores de Cuaresma",
+    "saboresDeMar": "Sabores de Mar",
     "paEmpezar": "Pa' Empezar",
     "paCuidarte": "Pa' Cuidarte",
     "sopasYPastas": "Sopas y Pastas",
-    "snacks": "Snacks",
     "platosFuertes": "Platos Fuertes",
-    "taqueria": "Taquería La Curandera",
     "cortes": "Cortes",
+    "taqueria": "Taquería La Curandera",
     "burritos": "Burritos",
-    "burguersYJocho": "Burguers y Jocho",
-    "paLosMorrillos": "Pa' los Morrillos",
-    "cantina": "Cantina La Curandera"
+    "snacks": "Snacks",
+    "alitas": "Alitas",
+    "burgers": "Burgers",
+    "paLosMorrillos": "Para los Morrillos",
+    "cantinaPaCurar": "Pa' Curar",
+    "cantinaRefrescantes": "Refrescantes",
+    "cantinaLoMasPedido": "Lo Más Pedido",
+    "cantinaDeLaCasa": "De la Casa (con mezcal)",
+    "cantinaCerveza": "Cerveza",
+    "cantinaVodka": "Vodka",
+    "cantinaTequila": "Tequila",
+    "cantinaMezcalArtesanal": "Mezcal Artesanal",
+    "cantinaWhisky": "Whisky",
+    "cantinaCognac": "Cognac",
+    "cantinaRon": "Ron",
+    "cantinaDigestivos": "Digestivos",
+    "cantinaVinos": "Vinos"
   },
   "product": {
     "viewDetails": "Ver detalle",
@@ -120,6 +137,9 @@
   "status": {
     "offline": "Sin conexión a internet. Mostrando la última carta guardada.",
     "empty": "Ups, estamos actualizando la carta. Regresa en un ratito.",
-    "itemsCount": "platillos disponibles"
+    "itemsCount": "platillos disponibles",
+    "itemsCountSingular": "platillo disponible",
+    "itemsShort": "disponibles",
+    "itemsShortSingular": "disponible"
   }
 }

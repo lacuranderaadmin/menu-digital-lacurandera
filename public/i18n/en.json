@@ -20,13 +20,17 @@
   },
   "mealSwitch": {
     "desayunos": "BREAKFAST",
-    "comida": "LUNCH & DINNER",
+    "comida": "LUNCH",
+    "cantina": "CANTINA",
     "serviceMorning": "Breakfast Service active",
     "serviceMorningShort": "Breakfast",
-    "serviceAfternoon": "Lunch & Cantina Service active",
-    "serviceAfternoonShort": "Lunch & Cantina",
+    "serviceAfternoon": "Lunch Service active",
+    "serviceAfternoonShort": "Lunch",
+    "serviceCantina": "Cantina La Curandera active",
+    "serviceCantinaShort": "Cantina",
     "scheduleNoticeMorning": "Breakfast Service active (9:00 AM - 1:30 PM)",
-    "scheduleNoticeAfternoon": "Lunch & Cantina Service active (1:30 PM - 7:30 PM)"
+    "scheduleNoticeAfternoon": "Lunch Service active (1:30 PM - 7:30 PM)",
+    "scheduleNoticeCantina": "Cantina available all hours"
   },
   "sections": {
     "paCurarElAlma": "Soul Healers (Breakfast)",
@@ -40,18 +44,31 @@
     "jugueria": "Fresh Cold-Pressed Juices & Smoothies",
     "bebidasSinAlcohol": "Non-Alcoholic Beverages & Sodas",
     "mockteleria": "Handcrafted Mocktails (Zero Proof)",
-    "saboresDeCuaresma": "Fresh Coastal Seafood & Aguachiles",
+    "saboresDeMar": "Flavors of the Sea & Aguachiles",
     "paEmpezar": "Starters & Appetizers to Share",
     "paCuidarte": "Farm-Fresh Salads & Light Bites",
     "sopasYPastas": "House Soups & Artisan Pastas",
-    "snacks": "Mexican Street Snacks & Bites",
     "platosFuertes": "Signature Main Courses",
-    "taqueria": "Artisanal Taquería (3 Tacos)",
     "cortes": "Prime Fire-Grilled Steaks",
+    "taqueria": "Artisanal Taquería (3 Tacos)",
     "burritos": "Generous Northern Mexican Burritos",
-    "burguersYJocho": "Gourmet Burgers & Mexican Hot Dogs",
+    "snacks": "Mexican Street Snacks & Bites",
+    "alitas": "Chicken Wings",
+    "burgers": "Gourmet Burgers",
     "paLosMorrillos": "Kids Lunch Favorites",
-    "cantina": "Ancestral Mezcal, Cocktails & Spirits"
+    "cantinaPaCurar": "Hangover Cures (Pa' Curar)",
+    "cantinaRefrescantes": "Refreshing Cocktails",
+    "cantinaLoMasPedido": "Most Popular Drinks",
+    "cantinaDeLaCasa": "House Specials (with Mezcal)",
+    "cantinaCerveza": "Cold Beers & Tarros",
+    "cantinaVodka": "Vodka",
+    "cantinaTequila": "Tequila",
+    "cantinaMezcalArtesanal": "Artisanal Mezcal",
+    "cantinaWhisky": "Whisky",
+    "cantinaCognac": "Cognac",
+    "cantinaRon": "Rum",
+    "cantinaDigestivos": "Digestifs & Cordials",
+    "cantinaVinos": "Wine & Clericot"
   },
   "product": {
     "viewDetails": "View details",
@@ -120,6 +137,9 @@
   "status": {
     "offline": "No internet connection. Displaying the latest saved menu.",
     "empty": "We are currently updating our menu. Please check back shortly.",
-    "itemsCount": "dishes available"
+    "itemsCount": "dishes available",
+    "itemsCountSingular": "dish available",
+    "itemsShort": "available",
+    "itemsShortSingular": "available"
   }
 }

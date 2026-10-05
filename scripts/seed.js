@@ -59,12 +59,13 @@ async function runSeed() {
     isActive: true,
     hours: {
       desayuno: "9:00 AM - 1:30 PM",
-      comida: "1:30 PM - 7:30 PM"
+      comida: "1:30 PM - 7:30 PM",
+      cantina: "Todo el horario"
     }
   }, { merge: true });
 
   // 3. Categorías
-  console.log("Cargando categorias...");
+  console.log("Cargando categorías (" + categories.length + ")...");
   for (const cat of categories) {
     await setDoc(doc(db, `restaurants/${restaurantId}/categories`, cat.id), {
       ...cat,
@@ -73,7 +74,7 @@ async function runSeed() {
   }
 
   // 4. Productos
-  console.log("Cargando productos...");
+  console.log("Cargando productos (" + products.length + ")...");
   for (const prod of products) {
     await setDoc(doc(db, `restaurants/${restaurantId}/products`, prod.id), {
       ...prod,

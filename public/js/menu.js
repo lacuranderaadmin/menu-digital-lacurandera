@@ -56,24 +56,42 @@ const CATEGORY_SECTION_KEY_MAP = {
   'sandwich-y-algo-mas': 'sandwichYMas',
   'pa-los-peques': 'paLosPeques',
   'dulce-remedio': 'dulceRemedio',
+  'dulce-remedio-desayuno': 'dulceRemedio',
+  'dulce-remedio-comida': 'dulceRemedio',
   'remedio-dulce': 'dulceRemedio',
   'pa-calentar-el-espiritu': 'paCalentarElEspiritu',
   'jugueria-la-curandera': 'jugueria',
   'jugueria': 'jugueria',
   'bebidas-sin-alcohol': 'bebidasSinAlcohol',
   'mockteleria': 'mockteleria',
-  'sabores-de-cuaresma': 'saboresDeCuaresma',
+  'sabores-de-mar': 'saboresDeMar',
+  'sabores-de-cuaresma': 'saboresDeMar',
   'pa-empezar': 'paEmpezar',
   'pa-cuidarte': 'paCuidarte',
   'sopas-y-pastas': 'sopasYPastas',
-  'snacks': 'snacks',
   'platos-fuertes': 'platosFuertes',
+  'cortes': 'cortes',
   'taqueria-la-curandera': 'taqueria',
   'taqueria': 'taqueria',
-  'cortes': 'cortes',
   'burritos': 'burritos',
-  'burguers-y-jocho': 'burguersYJocho',
+  'snacks': 'snacks',
+  'alitas': 'alitas',
+  'burgers': 'burgers',
+  'burguers-y-jocho': 'burgers',
   'pa-los-morrillos': 'paLosMorrillos',
+  'cantina-pa-curar': 'cantinaPaCurar',
+  'cantina-refrescantes': 'cantinaRefrescantes',
+  'cantina-lo-mas-pedido': 'cantinaLoMasPedido',
+  'cantina-de-la-casa': 'cantinaDeLaCasa',
+  'cantina-cerveza': 'cantinaCerveza',
+  'cantina-vodka': 'cantinaVodka',
+  'cantina-tequila': 'cantinaTequila',
+  'cantina-mezcal-artesanal': 'cantinaMezcalArtesanal',
+  'cantina-whisky': 'cantinaWhisky',
+  'cantina-cognac': 'cantinaCognac',
+  'cantina-ron': 'cantinaRon',
+  'cantina-digestivos': 'cantinaDigestivos',
+  'cantina-vinos': 'cantinaVinos',
   'cantina-la-curandera': 'cantina',
   'cantina': 'cantina'
 };
@@ -210,7 +228,9 @@ export function isDishLogo(url) {
 }
 
 export function setMealMode(mode, force = false) {
-  const normalized = (mode === 'desayuno' || mode === 'desayunos') ? 'desayunos' : 'comida';
+  let normalized = 'desayunos';
+  if (mode === 'cantina') normalized = 'cantina';
+  else if (mode === 'comida') normalized = 'comida';
   const hasRenderedSections = document.getElementById('menu-sections-container')?.children.length > 0;
   if (!force && currentMealMode === normalized && hasRenderedSections) {
     return;
@@ -548,14 +568,18 @@ export function renderCategoriesNav() {
   if (!navContainer) return;
 
   const isBreakfast = (currentMealMode === 'desayunos' || currentMealMode === 'desayuno');
+  const isCantina = (currentMealMode === 'cantina');
   
-  // Filtrar categorías según la sección activa
+  // Filtrar categorías según la sección activa (Desayuno, Comida o Cantina)
   const filteredCats = allCategories.filter(cat => {
+    if (isCantina) {
+      return cat.section === 'cantina';
+    }
     if (cat.section === 'ambos') return true;
     if (isBreakfast) {
       return cat.section === 'desayuno';
     } else {
-      return cat.section === 'comida' || cat.section === 'cantina';
+      return cat.section === 'comida';
     }
   });
   filteredCats.sort((a, b) => (a.order !== undefined ? a.order : 999) - (b.order !== undefined ? b.order : 999));
@@ -644,23 +668,43 @@ export const CATEGORY_EMOJIS = {
   'sandwich-y-algo-mas': '🥪',
   'pa-los-peques': '🥞',
   'dulce-remedio': '🍰',
+  'dulce-remedio-desayuno': '🍰',
+  'dulce-remedio-comida': '🍰',
   'pa-calentar-el-espiritu': '☕',
   'jugueria-la-curandera': '🧃',
   'bebidas-sin-alcohol': '🥤',
   'mockteleria': '🍹',
 
-  // Comidas & Cantina
+  // Comidas
+  'sabores-de-mar': '🦐',
   'sabores-de-cuaresma': '🦐',
   'pa-empezar': '🥑',
   'pa-cuidarte': '🥗',
   'sopas-y-pastas': '🍲',
-  'snacks': '🍟',
   'platos-fuertes': '🥘',
-  'taqueria-la-curandera': '🌮',
   'cortes': '🥩',
+  'taqueria-la-curandera': '🌮',
   'burritos': '🌯',
+  'snacks': '🍟',
+  'alitas': '🍗',
+  'burgers': '🍔',
   'burguers-y-jocho': '🍔',
   'pa-los-morrillos': '👶',
+
+  // Cantina
+  'cantina-pa-curar': '🥃',
+  'cantina-refrescantes': '🍹',
+  'cantina-lo-mas-pedido': '⭐',
+  'cantina-de-la-casa': '🌵',
+  'cantina-cerveza': '🍺',
+  'cantina-vodka': '🍸',
+  'cantina-tequila': '🥃',
+  'cantina-mezcal-artesanal': '🏺',
+  'cantina-whisky': '🥃',
+  'cantina-cognac': '🍷',
+  'cantina-ron': '🍹',
+  'cantina-digestivos': '☕',
+  'cantina-vinos': '🍷',
   'cantina-la-curandera': '🥃',
 };
 
@@ -959,21 +1003,38 @@ export function renderMenu() {
   if (!container) return;
 
   const isBreakfast = (currentMealMode === 'desayunos' || currentMealMode === 'desayuno');
+  const isCantina = (currentMealMode === 'cantina');
   const currentLang = getLanguage();
 
   // Filtrar categorías para este modo
   const activeCategories = allCategories.filter(cat => {
+    if (isCantina) {
+      return cat.section === 'cantina';
+    }
     if (cat.section === 'ambos') return true;
     if (isBreakfast) {
       return cat.section === 'desayuno';
     } else {
-      return cat.section === 'comida' || cat.section === 'cantina';
+      return cat.section === 'comida';
     }
   });
   activeCategories.sort((a, b) => (a.order !== undefined ? a.order : 999) - (b.order !== undefined ? b.order : 999));
 
   const fragment = document.createDocumentFragment();
   let visibleProductCount = 0;
+
+  // Banner informativo visible en Cantina
+  if (isCantina && !searchQuery) {
+    const cantinaNotice = document.createElement('div');
+    cantinaNotice.className = 'cantina-info-notice';
+    cantinaNotice.innerHTML = `
+      <div class="cantina-notice-content">
+        <span class="cantina-notice-icon">🍾</span>
+        <span>Toda botella incluye servicio de mezcladores</span>
+      </div>
+    `;
+    fragment.appendChild(cantinaNotice);
+  }
 
   activeCategories.forEach(category => {
     const catName = getCategoryLocalizedName(category, currentLang);
@@ -1019,13 +1080,25 @@ export function renderMenu() {
 
     const iconSrc = category.iconSvg || `assets/icons/${category.icon || 'maguey'}.svg`;
 
+    const count = categoryProducts.length;
+    const fullCountLabel = count === 1 
+      ? t('status.itemsCountSingular', 'platillo disponible') 
+      : t('status.itemsCount', 'platillos disponibles');
+    const shortCountLabel = count === 1 
+      ? t('status.itemsShortSingular', 'disponible') 
+      : t('status.itemsShort', 'disponibles');
+
     section.innerHTML = `
       <div class="category-header">
         <h2 class="category-header-title">
           <img src="${iconSrc}" class="section-brand-icon" alt="" onerror="this.src='assets/icons/maguey.svg'"/>
           <span>${escapeHtml(catName)}</span>
         </h2>
-        <span class="category-count">${categoryProducts.length} ${t('status.itemsCount', 'platillos')}</span>
+        <span class="category-count">
+          <span class="count-num">${count}</span>
+          <span class="count-label-full">${fullCountLabel}</span>
+          <span class="count-label-short">${shortCountLabel}</span>
+        </span>
       </div>
       <div class="products-grid"></div>
     `;
@@ -1313,46 +1386,102 @@ export function renderMenu() {
 /* --------------------------------------------------------------------------
    Sincronización en Tiempo Real de la Barra de Anuncios (Marquee Ticker)
    -------------------------------------------------------------------------- */
-let defaultMarqueeTrackHtml = null;
+let defaultMarqueeGroupHtml = null;
+let lastAppliedConfigHash = '';
 
-function applyMarqueeConfig(config) {
+const MARQUEE_ICONS_SVG = {
+  corazon: `<svg viewBox="0 0 64 64" class="marquee-sep" fill="none" stroke="#FF2E93" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M32 54C28 50 12 38 12 24C12 16 18 10 26 10C30 10 31 12 32 14C33 12 34 10 38 10C46 10 52 16 52 24C52 38 36 50 32 54Z" fill="#FF2E93" fill-opacity="0.5"/><path d="M32 10V4M28 6L36 6"/><path d="M24 8L20 4M40 8L44 4"/></svg>`,
+  maguey: `<svg viewBox="0 0 64 64" class="marquee-sep" fill="none" stroke="#159F9B" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M32 58V14"/><path d="M32 58C32 40 20 28 10 24C12 38 22 52 32 58Z" fill="#159F9B" fill-opacity="0.3"/><path d="M32 58C32 40 44 28 54 24C52 38 42 52 32 58Z" fill="#159F9B" fill-opacity="0.3"/><polygon points="28,8 32,4 36,8 32,14" fill="#159F9B"/></svg>`,
+  sol: `<svg viewBox="0 0 64 64" class="marquee-sep" fill="none" stroke="#FFB800" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="32" cy="32" r="14" fill="#FF8A00" fill-opacity="0.45"/><path d="M32 6V12M32 52V58M6 32H12M52 32H58M14 14L18 18M46 46L50 50M14 50L18 46M46 18L50 14"/></svg>`,
+  pocima: `<svg viewBox="0 0 64 64" class="marquee-sep" fill="none" stroke="#C94E8F" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M26 10H38V18L46 32C52 42 46 54 32 54C18 54 12 42 18 32L26 18V10Z" fill="#C94E8F" fill-opacity="0.3"/><path d="M24 10H40"/><rect x="28" y="4" width="8" height="6" rx="1" fill="#E87850"/></svg>`,
+  hierbas: `<svg viewBox="0 0 64 64" class="marquee-sep" fill="none" stroke="#00E5D8" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 54C28 46 38 32 46 12"/><path d="M46 12C38 16 34 24 38 30C42 24 46 18 46 12Z" fill="#00E5D8" fill-opacity="0.35"/><path d="M32 32C24 34 20 40 24 46C28 42 32 38 32 32Z" fill="#00E5D8" fill-opacity="0.35"/><path d="M38 24C44 26 48 32 46 38C42 36 40 30 38 24Z" fill="#00E5D8" fill-opacity="0.35"/></svg>`,
+  limon: `<svg viewBox="0 0 64 64" class="marquee-sep" fill="none" stroke="#78E08F" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="32" cy="32" r="24" fill="#78E08F" fill-opacity="0.25"/><circle cx="32" cy="32" r="18" stroke-dasharray="3 3"/><path d="M32 14V50"/><path d="M14 32H50"/></svg>`
+};
+
+export function applyMarqueeConfig(config) {
   const marqueeTrack = document.getElementById('marquee-track');
+  const marqueeSection = document.querySelector('.marquee-ticker-section');
   if (!marqueeTrack) return;
 
-  // Guardar HTML inicial por defecto de index.html
-  if (defaultMarqueeTrackHtml === null) {
-    defaultMarqueeTrackHtml = marqueeTrack.innerHTML;
+  // Guardar HTML del primer grupo por defecto para poder restaurarlo fielmente
+  if (defaultMarqueeGroupHtml === null) {
+    const firstGroup = marqueeTrack.querySelector('.marquee-group');
+    if (firstGroup) {
+      defaultMarqueeGroupHtml = firstGroup.innerHTML;
+    } else {
+      defaultMarqueeGroupHtml = marqueeTrack.innerHTML;
+    }
   }
 
-  // 1. Aplicar clase de color (rosa | verde | blanco)
-  marqueeTrack.classList.remove('color-rosa', 'color-verde', 'color-blanco');
+  // Visibilidad global de la sección
+  const isEnabled = config ? (config.enabled !== false) : true;
+  if (marqueeSection) {
+    marqueeSection.style.display = isEnabled ? '' : 'none';
+  }
+  if (!isEnabled) return;
+
+  const mode = config?.mode || 'default';
   const validColors = ['rosa', 'verde', 'blanco'];
   const color = (config && validColors.includes(config.color)) ? config.color : 'rosa';
+  const text = (config?.text || '').trim();
+
+  // Comprobar si ya está aplicado este estado exacto para no reconstruir el DOM en vano
+  const stateHash = `${mode}|${color}|${text}`;
+  if (lastAppliedConfigHash === stateHash) {
+    return;
+  }
+  lastAppliedConfigHash = stateHash;
+
+  // 1. Aplicar clase de color al track
+  marqueeTrack.classList.remove('color-rosa', 'color-verde', 'color-blanco');
   marqueeTrack.classList.add(`color-${color}`);
 
-  // 2. Contenido personalizado vs frases de marca
-  const isCustom = config && config.mode !== 'default' && config.text && config.text.trim().length > 0;
+  // 2. Determinar contenido: Personalizado vs Frases de Marca
+  const isCustom = mode !== 'default' && text.length > 0;
+  let singleGroupHtml = '';
 
   if (isCustom) {
-    const textUpper = config.text.trim().toUpperCase();
-    const icons = ['maguey.svg', 'pocima.svg', 'corazon.svg', 'sol.svg', 'hierbas.svg', 'limon.svg'];
-    let halfHtml = '';
-    const repeats = 6;
+    const textUpper = text.toUpperCase();
+    const iconKeys = ['corazon', 'maguey', 'sol', 'pocima', 'hierbas', 'limon'];
+    
+    // Calcular repeticiones simétricas dentro de cada grupo para un flujo infinito sin pausas
+    let repeats = 5;
+    if (textUpper.length > 50) repeats = 3;
+    else if (textUpper.length > 80) repeats = 2;
+
+    let itemsHtml = '';
     for (let i = 0; i < repeats; i++) {
-      const icon = icons[i % icons.length];
-      halfHtml += `
+      const iconKey = iconKeys[i % iconKeys.length];
+      const iconSvg = MARQUEE_ICONS_SVG[iconKey] || `<img src="assets/icons/${iconKey}.svg" class="marquee-sep" alt="" />`;
+      itemsHtml += `
         <div class="marquee-item">
           <span>${escapeHtml(textUpper)}</span>
-          <img src="assets/icons/${icon}" class="marquee-sep" alt="" />
+          ${iconSvg}
         </div>
       `;
     }
-    // Duplicamos exactamente la mitad para mantener el desplazamiento continuo al -50%
-    marqueeTrack.innerHTML = halfHtml + halfHtml;
+    singleGroupHtml = itemsHtml;
   } else {
-    // Restaurar frases default conservando la animación
-    marqueeTrack.innerHTML = defaultMarqueeTrackHtml;
+    // Restaurar frases default de marca
+    singleGroupHtml = defaultMarqueeGroupHtml;
   }
+
+  // 3. Inyectar los 2 grupos gemelos idénticos para el bucle continuo perfecto a nivel subpixel
+  marqueeTrack.innerHTML = `
+    <div class="marquee-group">${singleGroupHtml}</div>
+    <div class="marquee-group" aria-hidden="true">${singleGroupHtml}</div>
+  `;
+
+  // 4. Ajustar suavemente la duración según la longitud del contenido para una lectura cómoda (aprox 45px/seg)
+  requestAnimationFrame(() => {
+    const firstGrp = marqueeTrack.querySelector('.marquee-group');
+    if (firstGrp) {
+      const width = firstGrp.scrollWidth;
+      const speedPxPerSec = 45; // Velocidad óptima de lectura humana
+      const durationSec = Math.max(22, Math.min(65, Math.round(width / speedPxPerSec)));
+      marqueeTrack.style.setProperty('--marquee-duration', `${durationSec}s`);
+    }
+  });
 }
 
 function initMarqueeSync() {

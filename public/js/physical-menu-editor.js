@@ -17,14 +17,16 @@ import {
 } from './firebase-init.js';
 import { showToast } from './ui.js';
 
-let currentType = 'desayuno'; // 'desayuno' | 'comida'
+let currentType = 'desayuno'; // 'desayuno' | 'comida' | 'cantina'
 let currentDesign = 'tradicional'; // 'tradicional' | 'digital'
 let currentPageIndex = 0;
 let menusData = {
   desayuno_tradicional: null,
   comida_tradicional: null,
+  cantina_tradicional: null,
   desayuno_digital: null,
-  comida_digital: null
+  comida_digital: null,
+  cantina_digital: null
 };
 
 // Helper para clave de menú compuesta
@@ -32,67 +34,97 @@ function getMenuKey(type = currentType, design = currentDesign) {
   return `${type}_${design}`;
 }
 let selectedItemId = null;
+let selectedItemIds = new Set();
+let editorClipboard = [];
 let zoomScale = 0.75;
 let isDragging = false;
 let dragStartX = 0;
 let dragStartY = 0;
 let dragInitialItemX = 0;
 let dragInitialItemY = 0;
+let dragInitialPositions = new Map();
+let isMarqueeSelecting = false;
+let marqueeStartX = 0;
+let marqueeStartY = 0;
+let marqueeEl = null;
 let isEditorInitialized = false;
 
-// Títulos amigables para cada hoja de las cartas originales
+// Recuperar portapapeles de sesión si existe
+try {
+  const savedClip = sessionStorage.getItem('lc_phys_clipboard');
+  if (savedClip) editorClipboard = JSON.parse(savedClip);
+} catch (e) {}
+
+// Títulos amigables para cada hoja de las cartas físicas
 const PAGE_TITLES = {
   desayuno_tradicional: [
     'Pág. 1: Portada y Raíces',
-    'Pág. 2: Dulce Remedio & Hotcakes',
-    'Pág. 3: Juguería & Bebidas',
-    'Pág. 4: Huevos, Omelettes & Enchiladas',
-    'Pág. 5: Tacos Dorados, Caldos & Pa\' Peques'
+    'Pág. 2: Pa\' Curar el Alma & Lo Enchi-loso',
+    'Pág. 3: Tacos Dorados, Sándwiches & Pa\' Caldear',
+    'Pág. 4: Dulce Remedio, Pan Francés & Niños',
+    'Pág. 5: Juguería, Cafetería & Bebidas'
   ],
   comida_tradicional: [
-    'Pág. 1: Portada y Raíces',
-    'Pág. 2: Sabores de Cuaresma',
-    'Pág. 3: Dulce Remedio & Cafetería',
-    'Pág. 4: Cantina La Curandera & Cocteles',
-    'Pág. 5: Cervezas & Mezcalería',
-    'Pág. 6: Tequilas & Destilados',
-    'Pág. 7: Pa\' Empezar, Ensaladas & Sopas',
-    'Pág. 8: Platos Fuertes, Tacos & Cortes',
-    'Pág. 9: Burritos, Hamburguesas & Snacks'
+    'Pág. 1: Portada y Manifiesto Curandera',
+    'Pág. 2: Sabores de Mar & Pa\' Empezar',
+    'Pág. 3: Pa\' Cuidarte, Sopas, Pastas & Platos Fuertes',
+    'Pág. 4: Platos Fuertes, Cortes de Res & Taquería',
+    'Pág. 5: Burritos Norteños, Hamburguesas & Snacks',
+    'Pág. 6: Alitas, Para los Morrillos & Dulce Remedio',
+    'Pág. 7: Cafetería de Especialidad & Bebidas'
+  ],
+  cantina_tradicional: [
+    'Pág. 1: Portada Cantina, Mezcales & Cócteles de la Casa',
+    'Pág. 2: Coctelería Refrescante & Clásicos Favoritos',
+    'Pág. 3: Cervezas Frías, Tarros Preparados & Vinos',
+    'Pág. 4: Mezcales Artesanales & Tequilas de Tradición',
+    'Pág. 5: Whiskies, Vodkas, Ron, Cognac & Digestivos'
   ],
   desayuno_digital: [
     'Pág. 1: Portada & Sabiduría Curandera',
-    'Pág. 2: Pa\' Curar el Alma (Huevos)',
-    'Pág. 3: Lo Enchi-loso & Tacos Dorados',
-    'Pág. 4: Caldos, Sándwiches & Peques',
-    'Pág. 5: Dulce Remedio, Jugos & Café'
+    'Pág. 2: Pa\' Curar el Alma & Lo Enchi-loso',
+    'Pág. 3: Tacos Dorados, Sándwiches & Pa\' Caldear',
+    'Pág. 4: Dulce Remedio, Pan Francés & Niños',
+    'Pág. 5: Juguería, Cafetería & Bebidas'
   ],
   comida_digital: [
-    'Pág. 1: Portada & Cantina Tradicional',
-    'Pág. 2: Entradas, Ensaladas & Sopas',
-    'Pág. 3: Sabores de Cuaresma (Mariscos)',
-    'Pág. 4: Platos Fuertes, Cortes & Tacos',
-    'Pág. 5: Burritos, Burguers & Jocho',
-    'Pág. 6: Dulce Remedio & Cafetería',
-    'Pág. 7: Cantina La Curandera & Mezcales'
+    'Pág. 1: Portada & Manifiesto Curandera',
+    'Pág. 2: Sabores de Mar & Pa\' Empezar',
+    'Pág. 3: Pa\' Cuidarte, Sopas, Pastas & Platos Fuertes',
+    'Pág. 4: Platos Fuertes, Cortes de Res & Taquería',
+    'Pág. 5: Burritos Norteños, Hamburguesas & Snacks',
+    'Pág. 6: Alitas, Para los Morrillos & Dulce Remedio',
+    'Pág. 7: Cafetería de Especialidad & Bebidas'
+  ],
+  cantina_digital: [
+    'Pág. 1: Portada Cantina & Cócteles de la Casa',
+    'Pág. 2: Coctelería Refrescante & Clásicos Favoritos',
+    'Pág. 3: Cervezas Frías, Tarros Preparados & Vinos',
+    'Pág. 4: Mezcales Artesanales & Tequilas de Tradición',
+    'Pág. 5: Whiskies, Vodkas, Ron, Cognac & Digestivos'
   ],
   desayuno: [
     'Pág. 1: Portada y Raíces',
-    'Pág. 2: Dulce Remedio & Hotcakes',
-    'Pág. 3: Juguería & Bebidas',
-    'Pág. 4: Huevos, Omelettes & Enchiladas',
-    'Pág. 5: Tacos Dorados, Caldos & Pa\' Peques'
+    'Pág. 2: Pa\' Curar el Alma & Lo Enchi-loso',
+    'Pág. 3: Tacos Dorados, Sándwiches & Pa\' Caldear',
+    'Pág. 4: Dulce Remedio, Pan Francés & Niños',
+    'Pág. 5: Juguería, Cafetería & Bebidas'
   ],
   comida: [
-    'Pág. 1: Portada y Raíces',
-    'Pág. 2: Sabores de Cuaresma',
-    'Pág. 3: Dulce Remedio & Cafetería',
-    'Pág. 4: Cantina La Curandera & Cocteles',
-    'Pág. 5: Cervezas & Mezcalería',
-    'Pág. 6: Tequilas & Destilados',
-    'Pág. 7: Pa\' Empezar, Ensaladas & Sopas',
-    'Pág. 8: Platos Fuertes, Tacos & Cortes',
-    'Pág. 9: Burritos, Hamburguesas & Snacks'
+    'Pág. 1: Portada y Manifiesto Curandera',
+    'Pág. 2: Sabores de Mar & Pa\' Empezar',
+    'Pág. 3: Pa\' Cuidarte, Sopas, Pastas & Platos Fuertes',
+    'Pág. 4: Platos Fuertes, Cortes de Res & Taquería',
+    'Pág. 5: Burritos Norteños, Hamburguesas & Snacks',
+    'Pág. 6: Alitas, Para los Morrillos & Dulce Remedio',
+    'Pág. 7: Cafetería de Especialidad & Bebidas'
+  ],
+  cantina: [
+    'Pág. 1: Portada Cantina, Mezcales & Cócteles de la Casa',
+    'Pág. 2: Coctelería Refrescante & Clásicos Favoritos',
+    'Pág. 3: Cervezas Frías, Tarros Preparados & Vinos',
+    'Pág. 4: Mezcales Artesanales & Tequilas de Tradición',
+    'Pág. 5: Whiskies, Vodkas, Ron, Cognac & Digestivos'
   ]
 };
 
@@ -156,7 +188,7 @@ async function loadInitialMenusData() {
 
 async function loadSingleMenuData(type, design = currentDesign) {
   const isTrad = design === 'tradicional';
-  const localKey = isTrad ? `lc_physical_menu_${type}_v1` : `lc_physical_menu_${type}_digital_v1`;
+  const localKey = isTrad ? `lc_physical_menu_${type}_v3` : `lc_physical_menu_${type}_digital_v3`;
   const firestoreDocId = isTrad ? type : `${type}_digital`;
   
   // A. Intentar Firestore primero si está configurado
@@ -198,14 +230,14 @@ async function loadSingleMenuData(type, design = currentDesign) {
  * Configuración de eventos de UI y atajos
  */
 function setupPhysicalEditorEvents() {
-  // Selector de Menú: Desayuno vs Comida
+  // Selector de Menú: Desayunos vs Comidas vs Cantina
   const btnTypeDesayuno = document.getElementById('btn-type-desayuno');
   const btnTypeComida = document.getElementById('btn-type-comida');
+  const btnTypeCantina = document.getElementById('btn-type-cantina');
 
-  if (btnTypeDesayuno && btnTypeComida) {
-    btnTypeDesayuno.addEventListener('click', () => switchMenuType('desayuno'));
-    btnTypeComida.addEventListener('click', () => switchMenuType('comida'));
-  }
+  if (btnTypeDesayuno) btnTypeDesayuno.addEventListener('click', () => switchMenuType('desayuno'));
+  if (btnTypeComida) btnTypeComida.addEventListener('click', () => switchMenuType('comida'));
+  if (btnTypeCantina) btnTypeCantina.addEventListener('click', () => switchMenuType('cantina'));
 
   // Selector de Versión de Diseño: Tradicional vs Menú Digital
   const btnDesignTrad = document.getElementById('btn-design-tradicional');
@@ -254,6 +286,33 @@ function setupPhysicalEditorEvents() {
   const btnAddText = document.getElementById('btn-phys-add-text');
   if (btnAddText) {
     btnAddText.addEventListener('click', addNewTextItem);
+  }
+
+  // Botones Copiar y Pegar en la Barra Superior
+  const btnCopy = document.getElementById('btn-phys-copy');
+  if (btnCopy) {
+    btnCopy.addEventListener('click', copySelectedItems);
+  }
+
+  const btnPaste = document.getElementById('btn-phys-paste');
+  if (btnPaste) {
+    btnPaste.addEventListener('click', pasteClipboardItems);
+  }
+
+  // Botones de Selección Múltiple en el Inspector
+  const btnMultiCopy = document.getElementById('insp-btn-multi-copy');
+  if (btnMultiCopy) {
+    btnMultiCopy.addEventListener('click', copySelectedItems);
+  }
+
+  const btnMultiDel = document.getElementById('insp-btn-multi-delete');
+  if (btnMultiDel) {
+    btnMultiDel.addEventListener('click', deleteSelectedItems);
+  }
+
+  const btnMultiDeselect = document.getElementById('insp-btn-multi-deselect');
+  if (btnMultiDeselect) {
+    btnMultiDeselect.addEventListener('click', clearSelection);
   }
 
   // Controles de Zoom
@@ -400,6 +459,7 @@ async function switchMenuType(type) {
   currentType = type;
   currentPageIndex = 0;
   selectedItemId = null;
+  selectedItemIds.clear();
 
   document.querySelectorAll('.physical-type-btn').forEach(b => {
     b.classList.toggle('active', b.getAttribute('data-type') === type);
@@ -423,6 +483,7 @@ async function switchDesign(design) {
   currentDesign = design;
   currentPageIndex = 0;
   selectedItemId = null;
+  selectedItemIds.clear();
 
   document.querySelectorAll('.physical-design-btn').forEach(b => {
     b.classList.toggle('active', b.getAttribute('data-design') === design);
@@ -511,6 +572,30 @@ function renderPagesList() {
 }
 
 /**
+ * Helper para detectar si un texto es un encabezado o banner ancho
+ */
+function isWideItem(item) {
+  if (!item) return false;
+  if (item.maxWidth && item.maxWidth > 350) return true;
+  const id = (item.id || '').toLowerCase();
+  return (
+    id.startsWith('hdr_') ||
+    id.startsWith('ftr_') ||
+    id.startsWith('trad_hdr_') ||
+    id.startsWith('trad_ftr_') ||
+    id.includes('brand') ||
+    id.includes('badge') ||
+    id.includes('sub') ||
+    id.includes('type') ||
+    id.includes('sep') ||
+    id.includes('banner') ||
+    id.includes('quote') ||
+    id.includes('hist') ||
+    (item.text && item.text.includes('───'))
+  );
+}
+
+/**
  * Renderiza la hoja de papel interactiva en Tamaño Carta (816px x 1056px)
  */
 function renderCurrentPage() {
@@ -538,11 +623,14 @@ function renderCurrentPage() {
 
   // Renderizar cada elemento (texto o imagen) como interactivo posicionable
   (page.items || []).forEach(item => {
-    // Renderizado especial si el elemento es una IMAGEN de platillo
+    const isSelected = selectedItemIds.has(item.id) || item.id === selectedItemId;
+    const isMultiSelected = selectedItemIds.size > 1 && selectedItemIds.has(item.id);
+
+    // IMAGEN de platillo
     if (item.type === 'image') {
       const el = document.createElement('div');
       el.id = `phys-item-${item.id}`;
-      el.className = `physical-image-item ${item.id === selectedItemId ? 'is-selected' : ''}`;
+      el.className = `physical-image-item ${isSelected ? 'is-selected' : ''} ${isMultiSelected ? 'is-multi-selected' : ''}`;
       el.style.left = `${item.x}px`;
       el.style.top = `${item.y}px`;
       el.style.width = `${item.width || 95}px`;
@@ -564,8 +652,8 @@ function renderCurrentPage() {
       badge.textContent = item.dishName || 'Platillo';
       el.appendChild(badge);
 
-      // Barra flotante rápida si está seleccionado
-      if (item.id === selectedItemId) {
+      // Barra flotante rápida SOLO si está seleccionado individualmente
+      if (isSelected && selectedItemIds.size <= 1) {
         const quickBar = document.createElement('div');
         quickBar.className = 'item-quick-toolbar';
         quickBar.innerHTML = `
@@ -585,7 +673,6 @@ function renderCurrentPage() {
         el.appendChild(quickBar);
       }
 
-      // Evento MouseDown / TouchStart para arrastrar
       el.addEventListener('mousedown', (e) => startDragItem(e, item));
       el.addEventListener('touchstart', (e) => startDragItemTouch(e, item), { passive: false });
 
@@ -593,19 +680,24 @@ function renderCurrentPage() {
       return;
     }
 
+    // TEXTO
     const el = document.createElement('div');
     el.id = `phys-item-${item.id}`;
-    el.className = `physical-text-item ${item.id === selectedItemId ? 'is-selected' : ''}`;
+    const wideClass = isWideItem(item) ? 'is-wide' : '';
+    el.className = `physical-text-item ${isSelected ? 'is-selected' : ''} ${isMultiSelected ? 'is-multi-selected' : ''} ${wideClass}`;
     el.style.left = `${item.x}px`;
     el.style.top = `${item.y}px`;
     el.style.fontSize = `${item.fontSize}px`;
     el.style.fontFamily = getCssFontFamily(item.fontFamily);
     el.style.color = item.color || '#000000';
     el.style.fontWeight = item.bold ? '800' : '400';
+    if (item.maxWidth) {
+      el.style.maxWidth = `${item.maxWidth}px`;
+    }
     el.textContent = item.text;
 
-    // Barra flotante rápida si está seleccionado
-    if (item.id === selectedItemId) {
+    // Barra flotante rápida SOLO si está seleccionado individualmente
+    if (isSelected && selectedItemIds.size <= 1) {
       const quickBar = document.createElement('div');
       quickBar.className = 'item-quick-toolbar';
       quickBar.innerHTML = `
@@ -630,11 +722,9 @@ function renderCurrentPage() {
       el.appendChild(quickBar);
     }
 
-    // Evento MouseDown / TouchStart para arrastrar
     el.addEventListener('mousedown', (e) => startDragItem(e, item));
     el.addEventListener('touchstart', (e) => startDragItemTouch(e, item), { passive: false });
 
-    // Doble clic para editar directamente
     el.addEventListener('dblclick', (e) => {
       e.stopPropagation();
       focusInspectorTextarea();
@@ -643,14 +733,8 @@ function renderCurrentPage() {
     sheet.appendChild(el);
   });
 
-  // Clic en la hoja para deseleccionar si se hace clic afuera de un elemento
-  sheet.onclick = (e) => {
-    if (e.target === sheet || e.target.classList.contains('physical-paper-emblem')) {
-      selectedItemId = null;
-      renderCurrentPage();
-      renderInspector();
-    }
-  };
+  // Evento Mousedown en el lienzo para selección por marco (Marquee Lasso)
+  sheet.onmousedown = handleSheetMouseDown;
 }
 
 function getCssFontFamily(font) {
@@ -665,16 +749,144 @@ function getCssFontFamily(font) {
 }
 
 /**
- * Drag & Drop de elementos sobre la hoja de papel
+ * Selección por Marco (Lasso Marquee) sobre el fondo de la hoja
+ */
+function handleSheetMouseDown(e) {
+  if (e.button !== 0) return;
+  const sheet = document.getElementById('physical-paper-sheet');
+  if (!sheet) return;
+
+  // Solo iniciar marco si se hizo clic en el lienzo vacío o el logo de fondo
+  if (e.target !== sheet && !e.target.classList.contains('physical-paper-emblem')) {
+    return;
+  }
+
+  const isMultiModifier = e.shiftKey || e.ctrlKey || e.metaKey;
+  if (!isMultiModifier) {
+    selectedItemIds.clear();
+    selectedItemId = null;
+    renderCurrentPage();
+    renderInspector();
+  }
+
+  const sheetRect = sheet.getBoundingClientRect();
+  marqueeStartX = (e.clientX - sheetRect.left) / zoomScale;
+  marqueeStartY = (e.clientY - sheetRect.top) / zoomScale;
+  isMarqueeSelecting = true;
+
+  if (!marqueeEl) {
+    marqueeEl = document.createElement('div');
+    marqueeEl.className = 'selection-marquee';
+    sheet.appendChild(marqueeEl);
+  }
+  marqueeEl.style.display = 'block';
+  marqueeEl.style.left = `${marqueeStartX}px`;
+  marqueeEl.style.top = `${marqueeStartY}px`;
+  marqueeEl.style.width = '0px';
+  marqueeEl.style.height = '0px';
+}
+
+function handleMarqueeMouseMove(e) {
+  if (!isMarqueeSelecting || !marqueeEl) return;
+  const sheet = document.getElementById('physical-paper-sheet');
+  if (!sheet) return;
+
+  const sheetRect = sheet.getBoundingClientRect();
+  const currentX = (e.clientX - sheetRect.left) / zoomScale;
+  const currentY = (e.clientY - sheetRect.top) / zoomScale;
+
+  const left = Math.min(marqueeStartX, currentX);
+  const top = Math.min(marqueeStartY, currentY);
+  const width = Math.abs(currentX - marqueeStartX);
+  const height = Math.abs(currentY - marqueeStartY);
+
+  marqueeEl.style.left = `${left}px`;
+  marqueeEl.style.top = `${top}px`;
+  marqueeEl.style.width = `${width}px`;
+  marqueeEl.style.height = `${height}px`;
+
+  const right = left + width;
+  const bottom = top + height;
+
+  const pages = menusData[getMenuKey()] || [];
+  const page = pages[currentPageIndex];
+  if (!page || !page.items) return;
+
+  page.items.forEach(it => {
+    const domEl = document.getElementById(`phys-item-${it.id}`);
+    const w = it.width || (domEl ? domEl.offsetWidth : 120);
+    const h = it.height || (domEl ? domEl.offsetHeight : 24);
+    const itLeft = it.x;
+    const itTop = it.y;
+    const itRight = it.x + w;
+    const itBottom = it.y + h;
+
+    const intersects = !(itLeft > right || itRight < left || itTop > bottom || itBottom < top);
+    if (intersects) {
+      selectedItemIds.add(it.id);
+      if (domEl) {
+        domEl.classList.add('is-selected');
+        domEl.classList.add('is-multi-selected');
+      }
+    }
+  });
+
+  if (selectedItemIds.size === 1) {
+    selectedItemId = [...selectedItemIds][0];
+  } else {
+    selectedItemId = null;
+  }
+}
+
+/**
+ * Drag & Drop individual o grupal de elementos sobre la hoja de papel
  */
 function startDragItem(e, item) {
   if (e.button !== 0) return; // solo botón izquierdo
   e.stopPropagation();
 
-  selectedItemId = item.id;
+  const isMultiModifier = e.shiftKey || e.ctrlKey || e.metaKey;
+
+  if (isMultiModifier) {
+    if (selectedItemIds.has(item.id)) {
+      selectedItemIds.delete(item.id);
+      if (selectedItemId === item.id) {
+        selectedItemId = selectedItemIds.size === 1 ? [...selectedItemIds][0] : null;
+      }
+      renderCurrentPage();
+      renderInspector();
+      return;
+    } else {
+      selectedItemIds.add(item.id);
+      selectedItemId = item.id;
+    }
+  } else {
+    // Si no se presiona Shift/Ctrl y el elemento no formaba parte del grupo, seleccionarlo únicamente
+    if (!selectedItemIds.has(item.id)) {
+      selectedItemIds.clear();
+      selectedItemIds.add(item.id);
+      selectedItemId = item.id;
+    } else {
+      selectedItemId = item.id;
+    }
+  }
+
   isDragging = true;
   dragStartX = e.clientX;
   dragStartY = e.clientY;
+
+  // Registrar posiciones iniciales de todos los elementos seleccionados para arrastrar todo el grupo junto
+  dragInitialPositions.clear();
+  const pages = menusData[getMenuKey()] || [];
+  const page = pages[currentPageIndex];
+  if (page && page.items) {
+    page.items.forEach(it => {
+      if (selectedItemIds.has(it.id)) {
+        dragInitialPositions.set(it.id, { x: it.x, y: it.y });
+      }
+    });
+  }
+
   dragInitialItemX = item.x;
   dragInitialItemY = item.y;
 
@@ -686,10 +898,27 @@ function startDragItemTouch(e, item) {
   if (e.touches.length !== 1) return;
   e.stopPropagation();
 
-  selectedItemId = item.id;
+  if (!selectedItemIds.has(item.id)) {
+    selectedItemIds.clear();
+    selectedItemIds.add(item.id);
+    selectedItemId = item.id;
+  }
+
   isDragging = true;
   dragStartX = e.touches[0].clientX;
   dragStartY = e.touches[0].clientY;
+
+  dragInitialPositions.clear();
+  const pages = menusData[getMenuKey()] || [];
+  const page = pages[currentPageIndex];
+  if (page && page.items) {
+    page.items.forEach(it => {
+      if (selectedItemIds.has(it.id)) {
+        dragInitialPositions.set(it.id, { x: it.x, y: it.y });
+      }
+    });
+  }
+
   dragInitialItemX = item.x;
   dragInitialItemY = item.y;
 
@@ -698,57 +927,95 @@ function startDragItemTouch(e, item) {
 }
 
 function handleDragMouseMove(e) {
-  if (!isDragging || !selectedItemId) return;
+  if (isMarqueeSelecting) {
+    handleMarqueeMouseMove(e);
+    return;
+  }
+
+  if (!isDragging || selectedItemIds.size === 0) return;
   e.preventDefault();
 
   const deltaX = (e.clientX - dragStartX) / zoomScale;
   const deltaY = (e.clientY - dragStartY) / zoomScale;
 
-  const item = getSelectedItem();
-  if (!item) return;
+  const pages = menusData[getMenuKey()] || [];
+  const page = pages[currentPageIndex];
+  if (!page || !page.items) return;
 
-  item.x = Math.max(0, Math.min(816 - 20, Math.round(dragInitialItemX + deltaX)));
-  item.y = Math.max(0, Math.min(1056 - 20, Math.round(dragInitialItemY + deltaY)));
+  selectedItemIds.forEach(id => {
+    const initPos = dragInitialPositions.get(id);
+    const item = page.items.find(i => i.id === id);
+    if (initPos && item) {
+      item.x = Math.max(0, Math.min(816 - 20, Math.round(initPos.x + deltaX)));
+      item.y = Math.max(0, Math.min(1056 - 20, Math.round(initPos.y + deltaY)));
 
-  const domEl = document.getElementById(`phys-item-${item.id}`);
-  if (domEl) {
-    domEl.style.left = `${item.x}px`;
-    domEl.style.top = `${item.y}px`;
+      const domEl = document.getElementById(`phys-item-${item.id}`);
+      if (domEl) {
+        domEl.style.left = `${item.x}px`;
+        domEl.style.top = `${item.y}px`;
+      }
+    }
+  });
+
+  // Si solo hay un elemento seleccionado, actualizar inspectores en tiempo real
+  if (selectedItemIds.size === 1) {
+    const item = getSelectedItem();
+    if (item) {
+      const inpX = document.getElementById('insp-item-x');
+      const inpY = document.getElementById('insp-item-y');
+      if (inpX) inpX.value = item.x;
+      if (inpY) inpY.value = item.y;
+    }
   }
-
-  // Sincronizar inputs de inspector en tiempo real
-  const inpX = document.getElementById('insp-item-x');
-  const inpY = document.getElementById('insp-item-y');
-  if (inpX) inpX.value = item.x;
-  if (inpY) inpY.value = item.y;
 }
 
 function handleDragTouchMove(e) {
-  if (!isDragging || !selectedItemId || e.touches.length !== 1) return;
+  if (!isDragging || selectedItemIds.size === 0 || e.touches.length !== 1) return;
   e.preventDefault();
 
   const deltaX = (e.touches[0].clientX - dragStartX) / zoomScale;
   const deltaY = (e.touches[0].clientY - dragStartY) / zoomScale;
 
-  const item = getSelectedItem();
-  if (!item) return;
+  const pages = menusData[getMenuKey()] || [];
+  const page = pages[currentPageIndex];
+  if (!page || !page.items) return;
 
-  item.x = Math.max(0, Math.min(816 - 20, Math.round(dragInitialItemX + deltaX)));
-  item.y = Math.max(0, Math.min(1056 - 20, Math.round(dragInitialItemY + deltaY)));
+  selectedItemIds.forEach(id => {
+    const initPos = dragInitialPositions.get(id);
+    const item = page.items.find(i => i.id === id);
+    if (initPos && item) {
+      item.x = Math.max(0, Math.min(816 - 20, Math.round(initPos.x + deltaX)));
+      item.y = Math.max(0, Math.min(1056 - 20, Math.round(initPos.y + deltaY)));
 
-  const domEl = document.getElementById(`phys-item-${item.id}`);
-  if (domEl) {
-    domEl.style.left = `${item.x}px`;
-    domEl.style.top = `${item.y}px`;
+      const domEl = document.getElementById(`phys-item-${item.id}`);
+      if (domEl) {
+        domEl.style.left = `${item.x}px`;
+        domEl.style.top = `${item.y}px`;
+      }
+    }
+  });
+
+  if (selectedItemIds.size === 1) {
+    const item = getSelectedItem();
+    if (item) {
+      const inpX = document.getElementById('insp-item-x');
+      const inpY = document.getElementById('insp-item-y');
+      if (inpX) inpX.value = item.x;
+      if (inpY) inpY.value = item.y;
+    }
   }
-
-  const inpX = document.getElementById('insp-item-x');
-  const inpY = document.getElementById('insp-item-y');
-  if (inpX) inpX.value = item.x;
-  if (inpY) inpY.value = item.y;
 }
 
 function handleDragMouseUp() {
+  if (isMarqueeSelecting) {
+    isMarqueeSelecting = false;
+    if (marqueeEl) {
+      marqueeEl.style.display = 'none';
+    }
+    renderCurrentPage();
+    renderInspector();
+  }
+
   if (isDragging) {
     isDragging = false;
     saveToLocalStorageDraft();
@@ -756,47 +1023,88 @@ function handleDragMouseUp() {
 }
 
 /**
- * Atajos de teclado para mover con precisión
+ * Atajos de teclado para mover, copiar, pegar o borrar elementos seleccionados
  */
 function handleEditorKeyDown(e) {
-  // Solo aplicar si no estamos escribiendo en un input o textarea
+  // Ignorar si estamos escribiendo en campos de formulario o editables
   if (['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName)) return;
-  if (!selectedItemId) return;
+  if (document.activeElement?.isContentEditable) return;
 
-  const item = getSelectedItem();
-  if (!item) return;
+  const hasSelection = selectedItemIds.size > 0 || Boolean(selectedItemId);
+
+  // Ctrl+C / Cmd+C: Copiar
+  if ((e.ctrlKey || e.metaKey) && (e.key === 'c' || e.key === 'C')) {
+    if (hasSelection) {
+      e.preventDefault();
+      copySelectedItems();
+      return;
+    }
+  }
+
+  // Ctrl+V / Cmd+V: Pegar
+  if ((e.ctrlKey || e.metaKey) && (e.key === 'v' || e.key === 'V')) {
+    e.preventDefault();
+    pasteClipboardItems();
+    return;
+  }
+
+  // Ctrl+A / Cmd+A: Seleccionar todo
+  if ((e.ctrlKey || e.metaKey) && (e.key === 'a' || e.key === 'A')) {
+    e.preventDefault();
+    selectAllCurrentPageItems();
+    return;
+  }
+
+  // Escape: Deseleccionar
+  if (e.key === 'Escape') {
+    clearSelection();
+    return;
+  }
+
+  if (!hasSelection) return;
 
   const step = e.shiftKey ? 10 : 1;
   let handled = false;
 
+  const pages = menusData[getMenuKey()] || [];
+  const page = pages[currentPageIndex];
+  if (!page || !page.items) return;
+
+  const activeItems = page.items.filter(it => selectedItemIds.has(it.id) || it.id === selectedItemId);
+
   if (e.key === 'ArrowLeft') {
-    item.x = Math.max(0, item.x - step);
+    activeItems.forEach(it => { it.x = Math.max(0, it.x - step); });
     handled = true;
   } else if (e.key === 'ArrowRight') {
-    item.x = Math.min(816 - 20, item.x + step);
+    activeItems.forEach(it => { it.x = Math.min(816 - 20, it.x + step); });
     handled = true;
   } else if (e.key === 'ArrowUp') {
-    item.y = Math.max(0, item.y - step);
+    activeItems.forEach(it => { it.y = Math.max(0, it.y - step); });
     handled = true;
   } else if (e.key === 'ArrowDown') {
-    item.y = Math.min(1056 - 20, item.y + step);
+    activeItems.forEach(it => { it.y = Math.min(1056 - 20, it.y + step); });
     handled = true;
   } else if (e.key === 'Delete' || e.key === 'Backspace') {
-    deleteSelectedItem();
-    handled = true;
+    deleteSelectedItems();
+    e.preventDefault();
+    return;
   }
 
   if (handled) {
     e.preventDefault();
-    const domEl = document.getElementById(`phys-item-${item.id}`);
-    if (domEl) {
-      domEl.style.left = `${item.x}px`;
-      domEl.style.top = `${item.y}px`;
+    activeItems.forEach(it => {
+      const domEl = document.getElementById(`phys-item-${it.id}`);
+      if (domEl) {
+        domEl.style.left = `${it.x}px`;
+        domEl.style.top = `${it.y}px`;
+      }
+    });
+    if (activeItems.length === 1) {
+      const inpX = document.getElementById('insp-item-x');
+      const inpY = document.getElementById('insp-item-y');
+      if (inpX) inpX.value = activeItems[0].x;
+      if (inpY) inpY.value = activeItems[0].y;
     }
-    const inpX = document.getElementById('insp-item-x');
-    const inpY = document.getElementById('insp-item-y');
-    if (inpX) inpX.value = item.x;
-    if (inpY) inpY.value = item.y;
     saveToLocalStorageDraft();
   }
 }
@@ -807,6 +1115,22 @@ function handleEditorKeyDown(e) {
 function renderInspector() {
   const panelItem = document.getElementById('inspector-item-controls');
   const panelPage = document.getElementById('inspector-page-controls');
+  const panelMulti = document.getElementById('inspector-multi-controls');
+
+  // Caso: Múltiples elementos seleccionados
+  if (selectedItemIds.size > 1) {
+    if (panelItem) panelItem.style.display = 'none';
+    if (panelPage) panelPage.style.display = 'none';
+    if (panelMulti) {
+      panelMulti.style.display = 'flex';
+      const countEl = document.getElementById('insp-multi-count');
+      if (countEl) countEl.textContent = `${selectedItemIds.size}`;
+    }
+    return;
+  }
+
+  if (panelMulti) panelMulti.style.display = 'none';
+
   const item = getSelectedItem();
 
   if (item) {
@@ -927,6 +1251,8 @@ function renderCurrentPageTextsList() {
     }
     row.addEventListener('click', () => {
       selectedItemId = it.id;
+      selectedItemIds.clear();
+      selectedItemIds.add(it.id);
       renderCurrentPage();
       renderInspector();
       if (it.type !== 'image') {
@@ -946,11 +1272,12 @@ function focusInspectorTextarea() {
 }
 
 function getSelectedItem() {
-  if (!selectedItemId) return null;
+  const idToFind = selectedItemId || (selectedItemIds.size === 1 ? [...selectedItemIds][0] : null);
+  if (!idToFind) return null;
   const pages = menusData[getMenuKey()] || [];
   const page = pages[currentPageIndex];
   if (!page || !page.items) return null;
-  return page.items.find(i => i.id === selectedItemId);
+  return page.items.find(i => i.id === idToFind);
 }
 
 function updateSelectedItemProp(prop, value) {
@@ -991,76 +1318,188 @@ function updateCurrentPageBg(hex) {
 }
 
 /**
- * Operaciones: Agregar, Duplicar, Eliminar elementos y hojas
+ * Operaciones: Copiar, Pegar, Eliminar elementos (Soporte individual y múltiple)
  */
+function copySelectedItems() {
+  const pages = menusData[getMenuKey()] || [];
+  const page = pages[currentPageIndex];
+  if (!page || !page.items) return;
+
+  const toCopy = page.items.filter(it => selectedItemIds.has(it.id) || it.id === selectedItemId);
+  if (toCopy.length === 0) {
+    showToast('⚠️ Selecciona uno o más elementos para copiar.');
+    return;
+  }
+
+  // Clonado profundo de elementos seleccionados
+  editorClipboard = toCopy.map(it => JSON.parse(JSON.stringify(it)));
+  try {
+    sessionStorage.setItem('lc_phys_clipboard', JSON.stringify(editorClipboard));
+  } catch (e) {}
+
+  showToast(`📋 ${editorClipboard.length} elemento(s) copiado(s). Puedes pegarlo(s) en esta u otra hoja.`);
+  renderInspector();
+}
+
+function pasteClipboardItems() {
+  if (!editorClipboard || editorClipboard.length === 0) {
+    try {
+      const saved = sessionStorage.getItem('lc_phys_clipboard');
+      if (saved) editorClipboard = JSON.parse(saved);
+    } catch (e) {}
+  }
+
+  if (!editorClipboard || editorClipboard.length === 0) {
+    showToast('ℹ️ El portapapeles está vacío. Selecciona elementos y presiona Copiar.');
+    return;
+  }
+
+  const pages = menusData[getMenuKey()] || [];
+  const page = pages[currentPageIndex];
+  if (!page) return;
+  if (!page.items) page.items = [];
+
+  const newSelectedIds = new Set();
+  const offset = 20;
+
+  editorClipboard.forEach((clipItem, idx) => {
+    const newId = `item_${Date.now()}_${idx}_${Math.random().toString(36).substr(2, 4)}`;
+    const cloned = JSON.parse(JSON.stringify(clipItem));
+    cloned.id = newId;
+    cloned.x = Math.max(10, Math.min(816 - 50, (cloned.x || 50) + offset));
+    cloned.y = Math.max(10, Math.min(1056 - 50, (cloned.y || 100) + offset));
+
+    page.items.push(cloned);
+    newSelectedIds.add(newId);
+  });
+
+  selectedItemIds = newSelectedIds;
+  selectedItemId = newSelectedIds.size === 1 ? [...newSelectedIds][0] : null;
+
+  renderCurrentPage();
+  renderInspector();
+  saveToLocalStorageDraft();
+  showToast(`📋 ${newSelectedIds.size} elemento(s) pegado(s) en Hoja ${currentPageIndex + 1}.`);
+}
+
+function deleteSelectedItems() {
+  const pages = menusData[getMenuKey()] || [];
+  const page = pages[currentPageIndex];
+  if (!page || !page.items) return;
+
+  const count = page.items.filter(it => selectedItemIds.has(it.id) || it.id === selectedItemId).length;
+  if (count === 0) return;
+
+  page.items = page.items.filter(it => !selectedItemIds.has(it.id) && it.id !== selectedItemId);
+  selectedItemIds.clear();
+  selectedItemId = null;
+
+  renderCurrentPage();
+  renderInspector();
+  saveToLocalStorageDraft();
+  showToast(`🗑️ ${count} elemento(s) eliminado(s).`);
+}
+
+function selectAllCurrentPageItems() {
+  const pages = menusData[getMenuKey()] || [];
+  const page = pages[currentPageIndex];
+  if (!page || !page.items || page.items.length === 0) return;
+
+  selectedItemIds.clear();
+  page.items.forEach(it => selectedItemIds.add(it.id));
+  selectedItemId = page.items.length === 1 ? page.items[0].id : null;
+
+  renderCurrentPage();
+  renderInspector();
+  showToast(`✨ ${selectedItemIds.size} elementos seleccionados.`);
+}
+
+function clearSelection() {
+  selectedItemIds.clear();
+  selectedItemId = null;
+  renderCurrentPage();
+  renderInspector();
+}
+
 function addNewTextItem() {
   const pages = menusData[getMenuKey()] || [];
   const page = pages[currentPageIndex];
   if (!page) return;
 
   if (!page.items) page.items = [];
+
+  // Posición Y inteligente para no encimar sobre encabezados ni subtítulos
+  let targetY = 120;
+  const contentItems = page.items.filter(it => 
+    !it.id.startsWith('hdr_') && 
+    !it.id.startsWith('ftr_') && 
+    !it.id.startsWith('trad_hdr_') && 
+    !it.id.startsWith('trad_ftr_')
+  );
+  if (contentItems.length > 0) {
+    const maxY = Math.max(...contentItems.map(it => (it.y || 0) + (it.height || 35)));
+    targetY = maxY < 920 ? maxY + 25 : 120;
+  }
+
   const newId = `item_${Date.now()}`;
   const newItem = {
     id: newId,
-    x: 100,
-    y: 200,
+    x: 80,
+    y: targetY,
     text: 'NUEVO PLATILLO O TEXTO\nDescripción o detalle aquí...',
-    fontSize: 14,
+    fontSize: 12,
     fontFamily: 'Gotham-Bold',
-    color: '#000000',
+    color: '#1C1714',
     bold: true
   };
 
   page.items.push(newItem);
+  selectedItemIds.clear();
+  selectedItemIds.add(newId);
   selectedItemId = newId;
 
   renderCurrentPage();
   renderInspector();
   focusInspectorTextarea();
-  showToast('➕ Nuevo texto agregado a la hoja.');
+  showToast('➕ Nuevo texto agregado.');
   saveToLocalStorageDraft();
 }
 
 function duplicateSelectedItem() {
-  const item = getSelectedItem();
-  if (!item) return;
-
   const pages = menusData[getMenuKey()] || [];
   const page = pages[currentPageIndex];
-  if (!page) return;
+  if (!page || !page.items) return;
 
-  const newId = `item_${Date.now()}`;
-  const cloned = {
-    ...item,
-    id: newId,
-    x: Math.min(816 - 40, item.x + 15),
-    y: Math.min(1056 - 40, item.y + 15)
-  };
+  const idsToDup = selectedItemIds.size > 0 ? [...selectedItemIds] : (selectedItemId ? [selectedItemId] : []);
+  if (idsToDup.length === 0) return;
 
-  page.items.push(cloned);
-  selectedItemId = newId;
+  const newSelectedIds = new Set();
+  idsToDup.forEach((id, idx) => {
+    const orig = page.items.find(i => i.id === id);
+    if (orig) {
+      const newId = `item_${Date.now()}_${idx}_${Math.random().toString(36).substr(2, 4)}`;
+      const cloned = {
+        ...JSON.parse(JSON.stringify(orig)),
+        id: newId,
+        x: Math.min(816 - 40, orig.x + 20),
+        y: Math.min(1056 - 40, orig.y + 20)
+      };
+      page.items.push(cloned);
+      newSelectedIds.add(newId);
+    }
+  });
+
+  selectedItemIds = newSelectedIds;
+  selectedItemId = newSelectedIds.size === 1 ? [...newSelectedIds][0] : null;
 
   renderCurrentPage();
   renderInspector();
-  showToast('📋 Elemento duplicado.');
+  showToast(`📋 ${newSelectedIds.size} elemento(s) duplicado(s).`);
   saveToLocalStorageDraft();
 }
 
 function deleteSelectedItem() {
-  const item = getSelectedItem();
-  if (!item) return;
-
-  const pages = menusData[getMenuKey()] || [];
-  const page = pages[currentPageIndex];
-  if (!page) return;
-
-  page.items = page.items.filter(i => i.id !== item.id);
-  selectedItemId = null;
-
-  renderCurrentPage();
-  renderInspector();
-  showToast('🗑️ Elemento eliminado.');
-  saveToLocalStorageDraft();
+  deleteSelectedItems();
 }
 
 function addNewPage() {
@@ -1142,7 +1581,7 @@ function deleteCurrentPage() {
 function saveToLocalStorageDraft() {
   try {
     const isTrad = currentDesign === 'tradicional';
-    const localKey = isTrad ? `lc_physical_menu_${currentType}_v1` : `lc_physical_menu_${currentType}_digital_v1`;
+    const localKey = isTrad ? `lc_physical_menu_${currentType}_v3` : `lc_physical_menu_${currentType}_digital_v3`;
     localStorage.setItem(localKey, JSON.stringify(menusData[getMenuKey()]));
   } catch (e) {}
 }
@@ -1162,7 +1601,7 @@ async function savePhysicalMenu(silent = false) {
     // Limpiar cualquier propiedad undefined antes de almacenar
     const pages = JSON.parse(JSON.stringify(rawPages));
     const isTrad = currentDesign === 'tradicional';
-    const localKey = isTrad ? `lc_physical_menu_${currentType}_v1` : `lc_physical_menu_${currentType}_digital_v1`;
+    const localKey = isTrad ? `lc_physical_menu_${currentType}_v3` : `lc_physical_menu_${currentType}_digital_v3`;
     const firestoreDocId = isTrad ? currentType : `${currentType}_digital`;
 
     localStorage.setItem(localKey, JSON.stringify(pages));
@@ -1181,7 +1620,7 @@ async function savePhysicalMenu(silent = false) {
     }
 
     if (!silent) {
-      const typeLabel = currentType === 'desayuno' ? 'Desayunos' : 'Comidas';
+      const typeLabel = currentType === 'desayuno' ? 'Desayunos' : (currentType === 'cantina' ? 'Cantina & Destilados' : 'Comidas');
       const designLabel = currentDesign === 'digital' ? '(Estilo Menú Digital)' : '(Diseño Tradicional)';
       showToast(`✅ Carta de ${typeLabel} ${designLabel} guardada correctamente.`);
     }
@@ -1437,11 +1876,12 @@ async function syncDigitalMenuToPhysicalMenu() {
       const cat = catMap[prod.categoryId];
       if (!cat) return false;
       const section = (cat.section || '').toLowerCase();
-      if (section === 'ambos') return true;
       if (currentType === 'desayuno') {
-        return section === 'desayuno';
+        return section === 'desayuno' || section === 'ambos';
+      } else if (currentType === 'cantina') {
+        return section === 'cantina';
       } else {
-        return section === 'comida' || section === 'cantina';
+        return section === 'comida' || section === 'ambos';
       }
     };
 
@@ -1459,6 +1899,26 @@ async function syncDigitalMenuToPhysicalMenu() {
     const relevantProducts = allProducts.filter(isProductInCurrentMeal);
     const matchedProductIds = new Set();
 
+    const isStructuralElement = (it) => {
+      if (!it || !it.id) return true;
+      const id = it.id.toLowerCase();
+      return id.startsWith('hdr_') || 
+             id.startsWith('ftr_') || 
+             id.startsWith('trad_hdr_') || 
+             id.startsWith('trad_p1_') || 
+             id.startsWith('cat_title_') || 
+             id.startsWith('cat_note_') || 
+             id.startsWith('des_d_p1_') || 
+             id.startsWith('com_d_p1_') || 
+             id.startsWith('can_d_p1_') || 
+             id.includes('brand') || 
+             id.includes('badge') || 
+             id.includes('quote') || 
+             id.includes('sep') || 
+             id.includes('banner') || 
+             id.includes('tag');
+    };
+
     // 3. Sincronizar platillos en las hojas de la carta física
     pages.forEach(page => {
       if (!page.items) page.items = [];
@@ -1475,6 +1935,9 @@ async function syncDigitalMenuToPhysicalMenu() {
       });
 
       relevantProducts.forEach(prod => {
+        // Si el platillo ya fue ubicado en otra hoja o posición, evitar duplicarlo
+        if (matchedProductIds.has(prod.id)) return;
+
         const effective = getEffectiveData(prod);
         if (!effective.name || effective.name === '[object Object]') return;
 
@@ -1483,20 +1946,31 @@ async function syncDigitalMenuToPhysicalMenu() {
 
         if (currentDesign === 'digital') {
           // --- DISEÑO MENÚ DIGITAL ---
+          // 1. Coincidencia directa por dishId (100% precisa)
           let matchedItem = page.items.find(it => {
-            if (it.type === 'image') return false;
-            if (it.dishId && it.dishId === prod.id) return true;
-            const itemText = extractString(it.text);
-            const titlePart = itemText.split(/·|\$|\n/)[0];
-            const normTitle = norm(titlePart);
-            return normTitle === pNorm || (pNorm.length >= 5 && normTitle.includes(pNorm));
+            if (it.type === 'image' || isStructuralElement(it)) return false;
+            return it.dishId === prod.id;
           });
 
-          // Si no coincidió por título completo, intentar por tokens significativos
+          // 2. Coincidencia por nombre exacto (solo en elementos de menú no estructurales)
+          if (!matchedItem) {
+            matchedItem = page.items.find(it => {
+              if (it.type === 'image' || isStructuralElement(it)) return false;
+              if (it.dishId && it.dishId !== prod.id) return false;
+              const itemText = extractString(it.text);
+              const titlePart = itemText.split(/·|\$|\n/)[0];
+              const normTitle = norm(titlePart);
+              return normTitle === pNorm;
+            });
+          }
+
+          // 3. Fallback por tokens solo si no tiene dishId ajeno
           if (!matchedItem && pTokens.length >= 2) {
             matchedItem = page.items.find(it => {
+              if (it.type === 'image' || isStructuralElement(it)) return false;
+              if (it.dishId && it.dishId !== prod.id) return false;
               const itemText = extractString(it.text);
-              if (it.type === 'image' || itemText.trim().startsWith('$')) return false;
+              if (itemText.trim().startsWith('$')) return false;
               const titlePart = itemText.split(/·|\$|\n/)[0];
               const normTitle = norm(titlePart);
               let tokenHits = 0;
@@ -1520,7 +1994,7 @@ async function syncDigitalMenuToPhysicalMenu() {
 
             // Buscar item de descripción contiguo
             const descItem = page.items.find(it => {
-              if (it.type === 'image' || it === matchedItem) return false;
+              if (it.type === 'image' || it === matchedItem || isStructuralElement(it)) return false;
               if (it.id === `${matchedItem.id}_desc` || it.id === matchedItem.id.replace('_title', '_desc')) return true;
               return Math.abs(it.x - matchedItem.x) < 25 && (it.y > matchedItem.y && it.y < matchedItem.y + 36);
             });
@@ -1540,9 +2014,9 @@ async function syncDigitalMenuToPhysicalMenu() {
                   existingImg.dishName = effective.name;
                   updatedImagesCount++;
                 }
-              } else {
+              } else if (matchedItem.y >= 90) {
                 const imgX = matchedItem.x < 300 ? 295 : 665;
-                const imgY = Math.max(10, Math.min(990, matchedItem.y - 4));
+                const imgY = Math.max(90, Math.min(990, matchedItem.y - 4));
                 page.items.push({
                   id: `img_${prod.id}_${Date.now()}`,
                   type: 'image',
@@ -1561,21 +2035,32 @@ async function syncDigitalMenuToPhysicalMenu() {
           }
         } else {
           // --- DISEÑO TRADICIONAL ---
+          // 1. Coincidencia directa por dishId
           let matchedItem = page.items.find(it => {
-            if (it.type === 'image') return false;
-            if (it.dishId && it.dishId === prod.id) return true;
-            const normIt = norm(it.text);
-            return normIt === pNorm || (pNorm.length >= 5 && normIt.startsWith(pNorm));
+            if (it.type === 'image' || isStructuralElement(it)) return false;
+            return it.dishId === prod.id;
           });
 
-          // Si no hubo coincidencia exacta, usar coincidencia por tokens
+          // 2. Coincidencia por nombre
+          if (!matchedItem) {
+            matchedItem = page.items.find(it => {
+              if (it.type === 'image' || isStructuralElement(it)) return false;
+              if (it.dishId && it.dishId !== prod.id) return false;
+              const normIt = norm(it.text);
+              return normIt === pNorm || (pNorm.length >= 5 && normIt.startsWith(pNorm));
+            });
+          }
+
+          // 3. Coincidencia por tokens
           if (!matchedItem) {
             let bestScore = 0;
             let candidate = null;
 
             page.items.forEach(it => {
+              if (it.type === 'image' || isStructuralElement(it)) return;
+              if (it.dishId && it.dishId !== prod.id) return;
               const itemText = extractString(it.text);
-              if (it.type === 'image' || itemText.trim().startsWith('$')) return;
+              if (itemText.trim().startsWith('$')) return;
               const normIt = norm(itemText);
               if (normIt.length < 3) return;
 
@@ -1614,7 +2099,7 @@ async function syncDigitalMenuToPhysicalMenu() {
 
             // Buscar precio contiguo en tradicional (mismo Y ± 22px, x mayor, empieza con $)
             const priceItem = page.items.find(it => {
-              if (it.type === 'image' || it === matchedItem) return false;
+              if (it.type === 'image' || it === matchedItem || isStructuralElement(it)) return false;
               const pText = extractString(it.text).trim();
               return Math.abs(it.y - matchedItem.y) < 22 && it.x > matchedItem.x && pText.startsWith('$');
             });
@@ -1636,9 +2121,9 @@ async function syncDigitalMenuToPhysicalMenu() {
                   existingImg.dishName = effective.name;
                   updatedImagesCount++;
                 }
-              } else {
+              } else if (matchedItem.y >= 90) {
                 const imgX = Math.min(680, matchedItem.x + 195);
-                const imgY = Math.max(10, Math.min(990, matchedItem.y - 2));
+                const imgY = Math.max(90, Math.min(990, matchedItem.y - 2));
                 page.items.push({
                   id: `img_${prod.id}_${Date.now()}`,
                   type: 'image',
@@ -1662,7 +2147,7 @@ async function syncDigitalMenuToPhysicalMenu() {
     // 4. Agregar platillos nuevos del Menú Digital que aún no existen en ninguna hoja
     const unplacedProducts = relevantProducts.filter(p => !matchedProductIds.has(p.id));
     if (unplacedProducts.length > 0) {
-      const targetPage = pages[pages.length - 1];
+      let targetPage = pages[pages.length - 1];
       let currentY = 180;
       (targetPage.items || []).forEach(it => {
         if (it.y && it.y > currentY && it.y < 850) {
@@ -1677,7 +2162,17 @@ async function syncDigitalMenuToPhysicalMenu() {
         const cleanName = effective.name;
         const cleanDesc = effective.description;
 
-        if (currentY > 960) currentY = 200;
+        // Si ya no cabe en la hoja actual, crear una NUEVA hoja limpia
+        if (currentY > 880) {
+          const newPageNum = pages.length + 1;
+          targetPage = {
+            id: `page_${newPageNum}_${Date.now()}`,
+            bgColor: currentDesign === 'digital' ? '#FDF6EC' : '#CCAD93',
+            items: []
+          };
+          pages.push(targetPage);
+          currentY = 140;
+        }
 
         if (currentDesign === 'digital') {
           targetPage.items.push({
@@ -1937,9 +2432,14 @@ async function downloadPhysicalMenuPDF() {
     document.body.removeChild(renderContainer);
 
     const isTrad = currentDesign === 'tradicional';
-    const filename = currentType === 'desayuno' 
-      ? (isTrad ? 'La_Curandera_Menu_Desayunos_Tradicional_Carta.pdf' : 'La_Curandera_Menu_Desayunos_Digital_Carta.pdf') 
-      : (isTrad ? 'La_Curandera_Menu_Comidas_Tradicional_Carta.pdf' : 'La_Curandera_Menu_Comidas_Digital_Carta.pdf');
+    let filename = '';
+    if (currentType === 'desayuno') {
+      filename = isTrad ? 'La_Curandera_Menu_Desayunos_Tradicional_Carta.pdf' : 'La_Curandera_Menu_Desayunos_Digital_Carta.pdf';
+    } else if (currentType === 'cantina') {
+      filename = isTrad ? 'La_Curandera_Menu_Cantina_Tradicional_Carta.pdf' : 'La_Curandera_Menu_Cantina_Digital_Carta.pdf';
+    } else {
+      filename = isTrad ? 'La_Curandera_Menu_Comidas_Tradicional_Carta.pdf' : 'La_Curandera_Menu_Comidas_Digital_Carta.pdf';
+    }
 
     pdf.save(filename);
     showToast(`✅ PDF descargado exitosamente: ${filename}`);

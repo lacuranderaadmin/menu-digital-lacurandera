@@ -20,13 +20,17 @@
   },
   "mealSwitch": {
     "desayunos": "PETIT-DÉJEUNER",
-    "comida": "DÉJEUNER & DÎNER",
+    "comida": "DÉJEUNER",
+    "cantina": "CANTINA",
     "serviceMorning": "Service Petit-Déjeuner actif",
     "serviceMorningShort": "Petit-Déjeuner",
-    "serviceAfternoon": "Service Déjeuner & Cantine actif",
-    "serviceAfternoonShort": "Déjeuner & Cantine",
+    "serviceAfternoon": "Service Déjeuner actif",
+    "serviceAfternoonShort": "Déjeuner",
+    "serviceCantina": "Cantine La Curandera active",
+    "serviceCantinaShort": "Cantine",
     "scheduleNoticeMorning": "Service Petit-déjeuner actif (9h00 - 13h30)",
-    "scheduleNoticeAfternoon": "Service Déjeuner & Cantina actif (13h30 - 19h30)"
+    "scheduleNoticeAfternoon": "Service Déjeuner actif (13h30 - 19h30)",
+    "scheduleNoticeCantina": "Cantine disponible à toute heure"
   },
   "sections": {
     "paCurarElAlma": "Pour Guérir l'Âme (Petits-Déjeuners)",
@@ -34,24 +38,37 @@
     "tacosDorados": "Tacos Dorés Croustillants",
     "paCaldear": "Bouillons et Soupes Réconfortantes",
     "sandwichYMas": "Sandwichs Artisanaux & Plus",
-    "paLosPeques": "Menu Petits Guérisseurs (Enfants)",
+    "paLosPeques": "Menu Petits (Enfants)",
     "dulceRemedio": "Douceurs & Desserts Maison",
     "paCalentarElEspiritu": "Cafés, Thés & Boissons Chaudes",
     "jugueria": "Jus Frais Pressés & Smoothies",
     "bebidasSinAlcohol": "Boissons sans Alcool & Rafraîchissements",
     "mockteleria": "Mocktails Artisanaux (Sans Alcool)",
-    "saboresDeCuaresma": "Saveurs Marines & Aguachiles Frais",
+    "saboresDeMar": "Saveurs Marines & Aguachiles Frais",
     "paEmpezar": "Entrées & Tapas à Partager",
     "paCuidarte": "Salades Fraîches du Terroir",
     "sopasYPastas": "Soupes Maison & Pâtes Artisanales",
-    "snacks": "Snacks Mexicains Gourmands",
     "platosFuertes": "Plats Principaux de la Maison",
-    "taqueria": "Taquería Artisanale (3 Tacos)",
     "cortes": "Viandes Grillées au Feu de Bois",
+    "taqueria": "Taquería Artisanale (3 Tacos)",
     "burritos": "Burritos Généreux du Nord",
-    "burguersYJocho": "Burgers Gourmets & Hot-Dogs Mexicains",
-    "paLosMorrillos": "Menu Déjeuner Enfants",
-    "cantina": "Mezcal Ancestral, Cocktails & Cantina"
+    "snacks": "Snacks Mexicains Gourmands",
+    "alitas": "Ailes de Poulet",
+    "burgers": "Burgers Artisanaux",
+    "paLosMorrillos": "Menu Enfants",
+    "cantinaPaCurar": "Remèdes Traditionnels (Pa' Curar)",
+    "cantinaRefrescantes": "Cocktails Rafraîchissants",
+    "cantinaLoMasPedido": "Les Plus Demandés",
+    "cantinaDeLaCasa": "Spécialités Maison (au Mezcal)",
+    "cantinaCerveza": "Bières Fraîches & Bocks",
+    "cantinaVodka": "Vodka",
+    "cantinaTequila": "Sélection Tequila",
+    "cantinaMezcalArtesanal": "Mezcal Artisanal",
+    "cantinaWhisky": "Whisky",
+    "cantinaCognac": "Cognac",
+    "cantinaRon": "Rhum",
+    "cantinaDigestivos": "Digestifs & Liqueurs",
+    "cantinaVinos": "Vins & Sangria"
   },
   "product": {
     "viewDetails": "Voir détail",
@@ -120,6 +137,9 @@
   "status": {
     "offline": "Pas de connexion internet. Affichage du dernier menu enregistré.",
     "empty": "Oups, nous mettons à jour la carte. Revenez dans un instant.",
-    "itemsCount": "plats disponibles"
+    "itemsCount": "plats disponibles",
+    "itemsCountSingular": "plat disponible",
+    "itemsShort": "disponibles",
+    "itemsShortSingular": "disponible"
   }
 }

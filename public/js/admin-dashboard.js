@@ -380,9 +380,12 @@ export function isCategoryInMealMode(cat, mode) {
   if (section === 'ambos') return true;
   if (mode === 'desayuno' || mode === 'desayunos') {
     return section === 'desayuno';
-  } else {
-    return section === 'comida' || section === 'cantina';
+  } else if (mode === 'comida') {
+    return section === 'comida';
+  } else if (mode === 'cantina') {
+    return section === 'cantina';
   }
+  return true;
 }
 
 export function getCategoryEmoji(cat) {
@@ -396,21 +399,39 @@ export function getCategoryEmoji(cat) {
     'sandwich-y-algo-mas': '🥪',
     'pa-los-peques': '🥞',
     'dulce-remedio': '🍰',
+    'dulce-remedio-desayuno': '🍰',
+    'dulce-remedio-comida': '🍰',
     'pa-calentar-el-espiritu': '☕',
     'jugueria-la-curandera': '🧃',
     'bebidas-sin-alcohol': '🥤',
     'mockteleria': '🍹',
+    'sabores-de-mar': '🦐',
     'sabores-de-cuaresma': '🦐',
     'pa-empezar': '🥑',
     'pa-cuidarte': '🥗',
     'sopas-y-pastas': '🍲',
-    'snacks': '🍟',
     'platos-fuertes': '🥘',
-    'taqueria-la-curandera': '🌮',
     'cortes': '🥩',
+    'taqueria-la-curandera': '🌮',
     'burritos': '🌯',
+    'snacks': '🍟',
+    'alitas': '🍗',
+    'burgers': '🍔',
     'burguers-y-jocho': '🍔',
     'pa-los-morrillos': '👶',
+    'cantina-pa-curar': '🥃',
+    'cantina-refrescantes': '🍹',
+    'cantina-lo-mas-pedido': '⭐',
+    'cantina-de-la-casa': '🌵',
+    'cantina-cerveza': '🍺',
+    'cantina-vodka': '🍸',
+    'cantina-tequila': '🥃',
+    'cantina-mezcal-artesanal': '🏺',
+    'cantina-whisky': '🥃',
+    'cantina-cognac': '🍷',
+    'cantina-ron': '🍹',
+    'cantina-digestivos': '☕',
+    'cantina-vinos': '🍷',
     'cantina-la-curandera': '🥃',
   };
   if (emojis[slug]) return emojis[slug];
@@ -438,6 +459,7 @@ export function getCategoryEmoji(cat) {
 function updateShiftStats() {
   const desCats = categories.filter(c => isCategoryInMealMode(c, 'desayuno'));
   const comCats = categories.filter(c => isCategoryInMealMode(c, 'comida'));
+  const canCats = categories.filter(c => isCategoryInMealMode(c, 'cantina'));
 
   const desCatIds = new Set();
   desCats.forEach(c => { if (c.id) desCatIds.add(c.id); if (c.slug) desCatIds.add(c.slug); });
@@ -445,8 +467,12 @@ function updateShiftStats() {
   const comCatIds = new Set();
   comCats.forEach(c => { if (c.id) comCatIds.add(c.id); if (c.slug) comCatIds.add(c.slug); });
 
+  const canCatIds = new Set();
+  canCats.forEach(c => { if (c.id) canCatIds.add(c.id); if (c.slug) canCatIds.add(c.slug); });
+
   const desProds = products.filter(p => desCatIds.has(p.categoryId)).length;
   const comProds = products.filter(p => comCatIds.has(p.categoryId)).length;
+  const canProds = products.filter(p => canCatIds.has(p.categoryId)).length;
 
   const desStatsEl = document.getElementById('shift-desayuno-stats');
   if (desStatsEl) {
@@ -457,11 +483,17 @@ function updateShiftStats() {
   if (comStatsEl) {
     comStatsEl.textContent = `${comCats.length} categorías · ${comProds} platillos`;
   }
+
+  const canStatsEl = document.getElementById('shift-cantina-stats');
+  if (canStatsEl) {
+    canStatsEl.textContent = `${canCats.length} categorías · ${canProds} opciones`;
+  }
 }
 
 function setupShiftSelector() {
   const btnDesayuno = document.getElementById('btn-shift-desayuno');
   const btnComida = document.getElementById('btn-shift-comida');
+  const btnCantina = document.getElementById('btn-shift-cantina');
 
   if (btnDesayuno) {
     btnDesayuno.addEventListener('click', () => {
@@ -474,6 +506,12 @@ function setupShiftSelector() {
       setAdminMealMode('comida');
     });
   }
+
+  if (btnCantina) {
+    btnCantina.addEventListener('click', () => {
+      setAdminMealMode('cantina');
+    });
+  }
 }
 
 function setAdminMealMode(mode) {
@@ -482,20 +520,23 @@ function setAdminMealMode(mode) {
 
   const btnDesayuno = document.getElementById('btn-shift-desayuno');
   const btnComida = document.getElementById('btn-shift-comida');
+  const btnCantina = document.getElementById('btn-shift-cantina');
 
-  if (btnDesayuno && btnComida) {
-    if (mode === 'desayuno') {
-      btnDesayuno.classList.add('active');
-      btnDesayuno.setAttribute('aria-selected', 'true');
-      btnComida.classList.remove('active');
-      btnComida.setAttribute('aria-selected', 'false');
-    } else {
-      btnComida.classList.add('active');
-      btnComida.setAttribute('aria-selected', 'true');
-      btnDesayuno.classList.remove('active');
-      btnDesayuno.setAttribute('aria-selected', 'false');
+  [
+    { el: btnDesayuno, id: 'desayuno' },
+    { el: btnComida, id: 'comida' },
+    { el: btnCantina, id: 'cantina' }
+  ].forEach(({ el, id }) => {
+    if (el) {
+      if (mode === id) {
+        el.classList.add('active');
+        el.setAttribute('aria-selected', 'true');
+      } else {
+        el.classList.remove('active');
+        el.setAttribute('aria-selected', 'false');
+      }
     }
-  }
+  });
 
   populateCategoryDropdowns();
   updateShiftStats();
@@ -506,11 +547,14 @@ function populateCategoryDropdowns() {
   const catFilter = document.getElementById('admin-cat-filter');
   const catSelect = document.getElementById('prod-category-select');
 
-  // Filtrar categorías según el menú actualmente seleccionado (Desayunos vs Comida)
+  // Filtrar categorías según el menú actualmente seleccionado (Desayunos vs Comida vs Cantina)
   const filteredCats = categories.filter(c => isCategoryInMealMode(c, adminMealMode));
 
   if (catFilter) {
-    const modeLabel = adminMealMode === 'desayuno' ? 'Desayunos' : 'Comida';
+    let modeLabel = 'Desayunos';
+    if (adminMealMode === 'comida') modeLabel = 'Comida';
+    else if (adminMealMode === 'cantina') modeLabel = 'Cantina';
+
     catFilter.innerHTML = `<option value="all">Todas las Categorías (${modeLabel})</option>`;
     filteredCats.forEach(cat => {
       const name = cat.name?.es || cat.name || cat.id;
@@ -1506,7 +1550,13 @@ function setupCategoriesAdmin() {
       });
       const currentTab = document.getElementById('tab-cat-current');
       if (currentTab) {
-        currentTab.textContent = adminMealMode === 'desayuno' ? '🍳 Del Menú Desayunos' : '🥩 Del Menú Comida';
+        if (adminMealMode === 'desayuno') {
+          currentTab.textContent = '🍳 Del Menú Desayunos';
+        } else if (adminMealMode === 'cantina') {
+          currentTab.textContent = '🍸 Del Menú Cantina';
+        } else {
+          currentTab.textContent = '🥩 Del Menú Comida';
+        }
       }
       renderCategoryItemsList();
       modal.classList.add('open');
@@ -1580,7 +1630,7 @@ function resetCategoryForm() {
 
   const sectionSelect = document.getElementById('cat-form-section');
   if (sectionSelect) {
-    sectionSelect.value = adminMealMode === 'desayuno' ? 'desayuno' : 'comida';
+    sectionSelect.value = adminMealMode === 'desayuno' ? 'desayuno' : (adminMealMode === 'cantina' ? 'cantina' : 'comida');
   }
 
   const orderInput = document.getElementById('cat-form-order');
@@ -1629,7 +1679,9 @@ function renderCategoryItemsList() {
   } else if (activeCatModalFilter === 'desayuno') {
     filtered = categories.filter(c => c.section === 'desayuno' || c.section === 'ambos');
   } else if (activeCatModalFilter === 'comida') {
-    filtered = categories.filter(c => c.section === 'comida' || c.section === 'cantina' || c.section === 'ambos');
+    filtered = categories.filter(c => c.section === 'comida' || c.section === 'ambos');
+  } else if (activeCatModalFilter === 'cantina') {
+    filtered = categories.filter(c => c.section === 'cantina');
   }
 
   if (query) {
