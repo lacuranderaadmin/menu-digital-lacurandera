@@ -19,7 +19,7 @@ import {
 } from './firebase-init.js';
 import { checkAdminAuth, logoutAdmin } from './admin-auth.js';
 import { showToast } from './ui.js';
-import { initPhysicalMenuAdmin } from './physical-menu-editor.js?v=36.0';
+import { initPhysicalMenuAdmin } from './physical-menu-editor.js?v=38.0';
 import { translateCulinaryText } from './culinary-translator.js?v=30.0';
 
 let restaurantId = 'la-curandera';

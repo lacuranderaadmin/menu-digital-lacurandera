@@ -14,7 +14,7 @@
   <link rel="stylesheet" href="../css/base.css?v=37.0">
   <link rel="stylesheet" href="../css/components.css?v=37.0">
   <link rel="stylesheet" href="../css/admin.css?v=37.0">
-  <link rel="stylesheet" href="../css/physical-menu.css?v=37.0">
+  <link rel="stylesheet" href="../css/physical-menu.css?v=38.0">
 
   <link rel="icon" type="image/png" href="../assets/logo/logo.png">
 </head>
@@ -612,6 +612,17 @@
                     <input type="range" id="insp-item-size-range" min="8" max="80" step="1" style="accent-color:var(--lc-rosa);" />
                   </div>
 
+                  <div class="inspector-row">
+                    <div class="inspector-field">
+                      <label class="inspector-label" for="insp-item-width">Ancho Cuadro (px)</label>
+                      <input type="number" id="insp-item-width" class="inspector-input" min="30" max="800" step="5" placeholder="Auto" title="Ancho del cuadro de texto" />
+                    </div>
+                    <div class="inspector-field">
+                      <label class="inspector-label" for="insp-item-height">Alto Cuadro (px)</label>
+                      <input type="number" id="insp-item-height" class="inspector-input" min="16" max="800" step="5" placeholder="Auto" title="Alto del cuadro de texto" />
+                    </div>
+                  </div>
+
                   <div class="inspector-field">
                     <label class="inspector-label" for="insp-item-color">Color del Texto</label>
                     <div style="display:flex; gap:0.5rem; align-items:center;">
@@ -684,8 +695,45 @@
                   <span>Selección Múltiple (<span id="insp-multi-count">0</span>)</span>
                 </div>
                 <p style="font-size:0.75rem; color:var(--lc-gray-400); margin:0; line-height:1.4;">
-                  Puedes arrastrar este grupo completo en la hoja, copiarlo con <strong>Ctrl+C</strong> para pegarlo en cualquier otra hoja con <strong>Ctrl+V</strong>, o eliminarlo.
+                  Puedes arrastrar este grupo completo en la hoja, cambiar el tamaño de letra de todos los textos juntos, copiarlos con <strong>Ctrl+C</strong> o borrarlos.
                 </p>
+
+                <!-- Control de Tamaño de Letra Grupal -->
+                <div id="insp-multi-text-box" style="display:flex; flex-direction:column; gap:0.6rem; padding:0.75rem; background:rgba(255, 255, 255, 0.04); border:1.5px solid rgba(21, 159, 155, 0.4); border-radius:var(--radius-sm);">
+                  <div style="display:flex; align-items:center; justify-content:space-between;">
+                    <label class="inspector-label" style="color:var(--lc-turquesa); margin:0; font-size:0.75rem;">
+                      🔤 Tamaño de Letra Grupal
+                    </label>
+                    <span id="insp-multi-text-count" style="font-size:0.72rem; color:var(--lc-crema); font-family:var(--font-mono); font-weight:700;">
+                      0 textos
+                    </span>
+                  </div>
+
+                  <div style="display:flex; gap:0.4rem; align-items:center;">
+                    <button type="button" id="insp-multi-size-dec" class="btn-admin-secondary" style="padding:0.4rem 0.75rem; font-weight:900; font-size:1.15rem; line-height:1;" title="Reducir tamaño (-1px a todos)">
+                      −
+                    </button>
+                    <div style="flex:1; display:flex; align-items:center; gap:0.25rem;">
+                      <input type="number" id="insp-multi-size" class="inspector-input" min="6" max="120" step="0.5" placeholder="Varía" style="text-align:center; font-weight:800; padding:0.4rem 0.3rem;" title="Ingresa un tamaño exacto para todos los textos seleccionados" />
+                      <span style="font-size:0.75rem; color:var(--lc-gray-400); font-family:var(--font-mono);">px</span>
+                    </div>
+                    <button type="button" id="insp-multi-size-inc" class="btn-admin-secondary" style="padding:0.4rem 0.75rem; font-weight:900; font-size:1.15rem; line-height:1;" title="Aumentar tamaño (+1px a todos)">
+                      +
+                    </button>
+                  </div>
+
+                  <div>
+                    <input type="range" id="insp-multi-size-range" min="8" max="80" step="1" style="accent-color:var(--lc-turquesa); width:100%; cursor:pointer;" />
+                  </div>
+
+                  <div style="display:grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap:0.3rem;">
+                    <button type="button" id="insp-multi-step-m2" class="btn-admin-secondary" style="padding:0.35rem 0.1rem; font-size:0.72rem; font-weight:700;" title="Disminuir 2px a todos los textos">-2px</button>
+                    <button type="button" id="insp-multi-step-m1" class="btn-admin-secondary" style="padding:0.35rem 0.1rem; font-size:0.72rem; font-weight:700;" title="Disminuir 1px a todos los textos">-1px</button>
+                    <button type="button" id="insp-multi-step-p1" class="btn-admin-secondary" style="padding:0.35rem 0.1rem; font-size:0.72rem; font-weight:700;" title="Aumentar 1px a todos los textos">+1px</button>
+                    <button type="button" id="insp-multi-step-p2" class="btn-admin-secondary" style="padding:0.35rem 0.1rem; font-size:0.72rem; font-weight:700;" title="Aumentar 2px a todos los textos">+2px</button>
+                  </div>
+                </div>
+
                 <div style="display:flex; flex-direction:column; gap:0.5rem; margin-top:0.35rem;">
                   <button type="button" id="insp-btn-multi-copy" class="btn-phys-action btn-phys-copy" style="width:100%; justify-content:center;">
                     <span>📋 Copiar Grupo (Ctrl+C)</span>
