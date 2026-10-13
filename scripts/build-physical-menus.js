@@ -86,29 +86,29 @@ function createDigitalHeader(pageNumber, totalPages, typeName, subTitle) {
     {
       id: `hdr_brand_${pageNumber}`,
       x: 55,
-      y: 42,
+      y: 38,
       text: 'LA CURANDERA',
-      fontSize: 20,
+      fontSize: 24,
       fontFamily: 'Hansief',
       color: '#C94E8F',
       bold: true
     },
     {
       id: `hdr_tag_${pageNumber}`,
-      x: 215,
-      y: 47,
+      x: 235,
+      y: 45,
       text: `${typeName.toUpperCase()} · ${subTitle.toUpperCase()}`,
-      fontSize: 9.5,
+      fontSize: 12,
       fontFamily: 'Gotham-Bold',
       color: '#159F9B',
       bold: true
     },
     {
       id: `hdr_pnum_${pageNumber}`,
-      x: 690,
-      y: 47,
+      x: 675,
+      y: 45,
       text: `HOJA ${pageNumber} DE ${totalPages}`,
-      fontSize: 9,
+      fontSize: 11,
       fontFamily: 'JetBrains Mono',
       color: '#6D6258',
       bold: true
@@ -118,7 +118,7 @@ function createDigitalHeader(pageNumber, totalPages, typeName, subTitle) {
       x: 55,
       y: 68,
       text: '─────────────────────────────────────────────────────────────────',
-      fontSize: 11,
+      fontSize: 12,
       fontFamily: 'JetBrains Mono',
       color: 'rgba(26, 20, 18, 0.15)',
       bold: false
@@ -133,7 +133,7 @@ function createDigitalFooter(pageNumber, totalPages) {
       x: 55,
       y: 1005,
       text: `LA CURANDERA  ·  COCINA MEXICANA TRADICIONAL & MEZCALERÍA  ·  HOJA ${pageNumber} DE ${totalPages}`,
-      fontSize: 8.5,
+      fontSize: 10.5,
       fontFamily: 'JetBrains Mono',
       color: '#9E8E81',
       bold: true
@@ -141,12 +141,34 @@ function createDigitalFooter(pageNumber, totalPages) {
   ];
 }
 
+const DIGITAL_DISH_IMAGES = {
+  'enchiladas-tradicionales': { url: '../assets/dishes/enchiladas-tradicionales.webp', name: 'Enchiladas Tradicionales', width: 190, height: 110 },
+  'club-sandwich-pollo': { url: '../assets/dishes/club-sandwich-pollo.webp', name: 'Club Sándwich de Pollo', width: 190, height: 110 },
+  'cheesecake-des': { url: '../assets/dishes/cheesecake.webp', name: 'Cheesecake', width: 175, height: 100 },
+  'strudel-de-manzana-des': { url: '../assets/dishes/strudel-manzana.webp', name: 'Strudel de Manzana', width: 175, height: 100 },
+  'malteadas-des': { url: '../assets/dishes/malteadas.webp', name: 'Malteadas', width: 175, height: 100 },
+  'jugo-curandero': { url: '../assets/dishes/jugo-curandero.webp', name: 'Jugo Curandero', width: 180, height: 105 },
+  'aguachile-la-curandera': { url: '../assets/dishes/aguachile-la-curandera.webp', name: 'Aguachile La Curandera', width: 200, height: 115 },
+  'tampiquena-de-arrachera': { url: '../assets/dishes/tampiquena-arrachera.webp', name: 'Tampiqueña de Arrachera', width: 200, height: 115 },
+  'rib-eye': { url: '../assets/dishes/rib-eye-guarniciones.webp', name: 'Rib Eye con Guarniciones', width: 210, height: 120 },
+  'nachos-nortenos': { url: '../assets/dishes/nachos-nortenos.webp', name: 'Nachos Norteños', width: 180, height: 90 },
+  'hamburguesa-de-la-casa': { url: '../assets/dishes/hamburguesa-de-la-casa.webp', name: 'Hamburguesa de la Casa', width: 190, height: 110 },
+  'orden-alitas': { url: '../assets/dishes/alitas.webp', name: 'Alitas', width: 180, height: 105 },
+  'morrito': { url: '../assets/dishes/morrito.webp', name: 'Morrito Infantil', width: 180, height: 105 },
+  'cheesecake-com': { url: '../assets/dishes/cheesecake.webp', name: 'Cheesecake', width: 175, height: 100 },
+  'malteadas-com': { url: '../assets/dishes/malteadas.webp', name: 'Malteadas', width: 175, height: 100 },
+  'la-curandera-cocktail': { url: '../assets/dishes/mezcal-curandera.webp', name: 'La Curandera Mezcal', width: 190, height: 110 },
+  'mojito-frutos-rojos': { url: '../assets/dishes/mojito-frutos-rojos.webp', name: 'Mojito Frutos Rojos', width: 180, height: 105 }
+};
+
 function renderDigitalColumn(categoriesData, colX, startY, options = {}) {
   const items = [];
   let curY = startY;
+  const colWidth = options.maxWidth || 345;
+  const maxLineChars = options.maxChars || 38;
 
   categoriesData.forEach(cat => {
-    if (curY > startY) curY += (options.categorySpacing || 16);
+    if (curY > startY) curY += (options.categorySpacing !== undefined ? options.categorySpacing : 22);
 
     if (cat.title) {
       items.push({
@@ -154,70 +176,104 @@ function renderDigitalColumn(categoriesData, colX, startY, options = {}) {
         x: colX,
         y: curY,
         text: cat.title.toUpperCase(),
-        fontSize: 12.5,
+        fontSize: options.catTitleFontSize || 18,
         fontFamily: 'Gotham-Bold',
         color: cat.titleColor || options.defaultTitleColor || '#C94E8F',
         bold: true,
-        maxWidth: 325
+        maxWidth: colWidth
       });
-      curY += 18;
+      curY += options.catTitleHeight || 26;
     }
 
     if (cat.note) {
-      const wrappedNote = wrapText(cat.note, 38);
+      const wrappedNote = wrapText(cat.note, maxLineChars);
       items.push({
         id: `cat_note_${curY}`,
         x: colX,
         y: curY,
         text: wrappedNote,
-        fontSize: 8.5,
+        fontSize: options.catNoteFontSize || 13,
         fontFamily: 'Montserrat',
         color: '#6D6258',
         bold: false,
-        maxWidth: 325
+        maxWidth: colWidth
       });
       const noteLines = wrappedNote.split('\n').length;
-      curY += noteLines * 12 + 8;
+      curY += noteLines * 16.5 + 6;
     }
 
     (cat.products || []).forEach(itemDef => {
       const prod = typeof itemDef === 'string' ? getP(itemDef) : itemDef;
       const name = toStr(prod.name);
-      const priceStr = prod.customPriceText || `$${prod.price}`;
       const desc = toStr(prod.description);
+
+      // TÍTULO DEL PRODUCTO / DESTILADO
+      // Si tiene precios compuestos (ej. Copa $XX · Botella $YY), separamos elegantemente
+      // el nombre en la primera línea y los precios en la segunda para que nunca colisionen
+      // ni queden palabras o precios cortados de forma antiestética.
+      let titleText;
+      if (prod.customPriceText && prod.customPriceText.includes('·')) {
+        titleText = `${name}\n${prod.customPriceText}`;
+      } else {
+        const rawTitle = prod.customPriceText ? `${name}  ·  ${prod.customPriceText}` : `${name}  ·  $${prod.price}`;
+        titleText = wrapText(rawTitle, options.titleMaxChars || 32);
+      }
 
       items.push({
         id: `item_${prod.id}_title`,
         dishId: prod.id,
         x: colX,
         y: curY,
-        text: `${name}  ·  ${priceStr}`,
-        fontSize: 10.5,
+        text: titleText,
+        fontSize: options.dishTitleFontSize || 15.5,
         fontFamily: 'Gotham-Bold',
         color: '#1C1714',
         bold: true,
-        maxWidth: 325
+        maxWidth: colWidth
       });
-      curY += 15;
 
+      const titleLines = titleText.split('\n').length;
+      curY += titleLines * (options.dishTitleLineHeight || 20) + 2;
+
+      // Imagen vinculada directamente al platillo
+      const imgDef = prod.image || (options.enableDishImages !== false ? DIGITAL_DISH_IMAGES[prod.id] : null);
+
+      // DESCRIPCIÓN DEL PLATILLO
       if (desc) {
-        const wrappedDesc = wrapText(desc, 38);
+        const wrappedDesc = wrapText(desc, maxLineChars);
         items.push({
           id: `item_${prod.id}_desc`,
           dishId: prod.id,
           x: colX,
           y: curY,
           text: wrappedDesc,
-          fontSize: 8.5,
+          fontSize: options.dishDescFontSize || 12.5,
           fontFamily: 'Montserrat',
           color: '#554B43',
           bold: false,
-          maxWidth: 325
+          maxWidth: colWidth
         });
         const descLines = wrappedDesc.split('\n').length;
-        curY += descLines * 12 + (options.itemSpacing !== undefined ? options.itemSpacing : 9);
+        curY += descLines * 16.5 + (imgDef ? 6 : (options.itemSpacing !== undefined ? options.itemSpacing : 8));
       } else {
-        curY += (options.itemSpacing !== undefined ? options.itemSpacing : 6);
+        curY += (imgDef ? 4 : (options.itemSpacing !== undefined ? options.itemSpacing : 6));
+      }
+
+      // RENDERIZADO DE LA IMAGEN EN SU RESPECTIVO PLATILLO
+      if (imgDef) {
+        items.push({
+          id: `img_${prod.id.replace(/[^a-zA-Z0-9]/g, '_')}`,
+          type: 'image',
+          dishId: prod.id,
+          dishName: imgDef.name || name,
+          url: imgDef.url,
+          x: colX,
+          y: curY,
+          width: imgDef.width || 190,
+          height: imgDef.height || 110,
+          borderRadius: 8
+        });
+        curY += (imgDef.height || 110) + (options.itemSpacing !== undefined ? options.itemSpacing : 12);
       }
     });
   });
@@ -240,22 +296,22 @@ function buildDesayunoDigital() {
     bgColor: '#FDF6EC',
     hasEmblem: true,
     items: [
-      { id: 'des_d_p1_badge', x: 80, y: 70, text: '✦ CARTA FÍSICA · EDICIÓN MENÚ DIGITAL ✦', fontSize: 11, fontFamily: 'Gotham-Bold', color: '#E87850', bold: true },
-      { id: 'des_d_p1_brand', x: 80, y: 120, text: 'LA CURANDERA', fontSize: 52, fontFamily: 'Hansief', color: '#C94E8F', bold: true },
-      { id: 'des_d_p1_sub', x: 82, y: 185, text: 'COCINA TRADICIONAL & REMEDIOS DEL ALMA', fontSize: 13.5, fontFamily: 'Gotham-Bold', color: '#159F9B', bold: true },
-      { id: 'des_d_p1_type', x: 82, y: 215, text: 'MENÚ DE DESAYUNOS Y JUGUERÍA ARTESANAL · SERVICIO DE 9:00 AM A 1:30 PM', fontSize: 11, fontFamily: 'Montserrat', color: '#2C2621', bold: true },
-      { id: 'des_d_p1_sep1', x: 82, y: 245, text: '═════════════════════════════════════════════════', fontSize: 12, fontFamily: 'JetBrains Mono', color: '#E87850', bold: false },
-      { id: 'des_d_p1_hist_t', x: 82, y: 290, text: 'EL AUTÉNTICO SABOR DE NUESTRAS RAÍCES', fontSize: 17, fontFamily: 'Gotham-Bold', color: '#1C1714', bold: true },
-      { id: 'des_d_p1_hist_1', x: 82, y: 330, text: 'La Curandera nace de un sueño entre mi esposa y yo:\ncrear un lugar donde pudiéramos reunir todo lo que nos\ninspiraba en ese momento de la vida: la generosidad de la\ncocina tradicional, el amor a la tierra y el calor del hogar.', fontSize: 11.5, fontFamily: 'Montserrat', color: '#2C2621', bold: false },
-      { id: 'des_d_p1_hist_2', x: 82, y: 420, text: 'Durante la búsqueda del nombre encontramos una coincidencia muy\nespecial: en mi familia, mi bisabuela era la curandera del pueblo,\nde esas mujeres que con hierbas, pócimas y remedios caseros\nlograban hacerte sentir mejor el cuerpo y el espíritu.', fontSize: 11.5, fontFamily: 'Montserrat', color: '#2C2621', bold: false },
-      { id: 'des_d_p1_hist_3', x: 82, y: 510, text: 'Así adoptamos este nombre, como un homenaje sincero a esos\npersonajes místicos y a las tradiciones ancestrales que viven en\nnuestro México.', fontSize: 11.5, fontFamily: 'Montserrat', color: '#2C2621', bold: false },
-      { id: 'des_d_p1_pil_t', x: 82, y: 600, text: '✦ NUESTROS COMPROMISOS CON TU MESA ✦', fontSize: 13, fontFamily: 'Gotham-Bold', color: '#159F9B', bold: true },
-      { id: 'des_d_p1_p1', x: 82, y: 635, text: '✓ Carne 100% libre de clembuterol y de proveedores certificados', fontSize: 11, fontFamily: 'Montserrat', color: '#1C1714', bold: true },
-      { id: 'des_d_p1_p2', x: 82, y: 668, text: '✓ Pan de masa madre artesanal en la mayoría de nuestros platillos', fontSize: 11, fontFamily: 'Montserrat', color: '#1C1714', bold: true },
-      { id: 'des_d_p1_p3', x: 82, y: 701, text: '✓ Frutas, hortalizas y vegetales 100% frescos de la región', fontSize: 11, fontFamily: 'Montserrat', color: '#1C1714', bold: true },
-      { id: 'des_d_p1_p4', x: 82, y: 734, text: '✓ Frijoles de la olla refritos a diario y tortillas hechas a mano', fontSize: 11, fontFamily: 'Montserrat', color: '#1C1714', bold: true },
-      { id: 'des_d_p1_inc_t', x: 82, y: 785, text: '☀️ TODOS NUESTROS DESAYUNOS INCLUYEN:', fontSize: 12, fontFamily: 'Gotham-Bold', color: '#C94E8F', bold: true },
-      { id: 'des_d_p1_inc_d', x: 82, y: 812, text: 'Café de olla, café americano o té + fruta de temporada +\njugo de temporada + bolillo tostado con mermelada de la casa.', fontSize: 11, fontFamily: 'Montserrat', color: '#2C2621', bold: false },
+      { id: 'des_d_p1_badge', x: 75, y: 55, text: '✦ CARTA FÍSICA · EDICIÓN MENÚ DIGITAL ✦', fontSize: 13.5, fontFamily: 'Gotham-Bold', color: '#E87850', bold: true },
+      { id: 'des_d_p1_brand', x: 75, y: 98, text: 'LA CURANDERA', fontSize: 60, fontFamily: 'Hansief', color: '#C94E8F', bold: true },
+      { id: 'des_d_p1_sub', x: 77, y: 172, text: 'COCINA TRADICIONAL & REMEDIOS DEL ALMA', fontSize: 16.5, fontFamily: 'Gotham-Bold', color: '#159F9B', bold: true },
+      { id: 'des_d_p1_type', x: 77, y: 208, text: 'MENÚ DE DESAYUNOS Y JUGUERÍA ARTESANAL · SERVICIO DE 9:00 AM A 1:30 PM', fontSize: 13.5, fontFamily: 'Montserrat', color: '#2C2621', bold: true },
+      { id: 'des_d_p1_sep1', x: 77, y: 240, text: '═════════════════════════════════════════════════', fontSize: 13, fontFamily: 'JetBrains Mono', color: '#E87850', bold: false },
+      { id: 'des_d_p1_hist_t', x: 77, y: 280, text: 'EL AUTÉNTICO SABOR DE NUESTRAS RAÍCES', fontSize: 21, fontFamily: 'Gotham-Bold', color: '#1C1714', bold: true },
+      { id: 'des_d_p1_hist_1', x: 77, y: 320, text: 'La Curandera nace de un sueño entre mi esposa y yo:\ncrear un lugar donde pudiéramos reunir todo lo que nos\ninspiraba en ese momento de la vida: la generosidad de la\ncocina tradicional, el amor a la tierra y el calor del hogar.', fontSize: 15.5, fontFamily: 'Montserrat', color: '#2C2621', bold: false, maxWidth: 660 },
+      { id: 'des_d_p1_hist_2', x: 77, y: 428, text: 'Durante la búsqueda del nombre encontramos una coincidencia muy\nespecial: en mi familia, mi bisabuela era la curandera del pueblo,\nde esas mujeres que con hierbas, pócimas y remedios caseros\nlograban hacerte sentir mejor el cuerpo y el espíritu.', fontSize: 15.5, fontFamily: 'Montserrat', color: '#2C2621', bold: false, maxWidth: 660 },
+      { id: 'des_d_p1_hist_3', x: 77, y: 536, text: 'Así adoptamos este nombre, como un homenaje sincero a esos\npersonajes místicos y a las tradiciones ancestrales que viven en\nnuestro México.', fontSize: 15.5, fontFamily: 'Montserrat', color: '#2C2621', bold: false, maxWidth: 660 },
+      { id: 'des_d_p1_pil_t', x: 77, y: 635, text: '✦ NUESTROS COMPROMISOS CON TU MESA ✦', fontSize: 17, fontFamily: 'Gotham-Bold', color: '#159F9B', bold: true },
+      { id: 'des_d_p1_p1', x: 77, y: 675, text: '✓ Carne 100% libre de clembuterol y de proveedores certificados', fontSize: 15, fontFamily: 'Montserrat', color: '#1C1714', bold: true, maxWidth: 660 },
+      { id: 'des_d_p1_p2', x: 77, y: 715, text: '✓ Pan de masa madre artesanal en la mayoría de nuestros platillos', fontSize: 15, fontFamily: 'Montserrat', color: '#1C1714', bold: true, maxWidth: 660 },
+      { id: 'des_d_p1_p3', x: 77, y: 755, text: '✓ Frutas, hortalizas y vegetales 100% frescos de la región', fontSize: 15, fontFamily: 'Montserrat', color: '#1C1714', bold: true, maxWidth: 660 },
+      { id: 'des_d_p1_p4', x: 77, y: 795, text: '✓ Frijoles de la olla refritos a diario y tortillas hechas a mano', fontSize: 15, fontFamily: 'Montserrat', color: '#1C1714', bold: true, maxWidth: 660 },
+      { id: 'des_d_p1_inc_t', x: 77, y: 848, text: '☀️ TODOS NUESTROS DESAYUNOS INCLUYEN:', fontSize: 16, fontFamily: 'Gotham-Bold', color: '#C94E8F', bold: true },
+      { id: 'des_d_p1_inc_d', x: 77, y: 882, text: 'Café de olla, café americano o té + fruta de temporada +\njugo de temporada + bolillo tostado con mermelada de la casa.', fontSize: 15, fontFamily: 'Montserrat', color: '#2C2621', bold: false, maxWidth: 660 },
       ...createDigitalFooter(1, 5)
     ]
   });
@@ -266,12 +322,13 @@ function buildDesayunoDigital() {
     {
       id: 'des_d_p2_banner',
       x: 55,
-      y: 80,
+      y: 78,
       text: '★ Todos los desayunos incluyen: Café de olla / americano / té + fruta + jugo + bolillos tostados con mermelada de la casa.',
-      fontSize: 9,
+      fontSize: 11.5,
       fontFamily: 'Gotham-Bold',
       color: '#E87850',
-      bold: true
+      bold: true,
+      maxWidth: 710
     }
   ];
 
@@ -293,7 +350,7 @@ function buildDesayunoDigital() {
         'mollepizza'
       ]
     }
-  ], 55, 108);
+  ], 55, 102, { itemSpacing: 3.5, dishTitleHeight: 18.5 });
   p2Items.push(...col1P2.items);
 
   const col2P2 = renderDigitalColumn([
@@ -312,26 +369,12 @@ function buildDesayunoDigital() {
         'enfrijoladas-de-pollo'
       ]
     }
-  ], 430, 108);
+  ], 425, 102, { itemSpacing: 6, dishTitleHeight: 20 });
   p2Items.push(...col2P2.items);
-
-  p2Items.push({
-    id: 'img_enchiladas_tradicionales',
-    type: 'image',
-    dishId: 'enchiladas-tradicionales',
-    dishName: 'Enchiladas Tradicionales',
-    url: '../assets/dishes/enchiladas-tradicionales.webp',
-    x: 675,
-    y: 880,
-    width: 85,
-    height: 58,
-    borderRadius: 6
-  });
 
   p2Items.push(...createDigitalFooter(2, 5));
   pages.push({ pageNumber: 2, width: 816, height: 1056, bgColor: '#FDF6EC', hasEmblem: false, items: p2Items });
 
-  // Pág 3: Tacos Dorados, Sándwich y Algo Más, Pa' Caldear & Pa' Los Peques
   // Pág 3: Tacos Dorados, Sándwich y Algo Más & Pa' Caldear
   const p3Items = [
     ...createDigitalHeader(3, 5, 'Desayunos', 'Tacos Dorados, Sándwiches & Pa\' Caldear')
@@ -356,21 +399,8 @@ function buildDesayunoDigital() {
         'tostado-aguacate-huevo'
       ]
     }
-  ], 55, 95);
+  ], 55, 95, { categorySpacing: 25, itemSpacing: 10 });
   p3Items.push(...col1P3.items);
-
-  p3Items.push({
-    id: 'img_club_sandwich_pollo',
-    type: 'image',
-    dishId: 'club-sandwich-pollo',
-    dishName: 'Club Sándwich de Pollo',
-    url: '../assets/dishes/club-sandwich-pollo.webp',
-    x: 295,
-    y: col1P3.endY + 25,
-    width: 85,
-    height: 58,
-    borderRadius: 6
-  });
 
   const col2P3 = renderDigitalColumn([
     {
@@ -380,32 +410,19 @@ function buildDesayunoDigital() {
         'pancita-o-menudo'
       ]
     }
-  ], 430, 95);
+  ], 425, 95, { itemSpacing: 12 });
   p3Items.push(...col2P3.items);
 
   p3Items.push({
-    id: 'img_pancita_des',
-    type: 'image',
-    dishId: 'pancita-o-menudo',
-    dishName: 'Pancita o Menudo',
-    url: '../assets/dishes/pancita.webp',
-    x: 670,
-    y: 110,
-    width: 95,
-    height: 65,
-    borderRadius: 8
-  });
-
-  p3Items.push({
     id: 'des_d_p3_note_box',
-    x: 430,
-    y: 280,
+    x: 425,
+    y: col2P3.endY + 25,
     text: '✦ SAZÓN TRADICIONAL ✦\nTodos nuestros caldos son elaborados con receta familiar y servidos con aguacate, orégano y bolillo crujiente recién tostado.',
-    fontSize: 9.5,
+    fontSize: 13.5,
     fontFamily: 'Montserrat',
     color: '#6D6258',
     bold: false,
-    maxWidth: 320
+    maxWidth: 360
   });
 
   p3Items.push(...createDigitalFooter(3, 5));
@@ -435,21 +452,8 @@ function buildDesayunoDigital() {
         'tarta-de-nata-des'
       ]
     }
-  ], 55, 95);
+  ], 55, 95, { categorySpacing: 25, itemSpacing: 10 });
   p4Items.push(...col1P4.items);
-
-  p4Items.push({
-    id: 'img_cheesecake_des',
-    type: 'image',
-    dishId: 'cheesecake-des',
-    dishName: 'Cheesecake',
-    url: '../assets/dishes/cheesecake.webp',
-    x: 295,
-    y: col1P4.endY + 20,
-    width: 85,
-    height: 58,
-    borderRadius: 6
-  });
 
   const col2P4 = renderDigitalColumn([
     {
@@ -468,34 +472,8 @@ function buildDesayunoDigital() {
         'chilpayate'
       ]
     }
-  ], 430, 95);
+  ], 425, 95, { categorySpacing: 25, itemSpacing: 10 });
   p4Items.push(...col2P4.items);
-
-  p4Items.push({
-    id: 'img_strudel_manzana',
-    type: 'image',
-    dishId: 'strudel-de-manzana-des',
-    dishName: 'Strudel de Manzana',
-    url: '../assets/dishes/strudel-manzana.webp',
-    x: 670,
-    y: 110,
-    width: 85,
-    height: 58,
-    borderRadius: 6
-  });
-
-  p4Items.push({
-    id: 'img_malteadas',
-    type: 'image',
-    dishId: 'malteadas-des',
-    dishName: 'Malteadas',
-    url: '../assets/dishes/malteadas.webp',
-    x: 670,
-    y: col2P4.endY + 20,
-    width: 85,
-    height: 58,
-    borderRadius: 6
-  });
 
   p4Items.push(...createDigitalFooter(4, 5));
   pages.push({ pageNumber: 4, width: 816, height: 1056, bgColor: '#FDF6EC', hasEmblem: false, items: p4Items });
@@ -529,21 +507,8 @@ function buildDesayunoDigital() {
         'te'
       ]
     }
-  ], 55, 95);
+  ], 55, 95, { categorySpacing: 22, itemSpacing: 6 });
   p5Items.push(...col1P5.items);
-
-  p5Items.push({
-    id: 'img_jugo_curandero',
-    type: 'image',
-    dishId: 'jugo-curandero',
-    dishName: 'Jugo Curandero',
-    url: '../assets/dishes/jugo-curandero.webp',
-    x: 295,
-    y: 110,
-    width: 85,
-    height: 58,
-    borderRadius: 6
-  });
 
   const col2P5 = renderDigitalColumn([
     {
@@ -569,7 +534,7 @@ function buildDesayunoDigital() {
         'pitufo-mocktail'
       ]
     }
-  ], 430, 95);
+  ], 425, 95, { categorySpacing: 22, itemSpacing: 6 });
   p5Items.push(...col2P5.items);
 
   p5Items.push(...createDigitalFooter(5, 5));
@@ -593,19 +558,19 @@ function buildComidaDigital() {
     bgColor: '#FDF6EC',
     hasEmblem: true,
     items: [
-      { id: 'com_d_p1_badge', x: 80, y: 70, text: '✦ CARTA FÍSICA · EDICIÓN MENÚ DIGITAL ✦', fontSize: 11, fontFamily: 'Gotham-Bold', color: '#E87850', bold: true },
-      { id: 'com_d_p1_brand', x: 80, y: 120, text: 'LA CURANDERA', fontSize: 52, fontFamily: 'Hansief', color: '#C94E8F', bold: true },
-      { id: 'com_d_p1_sub', x: 82, y: 185, text: 'COCINA TRADICIONAL, CORTES SELECTOS & ASADOR', fontSize: 13.5, fontFamily: 'Gotham-Bold', color: '#159F9B', bold: true },
-      { id: 'com_d_p1_type', x: 82, y: 215, text: 'MENÚ DE COMIDAS · SERVICIO DE 1:30 PM A 7:30 PM', fontSize: 11, fontFamily: 'Montserrat', color: '#2C2621', bold: true },
-      { id: 'com_d_p1_sep1', x: 82, y: 245, text: '═════════════════════════════════════════════════', fontSize: 12, fontFamily: 'JetBrains Mono', color: '#E87850', bold: false },
-      { id: 'com_d_p1_hist_t', x: 82, y: 290, text: 'COCINA QUE CURA, TRAGOS QUE CONECTAN', fontSize: 17, fontFamily: 'Gotham-Bold', color: '#1C1714', bold: true },
-      { id: 'com_d_p1_hist_1', x: 82, y: 330, text: 'Nuestra cocina rinde tributo a las recetas familiares de Tenancingo\ny el Valle de Toluca. Carne seleccionada libre de clembuterol,\nsalsas hechas a mano en molcajete y cortes a la parrilla con\nguarniciones tradicionales.', fontSize: 11.5, fontFamily: 'Montserrat', color: '#2C2621', bold: false },
-      { id: 'com_d_p1_hist_2', x: 82, y: 430, text: 'Cada platillo está preparado con el respeto y el tiempo que merece.\nAquí te consentimos con comida reconfortante, tortillas calientes\ny recetas de herencia viva.', fontSize: 11.5, fontFamily: 'Montserrat', color: '#2C2621', bold: false },
-      { id: 'com_d_p1_pil_t', x: 82, y: 550, text: '✦ MANIFIESTO DE NUESTRA COCINA ✦', fontSize: 13, fontFamily: 'Gotham-Bold', color: '#159F9B', bold: true },
-      { id: 'com_d_p1_p1', x: 82, y: 585, text: '✓ Carne selecta 100% libre de clembuterol', fontSize: 11, fontFamily: 'Montserrat', color: '#1C1714', bold: true },
-      { id: 'com_d_p1_p2', x: 82, y: 618, text: '✓ Cortes de res de 300 a 350 gr con 3 guarniciones a elegir', fontSize: 11, fontFamily: 'Montserrat', color: '#1C1714', bold: true },
-      { id: 'com_d_p1_p3', x: 82, y: 651, text: '✓ Mariscos frescos preparados al momento con sazón de costa', fontSize: 11, fontFamily: 'Montserrat', color: '#1C1714', bold: true },
-      { id: 'com_d_p1_p4', x: 82, y: 684, text: '✓ Salsas martajadas y chiles tatemados a la leña', fontSize: 11, fontFamily: 'Montserrat', color: '#1C1714', bold: true },
+      { id: 'com_d_p1_badge', x: 75, y: 55, text: '✦ CARTA FÍSICA · EDICIÓN MENÚ DIGITAL ✦', fontSize: 13.5, fontFamily: 'Gotham-Bold', color: '#E87850', bold: true },
+      { id: 'com_d_p1_brand', x: 75, y: 98, text: 'LA CURANDERA', fontSize: 60, fontFamily: 'Hansief', color: '#C94E8F', bold: true },
+      { id: 'com_d_p1_sub', x: 77, y: 172, text: 'COCINA TRADICIONAL, CORTES SELECTOS & ASADOR', fontSize: 16.5, fontFamily: 'Gotham-Bold', color: '#159F9B', bold: true },
+      { id: 'com_d_p1_type', x: 77, y: 208, text: 'MENÚ DE COMIDAS · SERVICIO DE 1:30 PM A 7:30 PM', fontSize: 13.5, fontFamily: 'Montserrat', color: '#2C2621', bold: true },
+      { id: 'com_d_p1_sep1', x: 77, y: 240, text: '═════════════════════════════════════════════════', fontSize: 13, fontFamily: 'JetBrains Mono', color: '#E87850', bold: false },
+      { id: 'com_d_p1_hist_t', x: 77, y: 280, text: 'COCINA QUE CURA, TRAGOS QUE CONECTAN', fontSize: 21, fontFamily: 'Gotham-Bold', color: '#1C1714', bold: true },
+      { id: 'com_d_p1_hist_1', x: 77, y: 320, text: 'Nuestra cocina rinde tributo a las recetas familiares de Tenancingo\ny el Valle de Toluca. Carne seleccionada libre de clembuterol,\nsalsas hechas a mano en molcajete y cortes a la parrilla con\nguarniciones tradicionales.', fontSize: 15.5, fontFamily: 'Montserrat', color: '#2C2621', bold: false, maxWidth: 660 },
+      { id: 'com_d_p1_hist_2', x: 77, y: 440, text: 'Cada platillo está preparado con el respeto y el tiempo que merece.\nAquí te consentimos con comida reconfortante, tortillas calientes\ny recetas de herencia viva.', fontSize: 15.5, fontFamily: 'Montserrat', color: '#2C2621', bold: false, maxWidth: 660 },
+      { id: 'com_d_p1_pil_t', x: 77, y: 560, text: '✦ MANIFIESTO DE NUESTRA COCINA ✦', fontSize: 17, fontFamily: 'Gotham-Bold', color: '#159F9B', bold: true },
+      { id: 'com_d_p1_p1', x: 77, y: 605, text: '✓ Carne selecta 100% libre de clembuterol', fontSize: 15, fontFamily: 'Montserrat', color: '#1C1714', bold: true, maxWidth: 660 },
+      { id: 'com_d_p1_p2', x: 77, y: 650, text: '✓ Cortes de res de 300 a 350 gr con 3 guarniciones a elegir', fontSize: 15, fontFamily: 'Montserrat', color: '#1C1714', bold: true, maxWidth: 660 },
+      { id: 'com_d_p1_p3', x: 77, y: 695, text: '✓ Mariscos frescos preparados al momento con sazón de costa', fontSize: 15, fontFamily: 'Montserrat', color: '#1C1714', bold: true, maxWidth: 660 },
+      { id: 'com_d_p1_p4', x: 77, y: 740, text: '✓ Salsas martajadas y chiles tatemados a la leña', fontSize: 15, fontFamily: 'Montserrat', color: '#1C1714', bold: true, maxWidth: 660 },
       ...createDigitalFooter(1, 7)
     ]
   });
@@ -629,21 +594,8 @@ function buildComidaDigital() {
         'filete-de-pescado'
       ]
     }
-  ], 55, 95);
+  ], 55, 95, { itemSpacing: 10 });
   p2Items.push(...col1P2.items);
-
-  p2Items.push({
-    id: 'img_aguachile_la_curandera',
-    type: 'image',
-    dishId: 'aguachile-la-curandera',
-    dishName: 'Aguachile La Curandera',
-    url: '../assets/dishes/aguachile-la-curandera.webp',
-    x: 295,
-    y: 110,
-    width: 85,
-    height: 58,
-    borderRadius: 6
-  });
 
   const col2P2 = renderDigitalColumn([
     {
@@ -659,7 +611,7 @@ function buildComidaDigital() {
         'costillas-de-elote'
       ]
     }
-  ], 430, 95);
+  ], 425, 95, { itemSpacing: 10 });
   p2Items.push(...col2P2.items);
 
   p2Items.push(...createDigitalFooter(2, 7));
@@ -691,7 +643,7 @@ function buildComidaDigital() {
         'pancita-comida'
       ]
     }
-  ], 55, 95);
+  ], 55, 95, { categorySpacing: 25, itemSpacing: 10 });
   p3Items.push(...col1P3.items);
 
   const col2P3 = renderDigitalColumn([
@@ -705,26 +657,13 @@ function buildComidaDigital() {
         'milanesa-cordon-bleu'
       ]
     }
-  ], 430, 95);
+  ], 425, 95, { itemSpacing: 12 });
   p3Items.push(...col2P3.items);
-
-  p3Items.push({
-    id: 'img_tampiquena_arrachera',
-    type: 'image',
-    dishId: 'tampiquena-de-arrachera',
-    dishName: 'Tampiqueña de Arrachera',
-    url: '../assets/dishes/tampiquena-arrachera.webp',
-    x: 670,
-    y: 110,
-    width: 85,
-    height: 58,
-    borderRadius: 6
-  });
 
   p3Items.push(...createDigitalFooter(3, 7));
   pages.push({ pageNumber: 3, width: 816, height: 1056, bgColor: '#FDF6EC', hasEmblem: false, items: p3Items });
 
-  // Pág 4: Platos Fuertes (Cont.), Cortes & Taquería
+  // Pág 4: Platos Fuertes (Pechugas & Enchiladas), Cortes a las Brasas & Taquería
   const p4Items = [
     ...createDigitalHeader(4, 7, 'Comidas', 'Platos Fuertes, Cortes & Taquería')
   ];
@@ -742,6 +681,18 @@ function buildComidaDigital() {
       ]
     },
     {
+      title: '🌮 Taquería La Curandera',
+      note: '3 tacos en tortilla de maíz o harina, acompañados de nopales, cebolla y frijoles.',
+      products: [
+        'orden-tacos-estandar',
+        'orden-tacos-premium'
+      ]
+    }
+  ], 55, 95, { categorySpacing: 20, itemSpacing: 8 });
+  p4Items.push(...col1P4.items);
+
+  const col2P4 = renderDigitalColumn([
+    {
       title: '🥩 Cortes a las Brasas (300 - 350 gr)',
       note: 'Incluyen 3 guarniciones a elegir: nopales y cebollas, piña asada, guacamole, elote amarillo, cebollitas cambray, queso asado, frijoles.',
       products: [
@@ -751,32 +702,7 @@ function buildComidaDigital() {
         'picana'
       ]
     }
-  ], 55, 95);
-  p4Items.push(...col1P4.items);
-
-  p4Items.push({
-    id: 'img_rib_eye_guarniciones',
-    type: 'image',
-    dishId: 'rib-eye',
-    dishName: 'Rib Eye con Guarniciones',
-    url: '../assets/dishes/rib-eye-guarniciones.webp',
-    x: 295,
-    y: col1P4.endY + 20,
-    width: 85,
-    height: 58,
-    borderRadius: 6
-  });
-
-  const col2P4 = renderDigitalColumn([
-    {
-      title: '🌮 Taquería La Curandera',
-      note: '3 tacos en tortilla de maíz o harina, acompañados de nopales, cebolla y frijoles.',
-      products: [
-        'orden-tacos-estandar',
-        'orden-tacos-premium'
-      ]
-    }
-  ], 430, 95);
+  ], 425, 95, { itemSpacing: 10 });
   p4Items.push(...col2P4.items);
 
   p4Items.push(...createDigitalFooter(4, 7));
@@ -808,21 +734,8 @@ function buildComidaDigital() {
         'nachos-con-arrachera'
       ]
     }
-  ], 55, 95, { categorySpacing: 22, itemSpacing: 10 });
+  ], 55, 95, { categorySpacing: 16, itemSpacing: 4.5 });
   p5Items.push(...col1P5.items);
-
-  p5Items.push({
-    id: 'img_nachos_nortenos',
-    type: 'image',
-    dishId: 'nachos-nortenos',
-    dishName: 'Nachos Norteños',
-    url: '../assets/dishes/nachos-nortenos.webp',
-    x: 295,
-    y: col1P5.endY + 20,
-    width: 85,
-    height: 58,
-    borderRadius: 6
-  });
 
   const col2P5 = renderDigitalColumn([
     {
@@ -837,21 +750,8 @@ function buildComidaDigital() {
         'hamburguesa-monchosa'
       ]
     }
-  ], 430, 95, { categorySpacing: 20, itemSpacing: 10 });
+  ], 425, 95, { itemSpacing: 10 });
   p5Items.push(...col2P5.items);
-
-  p5Items.push({
-    id: 'img_hamburguesa_de_la_casa',
-    type: 'image',
-    dishId: 'hamburguesa-de-la-casa',
-    dishName: 'Hamburguesa de la Casa',
-    url: '../assets/dishes/hamburguesa-de-la-casa.webp',
-    x: 670,
-    y: 110,
-    width: 85,
-    height: 58,
-    borderRadius: 6
-  });
 
   p5Items.push(...createDigitalFooter(5, 7));
   pages.push({ pageNumber: 5, width: 816, height: 1056, bgColor: '#FDF6EC', hasEmblem: false, items: p5Items });
@@ -877,34 +777,8 @@ function buildComidaDigital() {
         'escuinclito'
       ]
     }
-  ], 55, 95, { categorySpacing: 40, itemSpacing: 18 });
+  ], 55, 95, { categorySpacing: 35, itemSpacing: 14 });
   p6Items.push(...col1P6.items);
-
-  p6Items.push({
-    id: 'img_alitas',
-    type: 'image',
-    dishId: 'orden-alitas',
-    dishName: 'Alitas',
-    url: '../assets/dishes/alitas.webp',
-    x: 295,
-    y: 110,
-    width: 85,
-    height: 58,
-    borderRadius: 6
-  });
-
-  p6Items.push({
-    id: 'img_morrito',
-    type: 'image',
-    dishId: 'morrito',
-    dishName: 'Morrito Infantil',
-    url: '../assets/dishes/morrito.webp',
-    x: 295,
-    y: col1P6.endY + 20,
-    width: 85,
-    height: 58,
-    borderRadius: 6
-  });
 
   const col2P6 = renderDigitalColumn([
     {
@@ -920,34 +794,8 @@ function buildComidaDigital() {
         'malteadas-com'
       ]
     }
-  ], 430, 95, { categorySpacing: 25, itemSpacing: 14 });
+  ], 425, 95, { categorySpacing: 25, itemSpacing: 10 });
   p6Items.push(...col2P6.items);
-
-  p6Items.push({
-    id: 'img_cheesecake_comida',
-    type: 'image',
-    dishId: 'cheesecake-com',
-    dishName: 'Cheesecake',
-    url: '../assets/dishes/cheesecake.webp',
-    x: 670,
-    y: 180,
-    width: 85,
-    height: 58,
-    borderRadius: 6
-  });
-
-  p6Items.push({
-    id: 'img_malteadas_comida',
-    type: 'image',
-    dishId: 'malteadas-com',
-    dishName: 'Malteadas',
-    url: '../assets/dishes/malteadas.webp',
-    x: 670,
-    y: 520,
-    width: 85,
-    height: 58,
-    borderRadius: 6
-  });
 
   p6Items.push(...createDigitalFooter(6, 7));
   pages.push({ pageNumber: 6, width: 816, height: 1056, bgColor: '#FDF6EC', hasEmblem: false, items: p6Items });
@@ -980,7 +828,7 @@ function buildComidaDigital() {
         'pitufo-mocktail'
       ]
     }
-  ], 55, 95);
+  ], 55, 95, { categorySpacing: 25, itemSpacing: 9 });
   p7Items.push(...col1P7.items);
 
   const col2P7 = renderDigitalColumn([
@@ -997,7 +845,7 @@ function buildComidaDigital() {
         'jarra-de-agua-curandera-2l'
       ]
     }
-  ], 430, 95);
+  ], 425, 95, { itemSpacing: 10 });
   p7Items.push(...col2P7.items);
 
   p7Items.push(...createDigitalFooter(7, 7));
@@ -1015,12 +863,12 @@ function buildCantinaDigital() {
 
   // Pág 1: Portada Cantina & De la Casa con Mezcal
   const p1Items = [
-    { id: 'can_d_p1_badge', x: 80, y: 70, text: '✦ CARTA FÍSICA · CANTINA & DESTILADOS ✦', fontSize: 11, fontFamily: 'Gotham-Bold', color: '#E87850', bold: true },
-    { id: 'can_d_p1_brand', x: 80, y: 120, text: 'CANTINA LA CURANDERA', fontSize: 44, fontFamily: 'Hansief', color: '#C94E8F', bold: true },
-    { id: 'can_d_p1_sub', x: 82, y: 185, text: '"AQUÍ TE LA VAMOS A CURAR" · MEZCALERÍA & COCTELERÍA DE AUTOR', fontSize: 13, fontFamily: 'Gotham-Bold', color: '#159F9B', bold: true },
-    { id: 'can_d_p1_type', x: 82, y: 215, text: 'DISPONIBLE EN TODO EL HORARIO DE SERVICIO', fontSize: 11, fontFamily: 'Montserrat', color: '#2C2621', bold: true },
-    { id: 'can_d_p1_banner', x: 82, y: 245, text: '🍾 TODA BOTELLA INCLUYE SERVICIO DE MEZCLADORES', fontSize: 12, fontFamily: 'Gotham-Bold', color: '#E87850', bold: true },
-    { id: 'can_d_p1_sep1', x: 82, y: 275, text: '═════════════════════════════════════════════════', fontSize: 12, fontFamily: 'JetBrains Mono', color: '#E87850', bold: false }
+    { id: 'can_d_p1_badge', x: 75, y: 55, text: '✦ CARTA FÍSICA · CANTINA & DESTILADOS ✦', fontSize: 13.5, fontFamily: 'Gotham-Bold', color: '#E87850', bold: true },
+    { id: 'can_d_p1_brand', x: 75, y: 98, text: 'CANTINA LA CURANDERA', fontSize: 54, fontFamily: 'Hansief', color: '#C94E8F', bold: true },
+    { id: 'can_d_p1_sub', x: 77, y: 172, text: '"AQUÍ TE LA VAMOS A CURAR" · MEZCALERÍA & COCTELERÍA DE AUTOR', fontSize: 16.5, fontFamily: 'Gotham-Bold', color: '#159F9B', bold: true },
+    { id: 'can_d_p1_type', x: 77, y: 208, text: 'DISPONIBLE EN TODO EL HORARIO DE SERVICIO', fontSize: 13.5, fontFamily: 'Montserrat', color: '#2C2621', bold: true },
+    { id: 'can_d_p1_banner', x: 77, y: 242, text: '🍾 TODA BOTELLA INCLUYE SERVICIO DE MEZCLADORES', fontSize: 14.5, fontFamily: 'Gotham-Bold', color: '#E87850', bold: true },
+    { id: 'can_d_p1_sep1', x: 77, y: 275, text: '═════════════════════════════════════════════════', fontSize: 13, fontFamily: 'JetBrains Mono', color: '#E87850', bold: false }
   ];
 
   const col1P1 = renderDigitalColumn([
@@ -1031,18 +879,19 @@ function buildCantinaDigital() {
         'piedra'
       ]
     }
-  ], 82, 310);
+  ], 77, 315, { itemSpacing: 14 });
   p1Items.push(...col1P1.items);
 
   p1Items.push({
     id: 'can_d_p1_quote',
-    x: 82,
-    y: col1P1.endY + 30,
+    x: 77,
+    y: col1P1.endY + 25,
     text: '"Pa\' todo mal, mezcal;\ny pa\' todo bien, también...;\ny si no hay remedio: litro y medio."',
-    fontSize: 14,
-    fontFamily: 'Hansief',
+    fontSize: 16,
+    fontFamily: 'Gotham-Bold',
     color: '#E87850',
-    bold: true
+    bold: true,
+    maxWidth: 345
   });
 
   const col2P1 = renderDigitalColumn([
@@ -1057,21 +906,8 @@ function buildCantinaDigital() {
         'baby-mango-con-mezcal'
       ]
     }
-  ], 430, 310);
+  ], 425, 315, { itemSpacing: 12 });
   p1Items.push(...col2P1.items);
-
-  p1Items.push({
-    id: 'img_mezcal_curandera',
-    type: 'image',
-    dishId: 'la-curandera-cocktail',
-    dishName: 'La Curandera Mezcal',
-    url: '../assets/dishes/mezcal-curandera.webp',
-    x: 670,
-    y: 310,
-    width: 85,
-    height: 58,
-    borderRadius: 6
-  });
 
   p1Items.push(...createDigitalFooter(1, 5));
   pages.push({ pageNumber: 1, width: 816, height: 1056, bgColor: '#FDF6EC', hasEmblem: true, items: p1Items });
@@ -1096,21 +932,8 @@ function buildCantinaDigital() {
         'quemadita'
       ]
     }
-  ], 55, 95);
+  ], 55, 95, { itemSpacing: 10 });
   p2Items.push(...col1P2.items);
-
-  p2Items.push({
-    id: 'img_mojito_frutos_rojos',
-    type: 'image',
-    dishId: 'mojito-frutos-rojos',
-    dishName: 'Mojito Frutos Rojos',
-    url: '../assets/dishes/mojito-frutos-rojos.webp',
-    x: 295,
-    y: 110,
-    width: 85,
-    height: 58,
-    borderRadius: 6
-  });
 
   const col2P2 = renderDigitalColumn([
     {
@@ -1130,7 +953,7 @@ function buildCantinaDigital() {
         'aperol-spritz'
       ]
     }
-  ], 430, 95);
+  ], 425, 95, { itemSpacing: 7 });
   p2Items.push(...col2P2.items);
 
   p2Items.push(...createDigitalFooter(2, 5));
@@ -1142,12 +965,13 @@ function buildCantinaDigital() {
     {
       id: 'can_d_p3_quote',
       x: 55,
-      y: 80,
+      y: 78,
       text: '"Amor, alegría y cerveza fría"',
-      fontSize: 10.5,
+      fontSize: 13.5,
       fontFamily: 'Gotham-Bold',
       color: '#E87850',
-      bold: true
+      bold: true,
+      maxWidth: 345
     }
   ];
 
@@ -1173,7 +997,7 @@ function buildCantinaDigital() {
         'pa-tu-cerveza-cubano'
       ]
     }
-  ], 55, 105);
+  ], 55, 105, { categorySpacing: 24, itemSpacing: 10 });
   p3Items.push(...col1P3.items);
 
   const col2P3 = renderDigitalColumn([
@@ -1195,7 +1019,7 @@ function buildCantinaDigital() {
         'botella-de-vino'
       ]
     }
-  ], 430, 105);
+  ], 425, 105, { categorySpacing: 24, itemSpacing: 10 });
   p3Items.push(...col2P3.items);
 
   p3Items.push(...createDigitalFooter(3, 5));
@@ -1207,12 +1031,13 @@ function buildCantinaDigital() {
     {
       id: 'can_d_p4_banner',
       x: 55,
-      y: 80,
+      y: 78,
       text: '🍾 TODA BOTELLA INCLUYE SERVICIO DE MEZCLADORES',
-      fontSize: 10,
+      fontSize: 13,
       fontFamily: 'Gotham-Bold',
       color: '#E87850',
-      bold: true
+      bold: true,
+      maxWidth: 710
     }
   ];
 
@@ -1228,7 +1053,7 @@ function buildCantinaDigital() {
         { id: 'mezcal-cannabis-santa-ana', name: 'Cannabis Santa Ana', price: 75, customPriceText: 'Copa $75 · Botella $750', description: 'Maceración especial artesanal de la casa.' }
       ]
     }
-  ], 55, 105);
+  ], 55, 105, { itemSpacing: 14 });
   p4Items.push(...col1P4.items);
 
   const col2P4 = renderDigitalColumn([
@@ -1243,7 +1068,7 @@ function buildCantinaDigital() {
         { id: 'tequila-don-julio-70', name: 'Don Julio 70', price: 155, customPriceText: 'Copa $155 · Botella $2,200', description: 'Añejo cristalino legendario.' }
       ]
     }
-  ], 430, 105);
+  ], 425, 105, { itemSpacing: 14 });
   p4Items.push(...col2P4.items);
 
   p4Items.push(...createDigitalFooter(4, 5));
@@ -1255,12 +1080,13 @@ function buildCantinaDigital() {
     {
       id: 'can_d_p5_banner',
       x: 55,
-      y: 80,
+      y: 78,
       text: '🍾 TODA BOTELLA INCLUYE SERVICIO DE MEZCLADORES',
-      fontSize: 10,
+      fontSize: 13,
       fontFamily: 'Gotham-Bold',
       color: '#E87850',
-      bold: true
+      bold: true,
+      maxWidth: 710
     }
   ];
 
@@ -1283,7 +1109,7 @@ function buildCantinaDigital() {
         { id: 'vodka-absolut', name: 'Absolut', price: 75, customPriceText: 'Copa $75 · Botella $750', description: 'Trigo de invierno sueco.' }
       ]
     }
-  ], 55, 105);
+  ], 55, 105, { categorySpacing: 25, itemSpacing: 12 });
   p5Items.push(...col1P5.items);
 
   const col2P5 = renderDigitalColumn([
@@ -1304,7 +1130,7 @@ function buildCantinaDigital() {
         'digestivo-carajillo'
       ]
     }
-  ], 430, 105);
+  ], 425, 105, { categorySpacing: 25, itemSpacing: 12 });
   p5Items.push(...col2P5.items);
 
   p5Items.push(...createDigitalFooter(5, 5));
@@ -1406,14 +1232,15 @@ function convertDigitalPagesToTradicional(digitalPages, typeName) {
       if (it.id.startsWith('cat_title_')) {
         tradItems.push({
           id: `trad_${it.id}`,
+          ...(it.dishId ? { dishId: it.dishId } : {}),
           x: it.x,
           y: it.y,
           text: it.text,
-          fontSize: 13,
+          fontSize: 14.5,
           fontFamily: 'Hansief',
           color: '#000000',
           bold: true,
-          maxWidth: 330
+          maxWidth: 345
         });
         return;
       }
@@ -1422,14 +1249,15 @@ function convertDigitalPagesToTradicional(digitalPages, typeName) {
       if (it.id.startsWith('cat_note_')) {
         tradItems.push({
           id: `trad_${it.id}`,
+          ...(it.dishId ? { dishId: it.dishId } : {}),
           x: it.x,
           y: it.y,
           text: it.text,
-          fontSize: 8,
+          fontSize: 9.5,
           fontFamily: 'SourceCodeVariable-Roman',
           color: '#222222',
           bold: false,
-          maxWidth: 330
+          maxWidth: 345
         });
         return;
       }
@@ -1444,25 +1272,25 @@ function convertDigitalPagesToTradicional(digitalPages, typeName) {
 
         tradItems.push({
           id: `trad_${it.id}_name`,
-          dishId: it.dishId,
+          ...(it.dishId ? { dishId: it.dishId } : {}),
           x: it.x,
           y: it.y,
           text: dishName,
-          fontSize: 9.5,
+          fontSize: 11,
           fontFamily: 'SourceCodeVariable-Roman',
           color: '#000000',
           bold: false,
-          maxWidth: 255
+          maxWidth: 265
         });
 
         if (priceStr) {
           tradItems.push({
             id: `trad_${it.id}_price`,
-            dishId: it.dishId,
+            ...(it.dishId ? { dishId: it.dishId } : {}),
             x: priceX,
             y: it.y,
             text: priceStr,
-            fontSize: 10,
+            fontSize: 11,
             fontFamily: 'SourceCodeVariable-Roman',
             color: '#000000',
             bold: true
@@ -1475,15 +1303,15 @@ function convertDigitalPagesToTradicional(digitalPages, typeName) {
       if (it.id.includes('_desc')) {
         tradItems.push({
           id: `trad_${it.id}`,
-          dishId: it.dishId,
+          ...(it.dishId ? { dishId: it.dishId } : {}),
           x: it.x,
           y: it.y,
           text: it.text,
-          fontSize: 8,
+          fontSize: 9.5,
           fontFamily: 'SourceCodeVariable-Roman',
           color: '#444444',
           bold: false,
-          maxWidth: 320
+          maxWidth: 345
         });
         return;
       }
@@ -1569,11 +1397,12 @@ async function main() {
   };
 
   for (const [docId, pages] of Object.entries(firestoreMap)) {
+    const cleanPages = JSON.parse(JSON.stringify(pages));
     await setDoc(doc(db, 'restaurants/la-curandera/physicalMenus', docId), {
-      pages: pages,
+      pages: cleanPages,
       updatedAt: new Date()
     }, { merge: true });
-    console.log(`✅ Firestore actualizado: /restaurants/la-curandera/physicalMenus/${docId} (${pages.length} páginas)`);
+    console.log(`✅ Firestore actualizado: /restaurants/la-curandera/physicalMenus/${docId} (${cleanPages.length} páginas)`);
   }
 
   console.log('🎉 ¡Todas las cartas físicas (Desayunos, Comidas y Cantina) generadas y sincronizadas exitosamente!');

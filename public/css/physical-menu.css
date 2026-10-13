@@ -470,13 +470,13 @@
   white-space: pre-wrap;
   word-wrap: break-word;
   overflow-wrap: break-word;
-  max-width: 335px;
+  max-width: 345px;
   z-index: 5;
   line-height: 1.28;
 }
 
 .physical-text-item.is-wide {
-  max-width: 730px !important;
+  max-width: 710px;
 }
 
 .physical-text-item:hover {
@@ -673,6 +673,7 @@
   box-shadow: 0 2px 8px rgba(0,0,0,0.5);
   pointer-events: auto;
   z-index: 30;
+  white-space: nowrap;
 }
 
 .btn-item-quick {
@@ -685,6 +686,7 @@
   border-radius: 2px;
   font-family: var(--font-title);
   font-weight: 700;
+  white-space: nowrap;
 }
 
 .btn-item-quick:hover {

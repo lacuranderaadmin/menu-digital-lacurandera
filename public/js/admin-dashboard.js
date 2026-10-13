@@ -19,7 +19,7 @@ import {
 } from './firebase-init.js';
 import { checkAdminAuth, logoutAdmin } from './admin-auth.js';
 import { showToast } from './ui.js';
-import { initPhysicalMenuAdmin } from './physical-menu-editor.js?v=38.0';
+import { initPhysicalMenuAdmin } from './physical-menu-editor.js?v=38.1';
 import { translateCulinaryText } from './culinary-translator.js?v=30.0';
 
 let restaurantId = 'la-curandera';
@@ -245,12 +245,20 @@ function setupDashboardUI(user) {
   // Gestor de Categorías (Agregar, Editar, Eliminar)
   setupCategoriesAdmin();
 
-  // Renderizado inicial inmediato de sucursales
-  renderBranchesList();
+  // Renderizado inicial inmediato de sucursales o vista por hash
+  const initialHash = (window.location.hash || '').replace('#', '').trim();
+  if (initialHash && ['branches', 'menu-editor', 'settings', 'physical-menu'].includes(initialHash)) {
+    switchView(initialHash);
+  } else {
+    renderBranchesList();
+  }
 }
 
 function switchView(viewName) {
   activeView = viewName;
+  if (window.location.hash !== `#${viewName}`) {
+    history.replaceState(null, '', `#${viewName}`);
+  }
   document.querySelectorAll('.sidebar-nav-btn').forEach(btn => {
     if (btn.getAttribute('data-view') === viewName) {
       btn.classList.add('active');

@@ -57,6 +57,9 @@ let isMarqueeSelecting = false;
 let marqueeStartX = 0;
 let marqueeStartY = 0;
 let marqueeEl = null;
+let dragRafId = null;
+let draggedElementsCache = [];
+let marqueeCachedBoxes = [];
 let isEditorInitialized = false;
 
 // Recuperar portapapeles de sesión si existe
@@ -198,7 +201,7 @@ async function loadInitialMenusData() {
 
 async function loadSingleMenuData(type, design = currentDesign) {
   const isTrad = design === 'tradicional';
-  const localKey = isTrad ? `lc_physical_menu_${type}_v3` : `lc_physical_menu_${type}_digital_v3`;
+  const localKey = isTrad ? `lc_physical_menu_${type}_v7` : `lc_physical_menu_${type}_digital_v7`;
   const firestoreDocId = isTrad ? type : `${type}_digital`;
   
   // A. Intentar Firestore primero si está configurado
@@ -592,8 +595,8 @@ async function switchDesign(design) {
 function calculateOptimalZoom() {
   const viewport = document.getElementById('physical-canvas-viewport');
   if (!viewport) return;
-  const availWidth = viewport.clientWidth - 80;
-  const availHeight = viewport.clientHeight - 100;
+  const availWidth = viewport.clientWidth - 70;
+  const availHeight = viewport.clientHeight - 90;
   
   if (availWidth > 0 && availHeight > 0) {
     const scaleX = availWidth / 816;
@@ -612,6 +615,9 @@ function setZoom(scale) {
 
   if (sheet) {
     sheet.style.transform = `scale(${zoomScale})`;
+    // Ajustar margen inferior dinámico para que el scroll del viewport sea natural a cualquier nivel de zoom
+    const scaledHeight = 1056 * zoomScale;
+    sheet.style.marginBottom = `${Math.max(40, scaledHeight - 1056 + 50)}px`;
   }
   if (zoomText) {
     zoomText.textContent = `${Math.round(zoomScale * 100)}%`;
@@ -628,6 +634,7 @@ function renderPagesList() {
   const key = getMenuKey();
   const pages = menusData[key] || [];
   const titles = PAGE_TITLES[key] || PAGE_TITLES[currentType] || [];
+  const defaultBg = currentDesign === 'digital' ? '#FDF6EC' : '#CCAD93';
 
   container.innerHTML = '';
   pages.forEach((p, idx) => {
@@ -636,7 +643,7 @@ function renderPagesList() {
     const title = titles[idx] || `Página ${idx + 1}`;
     
     card.innerHTML = `
-      <div class="page-card-swatch" style="background-color: ${p.bgColor || '#CCAD93'};"></div>
+      <div class="page-card-swatch" style="background-color: ${p.bgColor || defaultBg};"></div>
       <div class="page-card-info">
         <span class="page-card-num">Hoja ${idx + 1}</span>
         <span class="page-card-desc" title="${escapeHtml(title)}">${escapeHtml(title)}</span>
@@ -644,8 +651,10 @@ function renderPagesList() {
     `;
 
     card.addEventListener('click', () => {
+      if (currentPageIndex === idx) return;
       currentPageIndex = idx;
       selectedItemId = null;
+      selectedItemIds.clear();
       renderPagesList();
       renderCurrentPage();
       renderInspector();
@@ -660,8 +669,10 @@ function renderPagesList() {
  */
 function isWideItem(item) {
   if (!item) return false;
-  if (item.maxWidth && item.maxWidth > 350) return true;
   const id = (item.id || '').toLowerCase();
+  // Platillos, notas y títulos de columna NUNCA son wide items
+  if (id.startsWith('item_') || id.startsWith('cat_') || item.dishId) return false;
+  if (item.maxWidth && item.maxWidth >= 500) return true;
   return (
     id.startsWith('hdr_') ||
     id.startsWith('ftr_') ||
@@ -673,9 +684,11 @@ function isWideItem(item) {
     id.includes('type') ||
     id.includes('sep') ||
     id.includes('banner') ||
-    id.includes('quote') ||
     id.includes('hist') ||
-    (item.text && item.text.includes('───'))
+    id.includes('pil_') ||
+    id.includes('inc_') ||
+    (item.text && item.text.includes('───')) ||
+    (item.text && item.text.includes('═══'))
   );
 }
 
@@ -693,11 +706,12 @@ function renderCurrentPage() {
     return;
   }
 
-  sheet.style.backgroundColor = page.bgColor || '#CCAD93';
+  const defaultBg = currentDesign === 'digital' ? '#FDF6EC' : '#CCAD93';
+  sheet.style.backgroundColor = page.bgColor || defaultBg;
   sheet.innerHTML = '';
 
   // Emblema místico de la Curandera para Portada (Hoja 1)
-  if (page.hasEmblem || page.pageNumber === 1) {
+  if (page.hasEmblem || page.pageNumber === 1 || currentPageIndex === 0) {
     const emblemImg = document.createElement('img');
     emblemImg.src = '../assets/logo/curandera-emblem-lineart.png';
     emblemImg.alt = 'La Curandera';
@@ -740,6 +754,16 @@ function renderCurrentPage() {
       if (isSelected && selectedItemIds.size <= 1) {
         const quickBar = document.createElement('div');
         quickBar.className = 'item-quick-toolbar';
+        if (item.y < 38) {
+          quickBar.style.top = 'auto';
+          quickBar.style.bottom = '-32px';
+        }
+        if (item.x > 680) {
+          quickBar.style.left = 'auto';
+          quickBar.style.right = '0px';
+        }
+        quickBar.addEventListener('mousedown', (e) => e.stopPropagation());
+        quickBar.addEventListener('touchstart', (e) => e.stopPropagation());
         quickBar.innerHTML = `
           <button class="btn-item-quick dup" title="Duplicar imagen">📋 Copiar</button>
           <button class="btn-item-quick delete" title="Eliminar imagen">🗑️ Borrar</button>
@@ -780,11 +804,11 @@ function renderCurrentPage() {
     el.style.fontFamily = getCssFontFamily(item.fontFamily);
     el.style.color = item.color || '#000000';
     el.style.fontWeight = item.bold ? '800' : '400';
+    const isWide = isWideItem(item);
+    const itemMaxW = item.width || item.maxWidth || (isWide ? 710 : 345);
+    el.style.maxWidth = `${itemMaxW}px`;
     if (item.width) {
       el.style.width = `${item.width}px`;
-      el.style.maxWidth = `${item.width}px`;
-    } else if (item.maxWidth) {
-      el.style.maxWidth = `${item.maxWidth}px`;
     }
     if (item.height) {
       el.style.height = `${item.height}px`;
@@ -795,6 +819,16 @@ function renderCurrentPage() {
     if (isSelected && selectedItemIds.size <= 1) {
       const quickBar = document.createElement('div');
       quickBar.className = 'item-quick-toolbar';
+      if (item.y < 38) {
+        quickBar.style.top = 'auto';
+        quickBar.style.bottom = '-32px';
+      }
+      if (item.x > 680) {
+        quickBar.style.left = 'auto';
+        quickBar.style.right = '0px';
+      }
+      quickBar.addEventListener('mousedown', (e) => e.stopPropagation());
+      quickBar.addEventListener('touchstart', (e) => e.stopPropagation());
       quickBar.innerHTML = `
         <button class="btn-item-quick edit" title="Editar texto">✏️ Editar</button>
         <button class="btn-item-quick dup" title="Duplicar">📋 Copiar</button>
@@ -831,6 +865,35 @@ function renderCurrentPage() {
 
   // Evento Mousedown en el lienzo para selección por marco (Marquee Lasso)
   sheet.onmousedown = handleSheetMouseDown;
+}
+
+function wrapText(text, maxChars = 38) {
+  if (!text || typeof text !== 'string') return '';
+  const clean = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n').trim();
+  if (clean.length <= maxChars && !clean.includes('\n')) return clean;
+
+  const paragraphs = clean.split('\n');
+  const result = [];
+
+  paragraphs.forEach(para => {
+    const words = para.trim().split(/\s+/);
+    if (words.length === 0 || words[0] === '') return;
+    let currentLine = '';
+
+    words.forEach(word => {
+      if (!currentLine) {
+        currentLine = word;
+      } else if ((currentLine + ' ' + word).length <= maxChars) {
+        currentLine += ' ' + word;
+      } else {
+        result.push(currentLine);
+        currentLine = word;
+      }
+    });
+    if (currentLine) result.push(currentLine);
+  });
+
+  return result.join('\n');
 }
 
 function getCssFontFamily(font) {
@@ -880,6 +943,26 @@ function handleSheetMouseDown(e) {
   marqueeEl.style.top = `${marqueeStartY}px`;
   marqueeEl.style.width = '0px';
   marqueeEl.style.height = '0px';
+
+  // Pre-calcular cajas delimitadoras para rendimiento óptimo de 60 FPS sin reflows continuos
+  marqueeCachedBoxes = [];
+  const pages = menusData[getMenuKey()] || [];
+  const page = pages[currentPageIndex];
+  if (page && page.items) {
+    page.items.forEach(it => {
+      const domEl = document.getElementById(`phys-item-${it.id}`);
+      const w = it.width || (domEl ? domEl.offsetWidth : 120);
+      const h = it.height || (domEl ? domEl.offsetHeight : 24);
+      marqueeCachedBoxes.push({
+        id: it.id,
+        domEl,
+        left: it.x,
+        top: it.y,
+        right: it.x + w,
+        bottom: it.y + h
+      });
+    });
+  }
 }
 
 function handleMarqueeMouseMove(e) {
@@ -904,25 +987,13 @@ function handleMarqueeMouseMove(e) {
   const right = left + width;
   const bottom = top + height;
 
-  const pages = menusData[getMenuKey()] || [];
-  const page = pages[currentPageIndex];
-  if (!page || !page.items) return;
-
-  page.items.forEach(it => {
-    const domEl = document.getElementById(`phys-item-${it.id}`);
-    const w = it.width || (domEl ? domEl.offsetWidth : 120);
-    const h = it.height || (domEl ? domEl.offsetHeight : 24);
-    const itLeft = it.x;
-    const itTop = it.y;
-    const itRight = it.x + w;
-    const itBottom = it.y + h;
-
-    const intersects = !(itLeft > right || itRight < left || itTop > bottom || itBottom < top);
+  marqueeCachedBoxes.forEach(box => {
+    const intersects = !(box.left > right || box.right < left || box.top > bottom || box.bottom < top);
     if (intersects) {
-      selectedItemIds.add(it.id);
-      if (domEl) {
-        domEl.classList.add('is-selected');
-        domEl.classList.add('is-multi-selected');
+      selectedItemIds.add(box.id);
+      if (box.domEl) {
+        box.domEl.classList.add('is-selected');
+        box.domEl.classList.add('is-multi-selected');
       }
     }
   });
@@ -1043,8 +1114,9 @@ function applyResizeDelta(deltaX, deltaY) {
   const domEl = document.getElementById(`phys-item-${item.id}`);
   if (!domEl) return;
 
-  const minWidth = item.type === 'image' ? 30 : 35;
-  const minHeight = item.type === 'image' ? 20 : 16;
+  const isImg = item.type === 'image';
+  const minWidth = isImg ? 30 : 35;
+  const minHeight = isImg ? 20 : 16;
   const sheetWidth = 816;
   const sheetHeight = 1056;
 
@@ -1052,44 +1124,52 @@ function applyResizeDelta(deltaX, deltaY) {
   let newHeight = resizeInitialHeight;
   let newX = resizeInitialX;
   let newY = resizeInitialY;
+  const hType = resizeHandleType || '';
 
   // Horizontal (e, w)
-  if (resizeHandleType.includes('e')) {
+  if (hType.includes('e')) {
     newWidth = Math.max(minWidth, Math.round(resizeInitialWidth + deltaX));
     if (newX + newWidth > sheetWidth) {
-      newWidth = sheetWidth - newX;
+      newWidth = Math.max(minWidth, sheetWidth - newX);
     }
-  } else if (resizeHandleType.includes('w')) {
+  } else if (hType.includes('w')) {
     const rawW = Math.round(resizeInitialWidth - deltaX);
-    if (rawW >= minWidth) {
-      const targetX = Math.round(resizeInitialX + deltaX);
-      if (targetX >= 0) {
-        newWidth = rawW;
-        newX = targetX;
-      }
+    const targetX = Math.round(resizeInitialX + deltaX);
+    if (targetX < 0) {
+      newX = 0;
+      newWidth = Math.max(minWidth, resizeInitialWidth + resizeInitialX);
+    } else if (rawW >= minWidth) {
+      newWidth = rawW;
+      newX = targetX;
+    } else {
+      newWidth = minWidth;
+      newX = resizeInitialX + (resizeInitialWidth - minWidth);
     }
   }
 
   // Vertical (s, n)
-  if (resizeHandleType.includes('s')) {
+  if (hType.includes('s')) {
     newHeight = Math.max(minHeight, Math.round(resizeInitialHeight + deltaY));
     if (newY + newHeight > sheetHeight) {
-      newHeight = sheetHeight - newY;
+      newHeight = Math.max(minHeight, sheetHeight - newY);
     }
-  } else if (resizeHandleType.includes('n')) {
+  } else if (hType.includes('n')) {
     const rawH = Math.round(resizeInitialHeight - deltaY);
-    if (rawH >= minHeight) {
-      const targetY = Math.round(resizeInitialY + deltaY);
-      if (targetY >= 0) {
-        newHeight = rawH;
-        newY = targetY;
-      }
+    const targetY = Math.round(resizeInitialY + deltaY);
+    if (targetY < 0) {
+      newY = 0;
+      newHeight = Math.max(minHeight, resizeInitialHeight + resizeInitialY);
+    } else if (rawH >= minHeight) {
+      newHeight = rawH;
+      newY = targetY;
+    } else {
+      newHeight = minHeight;
+      newY = resizeInitialY + (resizeInitialHeight - minHeight);
     }
   }
 
   // Guardar en el modelo del elemento
   item.width = newWidth;
-  item.height = newHeight;
   item.x = newX;
   item.y = newY;
   if (item.maxWidth !== undefined) {
@@ -1101,7 +1181,18 @@ function applyResizeDelta(deltaX, deltaY) {
   domEl.style.top = `${newY}px`;
   domEl.style.width = `${newWidth}px`;
   domEl.style.maxWidth = `${newWidth}px`;
-  domEl.style.height = `${newHeight}px`;
+
+  // Si es un texto y el usuario solo ajustó el ancho ('e' o 'w'),
+  // ajustar la altura automáticamente según el contenido real para no cortar texto
+  if (!isImg && (hType === 'e' || hType === 'w')) {
+    const naturalHeight = Math.max(minHeight, Math.round(domEl.scrollHeight));
+    item.height = naturalHeight;
+    newHeight = naturalHeight;
+    domEl.style.height = `${naturalHeight}px`;
+  } else {
+    item.height = newHeight;
+    domEl.style.height = `${newHeight}px`;
+  }
 
   if (resizeBadgeEl) {
     resizeBadgeEl.textContent = `${newWidth} × ${newHeight} px`;
@@ -1133,8 +1224,10 @@ function startDragItem(e, item) {
   e.stopPropagation();
 
   const isMultiModifier = e.shiftKey || e.ctrlKey || e.metaKey;
+  let selectionChanged = false;
 
   if (isMultiModifier) {
+    selectionChanged = true;
     if (selectedItemIds.has(item.id)) {
       selectedItemIds.delete(item.id);
       if (selectedItemId === item.id) {
@@ -1150,6 +1243,7 @@ function startDragItem(e, item) {
   } else {
     // Si no se presiona Shift/Ctrl y el elemento no formaba parte del grupo, seleccionarlo únicamente
     if (!selectedItemIds.has(item.id)) {
+      selectionChanged = true;
       selectedItemIds.clear();
       selectedItemIds.add(item.id);
       selectedItemId = item.id;
@@ -1164,12 +1258,23 @@ function startDragItem(e, item) {
 
   // Registrar posiciones iniciales de todos los elementos seleccionados para arrastrar todo el grupo junto
   dragInitialPositions.clear();
+  draggedElementsCache = [];
   const pages = menusData[getMenuKey()] || [];
   const page = pages[currentPageIndex];
   if (page && page.items) {
     page.items.forEach(it => {
       if (selectedItemIds.has(it.id)) {
         dragInitialPositions.set(it.id, { x: it.x, y: it.y });
+        const domEl = document.getElementById(`phys-item-${it.id}`);
+        if (domEl) {
+          draggedElementsCache.push({
+            id: it.id,
+            domEl,
+            item: it,
+            initX: it.x,
+            initY: it.y
+          });
+        }
       }
     });
   }
@@ -1177,7 +1282,28 @@ function startDragItem(e, item) {
   dragInitialItemX = item.x;
   dragInitialItemY = item.y;
 
-  renderCurrentPage();
+  // Solo re-renderizar si la selección cambió de elemento para evitar destruir el DOM bajo el cursor
+  if (selectionChanged) {
+    renderCurrentPage();
+    draggedElementsCache = [];
+    if (page && page.items) {
+      page.items.forEach(it => {
+        if (selectedItemIds.has(it.id)) {
+          const domEl = document.getElementById(`phys-item-${it.id}`);
+          const initPos = dragInitialPositions.get(it.id) || { x: it.x, y: it.y };
+          if (domEl) {
+            draggedElementsCache.push({
+              id: it.id,
+              domEl,
+              item: it,
+              initX: initPos.x,
+              initY: initPos.y
+            });
+          }
+        }
+      });
+    }
+  }
   renderInspector();
 }
 
@@ -1185,7 +1311,9 @@ function startDragItemTouch(e, item) {
   if (e.touches.length !== 1) return;
   e.stopPropagation();
 
+  let selectionChanged = false;
   if (!selectedItemIds.has(item.id)) {
+    selectionChanged = true;
     selectedItemIds.clear();
     selectedItemIds.add(item.id);
     selectedItemId = item.id;
@@ -1196,12 +1324,23 @@ function startDragItemTouch(e, item) {
   dragStartY = e.touches[0].clientY;
 
   dragInitialPositions.clear();
+  draggedElementsCache = [];
   const pages = menusData[getMenuKey()] || [];
   const page = pages[currentPageIndex];
   if (page && page.items) {
     page.items.forEach(it => {
       if (selectedItemIds.has(it.id)) {
         dragInitialPositions.set(it.id, { x: it.x, y: it.y });
+        const domEl = document.getElementById(`phys-item-${it.id}`);
+        if (domEl) {
+          draggedElementsCache.push({
+            id: it.id,
+            domEl,
+            item: it,
+            initX: it.x,
+            initY: it.y
+          });
+        }
       }
     });
   }
@@ -1209,7 +1348,27 @@ function startDragItemTouch(e, item) {
   dragInitialItemX = item.x;
   dragInitialItemY = item.y;
 
-  renderCurrentPage();
+  if (selectionChanged) {
+    renderCurrentPage();
+    draggedElementsCache = [];
+    if (page && page.items) {
+      page.items.forEach(it => {
+        if (selectedItemIds.has(it.id)) {
+          const domEl = document.getElementById(`phys-item-${it.id}`);
+          const initPos = dragInitialPositions.get(it.id) || { x: it.x, y: it.y };
+          if (domEl) {
+            draggedElementsCache.push({
+              id: it.id,
+              domEl,
+              item: it,
+              initX: initPos.x,
+              initY: initPos.y
+            });
+          }
+        }
+      });
+    }
+  }
   renderInspector();
 }
 
@@ -1224,40 +1383,31 @@ function handleDragMouseMove(e) {
     return;
   }
 
-  if (!isDragging || selectedItemIds.size === 0) return;
+  if (!isDragging || selectedItemIds.size === 0 || draggedElementsCache.length === 0) return;
   e.preventDefault();
 
   const deltaX = (e.clientX - dragStartX) / zoomScale;
   const deltaY = (e.clientY - dragStartY) / zoomScale;
 
-  const pages = menusData[getMenuKey()] || [];
-  const page = pages[currentPageIndex];
-  if (!page || !page.items) return;
+  if (!dragRafId) {
+    dragRafId = requestAnimationFrame(() => {
+      dragRafId = null;
+      draggedElementsCache.forEach(entry => {
+        const newX = Math.max(0, Math.min(816 - 20, Math.round(entry.initX + deltaX)));
+        const newY = Math.max(0, Math.min(1056 - 20, Math.round(entry.initY + deltaY)));
+        entry.item.x = newX;
+        entry.item.y = newY;
+        entry.domEl.style.left = `${newX}px`;
+        entry.domEl.style.top = `${newY}px`;
+      });
 
-  selectedItemIds.forEach(id => {
-    const initPos = dragInitialPositions.get(id);
-    const item = page.items.find(i => i.id === id);
-    if (initPos && item) {
-      item.x = Math.max(0, Math.min(816 - 20, Math.round(initPos.x + deltaX)));
-      item.y = Math.max(0, Math.min(1056 - 20, Math.round(initPos.y + deltaY)));
-
-      const domEl = document.getElementById(`phys-item-${item.id}`);
-      if (domEl) {
-        domEl.style.left = `${item.x}px`;
-        domEl.style.top = `${item.y}px`;
+      if (draggedElementsCache.length === 1) {
+        const inpX = document.getElementById('insp-item-x');
+        const inpY = document.getElementById('insp-item-y');
+        if (inpX) inpX.value = draggedElementsCache[0].item.x;
+        if (inpY) inpY.value = draggedElementsCache[0].item.y;
       }
-    }
-  });
-
-  // Si solo hay un elemento seleccionado, actualizar inspectores en tiempo real
-  if (selectedItemIds.size === 1) {
-    const item = getSelectedItem();
-    if (item) {
-      const inpX = document.getElementById('insp-item-x');
-      const inpY = document.getElementById('insp-item-y');
-      if (inpX) inpX.value = item.x;
-      if (inpY) inpY.value = item.y;
-    }
+    });
   }
 }
 
@@ -1267,45 +1417,43 @@ function handleDragTouchMove(e) {
     return;
   }
 
-  if (!isDragging || selectedItemIds.size === 0 || e.touches.length !== 1) return;
+  if (!isDragging || selectedItemIds.size === 0 || e.touches.length !== 1 || draggedElementsCache.length === 0) return;
   e.preventDefault();
 
   const deltaX = (e.touches[0].clientX - dragStartX) / zoomScale;
   const deltaY = (e.touches[0].clientY - dragStartY) / zoomScale;
 
-  const pages = menusData[getMenuKey()] || [];
-  const page = pages[currentPageIndex];
-  if (!page || !page.items) return;
+  if (!dragRafId) {
+    dragRafId = requestAnimationFrame(() => {
+      dragRafId = null;
+      draggedElementsCache.forEach(entry => {
+        const newX = Math.max(0, Math.min(816 - 20, Math.round(entry.initX + deltaX)));
+        const newY = Math.max(0, Math.min(1056 - 20, Math.round(entry.initY + deltaY)));
+        entry.item.x = newX;
+        entry.item.y = newY;
+        entry.domEl.style.left = `${newX}px`;
+        entry.domEl.style.top = `${newY}px`;
+      });
 
-  selectedItemIds.forEach(id => {
-    const initPos = dragInitialPositions.get(id);
-    const item = page.items.find(i => i.id === id);
-    if (initPos && item) {
-      item.x = Math.max(0, Math.min(816 - 20, Math.round(initPos.x + deltaX)));
-      item.y = Math.max(0, Math.min(1056 - 20, Math.round(initPos.y + deltaY)));
-
-      const domEl = document.getElementById(`phys-item-${item.id}`);
-      if (domEl) {
-        domEl.style.left = `${item.x}px`;
-        domEl.style.top = `${item.y}px`;
+      if (draggedElementsCache.length === 1) {
+        const inpX = document.getElementById('insp-item-x');
+        const inpY = document.getElementById('insp-item-y');
+        if (inpX) inpX.value = draggedElementsCache[0].item.x;
+        if (inpY) inpY.value = draggedElementsCache[0].item.y;
       }
-    }
-  });
-
-  if (selectedItemIds.size === 1) {
-    const item = getSelectedItem();
-    if (item) {
-      const inpX = document.getElementById('insp-item-x');
-      const inpY = document.getElementById('insp-item-y');
-      if (inpX) inpX.value = item.x;
-      if (inpY) inpY.value = item.y;
-    }
+    });
   }
 }
 
 function handleDragMouseUp() {
+  if (dragRafId) {
+    cancelAnimationFrame(dragRafId);
+    dragRafId = null;
+  }
+
   if (isMarqueeSelecting) {
     isMarqueeSelecting = false;
+    marqueeCachedBoxes = [];
     if (marqueeEl) {
       marqueeEl.style.display = 'none';
     }
@@ -1331,6 +1479,7 @@ function handleDragMouseUp() {
 
   if (isDragging) {
     isDragging = false;
+    draggedElementsCache = [];
     saveToLocalStorageDraft();
   }
 }
@@ -1340,7 +1489,7 @@ function handleDragMouseUp() {
  */
 function handleEditorKeyDown(e) {
   // Ignorar si estamos escribiendo en campos de formulario o editables
-  if (['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName)) return;
+  if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName)) return;
   if (document.activeElement?.isContentEditable) return;
 
   const hasSelection = selectedItemIds.size > 0 || Boolean(selectedItemId);
@@ -1527,6 +1676,8 @@ function renderInspector() {
         const f = (item.fontFamily || '').toLowerCase();
         if (f.includes('hansief')) inpFont.value = 'Hansief';
         else if (f.includes('sourcecode') || f.includes('mono')) inpFont.value = 'SourceCodeVariable-Roman';
+        else if (f.includes('montserrat')) inpFont.value = 'Montserrat';
+        else if (f.includes('caveat')) inpFont.value = 'Caveat Brush';
         else inpFont.value = 'Gotham-Bold';
       }
       if (inpSize) inpSize.value = item.fontSize;
@@ -1547,10 +1698,11 @@ function renderInspector() {
 
     const pages = menusData[getMenuKey()] || [];
     const page = pages[currentPageIndex];
+    const defaultBg = currentDesign === 'digital' ? '#FDF6EC' : '#CCAD93';
     const inpPageBg = document.getElementById('insp-page-bg');
-    if (inpPageBg && page) inpPageBg.value = page.bgColor || '#CCAD93';
+    if (inpPageBg && page) inpPageBg.value = page.bgColor || defaultBg;
 
-    renderColorPresets('page-color-presets', page?.bgColor, (hex) => {
+    renderColorPresets('page-color-presets', page?.bgColor || defaultBg, (hex) => {
       if (inpPageBg) inpPageBg.value = hex;
       updateCurrentPageBg(hex);
     });
@@ -1584,6 +1736,7 @@ function updateMultiTextFontSize(value, isDelta = false) {
     const domEl = document.getElementById(`phys-item-${it.id}`);
     if (domEl) {
       domEl.style.fontSize = `${it.fontSize}px`;
+      if (!it.height) domEl.style.height = '';
     }
   });
 
@@ -1616,9 +1769,10 @@ function renderColorPresets(containerId, activeHex, onClick) {
   COLOR_PRESETS.forEach(cp => {
     const btn = document.createElement('button');
     btn.type = 'button';
-    btn.className = `color-swatch-btn ${activeHex?.toLowerCase() === cp.hex.toLowerCase() ? 'selected' : ''}`;
+    const isSelected = activeHex && activeHex.toLowerCase() === cp.hex.toLowerCase();
+    btn.className = `color-swatch-btn ${isSelected ? 'selected' : ''}`;
     btn.style.backgroundColor = cp.hex;
-    btn.title = cp.name;
+    btn.title = `${cp.name} (${cp.hex})`;
     btn.addEventListener('click', () => {
       onClick(cp.hex);
       renderInspector();
@@ -1639,9 +1793,22 @@ function renderCurrentPageTextsList() {
   }
 
   container.innerHTML = '';
-  page.items.slice(0, 30).forEach((it) => {
+  page.items.forEach((it) => {
+    const isThisSelected = selectedItemIds.has(it.id) || selectedItemId === it.id;
     const row = document.createElement('div');
-    row.style.cssText = 'padding:0.4rem; background:rgba(255,255,255,0.05); border-radius:4px; font-size:0.75rem; cursor:pointer; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; margin-bottom:0.3rem;';
+    row.style.cssText = `
+      padding: 0.4rem 0.5rem;
+      background: ${isThisSelected ? 'rgba(201,78,143,0.25)' : 'rgba(255,255,255,0.05)'};
+      border: 1px solid ${isThisSelected ? 'var(--lc-rosa)' : 'transparent'};
+      border-radius: 4px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      margin-bottom: 0.3rem;
+      transition: all 0.15s ease;
+    `;
     if (it.type === 'image') {
       row.innerHTML = `<span style="color:var(--lc-rosa); font-weight:700;">🖼️ Imagen:</span> ${escapeHtml(it.dishName || 'Platillo')}`;
     } else {
@@ -1666,6 +1833,7 @@ function focusInspectorTextarea() {
   if (ta) {
     ta.focus();
     ta.select();
+    ta.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
 }
 
@@ -1685,7 +1853,10 @@ function updateSelectedItemProp(prop, value) {
   item[prop] = value;
   const domEl = document.getElementById(`phys-item-${item.id}`);
   if (domEl) {
-    if (prop === 'text') domEl.textContent = value;
+    if (prop === 'text') {
+      domEl.textContent = value;
+      if (!item.height) domEl.style.height = '';
+    }
     if (prop === 'x') domEl.style.left = `${value}px`;
     if (prop === 'y') domEl.style.top = `${value}px`;
     if (prop === 'width') {
@@ -1698,7 +1869,10 @@ function updateSelectedItemProp(prop, value) {
       const imgChild = domEl.querySelector('img');
       if (imgChild) imgChild.style.borderRadius = `${value}px`;
     }
-    if (prop === 'fontSize') domEl.style.fontSize = `${value}px`;
+    if (prop === 'fontSize') {
+      domEl.style.fontSize = `${value}px`;
+      if (!item.height) domEl.style.height = '';
+    }
     if (prop === 'fontFamily') domEl.style.fontFamily = getCssFontFamily(value);
     if (prop === 'color') domEl.style.color = value;
     if (prop === 'bold') domEl.style.fontWeight = value ? '800' : '400';
@@ -1903,14 +2077,30 @@ function deleteSelectedItem() {
   deleteSelectedItems();
 }
 
+function reindexPageNumbers(pages) {
+  if (!Array.isArray(pages)) return;
+  const total = pages.length;
+  pages.forEach((p, idx) => {
+    p.pageNumber = idx + 1;
+    (p.items || []).forEach(it => {
+      if (it.text && /HOJA\s+\d+\s+DE\s+\d+/i.test(it.text)) {
+        it.text = it.text.replace(/HOJA\s+\d+\s+DE\s+\d+/i, `HOJA ${idx + 1} DE ${total}`);
+        const domEl = document.getElementById(`phys-item-${it.id}`);
+        if (domEl) domEl.textContent = it.text;
+      }
+    });
+  });
+}
+
 function addNewPage() {
   const pages = menusData[getMenuKey()] || [];
   const newNum = pages.length + 1;
+  const isDig = currentDesign === 'digital';
   const newPage = {
     pageNumber: newNum,
     width: 816,
     height: 1056,
-    bgColor: currentDesign === 'digital' ? '#FDF6EC' : '#CCAD93',
+    bgColor: isDig ? '#FDF6EC' : '#CCAD93',
     hasEmblem: false,
     items: [
       {
@@ -1919,16 +2109,18 @@ function addNewPage() {
         y: 80,
         text: 'NUEVA SECCIÓN DE CARTA',
         fontSize: 22,
-        fontFamily: 'Hansief',
-        color: '#000000',
+        fontFamily: isDig ? 'Hansief' : 'Hansief',
+        color: isDig ? '#C94E8F' : '#000000',
         bold: true
       }
     ]
   };
 
   pages.push(newPage);
+  reindexPageNumbers(pages);
   currentPageIndex = pages.length - 1;
   selectedItemId = null;
+  selectedItemIds.clear();
 
   renderPagesList();
   renderCurrentPage();
@@ -1943,12 +2135,13 @@ function duplicateCurrentPage() {
   if (!page) return;
 
   const cloned = JSON.parse(JSON.stringify(page));
-  cloned.pageNumber = pages.length + 1;
   cloned.items = (cloned.items || []).map(it => ({ ...it, id: `item_${Date.now()}_${Math.random().toString(36).substr(2, 4)}` }));
 
   pages.splice(currentPageIndex + 1, 0, cloned);
+  reindexPageNumbers(pages);
   currentPageIndex = currentPageIndex + 1;
   selectedItemId = null;
+  selectedItemIds.clear();
 
   renderPagesList();
   renderCurrentPage();
@@ -1967,10 +2160,12 @@ function deleteCurrentPage() {
   if (!confirm(`¿Deseas eliminar la Hoja ${currentPageIndex + 1}?`)) return;
 
   pages.splice(currentPageIndex, 1);
+  reindexPageNumbers(pages);
   if (currentPageIndex >= pages.length) {
     currentPageIndex = pages.length - 1;
   }
   selectedItemId = null;
+  selectedItemIds.clear();
 
   renderPagesList();
   renderCurrentPage();
@@ -1982,8 +2177,11 @@ function deleteCurrentPage() {
 function saveToLocalStorageDraft() {
   try {
     const isTrad = currentDesign === 'tradicional';
-    const localKey = isTrad ? `lc_physical_menu_${currentType}_v3` : `lc_physical_menu_${currentType}_digital_v3`;
-    localStorage.setItem(localKey, JSON.stringify(menusData[getMenuKey()]));
+    const localKey = isTrad ? `lc_physical_menu_${currentType}_v7` : `lc_physical_menu_${currentType}_digital_v7`;
+    const data = menusData[getMenuKey()];
+    if (data) {
+      localStorage.setItem(localKey, JSON.stringify(data));
+    }
   } catch (e) {}
 }
 
@@ -1992,6 +2190,7 @@ function saveToLocalStorageDraft() {
  */
 async function savePhysicalMenu(silent = false) {
   const btn = document.getElementById('btn-phys-save');
+  const originalBtnHtml = btn ? btn.innerHTML : '';
   if (btn && !silent) {
     btn.disabled = true;
     btn.textContent = 'Guardando...';
@@ -2002,7 +2201,7 @@ async function savePhysicalMenu(silent = false) {
     // Limpiar cualquier propiedad undefined antes de almacenar
     const pages = JSON.parse(JSON.stringify(rawPages));
     const isTrad = currentDesign === 'tradicional';
-    const localKey = isTrad ? `lc_physical_menu_${currentType}_v3` : `lc_physical_menu_${currentType}_digital_v3`;
+    const localKey = isTrad ? `lc_physical_menu_${currentType}_v7` : `lc_physical_menu_${currentType}_digital_v7`;
     const firestoreDocId = isTrad ? currentType : `${currentType}_digital`;
 
     localStorage.setItem(localKey, JSON.stringify(pages));
@@ -2031,7 +2230,7 @@ async function savePhysicalMenu(silent = false) {
   } finally {
     if (btn && !silent) {
       btn.disabled = false;
-      btn.innerHTML = '💾 Guardar Cambios';
+      btn.innerHTML = originalBtnHtml || '💾 Guardar Cambios';
     }
   }
 }
@@ -2387,23 +2586,35 @@ async function syncDigitalMenuToPhysicalMenu() {
             const cleanName = effective.name;
             const cleanDesc = effective.description;
 
-            const newTitle = `${cleanName}  ·  $${effective.price}`;
+            // Preservar formato de destilados por copa y botella si ya existe
+            let newTitle;
+            if (matchedItem.text.includes('Botella') || matchedItem.text.includes('Copa')) {
+              newTitle = matchedItem.text;
+            } else {
+              newTitle = `${cleanName}  ·  $${effective.price}`;
+            }
+
             if (matchedItem.text !== newTitle) {
               matchedItem.text = newTitle;
               updatedTextsCount++;
             }
+            matchedItem.maxWidth = 345;
 
             // Buscar item de descripción contiguo
             const descItem = page.items.find(it => {
               if (it.type === 'image' || it === matchedItem || isStructuralElement(it)) return false;
               if (it.id === `${matchedItem.id}_desc` || it.id === matchedItem.id.replace('_title', '_desc')) return true;
-              return Math.abs(it.x - matchedItem.x) < 25 && (it.y > matchedItem.y && it.y < matchedItem.y + 36);
+              return Math.abs(it.x - matchedItem.x) < 25 && (it.y > matchedItem.y && it.y < matchedItem.y + 45);
             });
 
-            if (descItem && cleanDesc && descItem.text !== cleanDesc) {
-              descItem.text = cleanDesc;
+            if (descItem && cleanDesc) {
+              const wrappedDesc = wrapText(cleanDesc, 38);
+              if (descItem.text !== wrappedDesc) {
+                descItem.text = wrappedDesc;
+                updatedTextsCount++;
+              }
               descItem.dishId = prod.id;
-              updatedTextsCount++;
+              descItem.maxWidth = 345;
             }
 
             // Sincronizar o insertar imagen si el platillo cuenta con una
@@ -2582,22 +2793,24 @@ async function syncDigitalMenuToPhysicalMenu() {
             x: 55,
             y: currentY,
             text: `${cleanName}  ·  $${effective.price}`,
-            fontSize: 12.5,
+            fontSize: 13,
             fontFamily: 'Gotham-Bold',
             color: '#1C1714',
-            bold: true
+            bold: true,
+            maxWidth: 350
           });
           if (cleanDesc) {
             targetPage.items.push({
               id: `sync_item_${prod.id}_desc`,
               dishId: prod.id,
               x: 55,
-              y: currentY + 18,
+              y: currentY + 20,
               text: cleanDesc,
-              fontSize: 9.5,
+              fontSize: 10.5,
               fontFamily: 'Montserrat',
-              color: '#6D6258',
-              bold: false
+              color: '#554B43',
+              bold: false,
+              maxWidth: 350
             });
           }
           if (effective.imageUrl) {
@@ -2659,7 +2872,8 @@ async function syncDigitalMenuToPhysicalMenu() {
       });
     }
 
-    // 5. Guardar permanentemente en borrador local y en Firestore
+    // 5. Reindexar hojas y guardar permanentemente en borrador local y en Firestore
+    reindexPageNumbers(pages);
     saveToLocalStorageDraft();
     await savePhysicalMenu(true);
 
@@ -2731,11 +2945,11 @@ async function downloadPhysicalMenuPDF() {
   progressModal.innerHTML = `
     <div class="physical-print-box">
       <h3 style="font-family:var(--font-title); font-size:1.25rem; margin-bottom:0.5rem;">Generando PDF Tamaño Carta</h3>
-      <p id="phys-progress-text" style="font-family:var(--font-mono); font-size:0.85rem; color:var(--lc-crema);">Renderizando páginas en alta resolución...</p>
+      <p id="phys-progress-text" style="font-family:var(--font-mono); font-size:0.85rem; color:var(--lc-crema);">Inicializando tipografías y recursos...</p>
       <div class="physical-progress-bar">
         <div id="phys-progress-fill" class="physical-progress-fill"></div>
       </div>
-      <span style="font-size:0.75rem; color:var(--lc-gray-500);">8.5 x 11 pulgadas · Impresión profesional</span>
+      <span style="font-size:0.75rem; color:var(--lc-gray-500);">8.5 x 11 pulgadas · Impresión profesional de alta fidelidad</span>
     </div>
   `;
   document.body.appendChild(progressModal);
@@ -2743,7 +2957,16 @@ async function downloadPhysicalMenuPDF() {
   const progressText = progressModal.querySelector('#phys-progress-text');
   const progressFill = progressModal.querySelector('#phys-progress-fill');
 
+  let renderContainer = null;
+
   try {
+    // 1. Esperar a que las fuentes personalizadas estén 100% listas
+    if (document.fonts && document.fonts.ready) {
+      try {
+        await document.fonts.ready;
+      } catch (e) {}
+    }
+
     const { jsPDF } = window.jspdf;
     // Dimensiones exactas de US Letter en puntos (72 pt / pulgada): 612 x 792 pt
     const pdf = new jsPDF({
@@ -2753,24 +2976,40 @@ async function downloadPhysicalMenuPDF() {
       compress: true
     });
 
-    // Contenedor temporal fuera de pantalla para renderizar cada página a tamaño completo (816px x 1056px)
-    const renderContainer = document.createElement('div');
-    renderContainer.style.cssText = 'position:fixed; left:-9999px; top:0; width:816px; height:1056px; z-index:-1000; overflow:hidden;';
+    // Contenedor temporal de renderizado a escala 1:1 (816 x 1056 px)
+    // Se ubica a left:0 top:0 detrás del modal de progreso (z-index 9998 < modal 9999)
+    // para evitar cualquier error de recorte o coordenadas fuera de pantalla en html2canvas
+    renderContainer = document.createElement('div');
+    renderContainer.style.cssText = `
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 816px;
+      height: 1056px;
+      z-index: 9998;
+      pointer-events: none;
+      overflow: hidden;
+      box-sizing: border-box;
+      transform: none !important;
+    `;
     document.body.appendChild(renderContainer);
+
+    const defaultBg = currentDesign === 'digital' ? '#FDF6EC' : '#CCAD93';
 
     for (let i = 0; i < pages.length; i++) {
       const p = pages[i];
-      if (progressText) progressText.textContent = `Generando hoja ${i + 1} de ${pages.length}...`;
+      if (progressText) progressText.textContent = `Renderizando hoja ${i + 1} de ${pages.length}...`;
       if (progressFill) progressFill.style.width = `${Math.round(((i + 1) / pages.length) * 100)}%`;
 
-      // Renderizar el HTML idéntico de la hoja a escala 1:1
-      renderContainer.style.backgroundColor = p.bgColor || '#CCAD93';
+      renderContainer.style.backgroundColor = p.bgColor || defaultBg;
       renderContainer.innerHTML = '';
 
-      if (p.hasEmblem || p.pageNumber === 1) {
+      // Emblema místico de La Curandera en Portada (Hoja 1)
+      if (p.hasEmblem || p.pageNumber === 1 || i === 0) {
         const emblem = document.createElement('img');
         emblem.src = '../assets/logo/curandera-emblem-lineart.png';
-        emblem.style.cssText = 'position:absolute; top:48px; right:50px; width:170px; height:170px; z-index:1; opacity:0.95;';
+        emblem.alt = 'La Curandera';
+        emblem.style.cssText = 'position:absolute; top:48px; right:50px; width:170px; height:170px; z-index:1; opacity:0.95; display:block;';
         renderContainer.appendChild(emblem);
       }
 
@@ -2778,6 +3017,7 @@ async function downloadPhysicalMenuPDF() {
         if (it.type === 'image') {
           const imgEl = document.createElement('img');
           imgEl.src = it.url;
+          imgEl.alt = it.dishName || 'Platillo';
           imgEl.crossOrigin = 'anonymous';
           imgEl.style.cssText = `
             position: absolute;
@@ -2789,53 +3029,91 @@ async function downloadPhysicalMenuPDF() {
             object-fit: cover;
             box-shadow: 0 2px 6px rgba(0,0,0,0.25);
             z-index: 4;
+            display: block;
           `;
+          imgEl.onerror = () => {
+            imgEl.src = '../assets/logo/curandera-emblem-lineart.png';
+          };
           renderContainer.appendChild(imgEl);
         } else {
           const itemEl = document.createElement('div');
+          const isWide = isWideItem(it);
+          const effectiveMaxWidth = it.width ? `${it.width}px` : (it.maxWidth ? `${it.maxWidth}px` : (isWide ? '710px' : '345px'));
+          const widthStyle = it.width ? `width: ${it.width}px;` : '';
+          const heightStyle = it.height ? `height: ${it.height}px;` : '';
+
           itemEl.style.cssText = `
             position: absolute;
             left: ${it.x}px;
             top: ${it.y}px;
+            padding: 2px 4px;
             font-size: ${it.fontSize}px;
             font-family: ${getCssFontFamily(it.fontFamily)};
             color: ${it.color || '#000000'};
             font-weight: ${it.bold ? '800' : '400'};
-            line-height: 1.25;
+            line-height: 1.28;
             white-space: pre-wrap;
             word-wrap: break-word;
             overflow-wrap: break-word;
             box-sizing: border-box;
             z-index: 5;
-            ${it.width ? `width: ${it.width}px; max-width: ${it.width}px;` : (it.maxWidth ? `max-width: ${it.maxWidth}px;` : '')}
-            ${it.height ? `height: ${it.height}px;` : ''}
+            max-width: ${effectiveMaxWidth};
+            ${widthStyle}
+            ${heightStyle}
           `;
           itemEl.textContent = it.text;
           renderContainer.appendChild(itemEl);
         }
       });
 
-      // Capturar la hoja a escala 2x (300 DPI aprox para impresión nítida)
+      // 2. Esperar rigurosamente a que todas las imágenes terminen de cargar y decodificarse
+      const imgs = Array.from(renderContainer.querySelectorAll('img'));
+      if (imgs.length > 0) {
+        await Promise.all(imgs.map(img => {
+          if (img.complete && img.naturalWidth > 0) return Promise.resolve();
+          return new Promise(resolve => {
+            img.onload = () => resolve();
+            img.onerror = () => resolve();
+            setTimeout(resolve, 2000); // Límite de seguridad
+          });
+        }));
+      }
+
+      // Pequeña pausa para asegurar sincronización de renderizado en el compositor gráfico
+      await new Promise(r => requestAnimationFrame(() => setTimeout(r, 60)));
+
+      // 3. Captura con html2canvas en alta resolución (escala 2.25x = ~230 DPI óptimo para imprenta)
       const canvas = await window.html2canvas(renderContainer, {
-        scale: 2,
+        scale: 2.25,
         useCORS: true,
         allowTaint: true,
-        backgroundColor: p.bgColor || '#CCAD93',
+        backgroundColor: p.bgColor || defaultBg,
         width: 816,
-        height: 1056
+        height: 1056,
+        windowWidth: 816,
+        windowHeight: 1056,
+        x: 0,
+        y: 0,
+        scrollX: 0,
+        scrollY: 0,
+        logging: false
       });
 
-      const imgData = canvas.toDataURL('image/jpeg', 0.95);
+      // Compresión fotográfica nítida a 0.98 sin artefactos
+      const imgData = canvas.toDataURL('image/jpeg', 0.98);
 
       if (i > 0) {
         pdf.addPage('letter', 'portrait');
       }
 
-      // Añadir la página a tamaño exacto Carta (612 x 792 puntos)
-      pdf.addImage(imgData, 'JPEG', 0, 0, 612, 792, undefined, 'FAST');
+      // Añadir la página a tamaño exacto Carta (612 x 792 pt) con interpolación de calidad
+      pdf.addImage(imgData, 'JPEG', 0, 0, 612, 792, undefined, 'SLOW');
     }
 
-    document.body.removeChild(renderContainer);
+    if (renderContainer && renderContainer.parentNode) {
+      renderContainer.parentNode.removeChild(renderContainer);
+      renderContainer = null;
+    }
 
     const isTrad = currentDesign === 'tradicional';
     let filename = '';
@@ -2853,6 +3131,9 @@ async function downloadPhysicalMenuPDF() {
     console.error('Error generando PDF de carta física:', err);
     showToast('⚠️ Error al generar el PDF.');
   } finally {
+    if (renderContainer && renderContainer.parentNode) {
+      renderContainer.parentNode.removeChild(renderContainer);
+    }
     if (document.body.contains(progressModal)) {
       document.body.removeChild(progressModal);
     }
