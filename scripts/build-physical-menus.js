@@ -188,7 +188,7 @@ function renderDigitalColumn(categoriesData, colX, startY, options = {}) {
     if (cat.note) {
       const wrappedNote = wrapText(cat.note, maxLineChars);
       items.push({
-        id: `cat_note_${curY}`,
+        id: `cat_note_${(cat.id || (colX + '_' + curY)).replace(/[^a-z0-9]/gi, '_')}`,
         x: colX,
         y: curY,
         text: wrappedNote,

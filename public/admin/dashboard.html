@@ -14,7 +14,7 @@
   <link rel="stylesheet" href="../css/base.css?v=37.0">
   <link rel="stylesheet" href="../css/components.css?v=37.0">
   <link rel="stylesheet" href="../css/admin.css?v=37.0">
-  <link rel="stylesheet" href="../css/physical-menu.css?v=38.1">
+  <link rel="stylesheet" href="../css/physical-menu.css?v=39.2">
 
   <link rel="icon" type="image/png" href="../assets/logo/logo.png">
 </head>
@@ -623,6 +623,14 @@
                     </div>
                   </div>
 
+                  <div class="inspector-field" style="margin-top:-0.35rem; margin-bottom:0.25rem;">
+                    <div style="display:flex; gap:0.35rem; flex-wrap:wrap;">
+                      <button type="button" id="btn-w-col" class="btn-admin-secondary" style="font-size:0.68rem; padding:0.22rem 0.45rem;" title="Ajustar a 1 columna (345px)">Columna (345px)</button>
+                      <button type="button" id="btn-w-wide" class="btn-admin-secondary" style="font-size:0.68rem; padding:0.22rem 0.45rem;" title="Ajustar a 2 columnas (710px)">Ancho (710px)</button>
+                      <button type="button" id="btn-w-auto" class="btn-admin-secondary" style="font-size:0.68rem; padding:0.22rem 0.45rem;" title="Restablecer tamaño automático ajustado al texto">Auto</button>
+                    </div>
+                  </div>
+
                   <div class="inspector-field">
                     <label class="inspector-label" for="insp-item-color">Color del Texto</label>
                     <div style="display:flex; gap:0.5rem; align-items:center;">
@@ -1055,7 +1063,7 @@
   <script src="../js/libs/jspdf.umd.min.js"></script>
 
   <script type="module">
-    import { initAdminDashboard } from '../js/admin-dashboard.js?v=37.0';
+    import { initAdminDashboard } from '../js/admin-dashboard.js?v=39.2';
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', initAdminDashboard);
     } else {

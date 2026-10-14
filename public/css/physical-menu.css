@@ -505,122 +505,137 @@
 .phys-resize-handle {
   position: absolute;
   background: #FFFFFF;
-  border: 1.5px solid var(--lc-rosa, #C94E8F);
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.45);
+  border: 2px solid var(--lc-rosa, #C94E8F);
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.5);
   z-index: 35;
   box-sizing: border-box;
-  transition: transform 0.12s ease, background-color 0.12s ease, border-color 0.12s ease;
+  transition: transform 0.1s ease, background-color 0.1s ease, border-color 0.1s ease;
   user-select: none;
+}
+
+/* Área de clic expandida invisible para facilitar el agarre y evitar mover el elemento por error */
+.phys-resize-handle::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 26px;
+  height: 26px;
+  transform: translate(-50%, -50%);
+  cursor: inherit;
+  pointer-events: auto;
+  background: transparent;
+  z-index: 2;
 }
 
 .phys-resize-handle:hover,
 .phys-resize-handle:active {
   background: var(--lc-rosa, #C94E8F);
   border-color: #FFFFFF;
-  box-shadow: 0 0 0 2px rgba(201, 78, 143, 0.4), 0 2px 6px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 0 3px rgba(201, 78, 143, 0.45), 0 2px 7px rgba(0, 0, 0, 0.6);
 }
 
-/* 4 Esquinas (Redimensionamiento Diagonal) */
+/* 4 Esquinas (Redimensionamiento) */
 .phys-resize-handle.handle-nw {
-  top: -5px;
-  left: -5px;
-  width: 9px;
-  height: 9px;
-  border-radius: 2px;
+  top: -6px;
+  left: -6px;
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
   cursor: nwse-resize;
 }
 .phys-resize-handle.handle-nw:hover {
-  transform: scale(1.35);
+  transform: scale(1.3);
 }
 
 .phys-resize-handle.handle-ne {
-  top: -5px;
-  right: -5px;
-  width: 9px;
-  height: 9px;
-  border-radius: 2px;
+  top: -6px;
+  right: -6px;
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
   cursor: nesw-resize;
 }
 .phys-resize-handle.handle-ne:hover {
-  transform: scale(1.35);
+  transform: scale(1.3);
 }
 
 .phys-resize-handle.handle-sw {
-  bottom: -5px;
-  left: -5px;
-  width: 9px;
-  height: 9px;
-  border-radius: 2px;
+  bottom: -6px;
+  left: -6px;
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
   cursor: nesw-resize;
 }
 .phys-resize-handle.handle-sw:hover {
-  transform: scale(1.35);
+  transform: scale(1.3);
 }
 
 .phys-resize-handle.handle-se {
-  bottom: -5px;
-  right: -5px;
-  width: 9px;
-  height: 9px;
-  border-radius: 2px;
+  bottom: -6px;
+  right: -6px;
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
   cursor: nwse-resize;
 }
 .phys-resize-handle.handle-se:hover {
-  transform: scale(1.35);
+  transform: scale(1.3);
 }
 
 /* Lados Horizontales (Derecha e Izquierda) */
 .phys-resize-handle.handle-e {
   top: 50%;
-  right: -5px;
+  right: -6px;
   transform: translateY(-50%);
-  width: 6px;
-  height: 16px;
-  border-radius: 3px;
+  width: 8px;
+  height: 22px;
+  border-radius: 4px;
   cursor: ew-resize;
 }
 .phys-resize-handle.handle-e:hover {
-  transform: translateY(-50%) scale(1.3);
+  transform: translateY(-50%) scale(1.25);
 }
 
 .phys-resize-handle.handle-w {
   top: 50%;
-  left: -5px;
+  left: -6px;
   transform: translateY(-50%);
-  width: 6px;
-  height: 16px;
-  border-radius: 3px;
+  width: 8px;
+  height: 22px;
+  border-radius: 4px;
   cursor: ew-resize;
 }
 .phys-resize-handle.handle-w:hover {
-  transform: translateY(-50%) scale(1.3);
+  transform: translateY(-50%) scale(1.25);
 }
 
-/* Lados Verticales (Arriba y Abajo) */
+/* Lados Verticales (Arriba y Abajo - especialmente para imágenes) */
 .phys-resize-handle.handle-s {
-  bottom: -5px;
+  bottom: -6px;
   left: 50%;
   transform: translateX(-50%);
-  width: 16px;
-  height: 6px;
-  border-radius: 3px;
+  width: 22px;
+  height: 8px;
+  border-radius: 4px;
   cursor: ns-resize;
 }
 .phys-resize-handle.handle-s:hover {
-  transform: translateX(-50%) scale(1.3);
+  transform: translateX(-50%) scale(1.25);
 }
 
 .phys-resize-handle.handle-n {
-  top: -5px;
+  top: -6px;
   left: 50%;
   transform: translateX(-50%);
-  width: 16px;
-  height: 6px;
-  border-radius: 3px;
+  width: 22px;
+  height: 8px;
+  border-radius: 4px;
   cursor: ns-resize;
 }
 .phys-resize-handle.handle-n:hover {
-  transform: translateX(-50%) scale(1.3);
+  transform: translateX(-50%) scale(1.25);
 }
 
 /* Indicador de dimensiones en tiempo real mientras se redimensiona */

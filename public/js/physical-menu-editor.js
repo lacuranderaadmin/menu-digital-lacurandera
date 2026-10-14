@@ -38,6 +38,7 @@ let selectedItemIds = new Set();
 let editorClipboard = [];
 let zoomScale = 0.75;
 let isDragging = false;
+let dragHasMoved = false;
 let dragStartX = 0;
 let dragStartY = 0;
 let dragInitialItemX = 0;
@@ -166,6 +167,9 @@ export async function initPhysicalMenuAdmin() {
   if (!menusData[key]) {
     await loadInitialMenusData();
   }
+  if (menusData[key]) {
+    ensureUniqueItemIds(menusData[key]);
+  }
 
   calculateOptimalZoom();
   renderPagesList();
@@ -182,6 +186,35 @@ export async function initPhysicalMenuAdmin() {
       btnSync.setAttribute('title', 'Hay cambios recientes en el Menú Digital listos para sincronizar');
     }
   }
+}
+
+/**
+ * Garantiza que cada elemento en cada hoja de la carta tenga un ID estrictamente único.
+ * Si detecta IDs repetidos (por ejemplo notas de categoría en la misma hoja o entre hojas),
+ * genera un sufijo único e inequívoco para que cada texto se seleccione de forma 100% independiente.
+ */
+function ensureUniqueItemIds(pages) {
+  if (!Array.isArray(pages)) return;
+  const seenIds = new Set();
+  pages.forEach((p, pIdx) => {
+    if (!p || !Array.isArray(p.items)) return;
+    p.items.forEach((it, iIdx) => {
+      // Limpiar alturas artificiales corruptas en cuadros de texto para que se adapten naturalmente al contenido
+      if (it.type !== 'image' && it.height && it.height > 180) {
+        delete it.height;
+      }
+      if (!it.id || seenIds.has(it.id)) {
+        const base = it.id ? it.id : `item_p${pIdx + 1}_${iIdx}`;
+        let candidate = `${base}_p${pIdx + 1}_${iIdx}`;
+        let counter = 1;
+        while (seenIds.has(candidate)) {
+          candidate = `${base}_${counter++}`;
+        }
+        it.id = candidate;
+      }
+      seenIds.add(it.id);
+    });
+  });
 }
 
 /**
@@ -210,6 +243,7 @@ async function loadSingleMenuData(type, design = currentDesign) {
       const snap = await getDoc(doc(db, `restaurants/la-curandera/physicalMenus/${firestoreDocId}`));
       if (snap.exists() && snap.data().pages && Array.isArray(snap.data().pages)) {
         const pages = snap.data().pages;
+        ensureUniqueItemIds(pages);
         localStorage.setItem(localKey, JSON.stringify(pages));
         return pages;
       }
@@ -222,7 +256,11 @@ async function loadSingleMenuData(type, design = currentDesign) {
   const cached = localStorage.getItem(localKey);
   if (cached) {
     try {
-      return JSON.parse(cached);
+      const pages = JSON.parse(cached);
+      if (Array.isArray(pages)) {
+        ensureUniqueItemIds(pages);
+        return pages;
+      }
     } catch (e) {}
   }
 
@@ -232,6 +270,7 @@ async function loadSingleMenuData(type, design = currentDesign) {
   const res = await fetch(url);
   if (res.ok) {
     const data = await res.json();
+    ensureUniqueItemIds(data);
     localStorage.setItem(localKey, JSON.stringify(data));
     return data;
   }
@@ -457,40 +496,117 @@ function setupPhysicalEditorEvents() {
   // Inspector de Dimensiones de Cuadro de Texto
   const inpItemWidth = document.getElementById('insp-item-width');
   const inpItemHeight = document.getElementById('insp-item-height');
+  const btnWCol = document.getElementById('btn-w-col');
+  const btnWWide = document.getElementById('btn-w-wide');
+  const btnWAuto = document.getElementById('btn-w-auto');
 
   if (inpItemWidth) {
     inpItemWidth.addEventListener('input', (e) => {
       const val = Number(e.target.value);
+      const item = getSelectedItem();
+      if (!item) return;
+      const domEl = document.getElementById(`phys-item-${item.id}`);
       if (val >= 20) {
-        updateSelectedItemProp('width', val);
-      } else if (!e.target.value) {
-        const item = getSelectedItem();
-        if (item) {
-          delete item.width;
-          const domEl = document.getElementById(`phys-item-${item.id}`);
-          if (domEl) {
-            domEl.style.width = '';
-            domEl.style.maxWidth = item.maxWidth ? `${item.maxWidth}px` : '';
+        item.width = val;
+        item.maxWidth = val;
+        delete item.height; // Mantener altura limpia auto-adaptativa al contenido
+        if (domEl) {
+          domEl.style.width = `${val}px`;
+          domEl.style.maxWidth = `${val}px`;
+          domEl.style.height = '';
+          const natH = Math.max(16, Math.ceil(domEl.offsetHeight || domEl.scrollHeight));
+          if (inpItemHeight && !item.height) {
+            inpItemHeight.placeholder = `Auto (${natH}px)`;
           }
-          saveToLocalStorageDraft();
         }
+        saveToLocalStorageDraft();
+      } else if (!e.target.value) {
+        delete item.width;
+        delete item.height;
+        if (domEl) {
+          domEl.style.width = '';
+          domEl.style.maxWidth = isWideItem(item) ? '710px' : '345px';
+          domEl.style.height = '';
+        }
+        saveToLocalStorageDraft();
       }
     });
   }
+
   if (inpItemHeight) {
     inpItemHeight.addEventListener('input', (e) => {
       const val = Number(e.target.value);
+      const item = getSelectedItem();
+      if (!item) return;
+      const domEl = document.getElementById(`phys-item-${item.id}`);
       if (val >= 16) {
-        updateSelectedItemProp('height', val);
+        item.height = val;
+        if (domEl) domEl.style.height = `${val}px`;
+        saveToLocalStorageDraft();
       } else if (!e.target.value) {
-        const item = getSelectedItem();
-        if (item) {
-          delete item.height;
-          const domEl = document.getElementById(`phys-item-${item.id}`);
-          if (domEl) domEl.style.height = '';
-          saveToLocalStorageDraft();
-        }
+        delete item.height;
+        if (domEl) domEl.style.height = '';
+        saveToLocalStorageDraft();
       }
+    });
+  }
+
+  if (btnWCol) {
+    btnWCol.addEventListener('click', () => {
+      const item = getSelectedItem();
+      if (!item) return;
+      item.width = 345;
+      item.maxWidth = 345;
+      delete item.height;
+      const domEl = document.getElementById(`phys-item-${item.id}`);
+      if (domEl) {
+        domEl.style.width = '345px';
+        domEl.style.maxWidth = '345px';
+        domEl.style.height = '';
+      }
+      if (inpItemWidth) inpItemWidth.value = 345;
+      if (inpItemHeight) inpItemHeight.value = '';
+      saveToLocalStorageDraft();
+      renderInspector();
+    });
+  }
+
+  if (btnWWide) {
+    btnWWide.addEventListener('click', () => {
+      const item = getSelectedItem();
+      if (!item) return;
+      item.width = 710;
+      item.maxWidth = 710;
+      delete item.height;
+      const domEl = document.getElementById(`phys-item-${item.id}`);
+      if (domEl) {
+        domEl.style.width = '710px';
+        domEl.style.maxWidth = '710px';
+        domEl.style.height = '';
+      }
+      if (inpItemWidth) inpItemWidth.value = 710;
+      if (inpItemHeight) inpItemHeight.value = '';
+      saveToLocalStorageDraft();
+      renderInspector();
+    });
+  }
+
+  if (btnWAuto) {
+    btnWAuto.addEventListener('click', () => {
+      const item = getSelectedItem();
+      if (!item) return;
+      delete item.width;
+      delete item.height;
+      const domEl = document.getElementById(`phys-item-${item.id}`);
+      if (domEl) {
+        domEl.style.width = '';
+        domEl.style.maxWidth = isWideItem(item) ? '710px' : '345px';
+        domEl.style.height = '';
+      }
+      if (inpItemWidth) inpItemWidth.value = '';
+      if (inpItemHeight) inpItemHeight.value = '';
+      saveToLocalStorageDraft();
+      renderInspector();
     });
   }
 
@@ -556,6 +672,9 @@ async function switchMenuType(type) {
   if (!menusData[key]) {
     menusData[key] = await loadSingleMenuData(currentType, currentDesign);
   }
+  if (menusData[key]) {
+    ensureUniqueItemIds(menusData[key]);
+  }
 
   renderPagesList();
   renderCurrentPage();
@@ -579,6 +698,9 @@ async function switchDesign(design) {
   const key = getMenuKey();
   if (!menusData[key]) {
     menusData[key] = await loadSingleMenuData(currentType, currentDesign);
+  }
+  if (menusData[key]) {
+    ensureUniqueItemIds(menusData[key]);
   }
 
   renderPagesList();
@@ -805,10 +927,14 @@ function renderCurrentPage() {
     el.style.color = item.color || '#000000';
     el.style.fontWeight = item.bold ? '800' : '400';
     const isWide = isWideItem(item);
-    const itemMaxW = item.width || item.maxWidth || (isWide ? 710 : 345);
+    const itemMaxW = item.width ? Math.max(item.width, item.maxWidth || item.width) : (item.maxWidth || (isWide ? 710 : 345));
     el.style.maxWidth = `${itemMaxW}px`;
     if (item.width) {
       el.style.width = `${item.width}px`;
+    }
+    // Si algún item de texto tiene altura artificial inflada o corrupta (> 180px), la limpiamos para que se ajuste naturalmente a su contenido
+    if (item.height && item.height > 180) {
+      delete item.height;
     }
     if (item.height) {
       el.style.height = `${item.height}px`;
@@ -1012,7 +1138,8 @@ function handleMarqueeMouseMove(e) {
  * - 2 superior/inferior (vertical: arriba y abajo)
  */
 function attachResizeHandles(el, item) {
-  const handles = [
+  const isImg = item.type === 'image';
+  const handles = isImg ? [
     { type: 'nw', title: 'Redimensionar diagonalmente (esquina superior izquierda)' },
     { type: 'n',  title: 'Redimensionar verticalmente (arriba)' },
     { type: 'ne', title: 'Redimensionar diagonalmente (esquina superior derecha)' },
@@ -1021,6 +1148,13 @@ function attachResizeHandles(el, item) {
     { type: 's',  title: 'Redimensionar verticalmente (abajo)' },
     { type: 'sw', title: 'Redimensionar diagonalmente (esquina inferior izquierda)' },
     { type: 'w',  title: 'Redimensionar horizontalmente (izquierda)' }
+  ] : [
+    { type: 'nw', title: 'Ajustar ancho (esquina superior izquierda)' },
+    { type: 'ne', title: 'Ajustar ancho (esquina superior derecha)' },
+    { type: 'e',  title: 'Ajustar ancho (derecha)' },
+    { type: 'se', title: 'Ajustar ancho (esquina inferior derecha)' },
+    { type: 'sw', title: 'Ajustar ancho (esquina inferior izquierda)' },
+    { type: 'w',  title: 'Ajustar ancho (izquierda)' }
   ];
 
   handles.forEach(h => {
@@ -1040,6 +1174,8 @@ function startResizeItem(e, item, handleType) {
   e.preventDefault();
 
   isResizing = true;
+  isDragging = false;
+  draggedElementsCache = [];
   resizeHandleType = handleType;
   resizeTargetItem = item;
   resizeStartX = e.clientX;
@@ -1057,7 +1193,8 @@ function startResizeItem(e, item, handleType) {
       resizeBadgeEl = document.createElement('div');
       resizeBadgeEl.className = 'phys-resize-badge';
     }
-    resizeBadgeEl.textContent = `${Math.round(resizeInitialWidth)} × ${Math.round(resizeInitialHeight)} px`;
+    const currentH = item.type === 'image' ? resizeInitialHeight : (domEl.offsetHeight || resizeInitialHeight);
+    resizeBadgeEl.textContent = `${Math.round(resizeInitialWidth)} × ${Math.round(currentH)} px`;
     domEl.appendChild(resizeBadgeEl);
   }
 }
@@ -1068,6 +1205,8 @@ function startResizeItemTouch(e, item, handleType) {
   e.preventDefault();
 
   isResizing = true;
+  isDragging = false;
+  draggedElementsCache = [];
   resizeHandleType = handleType;
   resizeTargetItem = item;
   resizeStartX = e.touches[0].clientX;
@@ -1085,7 +1224,8 @@ function startResizeItemTouch(e, item, handleType) {
       resizeBadgeEl = document.createElement('div');
       resizeBadgeEl.className = 'phys-resize-badge';
     }
-    resizeBadgeEl.textContent = `${Math.round(resizeInitialWidth)} × ${Math.round(resizeInitialHeight)} px`;
+    const currentH = item.type === 'image' ? resizeInitialHeight : (domEl.offsetHeight || resizeInitialHeight);
+    resizeBadgeEl.textContent = `${Math.round(resizeInitialWidth)} × ${Math.round(currentH)} px`;
     domEl.appendChild(resizeBadgeEl);
   }
 }
@@ -1115,87 +1255,107 @@ function applyResizeDelta(deltaX, deltaY) {
   if (!domEl) return;
 
   const isImg = item.type === 'image';
-  const minWidth = isImg ? 30 : 35;
-  const minHeight = isImg ? 20 : 16;
   const sheetWidth = 816;
   const sheetHeight = 1056;
 
-  let newWidth = resizeInitialWidth;
-  let newHeight = resizeInitialHeight;
-  let newX = resizeInitialX;
-  let newY = resizeInitialY;
+  // ==========================================
+  // CASO 1: REDIMENSIONAMIENTO DE IMÁGENES
+  // ==========================================
+  if (isImg) {
+    const minWidth = 30;
+    const minHeight = 20;
+    let newWidth = resizeInitialWidth;
+    let newHeight = resizeInitialHeight;
+    let newX = resizeInitialX;
+    let newY = resizeInitialY;
+    const hType = resizeHandleType || '';
+
+    if (hType.includes('e')) {
+      newWidth = Math.max(minWidth, Math.min(sheetWidth - resizeInitialX, Math.round(resizeInitialWidth + deltaX)));
+      newX = resizeInitialX;
+    } else if (hType.includes('w')) {
+      const initialRight = resizeInitialX + resizeInitialWidth;
+      newX = Math.max(0, Math.min(initialRight - minWidth, Math.round(resizeInitialX + deltaX)));
+      newWidth = initialRight - newX;
+    }
+
+    if (hType.includes('s')) {
+      newHeight = Math.max(minHeight, Math.min(sheetHeight - resizeInitialY, Math.round(resizeInitialHeight + deltaY)));
+      newY = resizeInitialY;
+    } else if (hType.includes('n')) {
+      const initialBottom = resizeInitialY + resizeInitialHeight;
+      newY = Math.max(0, Math.min(initialBottom - minHeight, Math.round(resizeInitialY + deltaY)));
+      newHeight = initialBottom - newY;
+    }
+
+    item.width = newWidth;
+    item.height = newHeight;
+    item.x = newX;
+    item.y = newY;
+
+    domEl.style.left = `${newX}px`;
+    domEl.style.top = `${newY}px`;
+    domEl.style.width = `${newWidth}px`;
+    domEl.style.height = `${newHeight}px`;
+
+    if (resizeBadgeEl) {
+      resizeBadgeEl.textContent = `${newWidth} × ${newHeight} px`;
+    }
+
+    const inpImgW = document.getElementById('insp-img-width');
+    const inpImgH = document.getElementById('insp-img-height');
+    const inpX = document.getElementById('insp-item-x');
+    const inpY = document.getElementById('insp-item-y');
+    if (inpImgW) inpImgW.value = newWidth;
+    if (inpImgH) inpImgH.value = newHeight;
+    if (inpX) inpX.value = newX;
+    if (inpY) inpY.value = newY;
+    return;
+  }
+
+  // ==========================================
+  // CASO 2: REDIMENSIONAMIENTO DE CUADROS DE TEXTO
+  // ==========================================
+  const minWidth = 40;
   const hType = resizeHandleType || '';
+  let newWidth = resizeInitialWidth;
+  let newX = resizeInitialX;
+  const newY = resizeInitialY; // La coordenada Y NUNCA cambia al redimensionar un cuadro de texto (se queda anclada)
 
-  // Horizontal (e, w)
+  // Arrastre por el lado derecho (e) o esquinas derechas (se, ne)
   if (hType.includes('e')) {
-    newWidth = Math.max(minWidth, Math.round(resizeInitialWidth + deltaX));
-    if (newX + newWidth > sheetWidth) {
-      newWidth = Math.max(minWidth, sheetWidth - newX);
-    }
-  } else if (hType.includes('w')) {
-    const rawW = Math.round(resizeInitialWidth - deltaX);
-    const targetX = Math.round(resizeInitialX + deltaX);
-    if (targetX < 0) {
-      newX = 0;
-      newWidth = Math.max(minWidth, resizeInitialWidth + resizeInitialX);
-    } else if (rawW >= minWidth) {
-      newWidth = rawW;
-      newX = targetX;
-    } else {
-      newWidth = minWidth;
-      newX = resizeInitialX + (resizeInitialWidth - minWidth);
-    }
+    // Si el usuario arrastró esquina 'se', permitimos que tanto arrastre horizontal como vertical agranden el ancho
+    const effectiveDelta = (hType === 'se' && Math.abs(deltaY) > Math.abs(deltaX)) ? deltaY : deltaX;
+    newWidth = Math.max(minWidth, Math.min(sheetWidth - resizeInitialX, Math.round(resizeInitialWidth + effectiveDelta)));
+    newX = resizeInitialX; // Fijo a la izquierda
+  }
+  // Arrastre por el lado izquierdo (w) o esquinas izquierdas (sw, nw)
+  else if (hType.includes('w')) {
+    const initialRight = resizeInitialX + resizeInitialWidth;
+    const effectiveDelta = (hType === 'sw' && Math.abs(deltaY) > Math.abs(deltaX)) ? -deltaY : deltaX;
+    newX = Math.max(0, Math.min(initialRight - minWidth, Math.round(resizeInitialX + effectiveDelta)));
+    newWidth = initialRight - newX;
   }
 
-  // Vertical (s, n)
-  if (hType.includes('s')) {
-    newHeight = Math.max(minHeight, Math.round(resizeInitialHeight + deltaY));
-    if (newY + newHeight > sheetHeight) {
-      newHeight = Math.max(minHeight, sheetHeight - newY);
-    }
-  } else if (hType.includes('n')) {
-    const rawH = Math.round(resizeInitialHeight - deltaY);
-    const targetY = Math.round(resizeInitialY + deltaY);
-    if (targetY < 0) {
-      newY = 0;
-      newHeight = Math.max(minHeight, resizeInitialHeight + resizeInitialY);
-    } else if (rawH >= minHeight) {
-      newHeight = rawH;
-      newY = targetY;
-    } else {
-      newHeight = minHeight;
-      newY = resizeInitialY + (resizeInitialHeight - minHeight);
-    }
-  }
-
-  // Guardar en el modelo del elemento
+  // Actualizar modelo del elemento
   item.width = newWidth;
+  item.maxWidth = newWidth;
   item.x = newX;
   item.y = newY;
-  if (item.maxWidth !== undefined) {
-    item.maxWidth = newWidth;
-  }
+  delete item.height; // Los cuadros de texto tienen altura natural auto-ajustable al contenido
 
   // Actualizar DOM en tiempo real
   domEl.style.left = `${newX}px`;
   domEl.style.top = `${newY}px`;
   domEl.style.width = `${newWidth}px`;
   domEl.style.maxWidth = `${newWidth}px`;
+  domEl.style.height = ''; // Auto-height para que envuelva exactamente las líneas de texto
 
-  // Si es un texto y el usuario solo ajustó el ancho ('e' o 'w'),
-  // ajustar la altura automáticamente según el contenido real para no cortar texto
-  if (!isImg && (hType === 'e' || hType === 'w')) {
-    const naturalHeight = Math.max(minHeight, Math.round(domEl.scrollHeight));
-    item.height = naturalHeight;
-    newHeight = naturalHeight;
-    domEl.style.height = `${naturalHeight}px`;
-  } else {
-    item.height = newHeight;
-    domEl.style.height = `${newHeight}px`;
-  }
+  // Medir altura natural del texto con el nuevo ancho
+  const naturalHeight = Math.max(16, Math.ceil(domEl.offsetHeight || domEl.scrollHeight));
 
   if (resizeBadgeEl) {
-    resizeBadgeEl.textContent = `${newWidth} × ${newHeight} px`;
+    resizeBadgeEl.textContent = `${newWidth} × ${naturalHeight} px`;
   }
 
   // Actualizar inspectores en tiempo real
@@ -1206,14 +1366,7 @@ function applyResizeDelta(deltaX, deltaY) {
   if (inpX) inpX.value = newX;
   if (inpY) inpY.value = newY;
   if (inpW) inpW.value = newWidth;
-  if (inpH) inpH.value = newHeight;
-
-  if (item.type === 'image') {
-    const inpImgW = document.getElementById('insp-img-width');
-    const inpImgH = document.getElementById('insp-img-height');
-    if (inpImgW) inpImgW.value = newWidth;
-    if (inpImgH) inpImgH.value = newHeight;
-  }
+  if (inpH) inpH.placeholder = `Auto (${naturalHeight}px)`;
 }
 
 /**
@@ -1221,6 +1374,7 @@ function applyResizeDelta(deltaX, deltaY) {
  */
 function startDragItem(e, item) {
   if (e.button !== 0) return; // solo botón izquierdo
+  if (isResizing) return;
   e.stopPropagation();
 
   const isMultiModifier = e.shiftKey || e.ctrlKey || e.metaKey;
@@ -1253,6 +1407,7 @@ function startDragItem(e, item) {
   }
 
   isDragging = true;
+  dragHasMoved = false;
   dragStartX = e.clientX;
   dragStartY = e.clientY;
 
@@ -1309,6 +1464,7 @@ function startDragItem(e, item) {
 
 function startDragItemTouch(e, item) {
   if (e.touches.length !== 1) return;
+  if (isResizing) return;
   e.stopPropagation();
 
   let selectionChanged = false;
@@ -1320,6 +1476,7 @@ function startDragItemTouch(e, item) {
   }
 
   isDragging = true;
+  dragHasMoved = false;
   dragStartX = e.touches[0].clientX;
   dragStartY = e.touches[0].clientY;
 
@@ -1389,6 +1546,10 @@ function handleDragMouseMove(e) {
   const deltaX = (e.clientX - dragStartX) / zoomScale;
   const deltaY = (e.clientY - dragStartY) / zoomScale;
 
+  if (Math.abs(deltaX) > 2 || Math.abs(deltaY) > 2) {
+    dragHasMoved = true;
+  }
+
   if (!dragRafId) {
     dragRafId = requestAnimationFrame(() => {
       dragRafId = null;
@@ -1422,6 +1583,10 @@ function handleDragTouchMove(e) {
 
   const deltaX = (e.touches[0].clientX - dragStartX) / zoomScale;
   const deltaY = (e.touches[0].clientY - dragStartY) / zoomScale;
+
+  if (Math.abs(deltaX) > 2 || Math.abs(deltaY) > 2) {
+    dragHasMoved = true;
+  }
 
   if (!dragRafId) {
     dragRafId = requestAnimationFrame(() => {
@@ -1467,6 +1632,10 @@ function handleDragMouseUp() {
       const domEl = document.getElementById(`phys-item-${resizeTargetItem.id}`);
       if (domEl) {
         domEl.classList.remove('is-resizing');
+        if (resizeTargetItem.type !== 'image') {
+          delete resizeTargetItem.height;
+          domEl.style.height = '';
+        }
       }
     }
     if (resizeBadgeEl && resizeBadgeEl.parentNode) {
@@ -1480,6 +1649,13 @@ function handleDragMouseUp() {
   if (isDragging) {
     isDragging = false;
     draggedElementsCache = [];
+    if (!dragHasMoved && selectedItemIds.size > 1 && selectedItemId) {
+      selectedItemIds.clear();
+      selectedItemIds.add(selectedItemId);
+      renderCurrentPage();
+      renderInspector();
+    }
+    dragHasMoved = false;
     saveToLocalStorageDraft();
   }
 }
@@ -1684,8 +1860,23 @@ function renderInspector() {
       if (inpSizeRange) inpSizeRange.value = item.fontSize;
       if (inpBold) inpBold.classList.toggle('active', Boolean(item.bold));
       if (inpColor) inpColor.value = item.color || '#000000';
-      if (inpItemWidth) inpItemWidth.value = item.width || '';
-      if (inpItemHeight) inpItemHeight.value = item.height || '';
+      if (inpItemWidth) {
+        inpItemWidth.value = item.width || '';
+        inpItemWidth.placeholder = isWideItem(item) ? '710 (Ancho)' : '345 (Columna)';
+      }
+      if (inpItemHeight) {
+        const domEl = document.getElementById(`phys-item-${item.id}`);
+        const natH = domEl ? domEl.offsetHeight : 24;
+        inpItemHeight.value = item.height || '';
+        inpItemHeight.placeholder = `Auto (${natH}px)`;
+      }
+
+      const btnWCol = document.getElementById('btn-w-col');
+      const btnWWide = document.getElementById('btn-w-wide');
+      const btnWAuto = document.getElementById('btn-w-auto');
+      if (btnWCol) btnWCol.classList.toggle('active', item.width === 345);
+      if (btnWWide) btnWWide.classList.toggle('active', item.width === 710);
+      if (btnWAuto) btnWAuto.classList.toggle('active', !item.width);
 
       renderColorPresets('item-color-presets', item.color, (hex) => {
         if (inpColor) inpColor.value = hex;
@@ -1860,6 +2051,7 @@ function updateSelectedItemProp(prop, value) {
     if (prop === 'x') domEl.style.left = `${value}px`;
     if (prop === 'y') domEl.style.top = `${value}px`;
     if (prop === 'width') {
+      item.maxWidth = value;
       domEl.style.width = `${value}px`;
       domEl.style.maxWidth = `${value}px`;
     }
@@ -2594,27 +2786,61 @@ async function syncDigitalMenuToPhysicalMenu() {
               newTitle = `${cleanName}  ·  $${effective.price}`;
             }
 
-            if (matchedItem.text !== newTitle) {
-              matchedItem.text = newTitle;
+            // Comprobar si hubo cambios reales en el Menú Digital
+            const priceMatch = (matchedItem.text || '').match(/\$\s*([\d,.]+)/);
+            const currentPrice = priceMatch ? Number(priceMatch[1].replace(/,/g, '')) : null;
+            const currentTitlePart = (matchedItem.text || '').split(/·|\$|\n/)[0].trim();
+            const nameChanged = norm(currentTitlePart) !== norm(cleanName);
+            const priceChanged = currentPrice !== null && effective.price > 0 && currentPrice !== effective.price;
+
+            if (priceChanged && !nameChanged) {
+              // Solo cambió el precio: actualizar únicamente el monto sin romper estructura ni saltos de línea del usuario
+              matchedItem.text = matchedItem.text.replace(/\$\s*[\d,.]+/, `$${effective.price}`);
+              updatedTextsCount++;
+            } else if (nameChanged) {
+              // Cambió el nombre: actualizar nombre respetando estructura
+              if (matchedItem.text.includes('Botella') || matchedItem.text.includes('Copa')) {
+                matchedItem.text = matchedItem.text.replace(currentTitlePart, cleanName);
+              } else {
+                matchedItem.text = newTitle;
+              }
               updatedTextsCount++;
             }
-            matchedItem.maxWidth = 345;
+            // Si ni nombre ni precio cambiaron en el Menú Digital, NO sobreescribir el texto del usuario
+
+            // Preservar dimensiones personalizadas de matchedItem (nunca reiniciar a default 345)
+            if (matchedItem.width && (!matchedItem.maxWidth || matchedItem.maxWidth < matchedItem.width)) {
+              matchedItem.maxWidth = matchedItem.width;
+            }
 
             // Buscar item de descripción contiguo
-            const descItem = page.items.find(it => {
+            let descItem = page.items.find(it => {
               if (it.type === 'image' || it === matchedItem || isStructuralElement(it)) return false;
-              if (it.id === `${matchedItem.id}_desc` || it.id === matchedItem.id.replace('_title', '_desc')) return true;
-              return Math.abs(it.x - matchedItem.x) < 25 && (it.y > matchedItem.y && it.y < matchedItem.y + 45);
+              return it.dishId === prod.id && (it.id.includes('desc') || it !== matchedItem);
             });
+            if (!descItem) {
+              descItem = page.items.find(it => {
+                if (it.type === 'image' || it === matchedItem || isStructuralElement(it)) return false;
+                if (it.id === `${matchedItem.id}_desc` || it.id === matchedItem.id.replace('_title', '_desc')) return true;
+                return Math.abs(it.x - matchedItem.x) < 50 && (it.y > matchedItem.y && it.y < matchedItem.y + 70);
+              });
+            }
 
             if (descItem && cleanDesc) {
-              const wrappedDesc = wrapText(cleanDesc, 38);
-              if (descItem.text !== wrappedDesc) {
-                descItem.text = wrappedDesc;
+              descItem.dishId = prod.id;
+              const existingDescNorm = norm(descItem.text);
+              const newDescNorm = norm(cleanDesc);
+
+              // Solo actualizar si hay un cambio real en la descripción del Menú Digital
+              if (existingDescNorm !== newDescNorm) {
+                descItem.text = cleanDesc;
                 updatedTextsCount++;
               }
-              descItem.dishId = prod.id;
-              descItem.maxWidth = 345;
+
+              // Preservar dimensiones y proporciones de descItem (nunca reiniciar a default 345)
+              if (descItem.width && (!descItem.maxWidth || descItem.maxWidth < descItem.width)) {
+                descItem.maxWidth = descItem.width;
+              }
             }
 
             // Sincronizar o insertar imagen si el platillo cuenta con una
@@ -2697,30 +2923,49 @@ async function syncDigitalMenuToPhysicalMenu() {
             matchedProductIds.add(prod.id);
             matchedItem.dishId = prod.id;
 
-            // En tradicional, si no es una lista agrupada con viñeta, actualizar nombre y descripción
+            // En tradicional, si no es una lista agrupada con viñeta, actualizar solo si hubo cambio real
             const itText = extractString(matchedItem.text);
-            if (!itText.includes('•') && itText.length < 80) {
+            if (!itText.includes('•') && itText.length < 120) {
               const cleanName = effective.name;
               const cleanDesc = effective.description;
-              const updatedText = cleanDesc ? `${cleanName}\n${cleanDesc}` : cleanName;
-              if (matchedItem.text !== updatedText) {
-                matchedItem.text = updatedText;
+              const expectedText = cleanDesc ? `${cleanName}\n${cleanDesc}` : cleanName;
+
+              const existingNorm = norm(matchedItem.text);
+              const expectedNorm = norm(expectedText);
+
+              if (existingNorm !== expectedNorm) {
+                matchedItem.text = expectedText;
                 updatedTextsCount++;
               }
             }
 
-            // Buscar precio contiguo en tradicional (mismo Y ± 22px, x mayor, empieza con $)
-            const priceItem = page.items.find(it => {
+            // Preservar dimensiones de matchedItem
+            if (matchedItem.width && (!matchedItem.maxWidth || matchedItem.maxWidth < matchedItem.width)) {
+              matchedItem.maxWidth = matchedItem.width;
+            }
+
+            // Buscar precio contiguo en tradicional
+            let priceItem = page.items.find(it => {
               if (it.type === 'image' || it === matchedItem || isStructuralElement(it)) return false;
-              const pText = extractString(it.text).trim();
-              return Math.abs(it.y - matchedItem.y) < 22 && it.x > matchedItem.x && pText.startsWith('$');
+              if (it.dishId === prod.id && (it.id.includes('price') || extractString(it.text).trim().startsWith('$'))) return true;
+              return false;
             });
+            if (!priceItem) {
+              priceItem = page.items.find(it => {
+                if (it.type === 'image' || it === matchedItem || isStructuralElement(it)) return false;
+                const pText = extractString(it.text).trim();
+                return Math.abs(it.y - matchedItem.y) < 25 && it.x > matchedItem.x && pText.startsWith('$');
+              });
+            }
 
             if (priceItem) {
               const newPriceText = `$${effective.price}`;
-              if (priceItem.text !== newPriceText) {
+              if (priceItem.text.trim() !== newPriceText) {
                 priceItem.text = newPriceText;
                 updatedTextsCount++;
+              }
+              if (priceItem.width && (!priceItem.maxWidth || priceItem.maxWidth < priceItem.width)) {
+                priceItem.maxWidth = priceItem.width;
               }
             }
 
@@ -2877,9 +3122,9 @@ async function syncDigitalMenuToPhysicalMenu() {
     saveToLocalStorageDraft();
     await savePhysicalMenu(true);
 
-    // 6. Si el usuario estaba en Hoja 1 (Portada sin platillos), pasar a Hoja 2 para ver los platillos inmediatamente
-    if (currentPageIndex === 0 && pages.length > 1) {
-      currentPageIndex = 1;
+    // 6. Mantener la hoja actual activa para no desorientar al usuario
+    if (currentPageIndex >= pages.length) {
+      currentPageIndex = Math.max(0, pages.length - 1);
     }
 
     // 7. Renderizar vistas con datos frescos
@@ -3038,7 +3283,7 @@ async function downloadPhysicalMenuPDF() {
         } else {
           const itemEl = document.createElement('div');
           const isWide = isWideItem(it);
-          const effectiveMaxWidth = it.width ? `${it.width}px` : (it.maxWidth ? `${it.maxWidth}px` : (isWide ? '710px' : '345px'));
+          const effectiveMaxWidth = it.width ? `${Math.max(it.width, it.maxWidth || it.width)}px` : (it.maxWidth ? `${it.maxWidth}px` : (isWide ? '710px' : '345px'));
           const widthStyle = it.width ? `width: ${it.width}px;` : '';
           const heightStyle = it.height ? `height: ${it.height}px;` : '';
 
